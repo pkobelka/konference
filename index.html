@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Konference VHOS</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232f6b3c'/%3E%3Ctext x='50' y='54' font-size='58' text-anchor='middle' dominant-baseline='central'%3E%F0%9F%8E%A4%3C/text%3E%3C/svg%3E" />
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>
+:root{--zelena:#2f6b3c;--zelena-tmava:#234f2d;--svetla:#f4f1ea;--karta:#fff;--ramecek:#e7e2d6;--cervena:#b0413e;--oranzova:#c77d1a;--seda:#888;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--svetla);color:#222;padding:18px 14px 60px;}
+.hidden{display:none!important;}
+a{color:var(--zelena);}
+.wrap{max-width:1150px;margin:0 auto;}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+.top h1{color:var(--zelena-tmava);font-size:1.45rem;}
+.top p{color:#666;font-size:.9rem;margin-top:3px;}
+.zpet{font-size:.85rem;text-decoration:none;display:inline-block;margin-bottom:6px;}
+.userbox{font-size:.8rem;color:#557;display:flex;gap:8px;align-items:center;}
+.btn{border:1px solid var(--zelena);background:var(--zelena);color:#fff;border-radius:8px;padding:8px 14px;font-size:.86rem;font-weight:600;cursor:pointer;}
+.btn.ghost{background:#fff;color:var(--zelena);}
+.btn.small{padding:5px 10px;font-size:.8rem;}
+.btn.red{background:#fff;color:var(--cervena);border-color:var(--cervena);}
+.btn:disabled{opacity:.5;cursor:default;}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid var(--ramecek);border-radius:8px;background:#fff;width:100%;}
+textarea{min-height:60px;}
+label.l{display:block;font-size:.78rem;color:#666;margin:10px 0 3px;font-weight:600;}
+/* záložky */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 14px;position:sticky;top:0;background:var(--svetla);padding:8px 0;z-index:5;border-bottom:1px solid var(--ramecek);}
+.tab{border:1px solid var(--ramecek);background:#fff;border-radius:999px;padding:7px 14px;font-size:.88rem;cursor:pointer;color:#444;font-weight:600;}
+.tab.on{background:var(--zelena);color:#fff;border-color:var(--zelena);}
+.tab .n{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--cervena);color:#fff;font-size:.72rem;margin-left:4px;text-align:center;}
+/* přehled */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:18px;}
+.kpi{background:#fff;border:1px solid #eee;border-radius:12px;padding:14px;cursor:pointer;}
+.kpi .v{font-size:1.8rem;font-weight:700;color:var(--zelena-tmava);}
+.kpi .t{font-size:.82rem;color:#666;}
+.kpi.bad .v{color:var(--cervena);}
+.kpi.warn .v{color:var(--oranzova);}
+h2.sek{font-size:1.05rem;color:var(--zelena-tmava);margin:18px 2px 8px;border-bottom:2px solid #dfe6da;padding-bottom:5px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+h2.sek .cnt{font-weight:600;color:#8a9382;font-size:.82rem;}
+/* filtry */
+.filtry{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:8px;margin-bottom:10px;}
+.filtry .search{grid-column:1/-1;}
+.lista{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0 10px;}
+.pocet{font-size:.84rem;color:#777;flex:1;}
+/* seznam lidí */
+.rows{display:flex;flex-direction:column;gap:6px;}
+.row{background:#fff;border:1px solid #eee;border-radius:10px;padding:9px 12px;display:grid;grid-template-columns:minmax(150px,1.4fr) minmax(110px,1fr) 90px 110px 110px 120px 1fr;gap:8px;align-items:center;cursor:pointer;font-size:.88rem;}
+.row:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.row.head{background:transparent;border:none;cursor:default;font-size:.74rem;color:#888;font-weight:700;padding:0 12px;}
+.row.head:hover{box-shadow:none;}
+.row .jm{font-weight:700;color:var(--zelena-tmava);}
+.row .sub{font-size:.76rem;color:#888;}
+.muted{color:#aaa;}
+.b{display:inline-block;border-radius:999px;padding:1px 8px;font-size:.72rem;font-weight:700;color:#fff;margin:1px 2px 1px 0;white-space:nowrap;}
+.b.o{background:#fff;border:1px solid currentColor;}
+.prob{color:var(--cervena);font-size:.78rem;font-weight:600;}
+.prob.w{color:var(--oranzova);}
+@media (max-width:820px){
+  .row{grid-template-columns:1fr 1fr;}
+  .row.head{display:none;}
+  .row .c-prob{grid-column:1/-1;}
+}
+/* firmy */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
+.card{background:#fff;border:1px solid #eee;border-radius:12px;padding:12px 14px;cursor:pointer;}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.card h3{font-size:1rem;color:var(--zelena-tmava);}
+.card .sub{font-size:.8rem;color:#777;margin-top:4px;}
+/* pokoje */
+.patro{margin:8px 0 14px;}
+.patro .pt{font-size:.8rem;color:#777;font-weight:700;margin:0 2px 5px;}
+.pokoje{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;}
+.pokoj{border:1px solid #ddd;border-radius:9px;padding:6px 8px;background:#fff;cursor:pointer;min-height:72px;font-size:.78rem;}
+.pokoj .cis{font-weight:800;font-size:.95rem;display:flex;justify-content:space-between;}
+.pokoj .typ{font-size:.68rem;color:#888;}
+.pokoj .kdo{margin-top:3px;line-height:1.3;}
+.pokoj.volny{background:#fff;}
+.pokoj.cast{background:#fff8e1;border-color:#f0d58a;}
+.pokoj.plny{background:#e8f3e6;border-color:#a9cfa2;}
+.pokoj.prist{background:#e3eefa;border-color:#9dbde0;}
+.pokoj.pres{background:#fbe5e4;border-color:var(--cervena);}
+.legenda{display:flex;gap:10px;flex-wrap:wrap;font-size:.76rem;color:#666;margin-bottom:8px;}
+.legenda span{display:inline-flex;align-items:center;gap:4px;}
+.legenda i{display:inline-block;width:14px;height:14px;border-radius:4px;border:1px solid #ccc;}
+/* kontroly */
+.chyba{background:#fff;border-left:4px solid var(--cervena);border-radius:8px;padding:9px 12px;margin-bottom:6px;cursor:pointer;font-size:.9rem;}
+.chyba.w{border-left-color:var(--oranzova);}
+.chyba .kdo{font-weight:700;color:var(--zelena-tmava);}
+.ok{background:#eef5ec;border:1px solid #cfe3ca;color:#3f6b46;border-radius:10px;padding:12px 14px;}
+.stav{background:#eef5ec;border:1px solid #cfe3ca;color:#3f6b46;border-radius:10px;padding:9px 12px;font-size:.85rem;margin:10px 0;}
+.stav.bad{background:#fbe5e4;border-color:#e6b3b1;color:var(--cervena);}
+/* modál */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-start;justify-content:center;padding:24px 10px;z-index:50;overflow:auto;}
+.mbox{background:#fff;border-radius:14px;max-width:720px;width:100%;padding:18px 20px;position:relative;}
+.mbox h2{color:var(--zelena-tmava);font-size:1.25rem;padding-right:30px;}
+.mclose{position:absolute;right:12px;top:10px;border:none;background:none;font-size:1.5rem;cursor:pointer;color:#888;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;}
+@media (max-width:560px){.two{grid-template-columns:1fr;}}
+.seg{display:flex;gap:6px;flex-wrap:wrap;}
+.seg button{border:1px solid var(--ramecek);background:#fff;border-radius:8px;padding:7px 12px;font-size:.86rem;cursor:pointer;font-weight:600;color:#444;}
+.seg button.on{color:#fff;}
+.checks{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:.88rem;}
+.checks label{display:inline-flex;gap:5px;align-items:center;cursor:pointer;}
+.checks input{width:auto;}
+.loni{background:#f7f5ef;border-radius:8px;padding:8px 10px;font-size:.8rem;color:#666;margin-top:10px;}
+.mfoot{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-top:16px;}
+.msg{font-size:.84rem;color:var(--cervena);margin-top:8px;}
+.probbox{margin-top:10px;}
+.probbox div{font-size:.84rem;padding:5px 9px;border-radius:7px;margin-bottom:4px;background:#fbe5e4;color:var(--cervena);}
+.probbox div.w{background:#fff3dc;color:#8a5a12;}
+table.t{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:8px;}
+table.t td,table.t th{padding:6px 6px;border-bottom:1px solid #eee;text-align:left;}
+table.t th{font-size:.74rem;color:#888;}
+table.t tr.cl{cursor:pointer;}
+table.t tr.cl:hover{background:#f7f5ef;}
+/* přihlášení */
+.login{display:flex;justify-content:center;padding-top:60px;}
+.loginbox{background:#fff;border-radius:14px;padding:24px;max-width:400px;width:100%;box-shadow:0 6px 22px rgba(0,0,0,.07);}
+.loginbox h2{color:var(--zelena-tmava);margin-bottom:8px;}
+.loginbox p{font-size:.88rem;color:#666;margin-bottom:12px;}
+.loginbox input{margin-bottom:10px;}
+.small2{font-size:.8rem;color:var(--zelena);cursor:pointer;margin-top:10px;text-decoration:underline;}
+.nast{background:#fff;border:1px solid #eee;border-radius:12px;padding:14px 16px;margin-bottom:12px;}
+@media print{
+  body{background:#fff;padding:0;}
+  .tabs,.top .userbox,.lista .btn,.filtry,.zpet,.noprint{display:none!important;}
+  .row,.card,.pokoj{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<div class="login hidden" id="login">
+  <div class="loginbox">
+    <h2>🎤 Konference VHOS</h2>
+    <p id="loginInfo">Přihlas se pracovním e-mailem (stejně jako do Floriána a Voleb). Přijde ti odkaz, kterým se přihlásíš.</p>
+    <input id="email" type="email" placeholder="tvůj e-mail" autocomplete="email" />
+    <button class="btn" id="sendLink">Poslat přihlašovací odkaz</button>
+    <div class="small2" id="pasteTog">Mám odkaz z e-mailu – vložit ručně</div>
+    <div id="pasteWrap" class="hidden" style="margin-top:10px">
+      <input id="pasteLink" placeholder="vlož celý odkaz z e-mailu" />
+      <button class="btn ghost" id="pasteBtn">Přihlásit vloženým odkazem</button>
+    </div>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div class="wrap hidden" id="app">
+  <div class="top">
+    <div>
+      <h1 id="nazev">🎤 Konference VHOS</h1>
+      <p id="podnazev"></p>
+    </div>
+    <div class="userbox"><span id="who"></span><button class="btn ghost small" id="logout">Odhlásit</button></div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+  <div id="stavDat" class="stav hidden"></div>
+  <main id="view"></main>
+</div>
+
+<div id="modal" class="modal hidden"><div class="mbox" id="mbox"></div></div>
+
+<script>
+"use strict";
+/* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
+const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
+firebase.initializeApp(CFG);
+const AUTH=firebase.auth(), FDB=firebase.database();
+const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
+const PUB="konference2027_verejne";    // veřejné údaje pro formulář (název, noci, menu)
+const PRI="konference2027_prihlasky";  // přihlášky partnerů – každá pod tajným klíčem (odkazem)
+const LOGIN_URL=location.origin+location.pathname;
+let USER=null;
+
+/* ================== ČÍSELNÍKY ================== */
+const KAT={
+  vhos:["VHOS","#2f6b3c"], koncern:["Koncern","#3d6fb6"], ace:["AČE","#6b4fa0"],
+  prednasejici:["Přednášející","#b0413e"],
+  generalni:["Generální partner","#8a5a12"], hlavni:["Hlavní partner","#c77d1a"], odborny:["Odborný partner","#d9a441"],
+  medialni:["Mediální partner","#7a6a55"], host:["Host","#1f8a8a"], ostatni:["Ostatní","#999"]
+};
+const FKAT=[["generalni","Generální partneři"],["hlavni","Hlavní partneři"],["odborny","Odborní partneři"],["medialni","Mediální partneři"],["vhos","VHOS"],["koncern","Koncern"],["ace","AČE"],["ostatni","Ostatní (instituce, firmy)"]];
+const STAV={ano:["Jede","#2f8a3c"],pozvan:["Pozván","#c77d1a"],nevim:["Nevíme","#888"],ne:["Nejede","#b0413e"]};
+const STAV_PORADI=["ano","pozvan","nevim","ne"];
+const SEKCE={A:"Sekce A",B:"Sekce B",C:"Sekce C – Superior",D:"Sekce D – Depandance"};
+
+/* ================== STAV APLIKACE ================== */
+let DB={nastaveni:{},firmy:{},osoby:{},pokoje:{}};
+let LOADED=false;
+let VIEW=localGet("konf_view")||"prehled";
+const FILTR={q:"",stav:"",kat:"",firma:"",noc:"",pokoj:"",vecere:"",prob:false};
+let POKOJ_NOC="";   // vybraná noc v plánku pokojů
+let MODAL_OPEN=false;
+
+function localGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function localSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function norm(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();}
+function $(id){return document.getElementById(id);}
+function leKey(email){return String(email||"").trim().toLowerCase().replace(/\./g,",");}
+function errMsg(e){return e&&e.message?e.message:String(e);}
+
+/* ================== PŘIHLÁŠENÍ ================== */
+function showLogin(msg){$("app").classList.add("hidden");$("login").classList.remove("hidden");$("loginMsg").innerHTML=msg||"";}
+function showApp(){$("login").classList.add("hidden");$("app").classList.remove("hidden");}
+$("sendLink").addEventListener("click",()=>{
+  const email=($("email").value||"").trim(), out=$("loginMsg");
+  if(!email){out.textContent="Vyplň e-mail.";return;}
+  out.textContent="Odesílám…";
+  AUTH.sendSignInLinkToEmail(email,{url:LOGIN_URL,handleCodeInApp:true}).then(()=>{
+    localSet("konf_email",email);
+    out.innerHTML="✅ Odkaz poslán na "+esc(email)+". Otevři ho na tomhle zařízení.";
+  }).catch(e=>{out.textContent="⚠️ "+errMsg(e);});
+});
+$("pasteTog").addEventListener("click",()=>$("pasteWrap").classList.toggle("hidden"));
+$("pasteBtn").addEventListener("click",()=>{
+  const link=($("pasteLink").value||"").trim(), email=($("email").value||"").trim()||localGet("konf_email")||"", out=$("loginMsg");
+  if(!link||!AUTH.isSignInWithEmailLink(link)){out.textContent="To nevypadá jako přihlašovací odkaz.";return;}
+  if(!email){out.textContent="Vyplň nahoře e-mail, na který odkaz přišel.";return;}
+  out.textContent="Přihlašuji…";
+  AUTH.signInWithEmailLink(email,link).catch(e=>{out.textContent="⚠️ "+errMsg(e);});
+});
+$("logout").addEventListener("click",()=>AUTH.signOut());
+if(AUTH.isSignInWithEmailLink(location.href)){
+  const em=localGet("konf_email")||prompt("Potvrď svůj e-mail pro přihlášení:");
+  if(em)AUTH.signInWithEmailLink(em,location.href).then(()=>history.replaceState(null,"",location.pathname)).catch(e=>alert("Přihlášení selhalo: "+errMsg(e)));
+}
+AUTH.onAuthStateChanged(user=>{
+  if(!user){USER=null;showLogin();return;}
+  FDB.ref("florian_login_email/"+leKey(user.email)).get().then(s=>{
+    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();}
+    else{showLogin("E-mail <b>"+esc(user.email)+"</b> zatím nemá přístup. Ozvi se Petru Kobelkovi (stejný seznam jako Florián).");AUTH.signOut();}
+  }).catch(()=>showLogin("Nepodařilo se ověřit přístup, zkus to znovu."));
+});
+
+/* ================== DATA ================== */
+function loadData(){
+  FDB.ref(ROOT).on("value",snap=>{
+    const v=snap.val()||{};
+    DB={nastaveni:v.nastaveni||{},firmy:v.firmy||{},osoby:v.osoby||{},pokoje:v.pokoje||{}};
+    LOADED=true;$("stavDat").classList.add("hidden");
+    render();
+  },err=>{
+    const s=$("stavDat");s.classList.remove("hidden");s.classList.add("bad");
+    s.innerHTML="⚠️ Data se nepodařilo načíst: <b>"+esc(errMsg(err))+"</b>. Nejspíš chybí pravidlo pro uzel <b>"+ROOT+"</b> ve Firebase (dej mu stejné pravidlo jako <b>volby_obce</b>).";
+  });
+}
+function stamp(o){o.upravil=USER?USER.email:"";o.upravil_ts=Date.now();return o;}
+function clean(o){const r={};for(const k in o){const v=o[k];if(v===""||v==null||v===false)continue;if(typeof v==="object"&&!Array.isArray(v)&&!Object.keys(v).length)continue;r[k]=v;}return r;}
+function save(path,obj){return FDB.ref(ROOT+"/"+path).set(obj===null?null:clean(obj));}
+
+/* ================== POMOCNÉ VÝPOČTY ================== */
+function N(){return DB.nastaveni||{};}
+function noci(){return Object.entries(N().noci||{}).sort((a,b)=>(a[1].poradi||0)-(b[1].poradi||0));}
+function nocVecere(){const f=noci().find(([,n])=>n.vecere);return f?f[0]:null;}
+function nocNazev(id){const n=(N().noci||{})[id];return n?n.nazev:id;}
+function menuNazev(k){if(k==="ne")return "nechce";const m=(N().menu||{})[k];return m||("Menu "+k);}
+function menuKeys(){return Object.keys(N().menu||{"1":1,"2":1,"3":1}).sort();}
+function jmeno(o){const s=((o.prijmeni||"")+" "+(o.jmeno||"")).trim();return s||"(bez jména)";}
+function firmaNazev(id){return id&&DB.firmy[id]?DB.firmy[id].nazev:"";}
+function spi(o){return Object.keys(o.noci||{}).filter(k=>o.noci[k]&&(N().noci||{})[k]);}
+function pokojLabel(id){const p=DB.pokoje[id];return p?(p.sekce+"-"+p.cislo):id;}
+function sortOsoby(ids){return ids.sort((a,b)=>jmeno(DB.osoby[a]).localeCompare(jmeno(DB.osoby[b]),"cs"));}
+function badgeStav(s){const st=STAV[s||"nevim"];return `<span class="b" style="background:${st[1]}">${st[0]}</span>`;}
+function badgesKat(o){return Object.keys(o.kat||{}).filter(k=>KAT[k]).map(k=>`<span class="b o" style="color:${KAT[k][1]}">${KAT[k][0]}</span>`).join("");}
+
+/* obsazenost pokojů: {pokojId:{nocId:[osobaId]}} – kdo má pokoj bez nocí, počítá se do všech nocí */
+function obsazenost(){
+  const res={}, vse=noci().map(([k])=>k);
+  for(const [id,o] of Object.entries(DB.osoby)){
+    if(!o.pokoj)continue;
+    const nn=spi(o).length?spi(o):vse;
+    res[o.pokoj]=res[o.pokoj]||{};
+    for(const n of nn){(res[o.pokoj][n]=res[o.pokoj][n]||[]).push(id);}
+  }
+  return res;
+}
+function pokojTrida(p,cnt){
+  const l=+p.luzka||0, max=l+(+p.pristylky||0);
+  if(!cnt)return "volny";
+  if(cnt>max)return "pres";
+  if(cnt>l)return "prist";
+  if(cnt===l)return "plny";
+  return "cast";
+}
+
+/* ---------- KONTROLY ---------- */
+function problemyOsoby(id,o,OBS){
+  const p=[], st=o.stav||"nevim", nn=spi(o), nv=nocVecere(), jede=st==="ano";
+  const maVecer=o.vecere&&o.vecere!=="ne";
+  if(jede&&nn.length&&!o.pokoj)p.push(["e","Spí na konferenci ("+nn.map(nocNazev).join(", ")+"), ale nemá pokoj"]);
+  if(jede&&!nn.length&&!o.nespi)p.push(["w","Jede – není vyplněno, jestli spí (zaškrtni noci, nebo „nespí“)"]);
+  if(jede&&nv&&nn.includes(nv)&&!o.vecere)p.push(["e","Spí v noci "+nocNazev(nv)+", ale nemá vybranou večeři"]);
+  if(!jede&&o.pokoj)p.push([st==="ne"?"e":"w",(st==="ne"?"Nejede":"Není potvrzený ("+STAV[st][0]+")")+", ale má zajištěný pokoj "+pokojLabel(o.pokoj)]);
+  if(!jede&&maVecer)p.push([st==="ne"?"e":"w",(st==="ne"?"Nejede":"Není potvrzený ("+STAV[st][0]+")")+", ale má objednanou večeři"]);
+  if(!jede&&nn.length&&st==="ne")p.push(["e","Nejede, ale má zaškrtnuté noci"]);
+  if(o.pokoj&&!nn.length)p.push(["w","Má pokoj "+pokojLabel(o.pokoj)+", ale nemá zaškrtnutou žádnou noc"]);
+  if(o.pokoj&&!DB.pokoje[o.pokoj])p.push(["e","Pokoj "+o.pokoj+" v hotelu neexistuje"]);
+  if(o.pokoj&&OBS&&DB.pokoje[o.pokoj]){
+    const pk=DB.pokoje[o.pokoj], max=(+pk.luzka||0)+(+pk.pristylky||0);
+    for(const n of Object.keys(OBS[o.pokoj]||{}))if(OBS[o.pokoj][n].length>max){p.push(["e","Pokoj "+pokojLabel(o.pokoj)+" je v noci "+nocNazev(n)+" přeplněný ("+OBS[o.pokoj][n].length+"/"+max+")"]);break;}
+    const spolu=[...new Set([].concat(...Object.values(OBS[o.pokoj]||{})))].filter(x=>x!==id);
+    if(spolu.length){
+      if(o.sam)p.push(["e","Chce spát sám, ale v pokoji "+pokojLabel(o.pokoj)+" je i "+spolu.map(x=>jmeno(DB.osoby[x])).join(", ")]);
+      else{const s=spolu.filter(x=>DB.osoby[x].sam);if(s.length)p.push(["e","Bydlí s někým, kdo chce spát sám ("+s.map(x=>jmeno(DB.osoby[x])).join(", ")+")"]);}
+    }
+  }
+  return p;
+}
+function vsechnyProblemy(){
+  const OBS=obsazenost(), out=[];
+  for(const id of sortOsoby(Object.keys(DB.osoby))){
+    for(const [lvl,msg] of problemyOsoby(id,DB.osoby[id],OBS))out.push({lvl,msg,osoba:id});
+  }
+  // večeře – limit
+  const v=pocetVecere();
+  const mx=+N().vecere_max||0, id=+N().vecere_ideal||0;
+  if(mx&&v>mx)out.push({lvl:"e",msg:"Na večeři je "+v+" lidí – víc než maximum "+mx,tab:"vecere"});
+  else if(id&&v>id)out.push({lvl:"w",msg:"Na večeři je "+v+" lidí – víc než ideál "+id,tab:"vecere"});
+  // duplicity jmen
+  const seen={};
+  for(const [i,o] of Object.entries(DB.osoby)){const k=norm(jmeno(o));(seen[k]=seen[k]||[]).push(i);}
+  for(const k in seen)if(seen[k].length>1)out.push({lvl:"w",msg:"Stejné jméno je v seznamu "+seen[k].length+"× – "+jmeno(DB.osoby[seen[k][0]])+" (není to duplicita?)",osoba:seen[k][0]});
+  out.sort((a,b)=>(a.lvl==="e"?0:1)-(b.lvl==="e"?0:1));
+  return out;
+}
+function pocetVecere(){return Object.values(DB.osoby).filter(o=>o.vecere&&o.vecere!=="ne"&&(o.stav||"nevim")!=="ne").length;}
+
+/* ================== RENDER ================== */
+const TABS=[["prehled","Přehled"],["lide","Lidé"],["firmy","Firmy"],["pokoje","Pokoje"],["vecere","Večeře"],["prihlasky","Přihlášky"],["kontroly","Kontroly"],["nastaveni","Nastavení"]];
+function render(){
+  if(!LOADED)return;
+  const n=N();
+  $("nazev").textContent="🎤 "+(n.nazev||"Konference VHOS");
+  $("podnazev").textContent=[n.datum,n.misto].filter(Boolean).join(" · ");
+  document.title=n.nazev||"Konference VHOS";
+  const pr=vsechnyProblemy(), ne=pr.filter(p=>p.lvl==="e").length;
+  $("tabs").innerHTML=TABS.map(([k,t])=>`<button class="tab${VIEW===k?" on":""}" data-tab="${k}">${t}${k==="kontroly"&&pr.length?`<span class="n" style="${ne?"":"background:var(--oranzova)"}">${pr.length}</span>`:""}${k==="prihlasky"&&prihKPrevzeti().length?`<span class="n">${prihKPrevzeti().length}</span>`:""}</button>`).join("");
+  const empty=!Object.keys(DB.osoby).length&&!Object.keys(DB.pokoje).length;
+  if(empty&&VIEW!=="nastaveni"){
+    $("view").innerHTML=`<div class="nast"><h2 class="sek">Zatím tu nejsou žádná data</h2><p style="font-size:.9rem;color:#555;line-height:1.6">Nahraj výchozí data (soubor <b>konference2027_vychozi_data.json</b> – lidé, firmy a pokoje z Excelu 2025) v záložce <b>Nastavení → Import</b>, nebo začni přidávat ručně.</p><p style="margin-top:10px"><button class="btn" data-tab="nastaveni">Přejít na import</button></p></div>`;
+    return;
+  }
+  ({prehled:rPrehled,lide:rLide,firmy:rFirmy,pokoje:rPokoje,vecere:rVecere,prihlasky:rPrihlasky,kontroly:rKontroly,nastaveni:rNastaveni}[VIEW]||rPrehled)(pr);
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-tab]");
+  if(t){VIEW=t.dataset.tab;localSet("konf_view",VIEW);closeModal();render();window.scrollTo(0,0);return;}
+  const os=e.target.closest("[data-osoba]");
+  if(os){openOsoba(os.dataset.osoba);return;}
+  const fi=e.target.closest("[data-firma]");
+  if(fi){openFirma(fi.dataset.firma);return;}
+  const pk=e.target.closest("[data-pokoj]");
+  if(pk){openPokoj(pk.dataset.pokoj);return;}
+  const fl=e.target.closest("[data-filtr]");
+  if(fl){Object.assign(FILTR,{q:"",stav:"",kat:"",firma:"",noc:"",pokoj:"",vecere:"",prob:false},JSON.parse(fl.dataset.filtr));VIEW="lide";render();window.scrollTo(0,0);}
+});
+
+/* ---------- PŘEHLED ---------- */
+function rPrehled(pr){
+  const os=Object.values(DB.osoby), cnt={ano:0,pozvan:0,nevim:0,ne:0};
+  os.forEach(o=>cnt[o.stav||"nevim"]++);
+  const jede=os.filter(o=>o.stav==="ano");
+  const OBS=obsazenost();
+  const nociHtml=noci().map(([k,n])=>{
+    const spici=jede.filter(o=>spi(o).includes(k)).length;
+    const pokoju=Object.keys(OBS).filter(p=>(OBS[p][k]||[]).length).length;
+    return `<div class="kpi" data-filtr='${JSON.stringify({stav:"ano",noc:k})}'><div class="v">${spici}</div><div class="t">spí v noci <b>${esc(n.nazev)}</b> · ${pokoju} pokojů</div></div>`;
+  }).join("");
+  const bezPokoje=jede.filter(o=>spi(o).length&&!o.pokoj).length;
+  const nv=nocVecere();
+  const bezVecere=nv?jede.filter(o=>spi(o).includes(nv)&&!o.vecere).length:0;
+  const menuCnt=menuKeys().map(k=>[k,os.filter(o=>o.vecere===k&&o.stav!=="ne").length]);
+  const ne=pr.filter(p=>p.lvl==="e").length;
+  $("view").innerHTML=`
+  <h2 class="sek">Účast</h2>
+  <div class="kpis">
+    ${STAV_PORADI.map(s=>`<div class="kpi" data-filtr='${JSON.stringify({stav:s})}'><div class="v" style="color:${STAV[s][1]}">${cnt[s]}</div><div class="t">${STAV[s][0]}</div></div>`).join("")}
+    <div class="kpi" data-tab="lide"><div class="v">${os.length}</div><div class="t">celkem v seznamu</div></div>
+  </div>
+  <h2 class="sek">Ubytování</h2>
+  <div class="kpis">${nociHtml}
+    <div class="kpi ${bezPokoje?"bad":""}" data-filtr='${JSON.stringify({stav:"ano",pokoj:"chybi"})}'><div class="v">${bezPokoje}</div><div class="t">jede a spí, ale <b>nemá pokoj</b></div></div>
+  </div>
+  <h2 class="sek">Večeře ${nv?"<span class='cnt'>("+esc(nocNazev(nv))+")</span>":""}</h2>
+  <div class="kpis">
+    ${menuCnt.map(([k,c])=>`<div class="kpi" data-filtr='${JSON.stringify({vecere:k})}'><div class="v">${c}</div><div class="t">${esc(menuNazev(k))}</div></div>`).join("")}
+    <div class="kpi" data-tab="vecere"><div class="v">${pocetVecere()}</div><div class="t">celkem (ideál ${esc(N().vecere_ideal||"–")}, max ${esc(N().vecere_max||"–")})</div></div>
+    <div class="kpi ${bezVecere?"bad":""}" data-filtr='${JSON.stringify({stav:"ano",vecere:"chybi"})}'><div class="v">${bezVecere}</div><div class="t">spí v noci s večeří, ale <b>nemá vybráno</b></div></div>
+  </div>
+  <h2 class="sek">Přihlášky partnerů</h2>
+  <div class="kpis">${(()=>{const v=Object.values(PRIH);const odp=v.filter(p=>p.odeslano_ts).length;const kp=prihKPrevzeti().length;
+    return `<div class="kpi" data-tab="prihlasky"><div class="v">${odp}/${v.length}</div><div class="t">odpovědělo z rozeslaných</div></div><div class="kpi ${kp?"bad":""}" data-tab="prihlasky"><div class="v">${kp}</div><div class="t">čeká na převzetí</div></div>`;})()}</div>
+  <h2 class="sek">Kontroly</h2>
+  <div class="kpis"><div class="kpi ${ne?"bad":pr.length?"warn":""}" data-tab="kontroly"><div class="v">${pr.length}</div><div class="t">${ne} chyb, ${pr.length-ne} upozornění</div></div></div>`;
+}
+
+/* ---------- LIDÉ ---------- */
+function filtrOsob(){
+  const OBS=obsazenost(), q=norm(FILTR.q).split(/\s+/).filter(Boolean), nv=nocVecere();
+  return sortOsoby(Object.keys(DB.osoby)).filter(id=>{
+    const o=DB.osoby[id];
+    if(FILTR.stav&&(o.stav||"nevim")!==FILTR.stav)return false;
+    if(FILTR.kat&&!(o.kat||{})[FILTR.kat])return false;
+    if(FILTR.firma==="-"&&o.firma)return false;
+    if(FILTR.firma&&FILTR.firma!=="-"&&o.firma!==FILTR.firma)return false;
+    if(FILTR.noc==="nespi"&&spi(o).length)return false;
+    if(FILTR.noc&&FILTR.noc!=="nespi"&&!spi(o).includes(FILTR.noc))return false;
+    if(FILTR.pokoj==="ma"&&!o.pokoj)return false;
+    if(FILTR.pokoj==="nema"&&o.pokoj)return false;
+    if(FILTR.pokoj==="chybi"&&!(spi(o).length&&!o.pokoj))return false;
+    if(FILTR.pokoj==="vhos"&&!o.platiVHOS)return false;
+    if(FILTR.pokoj==="sam"&&!o.sam)return false;
+    if(FILTR.vecere==="chybi"&&!(nv&&spi(o).includes(nv)&&!o.vecere))return false;
+    if(FILTR.vecere==="ano"&&!(o.vecere&&o.vecere!=="ne"))return false;
+    if(FILTR.vecere==="nevybrano"&&o.vecere)return false;
+    if(FILTR.vecere&&!["chybi","ano","nevybrano"].includes(FILTR.vecere)&&o.vecere!==FILTR.vecere)return false;
+    if(FILTR.prob&&!problemyOsoby(id,o,OBS).length)return false;
+    if(q.length){
+      const hay=norm([jmeno(o),firmaNazev(o.firma),o.email,o.tel,o.poznamka,o.pozn_partner,o.pokoj?pokojLabel(o.pokoj):""].join(" "));
+      if(!q.every(t=>hay.includes(t)))return false;
+    }
+    return true;
+  });
+}
+function opt(v,t,sel){return `<option value="${esc(v)}"${sel===v?" selected":""}>${esc(t)}</option>`;}
+function firmyOptions(sel,extra){
+  const byKat={};for(const [id,f] of Object.entries(DB.firmy))(byKat[f.kat||"ostatni"]=byKat[f.kat||"ostatni"]||[]).push(id);
+  let h=extra||"";
+  for(const [k,t] of FKAT){if(!byKat[k])continue;h+=`<optgroup label="${esc(t)}">`+byKat[k].sort((a,b)=>DB.firmy[a].nazev.localeCompare(DB.firmy[b].nazev,"cs")).map(id=>opt(id,DB.firmy[id].nazev,sel)).join("")+"</optgroup>";}
+  return h;
+}
+function rLide(){
+  const f=FILTR;
+  const nociOpt=noci().map(([k,n])=>opt(k,"spí: "+n.nazev,f.noc)).join("");
+  $("view").innerHTML=`
+  <div class="filtry">
+    <input class="search" id="fq" placeholder="🔍 Hledat jméno, firmu, e-mail, pokoj…" value="${esc(f.q)}" />
+    <select id="fstav">${opt("","Stav: vše",f.stav)}${STAV_PORADI.map(s=>opt(s,STAV[s][0],f.stav)).join("")}</select>
+    <select id="fkat">${opt("","Kategorie: vše",f.kat)}${Object.keys(KAT).map(k=>opt(k,KAT[k][0],f.kat)).join("")}</select>
+    <select id="ffirma">${firmyOptions(f.firma,opt("","Firma: všechny",f.firma)+opt("-","— bez firmy —",f.firma))}</select>
+    <select id="fnoc">${opt("","Noci: vše",f.noc)}${nociOpt}${opt("nespi","nespí",f.noc)}</select>
+    <select id="fpokoj">${opt("","Pokoj: vše",f.pokoj)}${opt("ma","má pokoj",f.pokoj)}${opt("nema","nemá pokoj",f.pokoj)}${opt("chybi","spí, ale nemá pokoj ⚠️",f.pokoj)}${opt("vhos","platí VHOS",f.pokoj)}${opt("sam","chce spát sám",f.pokoj)}</select>
+    <select id="fvecere">${opt("","Večeře: vše",f.vecere)}${opt("ano","jde na večeři",f.vecere)}${menuKeys().map(k=>opt(k,menuNazev(k),f.vecere)).join("")}${opt("ne","nechce",f.vecere)}${opt("nevybrano","nevybráno",f.vecere)}${opt("chybi","spí, ale nemá večeři ⚠️",f.vecere)}</select>
+  </div>
+  <div class="lista">
+    <label class="checks" style="font-size:.86rem"><label><input type="checkbox" id="fprob" ${f.prob?"checked":""}/> jen s problémem</label></label>
+    <span class="pocet" id="pocet"></span>
+    <button class="btn ghost small" id="fclear">Zrušit filtry</button>
+    <button class="btn ghost small" id="csv">⬇ CSV</button>
+    <button class="btn ghost small" onclick="window.print()">🖨 Tisk</button>
+    <button class="btn small" id="novaOsoba">+ Přidat osobu</button>
+  </div>
+  <div class="rows" id="rows"></div>`;
+  const upd=()=>{
+    Object.assign(FILTR,{q:$("fq").value,stav:$("fstav").value,kat:$("fkat").value,firma:$("ffirma").value,noc:$("fnoc").value,pokoj:$("fpokoj").value,vecere:$("fvecere").value,prob:$("fprob").checked});
+    rLideRows();
+  };
+  ["fstav","fkat","ffirma","fnoc","fpokoj","fvecere","fprob"].forEach(i=>$(i).addEventListener("change",upd));
+  $("fq").addEventListener("input",upd);
+  $("fclear").addEventListener("click",()=>{Object.assign(FILTR,{q:"",stav:"",kat:"",firma:"",noc:"",pokoj:"",vecere:"",prob:false});rLide();});
+  $("novaOsoba").addEventListener("click",()=>openOsoba(null));
+  $("csv").addEventListener("click",exportCSV);
+  rLideRows();
+}
+function rLideRows(){
+  const ids=filtrOsob(), OBS=obsazenost();
+  $("pocet").textContent=ids.length+" z "+Object.keys(DB.osoby).length+" lidí";
+  if(!ids.length){$("rows").innerHTML=`<div class="stav">Nikdo neodpovídá filtru.</div>`;return;}
+  $("rows").innerHTML=`<div class="row head"><div>Jméno</div><div>Firma</div><div>Stav</div><div>Noci</div><div>Pokoj</div><div>Večeře</div><div>Kontrola</div></div>`+
+  ids.map(id=>{
+    const o=DB.osoby[id], pr=problemyOsoby(id,o,OBS), nn=spi(o);
+    return `<div class="row" data-osoba="${esc(id)}">
+      <div><div class="jm">${esc(jmeno(o))}${o.prihlaska?' <span title="z přihlášky partnera">📨</span>':""}</div><div>${badgesKat(o)}</div></div>
+      <div class="sub">${esc(firmaNazev(o.firma))||'<span class="muted">—</span>'}</div>
+      <div>${badgeStav(o.stav)}</div>
+      <div class="sub">${nn.length?esc(nn.map(nocNazev).join(", ")):(o.nespi?"nespí":'<span class="muted">—</span>')}</div>
+      <div>${o.sam?'<span title="chce spát sám">👤</span> ':""}${o.pokoj?"<b>"+esc(pokojLabel(o.pokoj))+"</b>"+(o.platiVHOS?' <span class="b" style="background:#2f6b3c" title="platí VHOS">VHOS</span>':""):'<span class="muted">—</span>'}</div>
+      <div class="sub">${o.vecere?esc(menuNazev(o.vecere)):'<span class="muted">—</span>'}</div>
+      <div class="c-prob">${pr.map(([l,m])=>`<div class="prob${l==="w"?" w":""}">${l==="e"?"⛔":"⚠️"} ${esc(m)}</div>`).join("")||'<span style="color:#3f8a4a;font-size:.8rem">✓</span>'}</div>
+    </div>`;
+  }).join("");
+}
+function exportCSV(){
+  const ids=filtrOsob();
+  const rows=[["Příjmení","Jméno","Firma","Kategorie","Stav","Noci","Pokoj","Sám","Platí VHOS","Večeře","E-mail","Telefon","Poznámka"]];
+  for(const id of ids){const o=DB.osoby[id];rows.push([o.prijmeni||"",o.jmeno||"",firmaNazev(o.firma),Object.keys(o.kat||{}).map(k=>KAT[k]?KAT[k][0]:k).join(", "),STAV[o.stav||"nevim"][0],spi(o).map(nocNazev).join(", ")||(o.nespi?"nespí":""),o.pokoj?pokojLabel(o.pokoj):"",o.sam?"ano":"",o.platiVHOS?"ano":"",o.vecere?menuNazev(o.vecere):"",o.email||"",o.tel||"",o.poznamka||""]);}
+  const csv="﻿"+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(";")).join("\r\n");
+  download("konference_lide.csv",csv,"text/csv;charset=utf-8");
+}
+function download(name,text,type){
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+}
+
+/* ---------- FIRMY ---------- */
+function rFirmy(){
+  const byKat={};
+  for(const [id,f] of Object.entries(DB.firmy))(byKat[f.kat||"ostatni"]=byKat[f.kat||"ostatni"]||[]).push(id);
+  const clenove={};for(const [id,o] of Object.entries(DB.osoby))if(o.firma)(clenove[o.firma]=clenove[o.firma]||[]).push(o);
+  let h=`<div class="lista"><input id="fqf" placeholder="🔍 Hledat firmu…" style="flex:1;min-width:180px" /><button class="btn small" id="novaFirma">+ Přidat firmu</button></div><div id="frows">`;
+  for(const [k,t] of FKAT){
+    if(!byKat[k])continue;
+    const ids=byKat[k].sort((a,b)=>DB.firmy[a].nazev.localeCompare(DB.firmy[b].nazev,"cs"));
+    h+=`<h2 class="sek">${esc(t)} <span class="cnt">${ids.length}</span></h2><div class="grid">`+ids.map(id=>{
+      const f=DB.firmy[id], cl=clenove[id]||[], c={ano:0,pozvan:0,nevim:0,ne:0};cl.forEach(o=>c[o.stav||"nevim"]++);
+      const pok=[...new Set(cl.filter(o=>o.pokoj).map(o=>pokojLabel(o.pokoj)))];
+      return `<div class="card" data-firma="${esc(id)}" data-hledat="${esc(norm(f.nazev))}"><h3>${esc(f.nazev)}</h3>
+        <div class="sub">${cl.length?`<b style="color:${STAV.ano[1]}">${c.ano} jede</b> · ${c.pozvan} pozván · ${c.nevim} ? · ${c.ne} nejede`:'<span class="muted">nikdo v seznamu</span>'}</div>
+        ${pok.length?`<div class="sub">🛏 ${esc(pok.join(", "))}</div>`:""}
+        ${f.poznamka?`<div class="sub">📝 ${esc(f.poznamka)}</div>`:""}</div>`;
+    }).join("")+`</div>`;
+  }
+  $("view").innerHTML=h+"</div>";
+  $("novaFirma").addEventListener("click",()=>openFirma(null));
+  $("fqf").addEventListener("input",e=>{const q=norm(e.target.value);document.querySelectorAll("#frows .card").forEach(c=>c.classList.toggle("hidden",q&&!c.dataset.hledat.includes(q)));});
+}
+
+/* ---------- POKOJE ---------- */
+function rPokoje(){
+  const nn=noci();
+  if(!POKOJ_NOC||!(N().noci||{})[POKOJ_NOC])POKOJ_NOC=nn.length?nn[0][0]:"";
+  const OBS=obsazenost();
+  const bySek={};
+  for(const [id,p] of Object.entries(DB.pokoje)){const s=p.sekce||"?";(bySek[s]=bySek[s]||{});(bySek[s][p.patro||""]=bySek[s][p.patro||""]||[]).push(id);}
+  let volne=0,obs=0;
+  for(const id in DB.pokoje){((OBS[id]||{})[POKOJ_NOC]||[]).length?obs++:volne++;}
+  let h=`<div class="lista"><span style="font-size:.88rem">Noc:</span><div class="seg">${nn.map(([k,n])=>`<button class="${k===POKOJ_NOC?"on":""}" style="${k===POKOJ_NOC?"background:var(--zelena);border-color:var(--zelena)":""}" data-noc="${esc(k)}">${esc(n.nazev)}</button>`).join("")}</div>
+    <span class="pocet">${obs} obsazených · ${volne} volných pokojů</span><button class="btn ghost small" id="novyPokoj">+ Pokoj</button></div>
+  <div class="legenda"><span><i style="background:#fff"></i>volný</span><span><i style="background:#fff8e1"></i>částečně</span><span><i style="background:#e8f3e6"></i>plný</span><span><i style="background:#e3eefa"></i>s přistýlkou</span><span><i style="background:#fbe5e4"></i>přeplněný</span></div>`;
+  const patroKey=s=>{const m=String(s).match(/\d+/);return s.includes("přízemí")?0:(m?+m[0]:99);};
+  for(const s of Object.keys(bySek).sort()){
+    h+=`<h2 class="sek">${esc(SEKCE[s]||("Sekce "+s))}</h2>`;
+    for(const pt of Object.keys(bySek[s]).sort((a,b)=>patroKey(b)-patroKey(a))){
+      const ids=bySek[s][pt].sort((a,b)=>String(DB.pokoje[a].cislo).localeCompare(String(DB.pokoje[b].cislo),"cs",{numeric:true}));
+      h+=`<div class="patro"><div class="pt">${esc(pt)}</div><div class="pokoje">`+ids.map(id=>{
+        const p=DB.pokoje[id], kdo=(OBS[id]||{})[POKOJ_NOC]||[], max=(+p.luzka||0)+(+p.pristylky||0);
+        return `<div class="pokoj ${pokojTrida(p,kdo.length)}" data-pokoj="${esc(id)}" title="${esc(p.typ||"")}${p.poznamka?" – "+esc(p.poznamka):""}">
+          <div class="cis"><span>${esc(p.cislo)}</span><span style="font-weight:600;font-size:.72rem;color:#777">${kdo.length}/${esc(p.luzka||0)}${+p.pristylky?"+"+esc(p.pristylky):""}</span></div>
+          <div class="typ">${esc(p.typ||"")}</div>
+          <div class="kdo">${kdo.map(i=>{const o=DB.osoby[i];return (o.sam?"👤 ":"")+esc(jmeno(o))+(o.stav!=="ano"?' <span class="prob">⚠</span>':"");}).join("<br>")}</div></div>`;
+      }).join("")+`</div></div>`;
+    }
+  }
+  $("view").innerHTML=h;
+  document.querySelectorAll("[data-noc]").forEach(b=>b.addEventListener("click",()=>{POKOJ_NOC=b.dataset.noc;rPokoje();}));
+  $("novyPokoj").addEventListener("click",()=>openPokoj(null));
+}
+
+/* ---------- VEČEŘE ---------- */
+function rVecere(){
+  const nv=nocVecere(), os=Object.entries(DB.osoby).filter(([,o])=>o.stav!=="ne");
+  const skup=menuKeys().map(k=>[k,menuNazev(k),os.filter(([,o])=>o.vecere===k)]);
+  const nechce=os.filter(([,o])=>o.vecere==="ne");
+  const chybi=os.filter(([,o])=>o.stav==="ano"&&!o.vecere&&(nv&&spi(o).includes(nv)));
+  const nevyb=os.filter(([,o])=>o.stav==="ano"&&!o.vecere&&!(nv&&spi(o).includes(nv)));
+  const tot=pocetVecere(), mx=+N().vecere_max||0, idl=+N().vecere_ideal||0;
+  const li=list=>list.length?`<table class="t">`+list.sort((a,b)=>jmeno(a[1]).localeCompare(jmeno(b[1]),"cs")).map(([id,o])=>`<tr class="cl" data-osoba="${esc(id)}"><td><b>${esc(jmeno(o))}</b></td><td>${esc(firmaNazev(o.firma))}</td><td>${badgeStav(o.stav)}</td><td>${spi(o).includes(nv)?"🛏 spí":""}</td><td class="sub">${esc(o.poznamka||"")}</td></tr>`).join("")+`</table>`:'<div class="muted" style="font-size:.85rem">nikdo</div>';
+  $("view").innerHTML=`
+  <div class="kpis">${skup.map(([k,t,l])=>`<div class="kpi" data-filtr='${JSON.stringify({vecere:k})}'><div class="v">${l.length}</div><div class="t">${esc(t)}</div></div>`).join("")}
+    <div class="kpi ${mx&&tot>mx?"bad":idl&&tot>idl?"warn":""}"><div class="v">${tot}</div><div class="t">celkem · ideál ${esc(idl||"–")}, max ${esc(mx||"–")}</div></div></div>
+  <div class="lista noprint"><span class="pocet">Večeře je navázaná na noc <b>${esc(nv?nocNazev(nv):"— (nastav v Nastavení)")}</b>. Kdo v té noci spí, musí mít večeři vybranou (nebo „nechce“).</span><button class="btn ghost small" onclick="window.print()">🖨 Tisk</button></div>
+  ${chybi.length?`<h2 class="sek" style="color:var(--cervena)">⛔ Spí v noci ${esc(nocNazev(nv))}, ale nemá vybráno <span class="cnt">${chybi.length}</span></h2>${li(chybi)}`:""}
+  ${skup.map(([k,t,l])=>`<h2 class="sek">${esc(t)} <span class="cnt">${l.length}</span></h2>${li(l)}`).join("")}
+  <h2 class="sek">Jede, nespí v noci s večeří a nemá vybráno <span class="cnt">${nevyb.length}</span></h2>${li(nevyb)}
+  <h2 class="sek">Nechce večeři <span class="cnt">${nechce.length}</span></h2>${li(nechce)}`;
+}
+
+/* ---------- KONTROLY ---------- */
+function rKontroly(pr){
+  if(!pr.length){$("view").innerHTML=`<div class="ok">✅ Vše sedí – nikdo nemá pokoj ani večeři navíc a nikomu nic nechybí.</div>`;return;}
+  $("view").innerHTML=`<div class="lista"><span class="pocet">${pr.filter(p=>p.lvl==="e").length} chyb (⛔) a ${pr.filter(p=>p.lvl!=="e").length} upozornění (⚠️). Klikni pro opravu.</span></div>`+
+  pr.map(p=>`<div class="chyba${p.lvl==="e"?"":" w"}" ${p.osoba?`data-osoba="${esc(p.osoba)}"`:`data-tab="${p.tab||"prehled"}"`}>${p.lvl==="e"?"⛔":"⚠️"} ${p.osoba?`<span class="kdo">${esc(jmeno(DB.osoby[p.osoba]))}</span> – `:""}${esc(p.msg)}</div>`).join("");
+}
+
+/* ---------- NASTAVENÍ ---------- */
+function rNastaveni(){
+  const n=N(), nn=noci();
+  $("view").innerHTML=`
+  <div class="nast"><h2 class="sek">Konference</h2>
+    <div class="two">
+      <div><label class="l">Název</label><input id="s_nazev" value="${esc(n.nazev||"")}"></div>
+      <div><label class="l">Termín</label><input id="s_datum" value="${esc(n.datum||"")}" placeholder="např. 13.–14. 4. 2027"></div>
+      <div><label class="l">Místo</label><input id="s_misto" value="${esc(n.misto||"")}"></div>
+    </div>
+  </div>
+  <div class="nast"><h2 class="sek">Noci</h2>
+    <p style="font-size:.84rem;color:#666">Zaškrtni noc, ke které patří slavnostní večeře – kdo tu noc spí, musí mít večeři vybranou.</p>
+    <div id="s_noci">${nn.map(([k,x])=>`<div class="lista" data-nocid="${esc(k)}"><input class="s_nocnazev" value="${esc(x.nazev||"")}" style="flex:1"><label class="checks"><label><input type="radio" name="s_vec" value="${esc(k)}" ${x.vecere?"checked":""}> večeře</label></label><button class="btn red small s_nocdel">Smazat</button></div>`).join("")}</div>
+    <button class="btn ghost small" id="s_nocadd">+ Přidat noc</button>
+  </div>
+  <div class="nast"><h2 class="sek">Večeře – nabídka</h2>
+    <div class="two">${menuKeys().map(k=>`<div><label class="l">Menu ${esc(k)}</label><input class="s_menu" data-k="${esc(k)}" value="${esc((n.menu||{})[k]||"")}"></div>`).join("")}
+      <div><label class="l">Ideální počet</label><input id="s_ideal" type="number" value="${esc(n.vecere_ideal||"")}"></div>
+      <div><label class="l">Maximum</label><input id="s_max" type="number" value="${esc(n.vecere_max||"")}"></div>
+    </div>
+  </div>
+  <div class="nast"><h2 class="sek">Přihláška pro partnery</h2>
+    <div class="two">
+      <div><label class="l">Uzávěrka přihlášek (po ní jde formulář jen číst)</label><input id="s_uzav" type="date" value="${esc(n.uzaverka||"")}"></div>
+    </div>
+    <label class="l">Úvodní text ve formuláři</label><textarea id="s_text" placeholder="např. Prosíme o vyplnění do 15. 3. 2027. Ubytování zajišťuje pořadatel.">${esc(n.text_partneri||"")}</textarea>
+  </div>
+  <p><button class="btn" id="s_save">Uložit nastavení</button> <span class="msg" id="s_msg"></span></p>
+  <div class="nast" style="margin-top:18px"><h2 class="sek">Import a záloha</h2>
+    <p style="font-size:.86rem;color:#555;line-height:1.6">Import načte soubor JSON (např. <b>konference2027_vychozi_data.json</b>). <b>Doplní jen to, co tu ještě není</b> – existující lidi, firmy a pokoje nepřepíše.</p>
+    <div class="lista"><input type="file" id="s_file" accept=".json,application/json" style="max-width:320px"><button class="btn small" id="s_import">Importovat</button><button class="btn ghost small" id="s_export">⬇ Stáhnout zálohu (JSON)</button></div>
+    <div class="msg" id="s_imsg"></div>
+  </div>`;
+  document.querySelectorAll(".s_nocdel").forEach(b=>b.addEventListener("click",()=>{
+    const k=b.closest("[data-nocid]").dataset.nocid;
+    const pouziva=Object.values(DB.osoby).filter(o=>(o.noci||{})[k]).length;
+    if(!confirm("Smazat noc „"+nocNazev(k)+"“?"+(pouziva?" Má ji zaškrtnutou "+pouziva+" lidí.":"")))return;
+    FDB.ref(ROOT+"/nastaveni/noci/"+k).remove();
+  }));
+  $("s_nocadd").addEventListener("click",()=>{
+    const nazev=prompt("Název noci (např. Úterý 13. 4.):");if(!nazev)return;
+    const k="n"+Date.now().toString(36);
+    FDB.ref(ROOT+"/nastaveni/noci/"+k).set({nazev,poradi:nn.length?Math.max(...nn.map(([,x])=>x.poradi||0))+1:1});
+  });
+  $("s_save").addEventListener("click",()=>{
+    const menu={};document.querySelectorAll(".s_menu").forEach(i=>menu[i.dataset.k]=i.value.trim()||("Menu "+i.dataset.k));
+    const vec=(document.querySelector("input[name=s_vec]:checked")||{}).value;
+    const nociNew={};document.querySelectorAll("[data-nocid]").forEach((r,i)=>{const k=r.dataset.nocid;nociNew[k]={nazev:r.querySelector(".s_nocnazev").value.trim()||k,poradi:i+1};if(k===vec)nociNew[k].vecere=true;});
+    const obj=Object.assign({},n,{nazev:$("s_nazev").value.trim(),datum:$("s_datum").value.trim(),misto:$("s_misto").value.trim(),menu,noci:nociNew,vecere_ideal:+$("s_ideal").value||null,vecere_max:+$("s_max").value||null,uzaverka:$("s_uzav").value,text_partneri:$("s_text").value.trim()});
+    save("nastaveni",stamp(obj)).then(()=>ulozVerejne(obj)).then(()=>{$("s_msg").style.color="var(--zelena)";$("s_msg").textContent="✔ Uloženo";}).catch(e=>{$("s_msg").textContent="⚠️ "+errMsg(e);});
+  });
+  $("s_export").addEventListener("click",()=>download("konference_zaloha_"+new Date().toISOString().slice(0,10)+".json",JSON.stringify(DB,null,1),"application/json"));
+  $("s_import").addEventListener("click",()=>{
+    const f=$("s_file").files[0], out=$("s_imsg");
+    if(!f){out.textContent="Vyber soubor.";return;}
+    f.text().then(t=>{
+      const d=JSON.parse(t), upd={}, cnt={osoby:0,firmy:0,pokoje:0};
+      for(const sec of ["osoby","firmy","pokoje"])for(const [id,v] of Object.entries(d[sec]||{}))if(!DB[sec][id]){upd[sec+"/"+id]=v;cnt[sec]++;}
+      if(d.nastaveni&&!Object.keys(DB.nastaveni).length)upd["nastaveni"]=d.nastaveni;
+      if(!Object.keys(upd).length){out.style.color="var(--zelena)";out.textContent="Nic nového k importu – vše už tu je.";return;}
+      if(!confirm("Doplnit "+cnt.osoby+" lidí, "+cnt.firmy+" firem a "+cnt.pokoje+" pokojů"+(upd.nastaveni?" + nastavení":"")+"?"))return;
+      return FDB.ref(ROOT).update(upd).then(()=>{out.style.color="var(--zelena)";out.textContent="✔ Importováno: "+cnt.osoby+" lidí, "+cnt.firmy+" firem, "+cnt.pokoje+" pokojů.";});
+    }).catch(e=>{out.style.color="";out.textContent="⚠️ "+errMsg(e);});
+  });
+}
+
+
+/* ================== PŘIHLÁŠKY PARTNERŮ ================== */
+let PRIH={}, PRIH_ERR="";
+const PRIH_KAT=["generalni","hlavni","odborny"];
+const PRAVIDLO=`"${PRI}": {
+  ".read": "auth != null && root.child('florian_login_email').child(auth.token.email.toLowerCase().replace('.', ',')).exists()",
+  ".write": "auth != null && root.child('florian_login_email').child(auth.token.email.toLowerCase().replace('.', ',')).exists()",
+  "$klic": {
+    ".read": true,
+    ".write": "data.exists() && newData.exists() && newData.child('firma').val() === data.child('firma').val()"
+  }
+},
+"${PUB}": {
+  ".read": true,
+  ".write": "auth != null && root.child('florian_login_email').child(auth.token.email.toLowerCase().replace('.', ',')).exists()"
+}`;
+function loadPrihlasky(){
+  FDB.ref(PRI).on("value",s=>{PRIH=s.val()||{};PRIH_ERR="";render();},e=>{PRIH_ERR=errMsg(e);render();});
+}
+function formBase(){return location.origin+location.pathname.replace(/index\.html$/,"").replace(/\/?$/,"/")+"prihlaska/";}
+function odkaz(t){return formBase()+"?k="+t;}
+function novyKlic(){const a=new Uint8Array(16);crypto.getRandomValues(a);return Array.from(a,b=>"abcdefghijkmnpqrstuvwxyz23456789"[b%32]).join("");}
+function tokenFirmy(fid){return Object.keys(PRIH).find(t=>PRIH[t].firma===fid);}
+function prihStav(p){
+  if(!p)return ["bez","Bez odkazu","#aaa"];
+  if(!p.odeslano_ts)return ["ceka","Čeká na vyplnění","#c77d1a"];
+  if(!p.prevzato_ts)return ["nova","Vyplněno – převzít","#b0413e"];
+  if(p.odeslano_ts>p.prevzato_ts)return ["zmena","Změněno – převzít","#b0413e"];
+  return ["ok","Převzato","#2f8a3c"];
+}
+function prihKPrevzeti(){return Object.keys(PRIH).filter(t=>["nova","zmena"].includes(prihStav(PRIH[t])[0]));}
+function verejneData(n){n=n||N();return clean({nazev:n.nazev||"",datum:n.datum||"",misto:n.misto||"",noci:n.noci||{},menu:n.menu||{},uzaverka:n.uzaverka||"",text:n.text_partneri||""});}
+function ulozVerejne(n){return FDB.ref(PUB).set(verejneData(n));}
+function vytvorOdkazy(fids){
+  const upd={};
+  for(const fid of fids){if(tokenFirmy(fid))continue;upd[novyKlic()]={firma:fid,firma_nazev:DB.firmy[fid].nazev,vytvoreno_ts:Date.now(),vytvoril:USER?USER.email:""};}
+  if(!Object.keys(upd).length)return Promise.resolve(0);
+  return ulozVerejne().then(()=>FDB.ref(PRI).update(upd)).then(()=>Object.keys(upd).length);
+}
+function emailyFirmy(fid){
+  const f=DB.firmy[fid]||{}, e=new Set();
+  if(f.kontakt&&f.kontakt.email)e.add(f.kontakt.email);
+  Object.values(DB.osoby).forEach(o=>{if(o.firma===fid&&o.email)e.add(o.email);});
+  return [...e];
+}
+function mailto(t){
+  const p=PRIH[t], n=N();
+  const subj=(n.nazev||"Konference VHOS")+" – přihláška";
+  const body="Dobrý den,\n\nzveme Vás na "+(n.nazev||"konferenci VHOS")+(n.datum?" ("+n.datum+(n.misto?", "+n.misto:"")+")":"")+".\n"+
+    "Prosíme o vyplnění přihlášky za firmu "+p.firma_nazev+" – kdo přijede, které noci bude spát a jakou si vybere večeři:\n\n"+odkaz(t)+"\n\n"+
+    (n.uzaverka?"Přihlášku je možné upravit do "+new Date(n.uzaverka).toLocaleDateString("cs")+" stejným odkazem.\n\n":"Přihlášku je možné kdykoli upravit stejným odkazem.\n\n")+"Děkujeme\n";
+  return "mailto:"+encodeURIComponent(emailyFirmy(p.firma).join(","))+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body);
+}
+function kopiruj(text,btn){
+  const ok=()=>{if(btn){const t=btn.textContent;btn.textContent="✔ Zkopírováno";setTimeout(()=>btn.textContent=t,1500);}};
+  if(navigator.clipboard)navigator.clipboard.writeText(text).then(ok,()=>prompt("Zkopíruj odkaz:",text));else prompt("Zkopíruj odkaz:",text);
+}
+document.addEventListener("click",e=>{
+  const k=e.target.closest("[data-kopirovat]");if(k){e.stopPropagation();kopiruj(odkaz(k.dataset.kopirovat),k);return;}
+  const v=e.target.closest("[data-vytvorit]");if(v){e.stopPropagation();vytvorOdkazy([v.dataset.vytvorit]).then(()=>{if(MODAL_OPEN)openFirma(v.dataset.vytvorit);}).catch(er=>alert("⚠️ "+errMsg(er)));return;}
+  const pr=e.target.closest("[data-prevzit]");if(pr){e.stopPropagation();openPrevzeti(pr.dataset.prevzit);return;}
+  const zo=e.target.closest("[data-zobrazit]");if(zo){e.stopPropagation();openPrihlaska(zo.dataset.zobrazit);return;}
+},true);
+
+function rPrihlasky(){
+  if(PRIH_ERR){
+    $("view").innerHTML=`<div class="stav bad">⚠️ Přihlášky se nepodařilo načíst: <b>${esc(PRIH_ERR)}</b>.<br>Ve Firebase (projekt moje-budky → Realtime Database → Rules) chybí pravidla. Přidej do <code>"rules"</code> tohle:</div><pre style="background:#fff;border:1px solid #eee;border-radius:8px;padding:10px;font-size:.78rem;overflow:auto">${esc(PRAVIDLO)}</pre>`;
+    return;
+  }
+  const partneri=Object.keys(DB.firmy).filter(f=>PRIH_KAT.includes(DB.firmy[f].kat));
+  const bezOdkazu=partneri.filter(f=>!tokenFirmy(f));
+  const firmyS=[...new Set(partneri.concat(Object.values(PRIH).map(p=>p.firma)))].filter(f=>DB.firmy[f]);
+  const cnt={};firmyS.forEach(f=>{const s=prihStav(PRIH[tokenFirmy(f)])[0];cnt[s]=(cnt[s]||0)+1;});
+  let h=`<div class="stav">Každá firma má <b>vlastní tajný odkaz</b> na přihlášku. Partner vyplní své lidi, noci, spaní a večeři; tady pak přihlášku jedním klikem <b>převezmeš</b> do seznamu lidí. Pokoje přiděluješ ty.</div>
+  <div class="kpis">
+    <div class="kpi"><div class="v">${cnt.bez||0}</div><div class="t">bez odkazu</div></div>
+    <div class="kpi warn"><div class="v">${cnt.ceka||0}</div><div class="t">čeká na vyplnění</div></div>
+    <div class="kpi ${(cnt.nova||0)+(cnt.zmena||0)?"bad":""}"><div class="v">${(cnt.nova||0)+(cnt.zmena||0)}</div><div class="t">vyplněno – k převzetí</div></div>
+    <div class="kpi"><div class="v" style="color:#2f8a3c">${cnt.ok||0}</div><div class="t">převzato</div></div>
+  </div>
+  <div class="lista">
+    <button class="btn small" id="pr_vse" ${bezOdkazu.length?"":"disabled"}>Vytvořit odkazy všem partnerům (${bezOdkazu.length})</button>
+    <button class="btn ghost small" id="pr_csv">⬇ CSV odkazů (pro hromadný e-mail)</button>
+    <span class="pocet"></span>
+  </div>`;
+  for(const [k,t] of FKAT){
+    const ids=firmyS.filter(f=>(DB.firmy[f].kat||"ostatni")===k).sort((a,b)=>DB.firmy[a].nazev.localeCompare(DB.firmy[b].nazev,"cs"));
+    if(!ids.length)continue;
+    h+=`<h2 class="sek">${esc(t)} <span class="cnt">${ids.length}</span></h2><table class="t"><tr><th>Firma</th><th>Stav</th><th>Lidí</th><th>Vyplněno</th><th></th></tr>`+ids.map(fid=>{
+      const tk=tokenFirmy(fid), p=PRIH[tk], st=prihStav(p), lidi=p&&p.lide?Object.keys(p.lide).length:0;
+      return `<tr><td class="cl" data-firma="${esc(fid)}" style="cursor:pointer"><b>${esc(DB.firmy[fid].nazev)}</b></td><td><span class="b" style="background:${st[2]}">${st[1]}</span></td><td>${p&&p.odeslano_ts?lidi:"—"}</td><td class="sub">${p&&p.odeslano_ts?new Date(p.odeslano_ts).toLocaleString("cs"):""}</td>
+      <td style="white-space:nowrap;text-align:right">${!tk?`<button class="btn ghost small" data-vytvorit="${esc(fid)}">Vytvořit odkaz</button>`:
+        `<button class="btn ghost small" data-kopirovat="${esc(tk)}" title="Kopírovat odkaz">📋</button> <a class="btn ghost small" style="text-decoration:none" href="${esc(mailto(tk))}" title="Napsat e-mail s odkazem">✉</a> <a class="btn ghost small" style="text-decoration:none" href="${esc(odkaz(tk))}" target="_blank" rel="noopener" title="Otevřít formulář">↗</a>`+
+        (p.odeslano_ts?` <button class="btn ghost small" data-zobrazit="${esc(tk)}">Zobrazit</button>`:"")+
+        (["nova","zmena"].includes(st[0])?` <button class="btn small" data-prevzit="${esc(tk)}">Převzít</button>`:"")}</td></tr>`;
+    }).join("")+`</table>`;
+  }
+  $("view").innerHTML=h;
+  $("pr_vse").addEventListener("click",()=>{
+    if(!confirm("Vytvořit odkazy na přihlášku pro "+bezOdkazu.length+" partnerů (generální, hlavní, odborní)?"))return;
+    vytvorOdkazy(bezOdkazu).then(n=>alert("✔ Vytvořeno "+n+" odkazů.")).catch(e=>alert("⚠️ "+errMsg(e)));
+  });
+  $("pr_csv").addEventListener("click",()=>{
+    const rows=[["Firma","Kategorie","Stav","E-maily","Odkaz"]];
+    for(const [t,p] of Object.entries(PRIH)){const f=DB.firmy[p.firma]||{};rows.push([p.firma_nazev,(FKAT.find(x=>x[0]===f.kat)||["",""])[1],prihStav(p)[1],emailyFirmy(p.firma).join(", "),odkaz(t)]);}
+    download("prihlasky_odkazy.csv","\ufeff"+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(";")).join("\r\n"),"text/csv;charset=utf-8");
+  });
+}
+function popisLide(x){
+  const nn=Object.keys(x.noci||{}).filter(k=>x.noci[k]).map(nocNazev);
+  return [nn.length?"spí: "+nn.join(", "):(x.nespi?"nespí":"noci nevyplněny"),
+    x.spani==="sam"?"chce spát sám":x.spani==="s"?"bydlet s: "+(x.s_kym||"?"):"",
+    x.vecere?"večeře: "+menuNazev(x.vecere):"",x.strava?"strava: "+x.strava:"",x.poznamka||""].filter(Boolean).join(" · ");
+}
+function openPrihlaska(t){
+  const p=PRIH[t];
+  openModal(`<h2>Přihláška – ${esc(p.firma_nazev)}</h2>
+    <div class="sub" style="color:#777;font-size:.84rem;margin:4px 0">Odesláno ${p.odeslano_ts?new Date(p.odeslano_ts).toLocaleString("cs"):"—"}${p.prevzato_ts?" · převzato "+new Date(p.prevzato_ts).toLocaleString("cs"):""}</div>
+    ${p.kontakt?`<div class="loni">Kontakt: <b>${esc([p.kontakt.jmeno,p.kontakt.email,p.kontakt.tel].filter(Boolean).join(" · "))}</b></div>`:""}
+    <table class="t">${Object.values(p.lide||{}).map(x=>`<tr><td><b>${esc(((x.prijmeni||"")+" "+(x.jmeno||"")).trim())}</b><div class="sub">${esc([x.email,x.tel].filter(Boolean).join(" · "))}</div></td><td class="sub">${esc(popisLide(x))}</td></tr>`).join("")}</table>
+    ${p.poznamka?`<div class="loni">📝 ${esc(p.poznamka)}</div>`:""}
+    <div class="mfoot"><div><a class="btn ghost small" style="text-decoration:none" href="${esc(odkaz(t))}" target="_blank" rel="noopener">Otevřít formulář ↗</a></div><div><button class="btn ghost" id="pp_close">Zavřít</button> ${p.odeslano_ts?`<button class="btn" data-prevzit="${esc(t)}">Převzít do seznamu</button>`:""}</div></div>`);
+  $("pp_close").addEventListener("click",closeModal);
+}
+/* spáruje lidi z přihlášky se seznamem a připraví změny */
+function pripravPrevzeti(t){
+  const p=PRIH[t], fid=p.firma, fk=(DB.firmy[fid]||{}).kat, out=[], used=new Set();
+  const lide=p.lide||{};
+  const jmenoX=x=>((x.prijmeni||"")+" "+(x.jmeno||"")).trim();
+  for(const [pid,x] of Object.entries(lide)){
+    if(!(x.prijmeni||x.jmeno))continue;
+    let oid=Object.keys(DB.osoby).find(k=>DB.osoby[k].prihlaska===t&&DB.osoby[k].prihlaska_pid===pid);
+    if(!oid)oid=Object.keys(DB.osoby).find(k=>{
+      const o=DB.osoby[k];if(used.has(k)||(o.prihlaska&&o.prihlaska!==t))return false;
+      if(norm(o.prijmeni)!==norm(x.prijmeni))return false;
+      if(o.firma&&o.firma!==fid)return false;
+      const a=norm(o.jmeno).slice(0,2), b=norm(x.jmeno).slice(0,2);
+      return !a||!b||a===b;
+    });
+    if(oid)used.add(oid);
+    const base=oid?JSON.parse(JSON.stringify(DB.osoby[oid])):{kat:{}};
+    const r=Object.assign({},base);
+    r.prijmeni=x.prijmeni||base.prijmeni||"";r.jmeno=x.jmeno||base.jmeno||"";r.firma=fid;
+    if(x.email)r.email=x.email; if(x.tel)r.tel=x.tel;
+    r.kat=Object.assign({},base.kat||{});if(KAT[fk])r.kat[fk]=true;
+    r.stav="ano";
+    r.noci={};for(const k in (x.noci||{}))if(x.noci[k]&&(N().noci||{})[k])r.noci[k]=true;
+    r.nespi=!!x.nespi&&!Object.keys(r.noci).length;
+    r.sam=x.spani==="sam";
+    r.vecere=x.vecere||"";
+    r.pozn_partner=[x.spani==="s"&&x.s_kym?"chce bydlet s: "+x.s_kym:"",x.strava?"strava: "+x.strava:"",x.poznamka||""].filter(Boolean).join(" · ");
+    r.prihlaska=t;r.prihlaska_pid=pid;
+    const zm=[];
+    if(oid){
+      const o=DB.osoby[oid];
+      if((o.stav||"nevim")!=="ano")zm.push("stav → Jede");
+      if(JSON.stringify(spi(o).sort())!==JSON.stringify(Object.keys(r.noci).sort()))zm.push("noci → "+(Object.keys(r.noci).map(nocNazev).join(", ")||(r.nespi?"nespí":"—")));
+      if((o.vecere||"")!==r.vecere)zm.push("večeře → "+(r.vecere?menuNazev(r.vecere):"nevybráno"));
+      if(!!o.sam!==r.sam)zm.push(r.sam?"chce spát sám":"nemusí spát sám");
+      if((o.pozn_partner||"")!==r.pozn_partner&&r.pozn_partner)zm.push("poznámka");
+      if(x.email&&o.email!==x.email)zm.push("e-mail");
+      if(x.tel&&o.tel!==x.tel)zm.push("telefon");
+    }
+    out.push({typ:oid?(zm.length?"zmena":"stejne"):"novy",oid,r,jm:jmenoX(x),zm});
+  }
+  // kdo byl dřív v přihlášce a teď v ní není → nejede
+  for(const [k,o] of Object.entries(DB.osoby)){
+    if(o.prihlaska===t&&!lide[o.prihlaska_pid]&&!used.has(k)&&o.stav!=="ne"){
+      const r=Object.assign({},o,{stav:"ne"});
+      out.push({typ:"odhlasen",oid:k,r,jm:jmeno(o),zm:["stav → Nejede"+(o.pokoj?" (má pokoj "+pokojLabel(o.pokoj)+"!)":"")]});
+    }
+  }
+  return out;
+}
+function openPrevzeti(t){
+  const p=PRIH[t], z=pripravPrevzeti(t);
+  const TYP={novy:["➕","Nový","#2f8a3c"],zmena:["✏️","Změna","#c77d1a"],stejne:["✓","Beze změny","#888"],odhlasen:["➖","Odhlášen","#b0413e"]};
+  openModal(`<h2>Převzít přihlášku – ${esc(p.firma_nazev)}</h2>
+    <p style="font-size:.86rem;color:#666;margin:6px 0">Lidé z přihlášky se zapíšou do seznamu se stavem <b>Jede</b> (noci, spaní, večeře, kontakty). Pokoje zůstávají, jak jsou – přiděluješ je ty.</p>
+    <table class="t">${z.map(x=>`<tr><td>${TYP[x.typ][0]} <span style="color:${TYP[x.typ][2]};font-weight:700">${TYP[x.typ][1]}</span></td><td><b>${esc(x.jm)}</b>${x.oid&&x.typ!=="odhlasen"?` <span class="sub">(spárováno se seznamem)</span>`:""}</td><td class="sub">${esc(x.zm.join(", "))}</td></tr>`).join("")||"<tr><td>Přihláška je prázdná.</td></tr>"}</table>
+    ${p.kontakt?`<div class="loni">Kontakt firmy se uloží k firmě: ${esc([p.kontakt.jmeno,p.kontakt.email,p.kontakt.tel].filter(Boolean).join(" · "))}</div>`:""}
+    <div class="mfoot"><div></div><div><button class="btn ghost" id="pv_cancel">Zrušit</button> <button class="btn" id="pv_ok">Převzít</button></div></div><div class="msg" id="pv_msg"></div>`);
+  $("pv_cancel").addEventListener("click",closeModal);
+  $("pv_ok").addEventListener("click",()=>{
+    const upd={};
+    for(const x of z){if(x.typ==="stejne"&&DB.osoby[x.oid].prihlaska===t)continue;const key=x.oid||FDB.ref(ROOT+"/osoby").push().key;upd["osoby/"+key]=clean(stamp(x.r));}
+    if(p.kontakt&&DB.firmy[p.firma])upd["firmy/"+p.firma+"/kontakt"]=clean(p.kontakt);
+    $("pv_ok").disabled=true;
+    FDB.ref(ROOT).update(upd).then(()=>FDB.ref(PRI+"/"+t+"/prevzato_ts").set(Date.now())).then(closeModal).catch(e=>{$("pv_ok").disabled=false;$("pv_msg").textContent="⚠️ "+errMsg(e);});
+  });
+}
+
+/* ================== MODÁLY ================== */
+function openModal(html){$("mbox").innerHTML=`<button class="mclose" id="mclose">×</button>`+html;$("modal").classList.remove("hidden");MODAL_OPEN=true;$("mclose").addEventListener("click",closeModal);}
+function closeModal(){$("modal").classList.add("hidden");MODAL_OPEN=false;}
+$("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&MODAL_OPEN)closeModal();});
+
+/* ---------- OSOBA ---------- */
+function pokojOptions(sel,selfId){
+  const OBS=obsazenost(), bySek={};
+  for(const [id,p] of Object.entries(DB.pokoje))(bySek[p.sekce]=bySek[p.sekce]||[]).push(id);
+  let h=opt("","— bez pokoje —",sel||"");
+  for(const s of Object.keys(bySek).sort()){
+    h+=`<optgroup label="${esc(SEKCE[s]||s)}">`+bySek[s].sort((a,b)=>String(DB.pokoje[a].cislo).localeCompare(String(DB.pokoje[b].cislo),"cs",{numeric:true})).map(id=>{
+      const p=DB.pokoje[id], o=OBS[id]||{};
+      const maxN=Math.max(0,...Object.values(o).map(l=>l.filter(x=>x!==selfId).length));
+      const kdo=[...new Set([].concat(...Object.values(o)))].filter(x=>x!==selfId).map(x=>DB.osoby[x]?jmeno(DB.osoby[x]):"").join(", ");
+      return opt(id,`${p.cislo}${p.typ?" ("+p.typ+")":""} – ${maxN}/${p.luzka||0}${+p.pristylky?"+"+p.pristylky:""}${kdo?" · "+kdo:" · volný"}`,sel||"");
+    }).join("")+"</optgroup>";
+  }
+  return h;
+}
+function openOsoba(id,preset){
+  const o=id?JSON.parse(JSON.stringify(DB.osoby[id]||{})):Object.assign({stav:"nevim",kat:{}},preset||{});
+  const segStav=STAV_PORADI.map(s=>`<button type="button" data-st="${s}" class="${(o.stav||"nevim")===s?"on":""}" style="${(o.stav||"nevim")===s?`background:${STAV[s][1]};border-color:${STAV[s][1]}`:""}">${STAV[s][0]}</button>`).join("");
+  const nv=nocVecere();
+  const vecOpts=[["","nevybráno"]].concat(menuKeys().map(k=>[k,menuNazev(k)]),[["ne","nechce"]]);
+  openModal(`
+    <h2>${id?esc(jmeno(o)):"Nová osoba"}</h2>
+    <div id="o_prob" class="probbox"></div>
+    <div class="two">
+      <div><label class="l">Příjmení</label><input id="o_prijmeni" value="${esc(o.prijmeni||"")}"></div>
+      <div><label class="l">Jméno</label><input id="o_jmeno" value="${esc(o.jmeno||"")}"></div>
+    </div>
+    <label class="l">Firma</label>
+    <select id="o_firma">${firmyOptions(o.firma||"",opt("","— bez firmy —",o.firma||""))}</select>
+    <label class="l">Kategorie</label>
+    <div class="checks">${Object.keys(KAT).map(k=>`<label><input type="checkbox" class="o_kat" value="${k}" ${(o.kat||{})[k]?"checked":""}> ${KAT[k][0]}</label>`).join("")}</div>
+    <label class="l">Účast</label>
+    <div class="seg" id="o_stav">${segStav}</div>
+    <label class="l">Spí (noci)</label>
+    <div class="checks">${noci().map(([k,n])=>`<label><input type="checkbox" class="o_noc" value="${esc(k)}" ${(o.noci||{})[k]?"checked":""}> ${esc(n.nazev)}${n.vecere?" 🍽":""}</label>`).join("")}<label><input type="checkbox" id="o_nespi" ${o.nespi?"checked":""}> nespí</label></div>
+    <label class="l">Pokoj</label>
+    <select id="o_pokoj">${pokojOptions(o.pokoj,id)}</select>
+    <div class="checks" style="margin-top:6px"><label><input type="checkbox" id="o_sam" ${o.sam?"checked":""}> chce spát sám</label><label><input type="checkbox" id="o_vhos" ${o.platiVHOS?"checked":""}> ubytování platí VHOS</label></div>
+    <label class="l">Večeře${nv?" ("+esc(nocNazev(nv))+")":""}</label>
+    <div class="seg" id="o_vecere">${vecOpts.map(([k,t])=>`<button type="button" data-v="${esc(k)}" class="${(o.vecere||"")===k?"on":""}" style="${(o.vecere||"")===k?"background:var(--zelena);border-color:var(--zelena)":""}">${esc(t)}</button>`).join("")}</div>
+    <div class="two">
+      <div><label class="l">E-mail</label><input id="o_email" value="${esc(o.email||"")}"></div>
+      <div><label class="l">Telefon</label><input id="o_tel" value="${esc(o.tel||"")}"></div>
+    </div>
+    <label class="l">Poznámka (strava, příjezd, s kým chce bydlet…)</label>
+    <textarea id="o_poz">${esc(o.poznamka||"")}</textarea>
+    ${o.pozn_partner?`<div class="loni" style="background:#eef3fb">📨 <b>Z přihlášky:</b> ${esc(o.pozn_partner)}</div>`:""}
+    ${o.loni?`<div class="loni">📅 <b>Loni:</b> ${esc(o.loni)}</div>`:""}
+    ${o.upravil?`<div class="sub" style="font-size:.74rem;color:#999;margin-top:6px">Naposledy upravil ${esc(o.upravil)} · ${new Date(o.upravil_ts).toLocaleString("cs")}</div>`:""}
+    <div class="mfoot"><div>${id?`<button class="btn red small" id="o_del">Smazat osobu</button>`:""}</div><div><button class="btn ghost" id="o_cancel">Zavřít</button> <button class="btn" id="o_save">Uložit</button></div></div>
+    <div class="msg" id="o_msg"></div>`);
+  let stav=o.stav||"nevim", vecere=o.vecere||"";
+  const collect=()=>{
+    const r=Object.assign({},o);
+    r.prijmeni=$("o_prijmeni").value.trim();r.jmeno=$("o_jmeno").value.trim();r.firma=$("o_firma").value;
+    r.kat={};document.querySelectorAll(".o_kat:checked").forEach(c=>r.kat[c.value]=true);
+    r.stav=stav;r.noci={};document.querySelectorAll(".o_noc:checked").forEach(c=>r.noci[c.value]=true);
+    r.nespi=$("o_nespi").checked&&!Object.keys(r.noci).length;
+    r.pokoj=$("o_pokoj").value;r.sam=$("o_sam").checked;r.platiVHOS=$("o_vhos").checked;r.vecere=vecere;
+    r.email=$("o_email").value.trim();r.tel=$("o_tel").value.trim();r.poznamka=$("o_poz").value.trim();
+    return r;
+  };
+  const showProb=()=>{
+    const r=collect(), tmp=Object.assign({},DB.osoby);const key=id||"__new";tmp[key]=r;
+    const save_=DB.osoby;DB.osoby=tmp;const OBS=obsazenost();const pr=problemyOsoby(key,r,OBS);DB.osoby=save_;
+    $("o_prob").innerHTML=pr.map(([l,m])=>`<div class="${l==="w"?"w":""}">${l==="e"?"⛔":"⚠️"} ${esc(m)}</div>`).join("");
+  };
+  const segClick=(box,attr,setter,color)=>box.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    setter(b.dataset[attr]);
+    box.querySelectorAll("button").forEach(x=>{const on=x===b;x.classList.toggle("on",on);x.style.background=on?color(x.dataset[attr]):"";x.style.borderColor=on?color(x.dataset[attr]):"";});
+    showProb();
+  }));
+  segClick($("o_stav"),"st",v=>stav=v,v=>STAV[v][1]);
+  segClick($("o_vecere"),"v",v=>vecere=v,()=>"var(--zelena)");
+  $("mbox").querySelectorAll("input,select,textarea").forEach(i=>i.addEventListener("change",showProb));
+  $("o_nespi").addEventListener("change",()=>{if($("o_nespi").checked)document.querySelectorAll(".o_noc").forEach(c=>c.checked=false);showProb();});
+  document.querySelectorAll(".o_noc").forEach(c=>c.addEventListener("change",()=>{if(c.checked)$("o_nespi").checked=false;}));
+  showProb();
+  $("o_cancel").addEventListener("click",closeModal);
+  $("o_save").addEventListener("click",()=>{
+    const r=collect();
+    if(!r.prijmeni&&!r.jmeno){$("o_msg").textContent="Vyplň aspoň příjmení nebo jméno.";return;}
+    const key=id||FDB.ref(ROOT+"/osoby").push().key;
+    $("o_save").disabled=true;
+    save("osoby/"+key,stamp(r)).then(closeModal).catch(e=>{$("o_save").disabled=false;$("o_msg").textContent="⚠️ "+errMsg(e);});
+  });
+  if(id)$("o_del").addEventListener("click",()=>{if(confirm("Opravdu smazat "+jmeno(o)+"?"))save("osoby/"+id,null).then(closeModal);});
+}
+
+/* ---------- FIRMA ---------- */
+function openFirma(id){
+  const f=id?Object.assign({},DB.firmy[id]):{nazev:"",kat:"odborny"};
+  const cl=id?sortOsoby(Object.keys(DB.osoby).filter(k=>DB.osoby[k].firma===id)):[];
+  const c={ano:0,pozvan:0,nevim:0,ne:0};cl.forEach(k=>c[DB.osoby[k].stav||"nevim"]++);
+  openModal(`
+    <h2>${id?esc(f.nazev):"Nová firma"}</h2>
+    ${id?`<div class="sub" style="margin:4px 0 8px;font-size:.88rem">${STAV_PORADI.map(s=>`<span style="color:${STAV[s][1]};font-weight:700">${c[s]} ${STAV[s][0].toLowerCase()}</span>`).join(" · ")}</div>
+    ${cl.length?`<table class="t"><tr><th>Jméno</th><th>Stav</th><th>Noci</th><th>Pokoj</th><th>Večeře</th></tr>`+cl.map(k=>{const o=DB.osoby[k];return `<tr class="cl" data-osoba="${esc(k)}"><td><b>${esc(jmeno(o))}</b></td><td>${badgeStav(o.stav)}</td><td>${esc(spi(o).map(nocNazev).join(", ")||(o.nespi?"nespí":"—"))}</td><td>${o.pokoj?esc(pokojLabel(o.pokoj)):"—"}</td><td>${o.vecere?esc(menuNazev(o.vecere)):"—"}</td></tr>`;}).join("")+`</table>`:'<div class="muted">Za firmu zatím nikdo není v seznamu.</div>'}
+    <p style="margin-top:8px"><button class="btn small" id="f_add">+ Přidat osobu za firmu</button></p>`:""}
+    <div class="two" style="margin-top:8px">
+      <div><label class="l">Název</label><input id="f_nazev" value="${esc(f.nazev||"")}"></div>
+      <div><label class="l">Kategorie</label><select id="f_kat">${FKAT.map(([k,t])=>opt(k,t,f.kat||"ostatni")).join("")}</select></div>
+    </div>
+    ${f.kontakt?`<div class="loni" style="background:#eef3fb">📨 <b>Kontakt z přihlášky:</b> ${esc([f.kontakt.jmeno,f.kontakt.email,f.kontakt.tel].filter(Boolean).join(" · "))}</div>`:""}
+    ${id?`<div class="lista" style="margin-top:8px">${(()=>{const t=tokenFirmy(id),st=prihStav(PRIH[t]);return `<span class="b" style="background:${st[2]}">${st[1]}</span>`+(t?` <button class="btn ghost small" data-kopirovat="${esc(t)}">📋 Kopírovat odkaz na přihlášku</button>`:` <button class="btn ghost small" data-vytvorit="${esc(id)}">Vytvořit odkaz na přihlášku</button>`);})()}</div>`:""}
+    <label class="l">Poznámka (kolik lidí hlásí, stánek, faktura…)</label><textarea id="f_poz">${esc(f.poznamka||"")}</textarea>
+    ${f.loni||f.castka_2025?`<div class="loni">📅 <b>Loni:</b> ${esc([f.loni,f.castka_2025?"partnerství "+f.castka_2025.toLocaleString("cs")+" Kč":"",f.vystavoval_2025?"vystavoval":""].filter(Boolean).join(" · "))}</div>`:""}
+    <div class="mfoot"><div>${id?`<button class="btn red small" id="f_del">Smazat firmu</button>`:""}</div><div><button class="btn ghost" id="f_cancel">Zavřít</button> <button class="btn" id="f_save">Uložit</button></div></div>
+    <div class="msg" id="f_msg"></div>`);
+  $("f_cancel").addEventListener("click",closeModal);
+  if(id)$("f_add").addEventListener("click",()=>{const kat={};if(KAT[f.kat])kat[f.kat]=true;openOsoba(null,{firma:id,kat});});
+  $("f_save").addEventListener("click",()=>{
+    const r=Object.assign({},f,{nazev:$("f_nazev").value.trim(),kat:$("f_kat").value,poznamka:$("f_poz").value.trim()});
+    if(!r.nazev){$("f_msg").textContent="Vyplň název.";return;}
+    const key=id||FDB.ref(ROOT+"/firmy").push().key;
+    save("firmy/"+key,stamp(r)).then(closeModal).catch(e=>{$("f_msg").textContent="⚠️ "+errMsg(e);});
+  });
+  if(id)$("f_del").addEventListener("click",()=>{
+    if(cl.length){alert("Firma má v seznamu "+cl.length+" lidí – nejdřív je přeřaď nebo smaž.");return;}
+    if(confirm("Smazat firmu "+f.nazev+"?"))save("firmy/"+id,null).then(closeModal);
+  });
+}
+
+/* ---------- POKOJ ---------- */
+function openPokoj(id){
+  const p=id?Object.assign({},DB.pokoje[id]):{sekce:"A",cislo:"",patro:"",typ:"",luzka:2,pristylky:0};
+  const OBS=obsazenost(), o=(id&&OBS[id])||{};
+  const vsichni=id?sortOsoby(Object.keys(DB.osoby).filter(k=>DB.osoby[k].pokoj===id)):[];
+  const kandidati=sortOsoby(Object.keys(DB.osoby).filter(k=>!DB.osoby[k].pokoj&&DB.osoby[k].stav!=="ne"));
+  kandidati.sort((a,b)=>(DB.osoby[a].stav==="ano"?0:1)-(DB.osoby[b].stav==="ano"?0:1));
+  openModal(`
+    <h2>${id?"Pokoj "+esc(p.sekce+"-"+p.cislo):"Nový pokoj"}</h2>
+    ${id?`<div class="sub" style="font-size:.86rem;color:#666;margin:4px 0">${esc([SEKCE[p.sekce]||p.sekce,p.patro,p.typ].filter(Boolean).join(" · "))} · ${esc(p.luzka||0)} lůžka${+p.pristylky?" + "+esc(p.pristylky)+" přistýlky":""}</div>
+    <table class="t"><tr><th>Noc</th><th>Obsazenost</th></tr>${noci().map(([k,n])=>{const l=o[k]||[];const max=(+p.luzka||0)+(+p.pristylky||0);return `<tr><td>${esc(n.nazev)}</td><td style="color:${l.length>max?"var(--cervena)":"inherit"}"><b>${l.length}/${esc(p.luzka||0)}</b>${l.length?" – "+l.map(i=>esc(jmeno(DB.osoby[i]))).join(", "):" – volný"}</td></tr>`;}).join("")}</table>
+    <h2 class="sek">Kdo tu bydlí</h2>
+    ${vsichni.length?`<table class="t">`+vsichni.map(k=>{const x=DB.osoby[k];return `<tr><td class="cl" data-osoba="${esc(k)}" style="cursor:pointer"><b>${esc(jmeno(x))}</b><div class="sub">${esc(firmaNazev(x.firma))}</div></td><td>${badgeStav(x.stav)}</td><td>${esc(spi(x).map(nocNazev).join(", ")||"⚠️ bez nocí")}</td><td>${x.sam?"👤 sám ":""}${x.platiVHOS?"platí VHOS":""}</td><td><button class="btn red small" data-odebrat="${esc(k)}">Odebrat</button></td></tr>`;}).join("")+`</table>`:'<div class="muted">Nikdo.</div>'}
+    <div class="lista" style="margin-top:8px"><select id="p_kdo" style="flex:1"><option value="">— přidat osobu bez pokoje —</option>${kandidati.map(k=>{const x=DB.osoby[k];return opt(k,jmeno(x)+(x.firma?" ("+firmaNazev(x.firma)+")":"")+" – "+STAV[x.stav||"nevim"][0]+(spi(x).length?" · "+spi(x).map(nocNazev).join(", "):""),"");}).join("")}</select><button class="btn small" id="p_add">Ubytovat</button></div>`:""}
+    <h2 class="sek">Údaje pokoje</h2>
+    <div class="two">
+      <div><label class="l">Sekce</label><select id="p_sekce">${Object.keys(SEKCE).map(k=>opt(k,SEKCE[k],p.sekce)).join("")}</select></div>
+      <div><label class="l">Číslo</label><input id="p_cislo" value="${esc(p.cislo||"")}" ${id?"disabled":""}></div>
+      <div><label class="l">Patro</label><input id="p_patro" value="${esc(p.patro||"")}"></div>
+      <div><label class="l">Typ</label><input id="p_typ" value="${esc(p.typ||"")}"></div>
+      <div><label class="l">Pevná lůžka</label><input id="p_luzka" type="number" min="0" value="${esc(p.luzka||0)}"></div>
+      <div><label class="l">Přistýlky (max.)</label><input id="p_prist" type="number" min="0" value="${esc(p.pristylky||0)}"></div>
+    </div>
+    <label class="l">Poznámka</label><textarea id="p_poz">${esc(p.poznamka||"")}</textarea>
+    <div class="mfoot"><div>${id?`<button class="btn red small" id="p_del">Smazat pokoj</button>`:""}</div><div><button class="btn ghost" id="p_cancel">Zavřít</button> <button class="btn" id="p_save">Uložit</button></div></div>
+    <div class="msg" id="p_msg"></div>`);
+  $("p_cancel").addEventListener("click",closeModal);
+  const setPokoj=(oid,val)=>{const x=Object.assign({},DB.osoby[oid]);x.pokoj=val;return save("osoby/"+oid,stamp(x));};
+  if(id){
+    $("mbox").querySelectorAll("[data-odebrat]").forEach(b=>b.addEventListener("click",ev=>{ev.stopPropagation();setPokoj(b.dataset.odebrat,"").then(()=>openPokoj(id));}));
+    $("p_add").addEventListener("click",()=>{const k=$("p_kdo").value;if(!k)return;setPokoj(k,id).then(()=>openPokoj(id));});
+  }
+  $("p_save").addEventListener("click",()=>{
+    const r=Object.assign({},p,{sekce:$("p_sekce").value,cislo:$("p_cislo").value.trim(),patro:$("p_patro").value.trim(),typ:$("p_typ").value.trim(),luzka:+$("p_luzka").value||0,pristylky:+$("p_prist").value||0,poznamka:$("p_poz").value.trim()});
+    if(!r.cislo){$("p_msg").textContent="Vyplň číslo pokoje.";return;}
+    const key=id||(r.sekce+"-"+r.cislo);
+    if(!id&&DB.pokoje[key]){$("p_msg").textContent="Pokoj "+key+" už existuje.";return;}
+    save("pokoje/"+key,r).then(closeModal).catch(e=>{$("p_msg").textContent="⚠️ "+errMsg(e);});
+  });
+  if(id)$("p_del").addEventListener("click",()=>{
+    if(vsichni.length){alert("V pokoji někdo bydlí – nejdřív ho přesuň.");return;}
+    if(confirm("Smazat pokoj "+pokojLabel(id)+"?"))save("pokoje/"+id,null).then(closeModal);
+  });
+}
+</script>
+</body>
+</html>

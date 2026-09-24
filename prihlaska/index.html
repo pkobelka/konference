@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Přihláška na konferenci</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232f6b3c'/%3E%3Ctext x='50' y='54' font-size='58' text-anchor='middle' dominant-baseline='central'%3E%F0%9F%8E%A4%3C/text%3E%3C/svg%3E" />
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>
+:root{--zelena:#2f6b3c;--zelena-tmava:#234f2d;--svetla:#f4f1ea;--ramecek:#e2ddd0;--cervena:#b0413e;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--svetla);color:#222;padding:24px 16px 60px;}
+.wrap{max-width:760px;margin:0 auto;}
+header{text-align:center;margin-bottom:20px;}
+.odznak{display:inline-block;background:var(--zelena);color:#fff;font-weight:700;letter-spacing:2px;padding:5px 16px;border-radius:999px;font-size:.8rem;}
+header h1{color:var(--zelena-tmava);font-size:1.6rem;margin-top:10px;}
+header .kdy{color:#555;margin-top:6px;}
+header .firma{margin-top:12px;font-size:1.05rem;}
+.karta{background:#fff;border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.06);border:1px solid #eee;padding:18px 20px;margin-bottom:14px;}
+.karta h2{font-size:1.08rem;color:var(--zelena-tmava);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.uvod{font-size:.93rem;color:#444;line-height:1.55;white-space:pre-line;}
+label.l{display:block;font-size:.8rem;color:#555;margin:12px 0 4px;font-weight:600;}
+label.l .povinne{color:var(--cervena);}
+input,select,textarea{font:inherit;padding:9px 11px;border:1px solid var(--ramecek);border-radius:8px;background:#fff;width:100%;}
+input:focus,select:focus,textarea:focus{outline:2px solid #9cc49f;border-color:#9cc49f;}
+textarea{min-height:56px;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;}
+@media (max-width:560px){.two{grid-template-columns:1fr;}}
+.volby{display:flex;flex-wrap:wrap;gap:8px;}
+.volby label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--ramecek);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:.92rem;background:#fff;}
+.volby label:has(input:checked){background:#e8f3e6;border-color:#8dbb8f;}
+.volby input{width:auto;margin:0;}
+.btn{border:1px solid var(--zelena);background:var(--zelena);color:#fff;border-radius:9px;padding:10px 18px;font-size:.95rem;font-weight:600;cursor:pointer;}
+.btn.ghost{background:#fff;color:var(--zelena);}
+.btn.red{background:#fff;color:var(--cervena);border-color:var(--cervena);padding:5px 10px;font-size:.8rem;}
+.btn:disabled{opacity:.5;cursor:default;}
+.chyba{color:var(--cervena);font-size:.85rem;margin-top:8px;}
+.zprava{border-radius:12px;padding:14px 16px;margin-bottom:14px;font-size:.95rem;line-height:1.5;}
+.zprava.ok{background:#e8f3e6;border:1px solid #b9d9b4;color:#2c5e33;}
+.zprava.bad{background:#fbe5e4;border:1px solid #e6b3b1;color:var(--cervena);}
+.zprava.info{background:#fff8e1;border:1px solid #f0d58a;color:#7a5a12;}
+.hint{font-size:.78rem;color:#888;margin-top:4px;}
+.osoba.chybna{border-color:var(--cervena);}
+.akce{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;align-items:center;}
+footer{text-align:center;font-size:.78rem;color:#999;margin-top:26px;line-height:1.5;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="odznak">VHOS</span>
+    <h1 id="h_nazev">Přihláška na konferenci</h1>
+    <div class="kdy" id="h_kdy"></div>
+    <div class="firma" id="h_firma"></div>
+  </header>
+  <div id="obsah"><div class="karta">Načítám…</div></div>
+  <footer>Údaje slouží pouze k organizaci konference (ubytování, stravování, prezence).<br>Pořadatel: VHOS</footer>
+</div>
+
+<script>
+"use strict";
+const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
+firebase.initializeApp(CFG);
+const FDB=firebase.database();
+const PUB="konference2027_verejne", PRI="konference2027_prihlasky";
+const KLIC=new URLSearchParams(location.search).get("k")||"";
+
+let K={}, P=null, LIDE=[], ZAMCENO=false;
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function errMsg(e){return e&&e.message?e.message:String(e);}
+function noci(){return Object.entries(K.noci||{}).sort((a,b)=>(a[1].poradi||0)-(b[1].poradi||0));}
+function nocVecere(){const f=noci().find(([,n])=>n.vecere);return f?f[0]:null;}
+function menu(){return Object.entries(K.menu||{}).sort((a,b)=>a[0].localeCompare(b[0]));}
+function novePid(){return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function zprava(typ,html){$("obsah").innerHTML=`<div class="zprava ${typ}">${html}</div>`;}
+
+if(!/^[a-z0-9]{10,}$/.test(KLIC)){zprava("bad","Odkaz na přihlášku není platný. Použijte prosím celý odkaz z e-mailu.");}
+else Promise.all([FDB.ref(PUB).get(),FDB.ref(PRI+"/"+KLIC).get()]).then(([a,b])=>{
+  K=a.val()||{};
+  if(!b.exists()||!b.val()){zprava("bad","Tento odkaz na přihlášku neexistuje nebo byl zrušen. Kontaktujte prosím pořadatele.");return;}
+  P=b.val();
+  LIDE=Object.entries(P.lide||{}).map(([pid,x])=>Object.assign({pid},x));
+  if(!LIDE.length)LIDE=[{pid:novePid()}];
+  if(K.uzaverka){const d=new Date(K.uzaverka+"T23:59:59");if(Date.now()>d.getTime())ZAMCENO=true;}
+  hlavicka();vykresli();
+}).catch(e=>zprava("bad","Přihlášku se nepodařilo načíst ("+esc(errMsg(e))+"). Zkuste to prosím později nebo kontaktujte pořadatele."));
+
+function hlavicka(){
+  $("h_nazev").textContent=K.nazev||"Přihláška na konferenci";
+  document.title="Přihláška – "+(K.nazev||"konference");
+  $("h_kdy").textContent=[K.datum,K.misto].filter(Boolean).join(" · ");
+  $("h_firma").innerHTML="Přihláška za firmu <b>"+esc(P.firma_nazev||"")+"</b>";
+}
+function jmenoL(x){return ((x.jmeno||"")+" "+(x.prijmeni||"")).trim();}
+
+function vykresli(){
+  const nv=nocVecere(), kt=P.kontakt||{};
+  let h="";
+  if(P.odeslano_ts)h+=`<div class="zprava ok">✅ Přihláška byla odeslána ${new Date(P.odeslano_ts).toLocaleString("cs")}. ${ZAMCENO?"":"Pokud se něco změní, upravte ji a odešlete znovu."}</div>`;
+  if(ZAMCENO)h+=`<div class="zprava info">Uzávěrka přihlášek byla ${new Date(K.uzaverka).toLocaleDateString("cs")}. Přihlášku už nelze měnit – případné změny prosím řešte přímo s pořadatelem.</div>`;
+  if(K.text||K.uzaverka)h+=`<div class="karta"><div class="uvod">${esc(K.text||"")}${K.uzaverka&&!ZAMCENO?(K.text?"\n\n":"")+"Přihlášku je možné vyplnit a upravovat do <b>"+new Date(K.uzaverka).toLocaleDateString("cs")+"</b>.":""}</div></div>`;
+  h+=`<div class="karta"><h2>Kontaktní osoba za firmu</h2>
+    <div class="two">
+      <div><label class="l">Jméno a příjmení <span class="povinne">*</span></label><input id="k_jmeno" value="${esc(kt.jmeno||"")}"></div>
+      <div><label class="l">E-mail <span class="povinne">*</span></label><input id="k_email" type="email" value="${esc(kt.email||"")}"></div>
+      <div><label class="l">Telefon</label><input id="k_tel" type="tel" value="${esc(kt.tel||"")}"></div>
+    </div></div>`;
+  h+=`<div id="lide"></div>
+    <p style="margin-bottom:14px"><button class="btn ghost" id="pridat" ${ZAMCENO?"disabled":""}>+ Přidat dalšího účastníka</button></p>
+    <div class="karta"><h2>Poznámka pro pořadatele</h2><textarea id="poznamka" placeholder="např. stánek, čas příjezdu, fakturační údaje…">${esc(P.poznamka||"")}</textarea></div>
+    <div class="akce"><span class="chyba" id="chyba"></span><button class="btn" id="odeslat" ${ZAMCENO?"disabled":""}>${P.odeslano_ts?"Uložit změny":"Odeslat přihlášku"}</button></div>`;
+  $("obsah").innerHTML=h;
+  vykresliLidi();
+  $("pridat").addEventListener("click",()=>{precti();LIDE.push({pid:novePid()});vykresliLidi();});
+  $("odeslat").addEventListener("click",odeslat);
+  if(ZAMCENO)$("obsah").querySelectorAll("input,select,textarea").forEach(i=>i.disabled=true);
+}
+function vykresliLidi(){
+  const nv=nocVecere(), nn=noci(), mm=menu();
+  $("lide").innerHTML=LIDE.map((x,i)=>{
+    const ostatni=LIDE.filter(y=>y.pid!==x.pid&&(y.prijmeni||y.jmeno));
+    return `<div class="karta osoba" data-pid="${esc(x.pid)}">
+    <h2>Účastník ${i+1}${LIDE.length>1&&!ZAMCENO?`<button class="btn red" data-smazat="${esc(x.pid)}">Odebrat</button>`:""}</h2>
+    <div class="two">
+      <div><label class="l">Jméno <span class="povinne">*</span></label><input class="u_jmeno" value="${esc(x.jmeno||"")}"></div>
+      <div><label class="l">Příjmení <span class="povinne">*</span></label><input class="u_prijmeni" value="${esc(x.prijmeni||"")}"></div>
+      <div><label class="l">E-mail</label><input class="u_email" type="email" value="${esc(x.email||"")}"></div>
+      <div><label class="l">Telefon</label><input class="u_tel" type="tel" value="${esc(x.tel||"")}"></div>
+    </div>
+    <label class="l">Ubytování – které noci <span class="povinne">*</span></label>
+    <div class="volby">${nn.map(([k,n])=>`<label><input type="checkbox" class="u_noc" value="${esc(k)}" ${(x.noci||{})[k]?"checked":""}> ${esc(n.nazev)}</label>`).join("")}<label><input type="checkbox" class="u_nespi" ${x.nespi?"checked":""}> nepotřebuji ubytování</label></div>
+    <div class="u_spani_box ${Object.keys(x.noci||{}).length?"":"hidden"}">
+      <label class="l">Pokoj</label>
+      <select class="u_spani">
+        <option value="">je mi jedno / pořadatel rozhodne</option>
+        <option value="sam" ${x.spani==="sam"?"selected":""}>chci pokoj sám</option>
+        <option value="s" ${x.spani==="s"?"selected":""}>chci bydlet s kolegou…</option>
+      </select>
+      <div class="u_skym_box ${x.spani==="s"?"":"hidden"}"><label class="l">S kým</label>
+        <input class="u_skym" list="dl_${esc(x.pid)}" value="${esc(x.s_kym||"")}" placeholder="jméno kolegy"><datalist id="dl_${esc(x.pid)}">${ostatni.map(y=>`<option value="${esc(jmenoL(y))}">`).join("")}</datalist></div>
+    </div>
+    ${mm.length?`<label class="l">Slavnostní večeře${nv?" ("+esc((K.noci[nv]||{}).nazev||"")+")":""} <span class="povinne u_vec_pov ${nv&&(x.noci||{})[nv]?"":"hidden"}">*</span></label>
+    <div class="volby">${mm.map(([k,t])=>`<label><input type="radio" name="vec_${esc(x.pid)}" class="u_vecere" value="${esc(k)}" ${x.vecere===k?"checked":""}> ${esc(t)}</label>`).join("")}<label><input type="radio" name="vec_${esc(x.pid)}" class="u_vecere" value="ne" ${x.vecere==="ne"?"checked":""}> nezúčastním se</label></div>`:""}
+    <div class="two">
+      <div><label class="l">Strava (vegetarián, alergie…)</label><input class="u_strava" value="${esc(x.strava||"")}"></div>
+      <div><label class="l">Poznámka</label><input class="u_poz" value="${esc(x.poznamka||"")}"></div>
+    </div>
+    <div class="chyba u_chyba"></div>
+  </div>`;}).join("");
+  $("lide").querySelectorAll("[data-smazat]").forEach(b=>b.addEventListener("click",()=>{precti();LIDE=LIDE.filter(x=>x.pid!==b.dataset.smazat);vykresliLidi();}));
+  $("lide").querySelectorAll(".osoba").forEach(el=>{
+    const upd=()=>{
+      const maNoc=[...el.querySelectorAll(".u_noc")].some(c=>c.checked);
+      el.querySelector(".u_spani_box").classList.toggle("hidden",!maNoc);
+      el.querySelector(".u_skym_box").classList.toggle("hidden",el.querySelector(".u_spani").value!=="s");
+      const nv=nocVecere(), pov=el.querySelector(".u_vec_pov");
+      if(pov)pov.classList.toggle("hidden",!(nv&&el.querySelector(`.u_noc[value="${nv}"]`)&&el.querySelector(`.u_noc[value="${nv}"]`).checked));
+    };
+    el.querySelectorAll(".u_noc").forEach(c=>c.addEventListener("change",()=>{if(c.checked)el.querySelector(".u_nespi").checked=false;upd();}));
+    el.querySelector(".u_nespi").addEventListener("change",e=>{if(e.target.checked)el.querySelectorAll(".u_noc").forEach(c=>c.checked=false);upd();});
+    el.querySelector(".u_spani").addEventListener("change",upd);
+  });
+  if(ZAMCENO)$("lide").querySelectorAll("input,select,textarea,button").forEach(i=>i.disabled=true);
+}
+function precti(){
+  LIDE=[...document.querySelectorAll(".osoba")].map(el=>{
+    const q=c=>el.querySelector(c), x={pid:el.dataset.pid};
+    x.jmeno=q(".u_jmeno").value.trim();x.prijmeni=q(".u_prijmeni").value.trim();
+    x.email=q(".u_email").value.trim();x.tel=q(".u_tel").value.trim();
+    x.noci={};el.querySelectorAll(".u_noc:checked").forEach(c=>x.noci[c.value]=true);
+    x.nespi=q(".u_nespi").checked&&!Object.keys(x.noci).length;
+    x.spani=Object.keys(x.noci).length?q(".u_spani").value:"";
+    x.s_kym=x.spani==="s"?q(".u_skym").value.trim():"";
+    const v=el.querySelector(".u_vecere:checked");x.vecere=v?v.value:"";
+    x.strava=q(".u_strava").value.trim();x.poznamka=q(".u_poz").value.trim();
+    return x;
+  });
+}
+function kontrola(){
+  const nv=nocVecere(), chyby=[];
+  document.querySelectorAll(".osoba").forEach((el,i)=>{
+    const x=LIDE[i], c=[];
+    if(!x.jmeno||!x.prijmeni)c.push("vyplňte jméno a příjmení");
+    if(!Object.keys(x.noci).length&&!x.nespi)c.push("zaškrtněte noci, nebo „nepotřebuji ubytování“");
+    if(nv&&x.noci[nv]&&!x.vecere&&menu().length)c.push("vyberte večeři (nebo „nezúčastním se“)");
+    if(x.email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x.email))c.push("zkontrolujte e-mail");
+    el.querySelector(".u_chyba").textContent=c.length?"⚠️ "+c.join(", "):"";
+    el.classList.toggle("chybna",!!c.length);
+    if(c.length)chyby.push(i);
+  });
+  return chyby;
+}
+function odeslat(){
+  precti();
+  const kt={jmeno:$("k_jmeno").value.trim(),email:$("k_email").value.trim(),tel:$("k_tel").value.trim()};
+  const ch=kontrola();
+  let msg="";
+  if(!kt.jmeno||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(kt.email))msg="Vyplňte prosím kontaktní osobu (jméno a platný e-mail). ";
+  if(ch.length)msg+="Zkontrolujte účastníky označené červeně.";
+  $("chyba").textContent=msg;
+  if(msg){const el=ch.length?document.querySelectorAll(".osoba")[ch[0]]:$("k_jmeno");el.scrollIntoView({behavior:"smooth",block:"center"});return;}
+  const lide={};
+  for(const x of LIDE){const {pid,...r}=x;const c={};for(const k in r){const v=r[k];if(v===""||v===false||v==null)continue;if(typeof v==="object"&&!Object.keys(v).length)continue;c[k]=v;}lide[pid]=c;}
+  const obj=Object.assign({},P,{kontakt:kt,lide,poznamka:$("poznamka").value.trim(),odeslano_ts:Date.now(),pocet_odeslani:(P.pocet_odeslani||0)+1});
+  if(!obj.poznamka)delete obj.poznamka;
+  $("odeslat").disabled=true;$("odeslat").textContent="Odesílám…";
+  FDB.ref(PRI+"/"+KLIC).set(obj).then(()=>{
+    P=obj;
+    zprava("ok",`<b>Děkujeme, přihláška byla odeslána.</b><br>Přihlášeno účastníků: ${LIDE.length}.${K.uzaverka?"<br>Do "+new Date(K.uzaverka).toLocaleDateString("cs")+" ji můžete upravit stejným odkazem.":"<br>Upravit ji můžete kdykoli stejným odkazem."}<br><br><button class="btn ghost" id="znovu">Zobrazit / upravit přihlášku</button>`);
+    $("znovu").addEventListener("click",vykresli);
+    window.scrollTo(0,0);
+  }).catch(e=>{$("odeslat").disabled=false;$("odeslat").textContent="Odeslat přihlášku";$("chyba").textContent="⚠️ Odeslání se nepovedlo ("+errMsg(e)+"). Zkuste to prosím znovu.";});
+}
+</script>
+</body>
+</html>
