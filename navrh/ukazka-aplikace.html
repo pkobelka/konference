@@ -202,6 +202,23 @@ canvas.qr{width:84px;height:84px;image-rendering:pixelated;border-radius:6px;bac
 .dayp .lm{width:30px;height:30px;border-radius:8px;font-size:14px}
 .byp{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);background:none;border-left:0;border-right:0;border-bottom:0;width:100%;text-align:left}
 .byp .lm{width:24px;height:24px;border-radius:6px;font-size:12px}
+/* živé prvky */
+.ticker{overflow:hidden;margin-inline:-16px;padding-block:4px 10px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ticker .track{display:flex;gap:10px;width:max-content;animation:tick 38s linear infinite}
+.ticker:hover .track,.ticker:focus-within .track{animation-play-state:paused}
+.ticker button{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:12px;padding:6px 10px 6px 6px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;white-space:nowrap}
+.ticker .lm{width:28px;height:28px;border-radius:8px;font-size:13px}
+@keyframes tick{to{transform:translateX(-50%)}}
+.rot{transition:opacity .35s,transform .35s}
+.rot.swap{opacity:0;transform:translateY(6px)}
+.logos .logo{animation:pop .5s cubic-bezier(.2,.9,.3,1.3) both;animation-delay:calc(var(--i) * 70ms);transition:transform .4s,box-shadow .4s}
+.logos .logo.glow{transform:scale(1.06);box-shadow:0 0 0 3px var(--accent),var(--shadow)}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.sheet:not([hidden]){animation:up .3s ease-out}
+.backdrop:not([hidden]){animation:fin .3s}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fin{from{opacity:0}}
+@media (prefers-reduced-motion: reduce){.ticker .track,.logos .logo,.sheet:not([hidden]),.backdrop:not([hidden]){animation:none}.rot{transition:none}.ticker{overflow-x:auto}}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
 </style>
 
@@ -323,7 +340,23 @@ function logo(id,size){const p=P[id];return `<div class="lm" style="background:$
 function go(t){S.tab=t;render();window.scrollTo(0,0)}
 function renderTabs(){$("tabs").innerHTML=TABS.map(([k,n,ic])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${ic}<span>${n}</span></button>`).join("")}
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
-function render(){renderTabs();$("view").innerHTML={domu:vDomu,program:vProgram,partneri:vPartneri,areal:vAreal,ja:vJa}[S.tab]();after()}
+function ticker(){const ids=Object.keys(P);const one=ids.map(i=>`<button data-partner="${i}" tabindex="-1">${logo(i)}${esc(P[i].n)}</button>`).join("");
+  return `<div class="ticker" aria-label="Partneři konference"><div class="track">${one}${one}</div></div>`}
+function render(){renderTabs();$("view").innerHTML=ticker()+{domu:vDomu,program:vProgram,partneri:vPartneri,areal:vAreal,ja:vJa}[S.tab]();after()}
+/* střídání reklam v plochách .rot */
+const ODB=["delta","eps","zeta","eta","theta","iota"];
+function rot(pool,kind,txt){const id=pool[Math.floor(Math.random()*pool.length)];
+  return `<div class="rot" data-pool="${pool.join(",")}" data-kind="${kind}" data-txt="${esc(txt||"")}" data-cur="${id}">${kind==="byp"?byp(id,txt):ad(id)}</div>`}
+setInterval(()=>{
+  document.querySelectorAll(".rot").forEach(el=>{
+    const pool=el.dataset.pool.split(","),cur=pool.indexOf(el.dataset.cur),nx=pool[(cur+1)%pool.length];
+    el.classList.add("swap");
+    setTimeout(()=>{el.dataset.cur=nx;el.innerHTML=el.dataset.kind==="byp"?byp(nx,el.dataset.txt):ad(nx);el.classList.remove("swap")},350);
+  });
+  const ls=[...document.querySelectorAll(".logos .logo")];
+  ls.forEach(l=>l.classList.remove("glow"));
+  if(ls.length)ls[Math.floor(Math.random()*ls.length)].classList.add("glow");
+},4500);
 function after(){if(S.tab==="ja"&&S.logged)drawQR($("qr"),ME.id)}
 
 /* ===== Domů ===== */
@@ -355,6 +388,7 @@ function vDomu(){
     </div>${byp("kappa","Aktuality ve spolupráci s mediálním partnerem")}</div>
     <div><div class="label" style="margin-bottom:8px">Hlavní partneři</div>
       <div class="ads2">${["beta","gama"].map(i=>ad(i)).join("")}</div></div>
+    <div><div class="label" style="margin-bottom:8px">Odborní partneři</div>${rot(ODB,"ad")}</div>
     ${save28()}
     <div class="note"><b>Aplikace do mobilu:</b> ${ios?"v Safari klepněte na Sdílet → Přidat na plochu.":"v Chrome zvolte Nainstalovat aplikaci (na iPhonu: Sdílet → Přidat na plochu)."} Pak budete mít ikonku na ploše a budou vám chodit upozornění.</div>
   </section>`;
@@ -379,7 +413,7 @@ function vProgram(){
           <button class="pill ${r?"on":""}" data-rem="${x.id}">${I.bell}${r?`${r} min předem`:"Připomenout"}</button>
           <button class="pill" data-qa="${x.id}">${I.q}Dotazy${qn?` · ${qn}`:""}</button>
         </div>`}
-      </div></div>${x.h.startsWith("Přestávka")?`<div class="slot"><div></div>${ad(x.id==="p4"?"delta":"eps","Přijďte na výstavu – "+(x.id==="p4"?P.delta.st:P.eps.st))}</div>`:""}`}).join("")}
+      </div></div>${x.h.startsWith("Přestávka")?`<div class="slot"><div></div>${rot(ODB,"ad")}</div>`:""}`}).join("")}
     <div class="note">Zelený proužek = přednáška ve vašem programu. Připomenutí přijde do mobilu v nastavený čas.</div>
   </section>`;
 }
@@ -416,7 +450,7 @@ function sheetQA(id){
 function vPartneri(){
   return `<section class="sec">
     ${KAT.map(([k,n,g])=>{const ids=Object.keys(P).filter(i=>P[i].k===k);
-      return `<div class="cat"><h2>${n}</h2><div class="logos ${g}">${ids.map(i=>`<button class="logo" data-partner="${i}">${logo(i)}<span>${esc(P[i].n)}</span></button>`).join("")}</div></div>`}).join("")}
+      return `<div class="cat"><h2>${n}</h2><div class="logos ${g}">${ids.map(i=>`<button class="logo" data-partner="${i}" style="--i:${Object.keys(P).indexOf(i)}">${logo(i)}<span>${esc(P[i].n)}</span></button>`).join("")}</div></div>`}).join("")}
     <div class="note">Klepněte na logo: otevře se nabídka firmy s videospotem. Obsah si připravuje každá firma sama, pořadatel ho jen schválí.</div>
   </section>`;
 }
@@ -531,7 +565,7 @@ function vJa(){
       </dl>
       <button class="btn small ghost" data-go="areal" style="margin-top:10px">Ukázat na plánku</button>
     </div>
-    ${ad("eta","Projekty na klíč · "+P.eta.st)}
+    ${rot(ODB,"ad")}
     <div class="card"><div class="label" style="margin-bottom:8px">Večeře v pondělí <span class="status">Objednáno</span></div>
       <dl class="kv"><dt>Kdy</dt><dd>Po 10. 5. od 19:00, restaurace</dd><dt>Jídlo ${S.jidlo}</dt><dd>${esc(JIDLA[S.jidlo])}</dd></dl>
       <button class="btn small ghost" id="chjidlo" style="margin-top:10px">Změnit jídlo</button>

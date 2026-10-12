@@ -399,3 +399,13 @@ Přehled ploch v ukázce (verze 4) – podklad pro partnerské balíčky:
 - Každá plocha je klikací → profil partnera s videem / nabídkou.
 - Statistika zobrazení a kliknutí pro každou plochu → report partnerovi.
 - *Rozhodnout: které plochy budou v jakém balíčku a za kolik.*
+
+### „Živý“ web (přání uživatele) – ukázka verze 6
+- **Pás log** všech partnerů pod hlavičkou na každé stránce – plynule běží,
+  při dotyku se zastaví, klik → profil.
+- **Střídání reklam** v plochách (odborní partneři u přestávek, na Domů,
+  v Můj pobyt) – každých ~4,5 s plynulá výměna.
+- **Stěna log:** loga postupně naskakují, jedno vždy na chvíli „zazáří“.
+- **Klik na logo / reklamu** → vyjede (rozbalí se) profil s videem a nabídkou.
+- Kdo má v telefonu zapnuté omezení animací, uvidí vše bez pohybu.
+- *Do budoucna: frekvence a pořadí střídání podle balíčku (generální častěji).*
