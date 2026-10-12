@@ -179,6 +179,14 @@ Poslední aktualizace: 12. 10. 2026
 - **Příspěvky firem:** partneři mohou umístit příspěvky, prezentace, nabídky
   (nahraje pořadatel, nebo firma sama přes svůj přístup – rozhodnout).
 
+**Mapa hotelu / cesta na pokoj (nápad uživatele):**
+- U „můj pokoj“ zobrazit **plánek hotelu** s vyznačeným pokojem
+  (budova / sekce, patro, kudy od recepce).
+- Dnešní aplikace už u pokojů eviduje **sekci a patro** → dobrý základ.
+- Rozšířit na **plánek celého areálu**: sály přednášek, výstava se stánky
+  partnerů (klik na stánek → profil firmy), restaurace, parkování, recepce.
+- Potřeba: plánky / půdorysy od hotelu (stačí obrázek nebo PDF).
+
 **Videa a reklama partnerů (doplněno uživatelem):**
 - **Stěna log partnerů:** loga firem podle kategorií → klik na logo → profil
   firmy s **videospotem** (přehraje se), popisem, prezentacemi, kontaktem.
