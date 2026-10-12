@@ -236,6 +236,16 @@ Bezpečnost:
   (aplikace pošle na e-mail přihlašovací odkaz), nebo rovnou tajný odkaz z mailu.
 - Ostatní účastníci vidí o druhých nanejvýš jméno a firmu (u dotazů, v chatu).
 
+Upřesnění uživatele:
+- Aplikace má **dvě úrovně**:
+  - **veřejná část bez přihlášení** – program, přednášky (kdo, kdy, kde),
+    informace, aktuality, sborník;
+  - **osobní část po přihlášení** – můj pokoj, spolubydlící, večeře, můj kód…
+- ID účastníka = číslo, které funguje zároveň jako **variabilní symbol**
+  pro platbu (ne všichni platí – platby dořešit později).
+- Přihlášení: **VS + e-mail** (nebo VS + krátký PIN z potvrzovacího mailu),
+  protože samotný VS jde uhodnout.
+
 ## Priority (návrh – projít s uživatelem)
 
 Nápadů je hodně, stavět postupně:
