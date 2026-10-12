@@ -295,6 +295,12 @@ const I = {
 const TABS=[["domu","Domů",I.home],["program","Program",I.prog],["partneri","Partneři",I.part],["areal","Info",I.map],["ja","Můj pobyt",I.me]];
 function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2600)}
 function ad(id,sub){const p=P[id];return `<button class="ad" data-partner="${id}"><span class="tag">Reklama</span>${logo(id)}<div style="min-width:0"><b>${esc(p.s[1])}</b><small>${esc(sub||p.n+(p.st?" · "+p.st:""))}</small></div></button>`}
+function save28(){return `<div class="card" style="border:2px dashed var(--water);box-shadow:none;display:flex;flex-direction:column;gap:6px">
+  <div class="label" style="color:var(--water)">Uložte si termín</div>
+  <h2 style="font-size:22px">Konference Seč 2028</h2>
+  <div style="font-family:var(--f-display);font-weight:800;font-size:18px">Termín doplní pořadatel</div>
+  <p class="muted" style="margin:0;font-size:13px">Těšíme se na vás i příští rok. V ostré verzi tu bude tlačítko pro přidání do kalendáře.</p>
+</div>`}
 function logo(id,size){const p=P[id];return `<div class="lm" style="background:${p.c}${size?`;width:${size}px;height:${size}px`:""}">${esc(p.n[0])}</div>`}
 
 /* ===== Navigace ===== */
@@ -333,6 +339,7 @@ function vDomu(){
     </div></div>
     <div><div class="label" style="margin-bottom:8px">Hlavní partneři</div>
       <div class="ads2">${["beta","gama"].map(i=>ad(i)).join("")}</div></div>
+    ${save28()}
     <div class="note"><b>Aplikace do mobilu:</b> ${ios?"v Safari klepněte na Sdílet → Přidat na plochu.":"v Chrome zvolte Nainstalovat aplikaci (na iPhonu: Sdílet → Přidat na plochu)."} Pak budete mít ikonku na ploše a budou vám chodit upozornění.</div>
   </section>`;
 }
@@ -458,9 +465,11 @@ function vAreal(){
         <div><b>Seč</b><p>Přehrada na Chrudimce z třicátých let 20. století a nad ní zřícenina hradu Oheb. Tradiční místo setkávání na Vysočině.</p></div>
         <div><b>První ročník</b><p class="muted">Doplní pořadatel: kdy a kde se konference konala poprvé, kolik bylo účastníků.</p></div>
         <div><b>Ohlédnutí</b><p class="muted">Doplní pořadatel: fotky a zajímavosti z minulých ročníků, významní hosté.</p></div>
-        <div style="padding-bottom:0"><b>2027</b><p>Konference Seč 2027 poprvé s vlastní aplikací pro účastníky.</p></div>
+        <div><b>2027</b><p>Konference Seč 2027 poprvé s vlastní aplikací pro účastníky.</p></div>
+        <div style="padding-bottom:0"><b>2028</b><p>Další ročník v Seči. Termín najdete níže.</p></div>
       </div>
     </div>
+    ${save28()}
     <div class="card"><div class="label" style="margin-bottom:8px">Praktické informace</div>
       <dl class="kv">
         <dt>Adresa</dt><dd>Hotel (ukázka), Seč – Ústupky</dd>

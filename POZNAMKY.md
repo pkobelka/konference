@@ -367,3 +367,6 @@ Nápadů je hodně, stavět postupně:
   u přestávek v programu (zve na stánek), „partner svozu“.
 - *Upřesnit: skutečné časy svozu, kdo bydlí v Kraskově, historie a fotky
   z minulých ročníků.*
+- **Uložte si termín – Seč 2028:** karta na konci úvodní stránky a v Info
+  (za historií), v ostré verzi s tlačítkem „Přidat do kalendáře“.
+  *Doplnit přesný termín 2028.*
