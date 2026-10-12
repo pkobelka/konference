@@ -409,3 +409,10 @@ Přehled ploch v ukázce (verze 4) – podklad pro partnerské balíčky:
 - **Klik na logo / reklamu** → vyjede (rozbalí se) profil s videem a nabídkou.
 - Kdo má v telefonu zapnuté omezení animací, uvidí vše bez pohybu.
 - *Do budoucna: frekvence a pořadí střídání podle balíčku (generální častěji).*
+
+## Prezentace pro kolegy (12. 10. 2026)
+- https://claude.ai/artifact/2RU8MSAEmcrPKiNHts5yz1 – 11 snímků: dnešní stav, hlavní
+  myšlenka, cesta účastníka, obsah aplikace, během konference, partneři,
+  pořadatel, technika, postup po krocích, závěr s odkazem na ukázku.
+- Zdroj snímků uložen v `navrh/prezentace/`.
+- Doplnit: skutečný termín 2027 a 2028.
