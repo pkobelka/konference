@@ -101,13 +101,26 @@ Poslední aktualizace: 12. 10. 2026
 ## 3a. Mobilní aplikace – PWA (nápad uživatele)
 
 - Osobní stránka účastníka jako **progresivní webová aplikace**: „Přidat na plochu“,
-  ikonka VHOS 2027, bez App Store / Google Play, iPhone i Android.
+  ikonka Konference Seč 2027, bez App Store / Google Play, iPhone i Android.
 - Obsah: pokoj, spolubydlící, večeře, kód, program, mapa, parkování, kontakt.
 - Funguje **offline** (údaje uložené v mobilu), vždy aktuální po připojení.
 - Možnosti navíc: **notifikace** (večeře za 30 min, změna programu; na iPhonu
   jen po přidání na plochu), QR kód pro registraci, program se zvýrazněním
   vlastní přednášky, tlačítko „Napsat pořadateli“.
 - I aplikace pro pořadatele může být PWA (rychlé vyhledání na místě).
+
+**Obsah mobilní aplikace (doplněno):**
+- **Program** konference – po dnech, sály, přednášející; vlastní přednáška
+  zvýrazněná; změny programu se projeví hned.
+- **Poznámky** – účastník si může psát vlastní poznámky (např. k přednáškám),
+  uložené v jeho mobilu.
+- **Informace** – místo konání (Seč), adresa, mapa, parkování, check-in,
+  Wi-Fi, kontakty na pořadatele, praktické info.
+- **Aktuality** – pořadatel napíše zprávu v aplikaci pro pořadatele
+  („večeře se posouvá na 19:30“) a všem se zobrazí, volitelně i jako notifikace.
+  Případně cílit jen na skupinu (partneři, přednášející, ubytovaní…).
+- *Upřesnit: jak se dnes program tvoří a kdo ho spravuje; zda poznámky jen
+  osobní, nebo i sdílené (např. podklady k přednáškám ke stažení).*
 - Technicky na stávajícím GitHub Pages + Firebase, bez nákladů navíc.
 
 ## 4. Ubytování a přidělování pokojů
