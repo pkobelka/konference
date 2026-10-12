@@ -248,8 +248,8 @@ Upřesnění uživatele:
   - Návrh: **VS = firma / faktura**, **osobní ID = VS + pořadí osoby**
     (např. VS `270142` → lidé `270142-1`, `270142-2`); kdo platí sám / neplatí,
     dostane vlastní číslo stejným systémem.
-- Přihlášení: **osobní ID + e-mail** (nebo VS + krátký PIN z potvrzovacího mailu),
-  protože samotný VS jde uhodnout.
+- Přihlášení: **osobní ID + e-mail** (nebo osobní ID + krátký PIN z potvrzovacího mailu),
+  protože samotné ID jde uhodnout.
 
 ## Priority (návrh – projít s uživatelem)
 
