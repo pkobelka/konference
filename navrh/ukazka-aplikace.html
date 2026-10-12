@@ -352,7 +352,7 @@ function vDomu(){
     </div>
     <div class="card"><div class="label" style="margin-bottom:8px">Aktuality</div><div class="news">
       ${NEWS.map(n=>`<article><time>${n.d}</time><div><h3>${esc(n.h)}</h3><p>${esc(n.p)}</p></div></article>`).join("")}
-    </div></div>
+    </div>${byp("kappa","Aktuality ve spolupráci s mediálním partnerem")}</div>
     <div><div class="label" style="margin-bottom:8px">Hlavní partneři</div>
       <div class="ads2">${["beta","gama"].map(i=>ad(i)).join("")}</div></div>
     ${save28()}
@@ -486,6 +486,7 @@ function vAreal(){
         <div><b>2027</b><p>Konference Seč 2027 poprvé s vlastní aplikací pro účastníky.</p></div>
         <div style="padding-bottom:0"><b>2028</b><p>Další ročník v Seči. Termín najdete níže.</p></div>
       </div>
+      ${byp("lambda","Fotogalerii a ohlédnutí připravuje")}
     </div>
     ${save28()}
     <div class="card"><div class="label" style="margin-bottom:8px">Praktické informace</div>

@@ -391,7 +391,11 @@ Přehled ploch v ukázce (verze 4) – podklad pro partnerské balíčky:
 | Stěna log + profil s videem | Partneři | všichni (velikost dle kategorie) |
 | Stánek na plánku výstavy | Info, plánek | vystavovatelé |
 | Smyčka na obrazovkách v sále | foyer / sál o přestávkách | dle balíčku |
+| Aktuality „ve spolupráci s“ | Domů, aktuality | mediální |
+| Fotogalerie / ohlédnutí | Info, historie | mediální |
 
+- **Pořadí kategorií (potvrzeno uživatelem): generální → hlavní → odborní → mediální.**
+  Podle toho velikost a výraznost ploch.
 - Každá plocha je klikací → profil partnera s videem / nabídkou.
 - Statistika zobrazení a kliknutí pro každou plochu → report partnerovi.
 - *Rozhodnout: které plochy budou v jakém balíčku a za kolik.*
