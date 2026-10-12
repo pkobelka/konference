@@ -180,6 +180,8 @@ Poslední aktualizace: 12. 10. 2026
   (nahraje pořadatel, nebo firma sama přes svůj přístup – rozhodnout).
 
 **Videa a reklama partnerů (doplněno uživatelem):**
+- **Stěna log partnerů:** loga firem podle kategorií → klik na logo → profil
+  firmy s **videospotem** (přehraje se), popisem, prezentacemi, kontaktem.
 - **Videospoty firem** v profilu partnera.
   - Technicky: videa nahrát na **YouTube / Vimeo** a do aplikace jen vložit
     (velká videa přímo ve Firebase = zbytečné náklady, pomalé načítání).
