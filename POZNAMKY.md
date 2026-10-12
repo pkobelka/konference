@@ -201,6 +201,21 @@ Poslední aktualizace: 12. 10. 2026
   klikli na web → po konferenci report pro partnera (argument pro příští ročník).
 - *Upřesnit: kdo dodá videa, formát, zda reklama bude součástí partnerských balíčků.*
 
+**Obsah si připraví partneři sami (upřesnění uživatele):**
+- Blok **Odborní partneři** (a další kategorie): klik na logo → **nabídka firmy**,
+  kterou si firma zpracuje sama: reklamní spoty, videospoty, obrázky,
+  **smyčka** (běží dokola – automaticky, nebo ji uživatel pustí).
+- Pořadatel to partnerům **nabídne jako službu** („poběží v aplikaci konference“).
+- Návrh řešení:
+  - Firma nahraje obsah přes **svůj odkaz** (rozšířit stávající přihlášku
+    `prihlaska/?k=…` o sekci „Prezentace v aplikaci“): logo, text, obrázky,
+    odkaz na video (YouTube/Vimeo).
+  - Pořadatel obsah **schválí** před zveřejněním.
+  - Připravit pro partnery **jednoduché zadání**: formáty, rozměry, délka
+    videa, termín dodání.
+- Nápad navíc: stejná smyčka log a spotů může běžet i na **obrazovkách v sále /
+  ve foyer** o přestávkách (stránka pro projektor / TV).
+
 **Android vs. iPhone (obava uživatele – cca půl na půl):**
 - PWA funguje na obou, jedna aplikace pro všechny (+ počítač).
 - Rozdíly:
