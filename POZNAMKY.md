@@ -304,7 +304,10 @@ Nápadů je hodně, stavět postupně:
 2. **Komunikace:** automatické odpovědi na kód, mail o přidělení pokoje,
    osobní odkaz / mobilní aplikace s údaji, informace, aktuality.
 3. **Obsah konference:** program, sborník a prezentace, dotazy k přednáškám,
-   chat, poznámky, notifikace, QR registrace.
+   chat, poznámky, notifikace, QR registrace, připomenutí přednášek,
+   dotazy pořadateli v aplikaci.
+4. **Partneři:** seznam partnerů, příspěvky a prezentace firem, videospoty,
+   bannery podle kategorie, statistiky pro partnery.
 
 ## Otevřené otázky (doladit později)
 
