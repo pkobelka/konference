@@ -1,4 +1,6 @@
-# Poznámky k aplikaci – Konference VHOS 2027
+# Poznámky k aplikaci – Konference Seč 2027 (VHOS)
+
+Pracovní název aplikace: **Konference Seč 2027**
 
 Průběžně sbírané nápady a požadavky z rozhovorů. Zatím se nic nestaví – nejdřív
 sepíšeme, jak to celé funguje, pak upřesníme otevřené otázky a teprve potom tvoříme.
