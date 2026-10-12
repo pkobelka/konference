@@ -121,6 +121,19 @@ Poslední aktualizace: 12. 10. 2026
   Případně cílit jen na skupinu (partneři, přednášející, ubytovaní…).
 - *Upřesnit: jak se dnes program tvoří a kdo ho spravuje; zda poznámky jen
   osobní, nebo i sdílené (např. podklady k přednáškám ke stažení).*
+
+**Chat / diskuse k přednáškám (nápad uživatele):**
+- U každé přednášky v programu vlastní **diskuse**.
+- Doporučení: hlavně **otázky na přednášejícího** (jako Slido) – účastníci
+  píšou dotazy, ostatní je mohou „palcem nahoru“ podpořit, moderátor vidí
+  nejžádanější a může je pustit na plátno; přednášející může odpovědět
+  i písemně po přednášce.
+- Navíc **obecný chat konference** (domluva na kafe, kdo jede vlakem…).
+- U zprávy je vidět jméno a firma (účastník je přihlášený svým odkazem –
+  žádní anonymové zvenku).
+- **Moderace:** pořadatel může zprávu skrýt / smazat, případně chat vypnout.
+- Technicky: Firebase umí zprávy v reálném čase, bez nákladů navíc.
+- *Upřesnit: anonymní dotazy povolit? Zůstane diskuse po konferenci přístupná?*
 - Technicky na stávajícím GitHub Pages + Firebase, bez nákladů navíc.
 
 ## 4. Ubytování a přidělování pokojů
