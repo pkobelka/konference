@@ -135,6 +135,18 @@ Poslední aktualizace: 12. 10. 2026
 - Technicky: Firebase umí zprávy v reálném čase, bez nákladů navíc.
 - *Upřesnit: anonymní dotazy povolit? Zůstane diskuse po konferenci přístupná?*
 
+**Rozšíření (doplněno uživatelem):**
+- **Otázky na plátno:** zvláštní stránka pro projektor v sále – ukazuje
+  dotazy k právě běžící přednášce, nejžádanější nahoře; moderátor v mobilu
+  vybere, kterou otázku zvýraznit / označit jako zodpovězenou.
+- **Živé reakce během přednášky:** účastník reaguje na konkrétní přednášku
+  hned, jak běží (dotaz, komentář, 👍 / 👏), případně rychlá anketa
+  („Používáte u vás…? ano/ne“) s výsledky na plátně.
+- **Přímá komunikace s přednášejícím:** soukromá zpráva přednášejícímu
+  (vidí ji jen on), přednášející odpoví v aplikaci i po konferenci.
+- **Dokumentace:** všechny dotazy a odpovědi se uloží → po konferenci
+  export (PDF / tabulka) jako zápis z diskuse, případně příloha ke sborníku.
+
 **Sborník a materiály ke stažení (nápad uživatele):**
 - **Sborník konference** (PDF) ke stažení v aplikaci.
 - U jednotlivých přednášek **prezentace / podklady** ke stažení
