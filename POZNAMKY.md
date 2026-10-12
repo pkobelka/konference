@@ -166,6 +166,16 @@ Poslední aktualizace: 12. 10. 2026
 - *Upřesnit: v jaké podobě sborník dnes vzniká, kdo ho připravuje, velikost souborů.*
 - Technicky na stávajícím GitHub Pages + Firebase, bez nákladů navíc.
 
+**Android vs. iPhone (obava uživatele – cca půl na půl):**
+- PWA funguje na obou, jedna aplikace pro všechny (+ počítač).
+- Rozdíly:
+  - Android (Chrome): sám nabídne „Nainstalovat aplikaci“.
+  - iPhone: nic nenabídne sám → v Safari **Sdílet → Přidat na plochu**.
+    → Aplikace pozná iPhone a ukáže **návod s obrázky** (2 kroky).
+  - Notifikace na iPhonu jen po přidání na plochu (iOS 16.4+).
+- Kdo nic neinstaluje, má vše i v prohlížeči přes odkaz – jen bez notifikací.
+- Před ostrým spuštěním otestovat na obou typech telefonů.
+
 ## 4. Ubytování a přidělování pokojů
 
 - Hotel dá pořadateli **určitý počet pokojů s konkrétními čísly**.
