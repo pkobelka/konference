@@ -30,6 +30,17 @@ Poslední aktualizace: 12. 10. 2026
     a kód je v předmětu → hned je jasné, o koho jde.
   - Kód se hodí i do telefonu („mám kód 0142“).
 
+### Průběh e-mailů (upřesněno)
+
+1. **Po vyplnění přihlášky** → hned potvrzení: zaregistrován, kód, večeře;
+   ubytování buď „pokoj č. X s …“, nebo **„pokoj zatím přidělujeme, dáme vědět“**;
+   info, že může kdykoli napsat s kódem na adresu konference.
+2. **Po přidělení pokoje** → druhý mail „ubytování zajištěno: pokoj X s …“.
+   Volba: posílat hned, nebo až na tlačítko „rozeslat“ (bezpečnější při přehazování).
+3. **Kdykoli** → mail s kódem → automatická odpověď podle aktuálního stavu.
+- Texty = **šablony** s doplňovanými údaji (jméno, pokoj, spolubydlící, večeře…);
+  napíše je pořadatel, případně navrhne Claude.
+
 ## 2a. Automatická odpověď na e-mail s kódem (nápad uživatele)
 
 - Každý přihlášený má vlastní kód podle kategorie, např. `HOST27-0142`,
