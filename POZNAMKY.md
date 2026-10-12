@@ -243,7 +243,12 @@ Upřesnění uživatele:
   - **osobní část po přihlášení** – můj pokoj, spolubydlící, večeře, můj kód…
 - ID účastníka = číslo, které funguje zároveň jako **variabilní symbol**
   pro platbu (ne všichni platí – platby dořešit později).
-- Přihlášení: **VS + e-mail** (nebo VS + krátký PIN z potvrzovacího mailu),
+- ⚠️ **Problém (uživatel):** za firmu se přihlásí víc lidí, ale faktura (VS)
+  je jedna → VS nemůže být osobní ID. **Doladit.**
+  - Návrh: **VS = firma / faktura**, **osobní ID = VS + pořadí osoby**
+    (např. VS `270142` → lidé `270142-1`, `270142-2`); kdo platí sám / neplatí,
+    dostane vlastní číslo stejným systémem.
+- Přihlášení: **osobní ID + e-mail** (nebo VS + krátký PIN z potvrzovacího mailu),
   protože samotný VS jde uhodnout.
 
 ## Priority (návrh – projít s uživatelem)
