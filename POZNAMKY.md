@@ -85,6 +85,25 @@ Poslední aktualizace: 12. 10. 2026
   - **kde je na pokoji volné místo** (přehled volných lůžek / přistýlek).
 - Nápad: přidělování přetažením myší.
 
+**Kontrola pokojů (uživatel zdůraznil jako hlavní potřebu):**
+- na pokoji pro 1 člověka omylem nejsou 2 a obráceně,
+- každý přihlášený, komu jsme **slíbili pokoj**, má pokoj s konkrétním číslem.
+
+*Stav v současné aplikaci (záložka **Kontroly**) – už hlídá:*
+- ✅ spí na konferenci, ale nemá pokoj,
+- ✅ pokoj je přeplněný (víc lidí než lůžek + přistýlek),
+- ✅ chce spát sám, ale někdo s ním na pokoji je (a obráceně),
+- ✅ nejede / nepotvrdil, ale má zajištěný pokoj,
+- ✅ má pokoj, ale nemá zaškrtnutou noc,
+- ✅ pokoj neexistuje v seznamu pokojů hotelu,
+- ✅ duplicitní jména.
+
+*Chybí doplnit:*
+- ❌ na jednom pokoji lidé ze **dvou různých firem**,
+- ❌ přehled **volných míst** na pokojích (k ověření, jak je to dnes vidět),
+- ❌ „slíbený pokoj“ podle pravidla firmy (např. odborný partner = 1 pokoj
+  pro max. 3 osoby) – kontrola, že firma nemá víc lidí / pokojů, než má nárok.
+
 ## 5. Večeře
 
 V pondělí jsou **dvě různé večeře**:
