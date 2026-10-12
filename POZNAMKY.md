@@ -144,6 +144,9 @@ Poslední aktualizace: 12. 10. 2026
   („Používáte u vás…? ano/ne“) s výsledky na plátně.
 - **Přímá komunikace s přednášejícím:** soukromá zpráva přednášejícímu
   (vidí ji jen on), přednášející odpoví v aplikaci i po konferenci.
+- **Dotazy k vlastní přihlášce:** po přihlášení může účastník napsat
+  pořadateli dotaz k své registraci (pokoj, večeře, změna) – pořadatel
+  vidí dotazy u karty účastníka a odpovídá v aplikaci.
 - **Dokumentace:** všechny dotazy a odpovědi se uloží → po konferenci
   export (PDF / tabulka) jako zápis z diskuse, případně příloha ke sborníku.
 
