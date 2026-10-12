@@ -30,6 +30,21 @@ Poslední aktualizace: 12. 10. 2026
     a kód je v předmětu → hned je jasné, o koho jde.
   - Kód se hodí i do telefonu („mám kód 0142“).
 
+## 2a. Automatická odpověď na e-mail s kódem (nápad uživatele)
+
+- Každý přihlášený má vlastní kód podle kategorie, např. `HOST27-0142`,
+  `PARTNER27-0087`.
+- Účastník pošle e-mail s kódem na speciální adresu konference
+  (např. `konference.vhos@…`) → **obratem automaticky přijde odpověď**:
+  kde spí, pokoj, s kým, večeře (slavnostní / běžná + jídlo), další info.
+- Obsah odpovědi si nastaví pořadatel.
+- **Pojistka:** odpovídat jen když mail přijde z e-mailu zaregistrovaného
+  u daného kódu (kódy jdou uhodnout). Jinak zdvořilé odmítnutí + kopie pořadateli.
+- Varianty: stačí napsat „INFO“ bez kódu (pozná se podle adresy odesílatele);
+  dotaz v mailu se přepošle pořadateli.
+- Technicky: automat nad e-mailovou schránkou (např. Google Apps Script, zdarma).
+  SMS / WhatsApp možné, ale placené.
+
 ## 3. Vlastní odkaz pro každého účastníka (nápad – uživatele nadchl)
 
 - Každý účastník dostane v e-mailu **osobní tajný odkaz** (stejný princip jako
