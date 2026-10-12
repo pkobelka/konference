@@ -147,6 +147,12 @@ Poslední aktualizace: 12. 10. 2026
 - **Dotazy k vlastní přihlášce:** po přihlášení může účastník napsat
   pořadateli dotaz k své registraci (pokoj, večeře, změna) – pořadatel
   vidí dotazy u karty účastníka a odpovídá v aplikaci.
+  - **Hlavní kanál komunikace s účastníky = aplikace, ne e-mail** (přání uživatele).
+  - Admin: přehled „nové / nevyřízené dotazy“, konverzace u karty účastníka.
+  - Upozornění: adminovi na nový dotaz (notifikace / e-mail), účastníkovi
+    na odpověď (notifikace, případně e-mail „máte odpověď v aplikaci“).
+  - Záloha pro ty, kdo aplikaci nepoužívají: e-mail s kódem (viz 2a),
+    ideálně by se zařadil do stejné konverzace.
 - **Dokumentace:** všechny dotazy a odpovědi se uloží → po konferenci
   export (PDF / tabulka) jako zápis z diskuse, případně příloha ke sborníku.
 
