@@ -356,3 +356,14 @@ Nápadů je hodně, stavět postupně:
   Partneři (stěna log → profil s videosmyčkou), Areál (plánek, stánky, pokoj),
   Můj pobyt (přihlášení kód + PIN, pokoj, spolubydlící, večeře A/B/C, QR, zprávy pořadateli).
 - Ukázkový přístup: kód 270142-1, PIN 4821.
+
+### Doplněno do ukázky (verze 2)
+- Záložka **Info** (dříve Areál): **možnosti ubytování** (konferenční hotel v Seči,
+  **Hotel Kraskov** jako doplňkové ubytování, vlastní ubytování),
+  **svoz autobusem Kraskov ⇄ Seč** (jízdní řád – smyšlené časy; kdo bydlí
+  v Kraskově, uvidí svůj svoz v Můj pobyt + připomenutí před odjezdem),
+  **Z historie** (Seč, přehrada, hrad Oheb; historii konference doplní pořadatel).
+- **Víc reklamy partnerů:** hlavní partneři na úvodní stránce, reklama
+  u přestávek v programu (zve na stánek), „partner svozu“.
+- *Upřesnit: skutečné časy svozu, kdo bydlí v Kraskově, historie a fotky
+  z minulých ročníků.*
