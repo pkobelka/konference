@@ -96,6 +96,18 @@ Poslední aktualizace: 12. 10. 2026
 - *Pozn.: vyhledávání podle jména/firmy/e-mailu/pokoje už aplikace má –
   ověřit, že ukáže vše potřebné na jednom místě.*
 
+## 3a. Mobilní aplikace – PWA (nápad uživatele)
+
+- Osobní stránka účastníka jako **progresivní webová aplikace**: „Přidat na plochu“,
+  ikonka VHOS 2027, bez App Store / Google Play, iPhone i Android.
+- Obsah: pokoj, spolubydlící, večeře, kód, program, mapa, parkování, kontakt.
+- Funguje **offline** (údaje uložené v mobilu), vždy aktuální po připojení.
+- Možnosti navíc: **notifikace** (večeře za 30 min, změna programu; na iPhonu
+  jen po přidání na plochu), QR kód pro registraci, program se zvýrazněním
+  vlastní přednášky, tlačítko „Napsat pořadateli“.
+- I aplikace pro pořadatele může být PWA (rychlé vyhledání na místě).
+- Technicky na stávajícím GitHub Pages + Firebase, bez nákladů navíc.
+
 ## 4. Ubytování a přidělování pokojů
 
 - Hotel dá pořadateli **určitý počet pokojů s konkrétními čísly**.
