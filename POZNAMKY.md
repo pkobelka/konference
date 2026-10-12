@@ -344,3 +344,15 @@ Nápadů je hodně, stavět postupně:
 - Platby a fakturace partnerů?
 - Co si smí účastník změnit sám a co jen přes pořadatele?
 - Termíny (uzávěrka přihlášek, nahlášení počtů hotelu a restauraci).
+
+---
+
+## Ukázka (prototyp) – 12. 10. 2026
+
+- Soubor `navrh/ukazka-aplikace.html`, zveřejněno jako náhled:
+  https://claude.ai/artifact/PxUmJWfjsqRH8bri8sjY57
+- Smyšlená data. Obsahuje: Domů (odpočet, banner generálního partnera, aktuality),
+  Program (3 dny, připomenutí 5/10/15/30 min, dotazy s hlasováním, „na plátně“),
+  Partneři (stěna log → profil s videosmyčkou), Areál (plánek, stánky, pokoj),
+  Můj pobyt (přihlášení kód + PIN, pokoj, spolubydlící, večeře A/B/C, QR, zprávy pořadateli).
+- Ukázkový přístup: kód 270142-1, PIN 4821.

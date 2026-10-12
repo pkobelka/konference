@@ -1,0 +1,525 @@
+<title>Konference Seč 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: mobilní aplikace – úzký sloupec (max 440px) se spodní lištou záložek; na počítači uprostřed jako telefon. */
+:root{
+  --bg:#eef2ec; --surface:#ffffff; --surface-2:#f6f8f4; --ink:#1c2a21; --muted:#5d6b62; --line:#dbe3d7;
+  --accent:#2f6b3c; --accent-ink:#ffffff; --accent-soft:#e1eedf;
+  --water:#1d6a86; --water-soft:#dceef4;
+  --warn:#b8701a; --bad:#b0413e; --good:#2f7d46;
+  --shadow:0 1px 2px rgba(28,42,33,.06),0 6px 20px rgba(28,42,33,.07);
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101612; --surface:#18211b; --surface-2:#1e2822; --ink:#e4ebe5; --muted:#99a79e; --line:#2a352e;
+  --accent:#74c487; --accent-ink:#0f1a12; --accent-soft:#1f3326;
+  --water:#62b5d3; --water-soft:#16303a;
+  --warn:#e0a24f; --bad:#e17a76; --good:#74c487;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#101612; --surface:#18211b; --surface-2:#1e2822; --ink:#e4ebe5; --muted:#99a79e; --line:#2a352e;
+  --accent:#74c487; --accent-ink:#0f1a12; --accent-soft:#1f3326;
+  --water:#62b5d3; --water-soft:#16303a;
+  --warn:#e0a24f; --bad:#e17a76; --good:#74c487;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--water);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+.app{max-width:440px;margin:0 auto;min-height:100vh;padding-inline:16px;padding-block:0 96px}
+
+/* hlavička */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px 10px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.mark{width:36px;height:36px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:15px;flex:none}
+.brand b{font-family:var(--f-display);font-weight:800;font-size:17px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{color:var(--muted);font-size:12px}
+.chip{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:var(--water-soft);color:var(--water);flex:none}
+
+/* spodní lišta */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabbar button{background:none;border:0;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--muted)}
+.tabbar button svg{width:22px;height:22px}
+.tabbar button[aria-current="page"]{color:var(--accent)}
+
+/* obecné */
+.sec{display:flex;flex-direction:column;gap:12px;padding-block:6px 18px}
+.label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:14px}
+.muted{color:var(--muted)}
+.row{display:flex;align-items:center;gap:10px}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:700;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+.btn.small{padding:6px 10px;font-size:13px}
+.note{font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line);border-radius:10px;padding:8px 10px}
+
+/* domů */
+.hero{background:var(--accent);color:var(--accent-ink);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+.hero h1{font-size:28px;font-weight:800}
+.hero .meta{font-size:14px;opacity:.9}
+.hero .count{display:flex;align-items:baseline;gap:6px;margin-top:6px;font-variant-numeric:tabular-nums}
+.hero .count b{font-family:var(--f-display);font-size:40px;font-weight:800;line-height:1}
+.hero svg.waves{position:absolute;right:-10px;bottom:-6px;width:180px;opacity:.25}
+.news{display:flex;flex-direction:column}
+.news article{padding:12px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:52px 1fr;gap:10px}
+.news article:first-child{border-top:0;padding-top:2px}
+.news time{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.news h3{font-size:15px;font-family:var(--f-body);font-weight:700}
+.news p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.banner{border-radius:14px;overflow:hidden;position:relative;height:92px;background:var(--surface);box-shadow:var(--shadow);border:0;padding:0;width:100%;text-align:left}
+.banner .slide{position:absolute;inset:0;display:flex;align-items:center;gap:12px;padding:14px;opacity:0;animation:fade 12s infinite}
+.banner .slide:nth-child(2){animation-delay:4s}
+.banner .slide:nth-child(3){animation-delay:8s}
+.banner .tag{position:absolute;top:8px;right:10px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);z-index:2}
+@keyframes fade{0%,3%{opacity:0}6%,30%{opacity:1}33%,100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.banner .slide{animation:none}.banner .slide:first-child{opacity:1}}
+
+/* program */
+.days{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--surface);border-radius:12px;padding:4px;box-shadow:var(--shadow)}
+.days button{border:0;background:none;border-radius:9px;padding:8px 4px;font-weight:700;font-size:14px;color:var(--muted)}
+.days button small{display:block;font-weight:500;font-size:11px}
+.days button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.slot{display:grid;grid-template-columns:50px 1fr;gap:10px}
+.slot .t{font-family:var(--f-display);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;padding-top:12px}
+.talk{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:12px 12px 10px;min-width:0;display:flex;flex-direction:column;gap:4px;border-left:4px solid transparent}
+.talk.mine{border-left-color:var(--accent)}
+.talk.brk{background:var(--surface-2);box-shadow:none;border:1px solid var(--line)}
+.talk h3{font-size:16px}
+.talk .who{font-size:13px;color:var(--muted)}
+.talk .place{font-size:12px;font-weight:600;color:var(--water)}
+.talk .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.pill{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 10px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.pill.on{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.sponsor{font-size:11px;color:var(--muted)}
+.inv{font-size:11px;font-weight:700;color:var(--warn);text-transform:uppercase;letter-spacing:.05em}
+
+/* partneři */
+.cat h2{font-size:18px;margin-bottom:8px}
+.logos{display:grid;gap:8px}
+.logos.g1{grid-template-columns:1fr}
+.logos.g2{grid-template-columns:repeat(2,1fr)}
+.logos.g3{grid-template-columns:repeat(3,1fr)}
+.logo{border:0;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.logo .lm{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:20px;color:#fff}
+.logos.g1 .logo{flex-direction:row;padding:16px;gap:14px;text-align:left}
+.logos.g1 .logo .lm{width:64px;height:64px;font-size:28px}
+.logo span{font-size:13px;font-weight:700;text-align:center;overflow-wrap:anywhere}
+.logos.g1 .logo span{font-size:18px;text-align:left}
+
+/* video smyčka v profilu */
+.video{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:12px;overflow:hidden;background:#0d1410}
+.video .vs{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;font-family:var(--f-display);font-weight:800;font-size:22px;padding:16px;opacity:0}
+.video.play .vs{animation:fade 9s infinite}
+.video.play .vs:nth-child(2){animation-delay:3s}
+.video.play .vs:nth-child(3){animation-delay:6s}
+.video:not(.play) .vs:first-child{opacity:1}
+.video .playbtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#111;display:grid;place-items:center;z-index:2}
+.video.play .playbtn{display:none}
+@media (prefers-reduced-motion: reduce){.video.play .vs{animation:none}.video.play .vs:first-child{opacity:1}}
+
+/* plánek */
+.map svg{width:100%;height:auto;display:block}
+.map text{font-family:var(--f-body);font-size:9px;fill:var(--ink);font-weight:600}
+.map .lbl-m{fill:var(--muted);font-weight:500;font-size:8px}
+.map .stand{cursor:pointer}
+.map .stand:hover rect,.map .stand:focus rect{stroke:var(--accent);stroke-width:2}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+/* já */
+.form{display:flex;flex-direction:column;gap:10px}
+.form label{font-size:13px;font-weight:600}
+.form input{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+.err{color:var(--bad);font-size:13px}
+.idcard{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.idcard h2{font-size:22px}
+.code{font-family:var(--f-display);font-weight:800;font-size:18px;font-variant-numeric:tabular-nums;color:var(--water)}
+canvas.qr{width:84px;height:84px;image-rendering:pixelated;border-radius:6px;background:#fff;padding:4px}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:8px 10px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600;min-width:0}
+.status{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--accent-soft);color:var(--good);margin-left:4px}
+.status.w{background:var(--surface-2);color:var(--warn)}
+.chat{display:flex;flex-direction:column;gap:8px}
+.msg{max-width:85%;padding:9px 12px;border-radius:14px;font-size:14px}
+.msg small{display:block;font-size:11px;opacity:.7;margin-top:3px}
+.msg.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px}
+.msg.org{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:4px}
+.send{display:flex;gap:8px}
+.send input{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit}
+
+/* spodní panel (sheet) */
+.backdrop{position:fixed;inset:0;background:rgba(10,16,12,.45);z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-height:86vh;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));max-width:440px;margin:0 auto;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.sheet .grab{width:40px;height:4px;border-radius:4px;background:var(--line);margin:0 auto 10px}
+.sheet .close{float:right;border:0;background:var(--surface-2);border-radius:99px;width:32px;height:32px;font-size:18px;line-height:1}
+.sheet h2{font-size:20px;margin-bottom:4px;padding-right:40px}
+.sheet .body{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.opts button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;font-weight:600;text-align:left}
+.opts button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.q{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.q:first-child{border-top:0}
+.vote{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:4px 8px;display:flex;flex-direction:column;align-items:center;font-weight:700;font-size:13px;min-width:44px;font-variant-numeric:tabular-nums}
+.vote.on{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.q p{margin:0;font-size:14px}
+.q small{color:var(--muted);font-size:12px}
+.onscreen{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:var(--water);color:var(--surface);padding:2px 6px;border-radius:6px;margin-left:4px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">S27</div>
+      <div style="min-width:0"><b>Konference Seč 2027</b><small>VHOS · 10.–12. května 2027</small></div>
+    </div>
+    <span class="chip" title="Všechna data jsou smyšlená">Ukázka</span>
+  </header>
+  <main id="view"></main>
+</div>
+
+<nav class="tabbar" aria-label="Hlavní menu"><div class="in" id="tabs"></div></nav>
+<div class="backdrop" id="bd" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ===== Ukázková data (smyšlená) ===== */
+const START = new Date(2027,4,10);
+const P = { // partneři
+  alfa:{n:"Alfa Systems",k:"generalni",c:"#2f6b3c",d:"Komplexní řešení pro správu provozů. Na konferenci představujeme novou platformu pro sběr a vyhodnocení dat.",st:"Stánek 1",web:"alfa-systems.example",s:["Alfa Systems","Data z provozu na jednom místě","Navštivte stánek č. 1"]},
+  beta:{n:"Beta Technik",k:"hlavni",c:"#1d6a86",d:"Servis a údržba technologií, 24/7 pohotovost.",st:"Stánek 2",web:"beta-technik.example",s:["Beta Technik","Servis 24/7","Stánek č. 2"]},
+  gama:{n:"Gama Servis",k:"hlavni",c:"#7a4fa0",d:"Projektování a inženýring.",st:"Stánek 3",web:"gama-servis.example",s:["Gama Servis","Od projektu po realizaci","Stánek č. 3"]},
+  delta:{n:"Delta Měření",k:"odborny",c:"#b8701a",d:"Měřicí technika a kalibrace.",st:"Stánek 4",web:"delta-mereni.example",s:["Delta Měření","Přesně. Spolehlivě.","Stánek č. 4"]},
+  eps:{n:"Epsilon Trade",k:"odborny",c:"#3b7f78",d:"Dodávky materiálu a komponent.",st:"Stánek 5",web:"epsilon-trade.example",s:["Epsilon Trade","Skladem do 48 hodin","Stánek č. 5"]},
+  zeta:{n:"Zeta Lab",k:"odborny",c:"#a04848",d:"Akreditovaná laboratoř.",st:"Stánek 6",web:"zeta-lab.example",s:["Zeta Lab","Výsledky do 3 dnů","Stánek č. 6"]},
+  eta:{n:"Éta Projekt",k:"odborny",c:"#4f6aa0",d:"Projekční kancelář.",st:"Stánek 7",web:"eta-projekt.example",s:["Éta Projekt","Projekty na klíč","Stánek č. 7"]},
+  theta:{n:"Théta Energo",k:"odborny",c:"#6b7d2f",d:"Úspory energie v provozech.",st:"Stánek 8",web:"theta-energo.example",s:["Théta Energo","Ušetřete až 20 %","Stánek č. 8"]},
+  iota:{n:"Ióta Soft",k:"odborny",c:"#8a5a12",d:"Software pro evidenci a reporting.",st:"Stánek 9",web:"iota-soft.example",s:["Ióta Soft","Reporting bez Excelu","Stánek č. 9"]},
+  kappa:{n:"Kappa Média",k:"medialni",c:"#5d6b62",d:"Odborný časopis.",st:"",web:"kappa-media.example",s:["Kappa Média","Odborný měsíčník","Předplatné za konferenční cenu"]},
+  lambda:{n:"Lambda Revue",k:"medialni",c:"#6d5d8a",d:"Zpravodajský portál oboru.",st:"",web:"lambda-revue.example",s:["Lambda Revue","Zprávy z oboru denně","lambda-revue.example"]},
+};
+const KAT = [["generalni","Generální partner","g1"],["hlavni","Hlavní partneři","g2"],["odborny","Odborní partneři","g3"],["medialni","Mediální partneři","g2"]];
+const KAT1 = {generalni:"Generální partner",hlavni:"Hlavní partner",odborny:"Odborný partner",medialni:"Mediální partner"};
+const DAYS = [{k:"po",n:"Pondělí",d:"10. 5."},{k:"ut",n:"Úterý",d:"11. 5."},{k:"st",n:"Středa",d:"12. 5."}];
+const PROG = {
+  po:[
+    {id:"p1",t:"12:00",h:"Registrace a ubytování",w:"Recepce hotelu",brk:1},
+    {id:"p2",t:"14:00",h:"Zahájení konference",w:"Předsednictvo VHOS",r:"Velký sál"},
+    {id:"p3",t:"14:30",h:"Digitalizace v praxi: co se osvědčilo",w:"Ing. Jana Dvořáková",r:"Velký sál",sp:"alfa"},
+    {id:"p4",t:"15:30",h:"Přestávka a výstava partnerů",w:"Foyer",brk:1},
+    {id:"p5",t:"16:00",h:"Případová studie: modernizace provozu",w:"Ing. Tomáš Malý",r:"Velký sál"},
+    {id:"p6",t:"19:00",h:"Večeře pro ubytované",w:"Restaurace, výběr jídla A / B / C",brk:1},
+    {id:"p7",t:"19:30",h:"Slavnostní večeře",w:"Salonek u jezera",inv:1,brk:1},
+  ],
+  ut:[
+    {id:"u1",t:"09:00",h:"Novinky v legislativě 2027",w:"JUDr. Petra Horáková",r:"Velký sál"},
+    {id:"u2",t:"10:00",h:"Kybernetická bezpečnost menších provozů",w:"Ing. Martin Kos",r:"Velký sál",sp:"iota"},
+    {id:"u3",t:"11:00",h:"Přestávka a výstava partnerů",w:"Foyer",brk:1},
+    {id:"u4",t:"11:30",h:"Panelová diskuse: Co nás čeká",w:"Moderuje Mgr. Eva Šindelářová",r:"Velký sál"},
+    {id:"u5",t:"13:00",h:"Oběd",w:"Restaurace",brk:1},
+    {id:"u6",t:"14:30",h:"Workshop: Data a reporting",w:"Ing. Pavel Richter",r:"Malý sál",sp:"delta"},
+  ],
+  st:[
+    {id:"s1",t:"09:00",h:"Měření a kalibrace bez chyb",w:"Ing. Lucie Benešová",r:"Velký sál"},
+    {id:"s2",t:"10:00",h:"Energetické úspory: tři příklady",w:"Ing. Ondřej Vávra",r:"Velký sál",sp:"theta"},
+    {id:"s3",t:"11:00",h:"Shrnutí a závěr konference",w:"Předsednictvo VHOS",r:"Velký sál"},
+    {id:"s4",t:"12:00",h:"Oběd a odjezd",w:"Restaurace",brk:1},
+  ]
+};
+const QA0 = {
+  p3:[{q:"Jaké byly největší překážky při zavádění?",a:"Karel N.",v:14,scr:1},{q:"Kolik stála první etapa a za jak dlouho se vrátila?",a:"anonymně",v:9},{q:"Dá se systém propojit se stávajícím účetnictvím?",a:"Lenka P.",v:4}],
+  u1:[{q:"Platí nová povinnost i pro obce pod 2 000 obyvatel?",a:"Jiří S.",v:11,scr:1},{q:"Kdy vyjde prováděcí vyhláška?",a:"anonymně",v:6}],
+};
+const NEWS = [
+  {d:"8. 10.",h:"Program je venku",p:"Kompletní program tří dnů najdete v záložce Program. Přednášky si můžete označit a nastavit připomenutí."},
+  {d:"1. 10.",h:"Přihlášky partnerů do 31. 3. 2027",p:"Odborní partneři mají k dispozici jeden pokoj až pro tři účastníky."},
+  {d:"20. 9.",h:"Parkování u hotelu zdarma",p:"Pro účastníky je vyhrazeno parkoviště P1 přímo u recepce."},
+];
+const ME = {id:"270142-1",pin:"4821",jm:"Ing. Petr Novák",firma:"delta",role:"Vystavující partner",
+  pokoj:"214",sekce:"A",patro:"2. patro",luzko:"lůžko 1",spolu:"Jan Svoboda (Delta Měření)",noci:"Po → Út, 1 noc",
+  jidlo:"B", tel:"+420 603 123 456", mail:"p.novak@delta-mereni.example"};
+const JIDLA = {A:"Svíčková na smetaně, knedlík",B:"Pečený candát, bramborové pyré",C:"Rizoto s grilovanou zeleninou (vege)"};
+
+/* ===== Stav (uložení jen v tomto prohlížeči) ===== */
+const store = {get(k,d){try{const v=localStorage.getItem("s27_"+k);return v?JSON.parse(v):d}catch(e){return d}},
+               set(k,v){try{localStorage.setItem("s27_"+k,JSON.stringify(v))}catch(e){}}};
+const S = {tab:"domu",day:"po",rem:store.get("rem",{}),logged:store.get("logged",false),jidlo:store.get("jidlo",ME.jidlo),
+  qa:JSON.parse(JSON.stringify(QA0)),voted:{},msgs:[
+    {me:1,t:"Dobrý den, přijedu až v pondělí kolem 18:00. Platí rezervace pokoje?",d:"2. 10. 9:14"},
+    {me:0,t:"Dobrý den, ano, pokoj 214 máte rezervovaný. Recepce je otevřená do 22:00. Těšíme se!",d:"2. 10. 10:02"}]};
+
+/* ===== Pomocné ===== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const I = {
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+  prog:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h4M7 17h7"/></svg>',
+  part:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+  map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>',
+  me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  bell:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>',
+  q:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
+  play:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+};
+const TABS=[["domu","Domů",I.home],["program","Program",I.prog],["partneri","Partneři",I.part],["areal","Areál",I.map],["ja","Můj pobyt",I.me]];
+function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2600)}
+function logo(id,size){const p=P[id];return `<div class="lm" style="background:${p.c}${size?`;width:${size}px;height:${size}px`:""}">${esc(p.n[0])}</div>`}
+
+/* ===== Navigace ===== */
+function go(t){S.tab=t;render();window.scrollTo(0,0)}
+function renderTabs(){$("tabs").innerHTML=TABS.map(([k,n,ic])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${ic}<span>${n}</span></button>`).join("")}
+$("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
+function render(){renderTabs();$("view").innerHTML={domu:vDomu,program:vProgram,partneri:vPartneri,areal:vAreal,ja:vJa}[S.tab]();after()}
+function after(){if(S.tab==="ja"&&S.logged)drawQR($("qr"),ME.id)}
+
+/* ===== Domů ===== */
+function vDomu(){
+  const days=Math.max(0,Math.ceil((START-new Date())/864e5));
+  const next=PROG.po.find(x=>!x.brk&&x.r);
+  const g=P.alfa, ios=/iPhone|iPad|iPod/.test(navigator.userAgent);
+  return `<section class="sec">
+    <div class="hero">
+      <span class="label" style="color:inherit;opacity:.8">Seč · hotel u přehrady</span>
+      <h1>Vítejte na konferenci VHOS 2027</h1>
+      <div class="meta">Pondělí 10. – středa 12. května 2027</div>
+      <div class="count"><b>${days}</b><span>dní do zahájení</span></div>
+      <svg class="waves" viewBox="0 0 180 60" fill="none" stroke="currentColor" stroke-width="3"><path d="M0 15c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 35c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 55c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/></svg>
+    </div>
+    <button class="banner" data-partner="alfa" aria-label="Generální partner ${esc(g.n)}">
+      <span class="tag">Generální partner</span>
+      ${g.s.map((t,i)=>`<div class="slide">${logo("alfa")}<div><b style="font-family:var(--f-display);font-size:${i?16:20}px">${esc(t)}</b><div class="muted" style="font-size:12px">Klepněte pro video a nabídku</div></div></div>`).join("")}
+    </button>
+    <div class="card">
+      <div class="label">První přednáška</div>
+      <div class="row" style="justify-content:space-between;margin-top:6px;align-items:flex-start">
+        <div style="min-width:0"><b style="font-size:16px">${esc(next.h)}</b><div class="muted" style="font-size:13px">Po ${next.t} · ${esc(next.r)} · ${esc(next.w)}</div></div>
+        <button class="btn small ghost" data-go="program">Program</button>
+      </div>
+    </div>
+    <div class="card"><div class="label" style="margin-bottom:8px">Aktuality</div><div class="news">
+      ${NEWS.map(n=>`<article><time>${n.d}</time><div><h3>${esc(n.h)}</h3><p>${esc(n.p)}</p></div></article>`).join("")}
+    </div></div>
+    <div class="note"><b>Aplikace do mobilu:</b> ${ios?"v Safari klepněte na Sdílet → Přidat na plochu.":"v Chrome zvolte Nainstalovat aplikaci (na iPhonu: Sdílet → Přidat na plochu)."} Pak budete mít ikonku na ploše a budou vám chodit upozornění.</div>
+  </section>`;
+}
+
+/* ===== Program ===== */
+function vProgram(){
+  const list=PROG[S.day];
+  return `<section class="sec">
+    <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small></button>`).join("")}</div>
+    ${list.map(x=>{
+      const r=S.rem[x.id], qn=(S.qa[x.id]||[]).length;
+      return `<div class="slot"><div class="t">${x.t}</div>
+      <div class="talk ${x.brk?"brk":""} ${r?"mine":""}">
+        ${x.inv?'<span class="inv">Jen pro pozvané</span>':""}
+        <h3>${esc(x.h)}</h3>
+        <div class="who">${esc(x.w)}</div>
+        ${x.r?`<div class="place">${esc(x.r)}</div>`:""}
+        ${x.sp?`<div class="sponsor">Blok s podporou partnera <b>${esc(P[x.sp].n)}</b></div>`:""}
+        ${x.brk?"":`<div class="acts">
+          <button class="pill ${r?"on":""}" data-rem="${x.id}">${I.bell}${r?`${r} min předem`:"Připomenout"}</button>
+          <button class="pill" data-qa="${x.id}">${I.q}Dotazy${qn?` · ${qn}`:""}</button>
+        </div>`}
+      </div></div>`}).join("")}
+    <div class="note">Zelený proužek = přednáška ve vašem programu. Připomenutí přijde do mobilu v nastavený čas.</div>
+  </section>`;
+}
+function sheetRem(id){
+  const x=Object.values(PROG).flat().find(z=>z.id===id), cur=S.rem[id];
+  openSheet(`<h2>Připomenout přednášku</h2><div class="muted">${esc(x.h)} · ${x.t}</div>
+    <div class="body"><div class="opts">${[5,10,15,30].map(m=>`<button data-setrem="${m}" aria-pressed="${cur===m}">${m} minut předem</button>`).join("")}</div>
+    ${cur?`<button class="btn ghost" data-setrem="0">Zrušit připomenutí</button>`:""}
+    <div class="note">V ostré verzi přijde upozornění do mobilu. Zároveň se přednáška přidá do „Můj program“.</div></div>`,
+  e=>{const b=e.target.closest("[data-setrem]");if(!b)return;const m=+b.dataset.setrem;
+    if(m){S.rem[id]=m;toast(`Připomenu ${m} minut před začátkem`)}else{delete S.rem[id];toast("Připomenutí zrušeno")}
+    store.set("rem",S.rem);closeSheet();render()});
+}
+function sheetQA(id){
+  const x=Object.values(PROG).flat().find(z=>z.id===id);
+  const draw=()=>{const qs=(S.qa[id]=S.qa[id]||[]).slice().sort((a,b)=>b.v-a.v);
+    $("qlist").innerHTML=qs.length?qs.map(q=>{const i=S.qa[id].indexOf(q),on=S.voted[id+i];
+      return `<div class="q"><button class="vote ${on?"on":""}" data-vote="${i}" aria-label="Podpořit dotaz">▲<span>${q.v}</span></button>
+      <div><p>${esc(q.q)}${q.scr?'<span class="onscreen">Na plátně</span>':""}</p><small>${esc(q.a)}</small></div></div>`}).join("")
+      :'<p class="muted" style="margin:0">Zatím žádné dotazy. Buďte první.</p>'};
+  openSheet(`<h2>Dotazy k přednášce</h2><div class="muted">${esc(x.h)} · ${esc(x.w)}</div>
+    <div class="body"><div id="qlist"></div>
+    <form class="send" id="qform"><input id="qin" placeholder="Napište dotaz na přednášejícího…" aria-label="Váš dotaz"><button class="btn">Poslat</button></form>
+    <div class="note">Nejvíc podpořené dotazy jsou nahoře. Moderátor je vybírá na plátno v sále. Soukromou zprávu přednášejícímu pošlete přes Můj pobyt.</div></div>`,
+  e=>{const b=e.target.closest("[data-vote]");if(!b)return;const i=+b.dataset.vote,k=id+i;
+    S.voted[k]=!S.voted[k];S.qa[id][i].v+=S.voted[k]?1:-1;draw()});
+  draw();
+  $("qform").addEventListener("submit",e=>{e.preventDefault();const v=$("qin").value.trim();if(!v)return;
+    S.qa[id].push({q:v,a:S.logged?"Petr N.":"anonymně",v:0});$("qin").value="";draw();render();toast("Dotaz odeslán (ukázka – uloží se jen tady)")});
+}
+
+/* ===== Partneři ===== */
+function vPartneri(){
+  return `<section class="sec">
+    ${KAT.map(([k,n,g])=>{const ids=Object.keys(P).filter(i=>P[i].k===k);
+      return `<div class="cat"><h2>${n}</h2><div class="logos ${g}">${ids.map(i=>`<button class="logo" data-partner="${i}">${logo(i)}<span>${esc(P[i].n)}</span></button>`).join("")}</div></div>`}).join("")}
+    <div class="note">Klepněte na logo: otevře se nabídka firmy s videospotem. Obsah si připravuje každá firma sama, pořadatel ho jen schválí.</div>
+  </section>`;
+}
+function sheetPartner(id){
+  const p=P[id];
+  openSheet(`<div class="row" style="margin-bottom:10px">${logo(id,52)}<div style="min-width:0"><h2 style="padding:0">${esc(p.n)}</h2><div class="muted" style="font-size:13px">${KAT1[p.k]}${p.st?" · "+p.st:""}</div></div></div>
+    <div class="video" id="vid" style="background:${p.c}">
+      ${p.s.map(t=>`<div class="vs">${esc(t)}</div>`).join("")}
+      <button class="playbtn" id="vplay" aria-label="Přehrát spot">${I.play}</button>
+    </div>
+    <div class="body">
+      <p style="margin:0">${esc(p.d)}</p>
+      <dl class="kv"><dt>Web</dt><dd>${esc(p.web)}</dd>${p.st?`<dt>Na výstavě</dt><dd>${esc(p.st)} (Foyer)</dd>`:""}<dt>Ke stažení</dt><dd>Katalog 2027 (PDF), Prezentace</dd></dl>
+      <div class="note">Místo animované smyčky bude skutečný videospot firmy (YouTube / Vimeo). Partner po konferenci dostane statistiku, kolik lidí si profil a video prohlédlo.</div>
+    </div>`);
+  $("vplay").addEventListener("click",()=>$("vid").classList.add("play"));
+}
+
+/* ===== Areál ===== */
+function vAreal(){
+  const stands=[["alfa",172,150],["beta",204,150],["gama",236,150],["delta",172,178],["eps",204,178],["zeta",236,178],["eta",268,150],["theta",268,178],["iota",300,164]];
+  return `<section class="sec">
+    <div class="card map">
+      <div class="label" style="margin-bottom:6px">Plánek areálu</div>
+      <svg viewBox="0 0 340 250" role="img" aria-label="Plánek hotelu a areálu">
+        <path d="M0 214c40-12 80 8 120-2s80-16 120-4 70 10 100 0V250H0z" fill="var(--water-soft)"/>
+        <text x="200" y="240" class="lbl-m">Vodní nádrž Seč</text>
+        <rect x="10" y="12" width="120" height="74" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
+        <text x="20" y="30">Budova A – pokoje</text><text x="20" y="44" class="lbl-m">1.–3. patro · 101–316</text>
+        ${S.logged?`<circle cx="104" cy="66" r="8" fill="var(--accent)"/><text x="80" y="70" style="fill:var(--accent);font-weight:800">214</text>`:""}
+        <rect x="10" y="96" width="120" height="58" rx="6" fill="var(--surface-2)" stroke="var(--line)"/>
+        <text x="20" y="114">Budova B – pokoje</text><text x="20" y="128" class="lbl-m">přízemí · 01–24</text>
+        <rect x="150" y="12" width="180" height="74" rx="6" fill="var(--water-soft)" stroke="var(--water)"/>
+        <text x="162" y="30">Velký sál</text><text x="162" y="44" class="lbl-m">přednášky · 220 míst</text>
+        <rect x="270" y="52" width="54" height="28" rx="4" fill="var(--surface)" stroke="var(--water)"/><text x="276" y="70" style="font-size:8px">Malý sál</text>
+        <rect x="150" y="96" width="180" height="104" rx="6" fill="var(--surface-2)" stroke="var(--line)"/>
+        <text x="162" y="114">Foyer – výstava partnerů</text><text x="162" y="127" class="lbl-m">klepněte na stánek</text>
+        ${stands.map(([id,x,y],i)=>`<g class="stand" data-partner="${id}" tabindex="0" role="button" aria-label="Stánek ${i+1} – ${esc(P[id].n)}"><rect x="${x}" y="${y}" width="26" height="22" rx="3" fill="${P[id].c}"/><text x="${x+13}" y="${y+15}" text-anchor="middle" style="fill:#fff;font-weight:800">${i+1}</text></g>`).join("")}
+        <rect x="10" y="164" width="120" height="36" rx="6" fill="var(--surface)" stroke="var(--line)"/>
+        <text x="20" y="180">Restaurace</text><text x="20" y="192" class="lbl-m">večeře Po 19:00</text>
+        <rect x="56" y="90" width="44" height="4" fill="var(--warn)"/>
+        <text x="136" y="94" class="lbl-m" text-anchor="end">Recepce</text>
+      </svg>
+      <div class="legend"><span><i style="background:var(--accent)"></i>${S.logged?"Váš pokoj 214":"Ubytování"}</span><span><i style="background:var(--water)"></i>Sály</span><span><i style="background:var(--warn)"></i>Recepce</span></div>
+    </div>
+    <div class="card"><div class="label" style="margin-bottom:8px">Praktické informace</div>
+      <dl class="kv">
+        <dt>Adresa</dt><dd>Hotel (ukázka), Seč – Ústupky</dd>
+        <dt>Parkování</dt><dd>P1 u recepce, zdarma</dd>
+        <dt>Check-in</dt><dd>od 12:00, recepce do 22:00</dd>
+        <dt>Wi-Fi</dt><dd>Konference-Sec · heslo na jmenovce</dd>
+        <dt>Pořadatel</dt><dd>+420 000 000 000</dd>
+      </dl>
+    </div>
+  </section>`;
+}
+
+/* ===== Můj pobyt ===== */
+function vJa(){
+  if(!S.logged) return `<section class="sec">
+    <div class="card form">
+      <h2 style="font-size:22px">Můj pobyt</h2>
+      <p class="muted" style="margin:0">Přihlaste se kódem a PINem z potvrzovacího e-mailu. Uvidíte svůj pokoj, večeři a zprávy od pořadatele.</p>
+      <form class="form" id="login">
+        <div><label for="lid">Kód účastníka</label><input id="lid" inputmode="numeric" placeholder="např. 270142-1" autocomplete="username"></div>
+        <div><label for="lpin">PIN</label><input id="lpin" inputmode="numeric" maxlength="4" placeholder="4 číslice" autocomplete="current-password"></div>
+        <div class="err" id="lerr" hidden>Kód nebo PIN nesouhlasí. Najdete je v potvrzovacím e-mailu.</div>
+        <button class="btn">Přihlásit</button>
+      </form>
+    </div>
+    <div class="note"><b>Ukázkový přístup:</b> kód <b>270142-1</b>, PIN <b>4821</b> <button class="btn small ghost" id="fill" type="button" style="margin-left:6px">Vyplnit</button></div>
+  </section>`;
+  return `<section class="sec">
+    <div class="card idcard">
+      <div style="min-width:0"><div class="label">${esc(ME.role)} · ${esc(P[ME.firma].n)}</div><h2>${esc(ME.jm)}</h2><div class="code">${ME.id}</div><div class="muted" style="font-size:12px">Ukažte QR kód při registraci</div></div>
+      <canvas class="qr" id="qr" width="25" height="25" aria-label="QR kód účastníka"></canvas>
+    </div>
+    <div class="card"><div class="label" style="margin-bottom:8px">Ubytování <span class="status">Přiděleno</span></div>
+      <dl class="kv">
+        <dt>Pokoj</dt><dd>${ME.pokoj} · budova ${ME.sekce}, ${ME.patro}</dd>
+        <dt>Lůžko</dt><dd>${ME.luzko}</dd>
+        <dt>Spolu s</dt><dd>${esc(ME.spolu)}</dd>
+        <dt>Noci</dt><dd>${ME.noci}</dd>
+      </dl>
+      <button class="btn small ghost" data-go="areal" style="margin-top:10px">Ukázat na plánku</button>
+    </div>
+    <div class="card"><div class="label" style="margin-bottom:8px">Večeře v pondělí <span class="status">Objednáno</span></div>
+      <dl class="kv"><dt>Kdy</dt><dd>Po 10. 5. od 19:00, restaurace</dd><dt>Jídlo ${S.jidlo}</dt><dd>${esc(JIDLA[S.jidlo])}</dd></dl>
+      <button class="btn small ghost" id="chjidlo" style="margin-top:10px">Změnit jídlo</button>
+    </div>
+    <div class="card"><div class="label" style="margin-bottom:8px">Kontakty</div>
+      <dl class="kv"><dt>Telefon</dt><dd>${ME.tel}</dd><dt>E-mail</dt><dd style="overflow-wrap:anywhere">${ME.mail}</dd></dl>
+    </div>
+    <div class="card"><div class="label" style="margin-bottom:10px">Zprávy s pořadatelem</div>
+      <div class="chat" id="chat">${S.msgs.map(m=>`<div class="msg ${m.me?"me":"org"}">${esc(m.t)}<small>${m.me?"Vy":"Pořadatel"} · ${m.d}</small></div>`).join("")}</div>
+      <form class="send" id="mform" style="margin-top:10px"><input id="min" placeholder="Napište pořadateli…" aria-label="Zpráva pořadateli"><button class="btn">Poslat</button></form>
+    </div>
+    <button class="btn ghost" id="logout">Odhlásit</button>
+  </section>`;
+}
+function sheetJidlo(){
+  openSheet(`<h2>Výběr jídla</h2><div class="muted">Večeře pro ubytované, pondělí 10. 5.</div>
+    <div class="body"><div class="opts" style="grid-template-columns:1fr">${Object.keys(JIDLA).map(k=>`<button data-j="${k}" aria-pressed="${S.jidlo===k}"><b>${k}</b> · ${esc(JIDLA[k])}</button>`).join("")}</div>
+    <div class="note">Změnu uvidí pořadatel hned a počty pro restauraci se přepočítají samy. Změny jsou možné do 3. 5.</div></div>`,
+  e=>{const b=e.target.closest("[data-j]");if(!b)return;S.jidlo=b.dataset.j;store.set("jidlo",S.jidlo);closeSheet();render();toast("Jídlo změněno, pořadatel dostal upozornění")});
+}
+
+/* QR – jen ilustrační vzor (ne skutečný QR kód) */
+function drawQR(c,txt){
+  if(!c)return;const x=c.getContext("2d"),n=25;x.fillStyle="#fff";x.fillRect(0,0,n,n);x.fillStyle="#111";
+  let h=0;for(const ch of txt)h=(h*31+ch.charCodeAt(0))>>>0;
+  const rnd=()=>{h^=h<<13;h>>>=0;h^=h>>17;h^=h<<5;h>>>=0;return h/4294967296};
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++)if(rnd()<.48)x.fillRect(i,j,1,1);
+  for(const [a,b] of [[0,0],[n-7,0],[0,n-7]]){x.fillStyle="#fff";x.fillRect(a,b,7,7);x.fillStyle="#111";x.fillRect(a,b,7,7);x.fillStyle="#fff";x.fillRect(a+1,b+1,5,5);x.fillStyle="#111";x.fillRect(a+2,b+2,3,3)}
+}
+
+/* ===== Sheet ===== */
+let sheetHandler=null;
+function openSheet(html,onClick){const s=$("sheet");s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+html;
+  s.hidden=false;$("bd").hidden=false;sheetHandler=onClick||null;$("sclose").focus()}
+function closeSheet(){$("sheet").hidden=true;$("bd").hidden=true;sheetHandler=null}
+$("bd").addEventListener("click",closeSheet);
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();if(sheetHandler)sheetHandler(e)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet();
+  if((e.key==="Enter"||e.key===" ")&&e.target.matches(".stand")){e.preventDefault();sheetPartner(e.target.dataset.partner)}});
+
+/* ===== Události v obsahu ===== */
+$("view").addEventListener("click",e=>{
+  const t=e.target.closest("[data-go],[data-day],[data-rem],[data-qa],[data-partner],#chjidlo,#logout,#fill");if(!t)return;
+  if(t.dataset.go)return go(t.dataset.go);
+  if(t.dataset.day){S.day=t.dataset.day;return render()}
+  if(t.dataset.rem)return sheetRem(t.dataset.rem);
+  if(t.dataset.qa)return sheetQA(t.dataset.qa);
+  if(t.dataset.partner)return sheetPartner(t.dataset.partner);
+  if(t.id==="chjidlo")return sheetJidlo();
+  if(t.id==="logout"){S.logged=false;store.set("logged",false);return render()}
+  if(t.id==="fill"){$("lid").value=ME.id;$("lpin").value=ME.pin}
+});
+$("view").addEventListener("submit",e=>{
+  e.preventDefault();
+  if(e.target.id==="login"){
+    const ok=$("lid").value.trim()===ME.id&&$("lpin").value.trim()===ME.pin;
+    if(!ok){$("lerr").hidden=false;return}
+    S.logged=true;store.set("logged",true);render();toast("Přihlášeno – vítejte, pane Nováku");
+  }
+  if(e.target.id==="mform"){
+    const v=$("min").value.trim();if(!v)return;const d=new Date();
+    S.msgs.push({me:1,t:v,d:`${d.getDate()}. ${d.getMonth()+1}. ${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}`});render();
+    toast("Zpráva je u pořadatele (ukázka – nic se neodesílá)");
+  }
+});
+
+render();
+</script>
