@@ -43,6 +43,33 @@ Poslední aktualizace: 12. 10. 2026
 - Možný bonus: **QR kód** pro registraci na místě (kdo dorazil, výdej jmenovky).
 - Odkaz lze kdykoli zneplatnit a poslat nový.
 
+## 1a. Kategorie účastníků a partnerů
+
+- Lidé se dělí na: **partnery**, **hosty konference**, **VHOS**, **přednášející**
+  a další (kategorie uživatel ještě upřesní).
+- Partneři se dělí na: **generální**, **hlavní**, **odborné**, **mediální** (a další).
+- Zvlášť se evidují přihlášky tzv. **hostů**.
+- Kdo spí **sám** a kdo **s někým** – rozhoduje pořadatel.
+- *Pozn.: dnešní aplikace už kategorie firem má: generální, hlavní, odborní,
+  mediální, VHOS, Koncern, AČE, ostatní – ověřit, zda seznam sedí.*
+
+## 1b. Přihláška firmy (partnera)
+
+- Každý **odborný partner / firma** dostane k dispozici **1 pokoj pro až 3 účastníky**.
+  - *Ověřit: platí to i pro generální / hlavní partnery, nebo mají víc?*
+- Firma dostane **elektronickou přihlášku**, kam vyplní své lidi:
+  jméno, telefon, e-mail atd. (vzor přihlášky uživatel poskytne).
+- Údaje z přihlášky se převezmou do **karty účastníka**.
+- Pořadatel do karty doplní, **zda má pokoj, nebo ne**.
+- *Pozn.: partnerská přihláška `prihlaska/?k=…` už existuje – porovnat se vzorem.*
+
+## 1c. Karta účastníka a rychlé vyhledání
+
+- Když se někdo zeptá „mám pokoj?“, pořadatel napíše jméno a hned vidí vše:
+  **firma, e-mail, telefon, číslo pokoje, večeře** a další (postupně doplnit).
+- *Pozn.: vyhledávání podle jména/firmy/e-mailu/pokoje už aplikace má –
+  ověřit, že ukáže vše potřebné na jednom místě.*
+
 ## 4. Ubytování a přidělování pokojů
 
 - Hotel dá pořadateli **určitý počet pokojů s konkrétními čísly**.
@@ -53,15 +80,23 @@ Poslední aktualizace: 12. 10. 2026
 - Aplikace by měla hlídat:
   - nikdo, komu ubytování zajišťujeme, nezůstal bez lůžka,
   - nezůstalo obsazené / objednané lůžko, které nikdo nepotřebuje,
-  - kdo spí s kým (např. kolegové ze stejné firmy).
+  - kdo spí s kým (např. kolegové ze stejné firmy),
+  - **aby se omylem na jeden pokoj nedostali lidé ze dvou různých firem**,
+  - **kde je na pokoji volné místo** (přehled volných lůžek / přistýlek).
 - Nápad: přidělování přetažením myší.
 
 ## 5. Večeře
 
-- Večeře je **v pondělí** – objednat si ji může jen ten, kdo přijede v pondělí.
-- Kdo přijede až v úterý, večeři mu formulář nenabídne.
-- Výběr ze **tří jídel: A, B, C**.
-- Pro pořadatele: souhrn pro restauraci (A 23×, B 15×, C 8×) + seznam kdo má co.
+V pondělí jsou **dvě různé večeře**:
+
+1. **Slavnostní večeře** – jen pro **pozvané** (partneři, hosté…).
+   - *Upřesnit: kdo přesně je pozván, má se volit jídlo, vztah k běžné večeři?*
+2. **Běžná pondělní večeře pro ubytované** – výběr ze **tří jídel: A, B, C**.
+
+- Večeři si může objednat jen ten, kdo přijede v pondělí; kdo přijede až
+  v úterý, formulář mu ji nenabídne.
+- Pro pořadatele: souhrn pro restauraci (A 23×, B 15×, C 8×) + seznam kdo má co,
+  zvlášť pro slavnostní a běžnou večeři.
 
 ## 6. Další nápady do budoucna
 
@@ -81,6 +116,7 @@ Poslední aktualizace: 12. 10. 2026
 
 ## Otevřené otázky (doladit později)
 
+- Kdo je „host“ a kdo „host konference“ – je to totéž?
 - Jaké všechny role existují a co přesně komu zajišťujeme (hotel / večeře / zdarma / za úplatu)?
 - Kolik nocí hotel? Jen pondělí→úterý, nebo i jiné?
 - Kdo přihlašuje – každý sám, nebo za firmu jeden člověk?
