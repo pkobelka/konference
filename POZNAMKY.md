@@ -179,6 +179,18 @@ Poslední aktualizace: 12. 10. 2026
 - **Příspěvky firem:** partneři mohou umístit příspěvky, prezentace, nabídky
   (nahraje pořadatel, nebo firma sama přes svůj přístup – rozhodnout).
 
+**Videa a reklama partnerů (doplněno uživatelem):**
+- **Videospoty firem** v profilu partnera.
+  - Technicky: videa nahrát na **YouTube / Vimeo** a do aplikace jen vložit
+    (velká videa přímo ve Firebase = zbytečné náklady, pomalé načítání).
+- **Reklamní bannery** v aplikaci (např. na úvodní stránce, v programu).
+  - Viditelnost podle kategorie: **generální** nejvíc (úvod, každá stránka),
+    hlavní méně, odborní v seznamu partnerů → další hodnota pro partnery.
+  - Možnost „přednáška / blok s podporou partnera XY“.
+- **Statistiky pro partnery:** kolikrát si lidé zobrazili profil / video /
+  klikli na web → po konferenci report pro partnera (argument pro příští ročník).
+- *Upřesnit: kdo dodá videa, formát, zda reklama bude součástí partnerských balíčků.*
+
 **Android vs. iPhone (obava uživatele – cca půl na půl):**
 - PWA funguje na obou, jedna aplikace pro všechny (+ počítač).
 - Rozdíly:
