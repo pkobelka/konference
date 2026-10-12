@@ -370,3 +370,28 @@ Nápadů je hodně, stavět postupně:
 - **Uložte si termín – Seč 2028:** karta na konci úvodní stránky a v Info
   (za historií), v ostré verzi s tlačítkem „Přidat do kalendáře“.
   *Doplnit přesný termín 2028.*
+
+### Reklamní plochy pro partnery (uživatel: „hlavně tam musí být prostor pro reklamu“)
+
+Přehled ploch v ukázce (verze 4) – podklad pro partnerské balíčky:
+
+| Plocha | Kde | Návrh pro kategorii |
+|---|---|---|
+| Úvodní obrazovka při spuštění | celá obrazovka, 2–3 s | generální (exkluzivně) |
+| Banner nahoře na úvodní stránce | Domů, smyčka | generální |
+| Dlaždice „Hlavní partneři“ | Domů | hlavní |
+| Partner dne | Program, nad přednáškami daného dne | hlavní / generální |
+| Blok s podporou partnera | u konkrétní přednášky | hlavní / odborní |
+| Reklama u přestávek („přijďte na stánek“) | Program | odborní |
+| Partner večeře | Můj pobyt, karta večeře | hlavní |
+| Partner dotazů z publika | okno Dotazy (i na plátně v sále) | odborní |
+| Partner Wi-Fi | Info, praktické informace | odborní |
+| Partner svozu | Info, jízdní řád autobusu | odborní |
+| Reklama v Můj pobyt | pod ubytováním | odborní |
+| Stěna log + profil s videem | Partneři | všichni (velikost dle kategorie) |
+| Stánek na plánku výstavy | Info, plánek | vystavovatelé |
+| Smyčka na obrazovkách v sále | foyer / sál o přestávkách | dle balíčku |
+
+- Každá plocha je klikací → profil partnera s videem / nabídkou.
+- Statistika zobrazení a kliknutí pro každou plochu → report partnerovi.
+- *Rozhodnout: které plochy budou v jakém balíčku a za kolik.*
