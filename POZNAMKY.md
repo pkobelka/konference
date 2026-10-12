@@ -134,6 +134,15 @@ Poslední aktualizace: 12. 10. 2026
 - **Moderace:** pořadatel může zprávu skrýt / smazat, případně chat vypnout.
 - Technicky: Firebase umí zprávy v reálném čase, bez nákladů navíc.
 - *Upřesnit: anonymní dotazy povolit? Zůstane diskuse po konferenci přístupná?*
+
+**Sborník a materiály ke stažení (nápad uživatele):**
+- **Sborník konference** (PDF) ke stažení v aplikaci.
+- U jednotlivých přednášek **prezentace / podklady** ke stažení
+  (přednášející je nahraje sám, nebo pořadatel).
+- Volba: přístupné hned, nebo až po přednášce / po konferenci;
+  jen pro účastníky, nebo veřejně.
+- Po konferenci aktualita „Sborník je ke stažení“ + notifikace.
+- *Upřesnit: v jaké podobě sborník dnes vzniká, kdo ho připravuje, velikost souborů.*
 - Technicky na stávajícím GitHub Pages + Firebase, bez nákladů navíc.
 
 ## 4. Ubytování a přidělování pokojů
@@ -198,6 +207,17 @@ V pondělí jsou **dvě různé večeře**:
   (GitHub Pages + Firebase), bude potřeba doplnit službu na posílání mailů.
 
 ---
+
+## Priority (návrh – projít s uživatelem)
+
+Nápadů je hodně, stavět postupně:
+
+1. **Základ (musí být):** přihláška, karta účastníka, kategorie, pokoje
+   a jejich kontrola, večeře, potvrzovací e-mail s kódem.
+2. **Komunikace:** automatické odpovědi na kód, mail o přidělení pokoje,
+   osobní odkaz / mobilní aplikace s údaji, informace, aktuality.
+3. **Obsah konference:** program, sborník a prezentace, dotazy k přednáškám,
+   chat, poznámky, notifikace, QR registrace.
 
 ## Otevřené otázky (doladit později)
 
