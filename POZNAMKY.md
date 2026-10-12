@@ -166,6 +166,19 @@ Poslední aktualizace: 12. 10. 2026
 - *Upřesnit: v jaké podobě sborník dnes vzniká, kdo ho připravuje, velikost souborů.*
 - Technicky na stávajícím GitHub Pages + Firebase, bez nákladů navíc.
 
+**Další obsah (doplněno uživatelem):**
+- **Připomenutí přednášky:** u přednášky v programu tlačítko 🔔 → účastník si
+  nastaví, kdy chce upozornit (5 / 10 / 15 min předem…). Zároveň vzniká
+  „Můj program“ (oblíbené přednášky).
+  - Technicky: plánované notifikace potřebují malou serverovou část
+    (např. Firebase Cloud Functions – pravděpodobně v bezplatném limitu,
+    ale vyžaduje tarif Blaze s kartou) – ověřit. Záloha: připomínka do kalendáře
+    v mobilu (soubor .ics), funguje všude bez serveru.
+- **Seznam partnerů:** podle kategorií (generální, hlavní, odborní, mediální),
+  logo, popis, web, kontakt, číslo stánku.
+- **Příspěvky firem:** partneři mohou umístit příspěvky, prezentace, nabídky
+  (nahraje pořadatel, nebo firma sama přes svůj přístup – rozhodnout).
+
 **Android vs. iPhone (obava uživatele – cca půl na půl):**
 - PWA funguje na obou, jedna aplikace pro všechny (+ počítač).
 - Rozdíly:
