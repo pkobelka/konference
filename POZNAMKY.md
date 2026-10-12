@@ -220,6 +220,22 @@ V pondělí jsou **dvě různé večeře**:
 
 ---
 
+## Přihlašování do aplikace a bezpečnost
+
+Postup (shrnutí uživatele):
+1. Člověk vyplní přihlášku → automaticky dostane **jedinečný kód (ID)**.
+2. Zároveň mu přijde e-mail s **odkazem na aplikaci** → klikne, vyzkouší,
+   vidí, že je přihlášen, kde spí atd.
+3. Kódem se pak může do aplikace hlásit (např. na jiném zařízení).
+
+Bezpečnost:
+- Obsah konference (program, informace, sborník) je **veřejný**, nic tajného.
+- **Osobní údaje ale chráníme** (GDPR): telefon, e-mail, číslo pokoje, s kým kdo spí.
+  Vidí je jen ten člověk sám a pořadatel.
+- Samotný kód nestačí (jde uhodnout) → přihlášení **kód + e-mail**
+  (aplikace pošle na e-mail přihlašovací odkaz), nebo rovnou tajný odkaz z mailu.
+- Ostatní účastníci vidí o druhých nanejvýš jméno a firmu (u dotazů, v chatu).
+
 ## Priority (návrh – projít s uživatelem)
 
 Nápadů je hodně, stavět postupně:
