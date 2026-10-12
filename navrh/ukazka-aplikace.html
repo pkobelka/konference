@@ -281,12 +281,7 @@ const PROG = {
     {id:"u5",t:"13:00",h:"Oběd",w:"Restaurace",brk:1},
     {id:"u6",t:"14:30",h:"Workshop: Data a reporting",w:"Ing. Pavel Richter",r:"Malý sál",sp:"delta"},
   ],
-  st:[
-    {id:"s1",t:"09:00",h:"Měření a kalibrace bez chyb",w:"Ing. Lucie Benešová",r:"Velký sál"},
-    {id:"s2",t:"10:00",h:"Energetické úspory: tři příklady",w:"Ing. Ondřej Vávra",r:"Velký sál",sp:"theta"},
-    {id:"s3",t:"11:00",h:"Shrnutí a závěr konference",w:"Předsednictvo VHOS",r:"Velký sál"},
-    {id:"s4",t:"12:00",h:"Oběd a odjezd",w:"Restaurace",brk:1},
-  ]
+  st:[]
 };
 const QA0 = {
   p3:[{q:"Jaké byly největší překážky při zavádění?",a:"Karel N.",v:14,scr:1},{q:"Kolik stála první etapa a za jak dlouho se vrátila?",a:"anonymně",v:9},{q:"Dá se systém propojit se stávajícím účetnictvím?",a:"Lenka P.",v:4}],
@@ -305,7 +300,7 @@ const JIDLA = {A:"Svíčková na smetaně, knedlík",B:"Pečený candát, brambo
 /* ===== Stav (uložení jen v tomto prohlížeči) ===== */
 const store = {get(k,d){try{const v=localStorage.getItem("s27_"+k);return v?JSON.parse(v):d}catch(e){return d}},
                set(k,v){try{localStorage.setItem("s27_"+k,JSON.stringify(v))}catch(e){}}};
-const S = {tab:"domu",day:"po",rem:store.get("rem",{}),logged:store.get("logged",false),jidlo:store.get("jidlo",ME.jidlo),
+const S = {tab:"domu",reg:false,regf:{role:"Host",prijezd:"po",ubyt:"1",jidlo:"A"},msgs2:[],user:store.get("user",null),day:"po",rem:store.get("rem",{}),logged:store.get("logged",false),jidlo:store.get("jidlo",ME.jidlo),
   qa:JSON.parse(JSON.stringify(QA0)),voted:{},msgs:[
     {me:1,t:"Dobrý den, přijedu až v pondělí kolem 18:00. Platí rezervace pokoje?",d:"2. 10. 9:14"},
     {me:0,t:"Dobrý den, ano, pokoj 214 máte rezervovaný. Recepce je otevřená do 22:00. Těšíme se!",d:"2. 10. 10:02"}]};
@@ -357,7 +352,9 @@ setInterval(()=>{
   ls.forEach(l=>l.classList.remove("glow"));
   if(ls.length)ls[Math.floor(Math.random()*ls.length)].classList.add("glow");
 },4500);
-function after(){if(S.tab==="ja"&&S.logged)drawQR($("qr"),ME.id)}
+function after(){if(S.tab==="ja"&&S.logged&&S.user)drawQR($("qr"),S.user.id)}
+function demoUser(){return Object.assign({},ME,{firma:P[ME.firma].n,demo:1,ubyt:1,vecere:1,prijezd:"po"})}
+function saveReg(){const f=(i,k)=>{const el=$(i);if(el)S.regf[k]=el.value.trim()};f("rjm","jm");f("rfirma","firma");f("rmail","mail");f("rtel","tel")}
 
 /* ===== Domů ===== */
 function vDomu(){
@@ -372,6 +369,9 @@ function vDomu(){
       <div class="count"><b>${days}</b><span>dní do zahájení</span></div>
       <svg class="waves" viewBox="0 0 180 60" fill="none" stroke="currentColor" stroke-width="3"><path d="M0 15c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 35c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 55c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/></svg>
     </div>
+    ${S.logged&&S.user?`<button class="card row" data-go="ja" style="border:0;width:100%;text-align:left;justify-content:space-between"><div style="min-width:0"><div class="label">Přihlášen(a)</div><b>${esc(S.user.jm)}</b><div class="muted" style="font-size:13px">${S.user.pokoj?"Pokoj "+S.user.pokoj:S.user.ubyt?"Pokoj přidělujeme":"Vlastní ubytování"} · ${S.user.vecere?"večeře "+S.jidlo:"bez večeře"}</div></div><span class="btn small ghost">Můj pobyt</span></button>`
+    :`<div class="card" style="display:flex;flex-direction:column;gap:10px"><b style="font-size:16px">Jedete na konferenci?</b>
+      <div class="ads2"><button class="btn" data-go="ja">Už jsem přihlášen</button><button class="btn ghost" id="toreg">Vyplnit přihlášku</button></div></div>`}
     <button class="banner" data-partner="alfa" aria-label="Generální partner ${esc(g.n)}">
       <span class="tag">Generální partner</span>
       ${g.s.map((t,i)=>`<div class="slide">${logo("alfa")}<div><b style="font-family:var(--f-display);font-size:${i?16:20}px">${esc(t)}</b><div class="muted" style="font-size:12px">Klepněte pro video a nabídku</div></div></div>`).join("")}
@@ -400,6 +400,10 @@ function vProgram(){
   return `<section class="sec">
     <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small></button>`).join("")}</div>
     <button class="dayp" data-partner="${DAYP[S.day]}">${logo(DAYP[S.day])}<span>Partner dne: <b>${esc(P[DAYP[S.day]].n)}</b> · ${esc(P[DAYP[S.day]].s[1])}</span></button>
+    ${list.length?"":`<div class="card" style="text-align:center;padding:28px 16px;display:flex;flex-direction:column;gap:6px;align-items:center">
+      <div class="label" style="color:var(--water)">Připravujeme</div>
+      <h2 style="font-size:20px">Program na ${DAYS.find(d=>d.k===S.day).n.toLowerCase()} se připravuje</h2>
+      <p class="muted" style="margin:0;font-size:14px">Jakmile bude hotový, objeví se tady a dáme vědět v aktualitách.</p></div>`}
     ${list.map(x=>{
       const r=S.rem[x.id], qn=(S.qa[x.id]||[]).length;
       return `<div class="slot"><div class="t">${x.t}</div>
@@ -443,7 +447,7 @@ function sheetQA(id){
     S.voted[k]=!S.voted[k];S.qa[id][i].v+=S.voted[k]?1:-1;draw()});
   draw();
   $("qform").addEventListener("submit",e=>{e.preventDefault();const v=$("qin").value.trim();if(!v)return;
-    S.qa[id].push({q:v,a:S.logged?"Petr N.":"anonymně",v:0});$("qin").value="";draw();render();toast("Dotaz odeslán (ukázka – uloží se jen tady)")});
+    S.qa[id].push({q:v,a:S.logged&&S.user?S.user.jm:"anonymně",v:0});$("qin").value="";draw();render();toast("Dotaz odeslán (ukázka – uloží se jen tady)")});
 }
 
 /* ===== Partneři ===== */
@@ -480,7 +484,7 @@ function vAreal(){
         <text x="200" y="240" class="lbl-m">Vodní nádrž Seč</text>
         <rect x="10" y="12" width="120" height="74" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
         <text x="20" y="30">Budova A – pokoje</text><text x="20" y="44" class="lbl-m">1.–3. patro · 101–316</text>
-        ${S.logged?`<circle cx="104" cy="66" r="8" fill="var(--accent)"/><text x="80" y="70" style="fill:var(--accent);font-weight:800">214</text>`:""}
+        ${S.logged&&S.user&&S.user.pokoj?`<circle cx="104" cy="66" r="8" fill="var(--accent)"/><text x="80" y="70" style="fill:var(--accent);font-weight:800">214</text>`:""}
         <rect x="10" y="96" width="120" height="58" rx="6" fill="var(--surface-2)" stroke="var(--line)"/>
         <text x="20" y="114">Budova B – pokoje</text><text x="20" y="128" class="lbl-m">přízemí · 01–24</text>
         <rect x="150" y="12" width="180" height="74" rx="6" fill="var(--water-soft)" stroke="var(--water)"/>
@@ -494,7 +498,7 @@ function vAreal(){
         <rect x="56" y="90" width="44" height="4" fill="var(--warn)"/>
         <text x="136" y="94" class="lbl-m" text-anchor="end">Recepce</text>
       </svg>
-      <div class="legend"><span><i style="background:var(--accent)"></i>${S.logged?"Váš pokoj 214":"Ubytování"}</span><span><i style="background:var(--water)"></i>Sály</span><span><i style="background:var(--warn)"></i>Recepce</span></div>
+      <div class="legend"><span><i style="background:var(--accent)"></i>${S.logged&&S.user&&S.user.pokoj?"Váš pokoj 214":"Ubytování"}</span><span><i style="background:var(--water)"></i>Sály</span><span><i style="background:var(--warn)"></i>Recepce</span></div>
     </div>
     <div class="card"><div class="label" style="margin-bottom:10px">Možnosti ubytování</div>
       <div class="hotel"><div class="hi" style="background:var(--accent)">H</div><div><h3>Konferenční hotel, Seč</h3><p>Přímo v místě konání. Pokoje pro partnery, přednášející a hosty přiděluje pořadatel.</p></div></div>
@@ -512,6 +516,8 @@ function vAreal(){
       <p class="muted" style="font-size:13px;margin:8px 0 0">Odjezd před recepcí hotelu Kraskov, v Seči u parkoviště P1. Cesta trvá asi 15 minut. Kdo bydlí v Kraskově, uvidí svůj svoz i v záložce Můj pobyt a dostane připomenutí 10 minut před odjezdem.</p>
     </div>
     ${ad("theta","Partner svozu · "+P.theta.n)}
+    <div class="card"><div class="label" style="margin-bottom:6px">Sborník a prezentace <span class="status w">Připravujeme</span></div>
+      <p style="margin:0;font-size:14px">Sborník bude ke stažení po konferenci. Pošleme vám upozornění, jakmile bude hotový.</p></div>
     <div class="card"><div class="label" style="margin-bottom:12px">Z historie</div>
       <div class="tl">
         <div><b>Seč</b><p>Přehrada na Chrudimce z třicátých let 20. století a nad ní zřícenina hradu Oheb. Tradiční místo setkávání na Vysočině.</p></div>
@@ -538,10 +544,11 @@ function vAreal(){
 
 /* ===== Můj pobyt ===== */
 function vJa(){
+  if(!S.logged&&S.reg) return vReg();
   if(!S.logged) return `<section class="sec">
     <div class="card form">
       <h2 style="font-size:22px">Můj pobyt</h2>
-      <p class="muted" style="margin:0">Přihlaste se kódem a PINem z potvrzovacího e-mailu. Uvidíte svůj pokoj, večeři a zprávy od pořadatele.</p>
+      <p class="muted" style="margin:0">Jste už na konferenci přihlášeni? Zadejte kód a PIN z potvrzovacího e-mailu. Uvidíte svůj pokoj, večeři a zprávy od pořadatele.</p>
       <form class="form" id="login">
         <div><label for="lid">Kód účastníka</label><input id="lid" inputmode="numeric" placeholder="např. 270142-1" autocomplete="username"></div>
         <div><label for="lpin">PIN</label><input id="lpin" inputmode="numeric" maxlength="4" placeholder="4 číslice" autocomplete="current-password"></div>
@@ -550,36 +557,69 @@ function vJa(){
       </form>
     </div>
     <div class="note"><b>Ukázkový přístup:</b> kód <b>270142-1</b>, PIN <b>4821</b> <button class="btn small ghost" id="fill" type="button" style="margin-left:6px">Vyplnit</button></div>
+    <div class="card" style="display:flex;flex-direction:column;gap:8px">
+      <h2 style="font-size:20px">Ještě nejste přihlášeni?</h2>
+      <p class="muted" style="margin:0">Vyplňte přihlášku. Hned dostanete kód a potvrzení e-mailem.</p>
+      <button class="btn" id="toreg">Vyplnit přihlášku</button>
+    </div>
   </section>`;
+  const U=S.user, pk=!!U.pokoj;
   return `<section class="sec">
     <div class="card idcard">
-      <div style="min-width:0"><div class="label">${esc(ME.role)} · ${esc(P[ME.firma].n)}</div><h2>${esc(ME.jm)}</h2><div class="code">${ME.id}</div><div class="muted" style="font-size:12px">Ukažte QR kód při registraci</div></div>
+      <div style="min-width:0"><div class="label">${esc(U.role)}${U.firma?" · "+esc(U.firma):""}</div><h2>${esc(U.jm)}</h2><div class="code">${U.id}</div><div class="muted" style="font-size:12px">Ukažte QR kód při registraci</div></div>
       <canvas class="qr" id="qr" width="25" height="25" aria-label="QR kód účastníka"></canvas>
     </div>
-    <div class="card"><div class="label" style="margin-bottom:8px">Ubytování <span class="status">Přiděleno</span></div>
-      <dl class="kv">
-        <dt>Pokoj</dt><dd>${ME.pokoj} · budova ${ME.sekce}, ${ME.patro}</dd>
-        <dt>Lůžko</dt><dd>${ME.luzko}</dd>
-        <dt>Spolu s</dt><dd>${esc(ME.spolu)}</dd>
-        <dt>Noci</dt><dd>${ME.noci}</dd>
+    <div class="card"><div class="label" style="margin-bottom:8px">Registrace <span class="status">Potvrzena</span></div>
+      <p style="margin:0;font-size:14px">Jste zaregistrován(a) na Konferenci Seč 2027. Potvrzení s kódem a PINem jsme poslali na ${esc(U.mail)}.</p>
+    </div>
+    <div class="card"><div class="label" style="margin-bottom:8px">Ubytování ${U.ubyt?pk?'<span class="status">Přiděleno</span>':'<span class="status w">Přidělujeme</span>':'<span class="status w">Vlastní</span>'}</div>
+      ${!U.ubyt?`<p style="margin:0;font-size:14px">Ubytování si zajišťujete sami.</p>`:pk?`<dl class="kv">
+        <dt>Pokoj</dt><dd>${U.pokoj} · budova ${U.sekce}, ${U.patro}</dd>
+        <dt>Lůžko</dt><dd>${U.luzko}</dd>
+        <dt>Spolu s</dt><dd>${esc(U.spolu)}</dd>
+        <dt>Noci</dt><dd>${U.noci}</dd>
       </dl>
-      <button class="btn small ghost" data-go="areal" style="margin-top:10px">Ukázat na plánku</button>
+      <button class="btn small ghost" data-go="areal" style="margin-top:10px">Ukázat na plánku</button>`
+      :`<p style="margin:0;font-size:14px">Pokoj vám právě přidělujeme. Jakmile bude hotovo, přijde vám upozornění a e-mail s číslem pokoje a jménem spolubydlícího.</p>
+      <dl class="kv" style="margin-top:8px"><dt>Noci</dt><dd>${U.noci}</dd></dl>`}
     </div>
     ${rot(ODB,"ad")}
-    <div class="card"><div class="label" style="margin-bottom:8px">Večeře v pondělí <span class="status">Objednáno</span></div>
-      <dl class="kv"><dt>Kdy</dt><dd>Po 10. 5. od 19:00, restaurace</dd><dt>Jídlo ${S.jidlo}</dt><dd>${esc(JIDLA[S.jidlo])}</dd></dl>
-      <button class="btn small ghost" id="chjidlo" style="margin-top:10px">Změnit jídlo</button>
+    <div class="card"><div class="label" style="margin-bottom:8px">Večeře v pondělí ${U.vecere?'<span class="status">Objednáno</span>':'<span class="status w">Bez večeře</span>'}</div>
+      ${U.vecere?`<dl class="kv"><dt>Kdy</dt><dd>Po 10. 5. od 19:00, restaurace</dd><dt>Jídlo ${S.jidlo}</dt><dd>${esc(JIDLA[S.jidlo])}</dd></dl>
+      <button class="btn small ghost" id="chjidlo" style="margin-top:10px">Změnit jídlo</button>`
+      :`<p style="margin:0;font-size:14px">${U.prijezd==="ut"?"Přijíždíte v úterý, pondělní večeře se vás netýká.":"Večeři jste si neobjednal(a)."}</p>`}
       ${byp("gama","Večeři podporuje")}
     </div>
     <div class="card"><div class="label" style="margin-bottom:8px">Kontakty</div>
-      <dl class="kv"><dt>Telefon</dt><dd>${ME.tel}</dd><dt>E-mail</dt><dd style="overflow-wrap:anywhere">${ME.mail}</dd></dl>
+      <dl class="kv"><dt>Telefon</dt><dd>${esc(U.tel)}</dd><dt>E-mail</dt><dd style="overflow-wrap:anywhere">${esc(U.mail)}</dd></dl>
     </div>
     <div class="card"><div class="label" style="margin-bottom:10px">Zprávy s pořadatelem</div>
-      <div class="chat" id="chat">${S.msgs.map(m=>`<div class="msg ${m.me?"me":"org"}">${esc(m.t)}<small>${m.me?"Vy":"Pořadatel"} · ${m.d}</small></div>`).join("")}</div>
+      <div class="chat" id="chat">${(U.demo?S.msgs:S.msgs2).map(m=>`<div class="msg ${m.me?"me":"org"}">${esc(m.t)}<small>${m.me?"Vy":"Pořadatel"} · ${m.d}</small></div>`).join("")||'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Napište nám, když budete cokoli potřebovat.</p>'}</div>
       <form class="send" id="mform" style="margin-top:10px"><input id="min" placeholder="Napište pořadateli…" aria-label="Zpráva pořadateli"><button class="btn">Poslat</button></form>
     </div>
     <button class="btn ghost" id="logout">Odhlásit</button>
   </section>`;
+}
+function vReg(){
+  const r=S.regf;
+  return `<section class="sec"><div class="card">
+    <h2 style="font-size:22px;margin-bottom:4px">Přihláška na konferenci</h2>
+    <p class="muted" style="margin:0 0 12px">Po odeslání hned dostanete kód účastníka a potvrzení e-mailem.</p>
+    <form class="form" id="reg">
+      <div><label for="rjm">Jméno a příjmení</label><input id="rjm" value="${esc(r.jm||"")}" required placeholder="Jana Nováková" autocomplete="name"></div>
+      <div><label for="rfirma">Firma / instituce</label><input id="rfirma" value="${esc(r.firma||"")}" placeholder="nepovinné" autocomplete="organization"></div>
+      <div><label for="rmail">E-mail</label><input id="rmail" type="email" value="${esc(r.mail||"")}" required placeholder="jana@firma.cz" autocomplete="email"></div>
+      <div><label for="rtel">Telefon</label><input id="rtel" type="tel" value="${esc(r.tel||"")}" required placeholder="+420 …" autocomplete="tel"></div>
+      <div><label>Účastním se jako</label><div class="opts" data-grp="role">${["Host","Přednášející","Vystavující partner","Účastník"].map(x=>`<button type="button" data-v="${x}" aria-pressed="${r.role===x}">${x}</button>`).join("")}</div></div>
+      <div><label>Přijedu</label><div class="opts" data-grp="prijezd"><button type="button" data-v="po" aria-pressed="${r.prijezd==="po"}">V pondělí</button><button type="button" data-v="ut" aria-pressed="${r.prijezd==="ut"}">V úterý</button></div></div>
+      <div><label>Ubytování</label><div class="opts" data-grp="ubyt"><button type="button" data-v="1" aria-pressed="${r.ubyt==="1"}">Prosím zajistit</button><button type="button" data-v="0" aria-pressed="${r.ubyt==="0"}">Zajistím si sám</button></div></div>
+      ${r.prijezd==="po"?`<div><label>Pondělní večeře</label><div class="opts" data-grp="jidlo" style="grid-template-columns:1fr">${Object.keys(JIDLA).map(k=>`<button type="button" data-v="${k}" aria-pressed="${r.jidlo===k}"><b>${k}</b> · ${esc(JIDLA[k])}</button>`).join("")}<button type="button" data-v="ne" aria-pressed="${r.jidlo==="ne"}">Večeři nechci</button></div></div>`
+        :`<div class="note">Kdo přijede v úterý, pondělní večeři nevybírá.</div>`}
+      <div class="err" id="rerr" hidden>Vyplňte prosím jméno, e-mail a telefon.</div>
+      <button class="btn">Odeslat přihlášku</button>
+      <button class="btn ghost" type="button" id="tologin">Zpět na přihlášení</button>
+    </form>
+  </div></section>`;
 }
 function sheetJidlo(){
   openSheet(`<h2>Výběr jídla</h2><div class="muted">Večeře pro ubytované, pondělí 10. 5.</div>
@@ -609,14 +649,17 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)
 
 /* ===== Události v obsahu ===== */
 $("view").addEventListener("click",e=>{
-  const t=e.target.closest("[data-go],[data-day],[data-rem],[data-qa],[data-partner],#chjidlo,#logout,#fill");if(!t)return;
+  const t=e.target.closest("[data-go],[data-day],[data-rem],[data-qa],[data-partner],#chjidlo,#logout,#fill,#toreg,#tologin,[data-v]");if(!t)return;
+  if(t.dataset.v){const g=t.closest("[data-grp]").dataset.grp;saveReg();S.regf[g]=t.dataset.v;return render()}
+  if(t.id==="toreg"){S.reg=true;return go("ja")}
+  if(t.id==="tologin"){saveReg();S.reg=false;return render()}
   if(t.dataset.go)return go(t.dataset.go);
   if(t.dataset.day){S.day=t.dataset.day;return render()}
   if(t.dataset.rem)return sheetRem(t.dataset.rem);
   if(t.dataset.qa)return sheetQA(t.dataset.qa);
   if(t.dataset.partner)return sheetPartner(t.dataset.partner);
   if(t.id==="chjidlo")return sheetJidlo();
-  if(t.id==="logout"){S.logged=false;store.set("logged",false);return render()}
+  if(t.id==="logout"){S.logged=false;S.user=null;store.set("logged",false);store.set("user",null);return render()}
   if(t.id==="fill"){$("lid").value=ME.id;$("lpin").value=ME.pin}
 });
 $("view").addEventListener("submit",e=>{
@@ -624,15 +667,31 @@ $("view").addEventListener("submit",e=>{
   if(e.target.id==="login"){
     const ok=$("lid").value.trim()===ME.id&&$("lpin").value.trim()===ME.pin;
     if(!ok){$("lerr").hidden=false;return}
-    S.logged=true;store.set("logged",true);render();toast("Přihlášeno – vítejte, pane Nováku");
+    S.user=demoUser();S.logged=true;store.set("logged",true);store.set("user",S.user);render();toast("Přihlášeno – vítejte, pane Nováku");
+  }
+  if(e.target.id==="reg"){
+    saveReg();const r=S.regf;
+    if(!r.jm||!r.mail||!r.tel){$("rerr").hidden=false;return}
+    const id="270"+(150+Math.floor(Math.random()*800))+"-1",pin=String(1000+Math.floor(Math.random()*9000));
+    const vec=r.prijezd==="po"&&r.jidlo!=="ne";if(vec)S.jidlo=r.jidlo;
+    S.user={id,pin,jm:r.jm,firma:r.firma||"",role:r.role,mail:r.mail,tel:r.tel,prijezd:r.prijezd,ubyt:r.ubyt==="1",vecere:vec,
+      noci:r.prijezd==="po"?"Po → Út, 1 noc":"Út → St, 1 noc",pokoj:null};
+    S.logged=true;S.reg=false;store.set("logged",true);store.set("user",S.user);render();window.scrollTo(0,0);
+    openSheet(`<h2>Přihláška odeslána</h2><div class="body">
+      <p style="margin:0">Děkujeme, ${esc(r.jm)}. Jste zaregistrován(a) na Konferenci Seč 2027.</p>
+      <dl class="kv"><dt>Váš kód</dt><dd class="code">${id}</dd><dt>PIN</dt><dd class="code">${pin}</dd></dl>
+      <p style="margin:0;font-size:14px">Potvrzení s kódem a PINem jsme poslali na <b>${esc(r.mail)}</b>.${r.ubyt==="1"?" Pokoj vám přidělíme a dáme vědět.":""}</p>
+      <div class="note">Ukázka: e-mail se ve skutečnosti neodesílá a údaje zůstávají jen v tomto prohlížeči.</div>
+      <button class="btn" id="sclose2">Pokračovat</button></div>`,e=>{if(e.target.id==="sclose2")closeSheet()});
   }
   if(e.target.id==="mform"){
     const v=$("min").value.trim();if(!v)return;const d=new Date();
-    S.msgs.push({me:1,t:v,d:`${d.getDate()}. ${d.getMonth()+1}. ${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}`});render();
+    (S.user&&!S.user.demo?S.msgs2:S.msgs).push({me:1,t:v,d:`${d.getDate()}. ${d.getMonth()+1}. ${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}`});render();
     toast("Zpráva je u pořadatele (ukázka – nic se neodesílá)");
   }
 });
 
+if(S.logged&&!S.user)S.user=demoUser();
 render();
 /* úvodní obrazovka s generálním partnerem – zmizí po 2,5 s nebo po klepnutí */
 (function(){const s=$("splash");const hide=()=>{s.classList.add("out");setTimeout(()=>s.hidden=true,450)};

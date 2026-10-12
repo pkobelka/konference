@@ -416,3 +416,17 @@ Přehled ploch v ukázce (verze 4) – podklad pro partnerské balíčky:
   pořadatel, technika, postup po krocích, závěr s odkazem na ukázku.
 - Zdroj snímků uložen v `navrh/prezentace/`.
 - Doplnit: skutečný termín 2027 a 2028.
+
+## Vstup do aplikace a přihláška (ukázka verze 7)
+- Člověk přijde z webu konference → otevře / nainstaluje aplikaci.
+- Na úvodní stránce volba: **„Už jsem přihlášen“** (kód + PIN) nebo
+  **„Vyplnit přihlášku“** přímo v aplikaci.
+- Přihláška: jméno, firma, e-mail, telefon, role, příjezd (Po / Út),
+  ubytování (zajistit / sám), večeře A/B/C nebo nechci (jen při příjezdu v pondělí).
+- Po odeslání: **hned kód + PIN**, potvrzení e-mailem, je rovnou přihlášen
+  a vidí stav: registrace potvrzena, **„pokoj přidělujeme“**, večeře / bez večeře.
+- Po přihlášení vidí na úvodní stránce svůj souhrn (pokoj, večeře).
+- Co ještě není hotové, ukazuje **„Připravujeme“** (např. program na středu,
+  sborník) + upozornění, až to bude.
+- *Rozhodnout: přihláška jen v aplikaci, nebo i na webu VHOS (stejný formulář).
+  Firmy (více lidí na jeden VS) dál přes partnerskou přihlášku.*
