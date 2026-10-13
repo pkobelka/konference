@@ -132,3 +132,8 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Nově složené **„31“** ve stejném stylu (trojka z originálu, jednička z fleků 12 a 6) → `obrazky/cislo31.webp`.
 - **Ikona aplikace = varianta E** (4 fleky: 10, 6, 16, 9 na světlém podkladu) – `ikony/` + favicon.
 - Do budoucna použít fleky i v průvodci (záhlaví, zástupná loga, fotky).
+
+### Nasazeno 13. 10. 2026
+- Vše výše sloučeno do `main` a **nasazeno na https://pkobelka.github.io/konference/** (sestavení GitHub Pages úspěšné).
+- Uživatel má **Android** → Chrome → ⋮ → Nainstalovat aplikaci / Přidat na plochu.
+- Další krok uživatele: Nastavení → Import → `TEST_konference2026_import.json`, vyzkoušet, pak „Vymazat lidi, firmy a pokoje“.
