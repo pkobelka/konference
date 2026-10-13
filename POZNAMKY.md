@@ -530,3 +530,8 @@ přistýlky, večeře A/B/C) → velká část modelu už sedí.*
   → v aplikaci: pole pohlaví (volitelné) + upozornění při smíšeném pokoji, nápověda „volné místo pro muže/ženu“.
 - Ještě otevřené: význam „ –“ u jídel (asi nevybral / nejde?), u přednášejících pokoj „xxx“ / „sám“,
   jak se pořadatel dostane k datům z webové e-přihlášky.
+- **„ –“ u jídel = nechce večeři** (většinou přijede až v úterý).
+- Přednášející s pokojem **„sám“ = VIP, spí sám** (jednolůžkové obsazení).
+- **Webová e-přihláška** se pořadateli stahuje do **Excelu** → v aplikaci bude potřeba **import
+  této tabulky** (s označením „přišel z webu“). Tabulka zatím nedorazila (v Komplet 2026 není),
+  uživatel ji pošle.
