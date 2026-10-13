@@ -232,3 +232,12 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   (seznam karet čte jen pořadatel, jednu kartu kdokoli, kdo zná její klíč).
 - **14. 10.: uživatel pravidlo pro `konference2027_karty` přidal; spolubydlící na kartě ponechat (souhlas).**
 - Další krok: formuláře pro veřejnost a hosty zapisovat přímo do Firebase (dnes import / ruční zadání).
+
+### 14. 10. 2026 – admin 1.4, průvodce 0.13
+- **Pokoje po nocích:** kdo spí jen v pondělí, nezabírá pokoj v úterý (obsazenost se po nocích počítala už dřív).
+  Nově: kontroly „smíšený pokoj / jiná firma / chce spát sám“ jen mezi lidmi, kteří tam spí **stejnou noc**;
+  v nabídce pokojů u osoby u každého noc v závorce („Novák (Po)“) a obsazenost po nocích, když se liší („Po 1/2, Út 0/2“);
+  v Pokojích u vybrané noci rozbalovací seznam **„Pokoje volné v noci X, ale obsazené jinou noc – lze použít znovu“**;
+  na osobní kartě jen spolubydlící ze stejných nocí, u částečných noc v závorce.
+- **Odborní partneři:** uživatel nejdřív chtěl rozdělit do skupin, pak si to rozmyslel → **zůstává pruh, zrychlen**
+  (≈ 20 s na průjezd místo ≈ 38 s). Varianta se skupinami po 9 byla vyzkoušená (na mobilu 3–4 řádky, pás skákal výškou).

@@ -458,7 +458,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.12 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.13 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -657,7 +657,7 @@ function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout
 /* ===== Scéna partnerů: kategorie se střídají, vždy svítí jedna ===== */
 const STG={i:0,since:Date.now(),hold:0};
 const STG_DUR=[7000,6000,0,6000];   // odborní: délka jednoho průjezdu lišty
-function stgDur(i){return i===2?Math.max(14000,PART[2][3].length*1400):STG_DUR[i]}
+function stgDur(i){return i===2?Math.max(12000,PART[2][3].length*750):STG_DUR[i]}   // odborní: ~20 s na průjezd
 function ticker(){
  return `<div class="stage" id="stage" aria-label="Partneři konference"><div class="stg-pills" role="tablist">${PART.map(([k,t],i)=>`<button role="tab" class="sp-${k}" data-stg="${i}">${t.replace(" partneři","")}</button>`).join("")}</div><div class="stg-body" id="stgb"></div></div>`;
 }
