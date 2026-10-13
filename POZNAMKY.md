@@ -623,3 +623,7 @@ Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stá
 - **Podrobnosti k jídlu a večerům:** oběd (menu, vegetariánská varianta, diety), přestávky
   (káva, výstava), večeře pro ubytované (jídla 1–3), společenský večer (raut, program, svoz).
   *Doplnit: skutečná menu a program večera 2027.*
+- **Hvězdička → poznámka (verze 8, přání uživatele):** účastníci sedí na všech přednáškách,
+  „oblíbené“ by vyznělo nevhodně. Místo ★ je u přednášky **„✎ Poznámka“** – soukromá poznámka
+  (jen v zařízení), zobrazí se pod přednáškou; filtr „✎ Poznámky“ v programu, dlaždice
+  „Moje poznámky“ na Domů. Připomenutí před přednáškou zatím vypuštěno.
