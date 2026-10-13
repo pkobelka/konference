@@ -226,7 +226,7 @@ canvas.qr{width:84px;height:84px;image-rendering:pixelated;border-radius:6px;bac
   <header class="top">
     <div class="brand">
       <div class="mark" aria-hidden="true">S27</div>
-      <div style="min-width:0"><b>Konference Seč 2027</b><small>VHOS · 10.–12. května 2027</small></div>
+      <div style="min-width:0"><b>Konference Seč 2027</b><small>31. ročník · Nové metody a postupy při provozování ČOV</small></div>
     </div>
     <span class="chip" title="Všechna data jsou smyšlená">Ukázka</span>
   </header>
@@ -262,30 +262,29 @@ const P = { // partneři
 };
 const KAT = [["generalni","Generální partner","g1"],["hlavni","Hlavní partneři","g2"],["odborny","Odborní partneři","g3"],["medialni","Mediální partneři","g2"]];
 const KAT1 = {generalni:"Generální partner",hlavni:"Hlavní partner",odborny:"Odborný partner",medialni:"Mediální partner"};
-const DAYS = [{k:"po",n:"Pondělí",d:"10. 5."},{k:"ut",n:"Úterý",d:"11. 5."},{k:"st",n:"Středa",d:"12. 5."}];
+const DAYS = [{k:"po",n:"Pondělí",d:"příjezd"},{k:"ut",n:"Úterý",d:"1. den"},{k:"st",n:"Středa",d:"2. den"}];
 const PROG = {
   po:[
-    {id:"p1",t:"12:00",h:"Registrace a ubytování",w:"Recepce hotelu",brk:1},
-    {id:"p2",t:"14:00",h:"Zahájení konference",w:"Předsednictvo VHOS",r:"Velký sál"},
-    {id:"p3",t:"14:30",h:"Digitalizace v praxi: co se osvědčilo",w:"Ing. Jana Dvořáková",r:"Velký sál",sp:"alfa"},
-    {id:"p4",t:"15:30",h:"Přestávka a výstava partnerů",w:"Foyer",brk:1},
-    {id:"p5",t:"16:00",h:"Případová studie: modernizace provozu",w:"Ing. Tomáš Malý",r:"Velký sál"},
+    {id:"p1",t:"15:00",h:"Příjezd a ubytování",w:"Recepce Kongres hotelu Jezerka",brk:1},
     {id:"p6",t:"19:00",h:"Večeře pro ubytované",w:"Restaurace, výběr jídla A / B / C",brk:1},
-    {id:"p7",t:"19:30",h:"Slavnostní večeře",w:"Salonek u jezera",inv:1,brk:1},
+    {id:"p7",t:"19:30",h:"Slavnostní večeře",w:"Salonek, jen pro pozvané",inv:1,brk:1},
   ],
   ut:[
-    {id:"u1",t:"09:00",h:"Novinky v legislativě 2027",w:"JUDr. Petra Horáková",r:"Velký sál"},
-    {id:"u2",t:"10:00",h:"Kybernetická bezpečnost menších provozů",w:"Ing. Martin Kos",r:"Velký sál",sp:"iota"},
-    {id:"u3",t:"11:00",h:"Přestávka a výstava partnerů",w:"Foyer",brk:1},
-    {id:"u4",t:"11:30",h:"Panelová diskuse: Co nás čeká",w:"Moderuje Mgr. Eva Šindelářová",r:"Velký sál"},
-    {id:"u5",t:"13:00",h:"Oběd",w:"Restaurace",brk:1},
-    {id:"u6",t:"14:30",h:"Workshop: Data a reporting",w:"Ing. Pavel Richter",r:"Malý sál",sp:"delta"},
+    {id:"p2",t:"08:00",h:"Registrace účastníků",w:"Foyer",brk:1},
+    {id:"u0",t:"09:00",h:"Zahájení 31. ročníku",w:"VHOS, a.s., CzWA, SOVAK ČR",r:"Kongresový sál"},
+    {id:"p3",t:"09:30",h:"Legislativní blok: nová směrnice o čištění městských odpadních vod",w:"Moderuje SOVAK ČR",r:"Kongresový sál",sp:"alfa"},
+    {id:"p4",t:"11:00",h:"Přestávka a výstava partnerů",w:"Foyer",brk:1},
+    {id:"u1",t:"11:30",h:"Provozní výsledky technologie MABR",w:"Přednášející upřesníme",r:"Kongresový sál"},
+    {id:"u5",t:"12:30",h:"Oběd",w:"Restaurace",brk:1},
+    {id:"u2",t:"14:00",h:"Soft senzory a strojové učení na ČOV",w:"Přednášející upřesníme",r:"Kongresový sál",sp:"iota"},
+    {id:"u3",t:"15:30",h:"Přestávka a výstava partnerů",w:"Foyer",brk:1},
+    {id:"u6",t:"16:00",h:"Kalové hospodářství a energetická neutralita",w:"Přednášející upřesníme",r:"Kongresový sál",sp:"delta"},
   ],
   st:[]
 };
 const QA0 = {
-  p3:[{q:"Jaké byly největší překážky při zavádění?",a:"Karel N.",v:14,scr:1},{q:"Kolik stála první etapa a za jak dlouho se vrátila?",a:"anonymně",v:9},{q:"Dá se systém propojit se stávajícím účetnictvím?",a:"Lenka P.",v:4}],
-  u1:[{q:"Platí nová povinnost i pro obce pod 2 000 obyvatel?",a:"Jiří S.",v:11,scr:1},{q:"Kdy vyjde prováděcí vyhláška?",a:"anonymně",v:6}],
+  p3:[{q:"Kdy se nové limity promítnou do povolení k vypouštění?",a:"Karel N.",v:14,scr:1},{q:"Jak bude vypadat povinný energetický audit ČOV?",a:"anonymně",v:9},{q:"Kdo zaplatí čtvrtý stupeň čištění?",a:"Lenka P.",v:4}],
+  u1:[{q:"Jaké jsou provozní náklady MABR oproti klasické aktivaci?",a:"Jiří S.",v:11,scr:1},{q:"Jak se osvědčila technologie v zimním provozu?",a:"anonymně",v:6}],
 };
 const NEWS = [
   {d:"8. 10.",h:"Program je venku",p:"Kompletní program tří dnů najdete v záložce Program. Přednášky si můžete označit a nastavit připomenutí."},
@@ -354,19 +353,18 @@ setInterval(()=>{
 },4500);
 function after(){if(S.tab==="ja"&&S.logged&&S.user)drawQR($("qr"),S.user.id)}
 function demoUser(){return Object.assign({},ME,{firma:P[ME.firma].n,demo:1,ubyt:1,vecere:1,prijezd:"po"})}
-function saveReg(){const f=(i,k)=>{const el=$(i);if(el)S.regf[k]=el.value.trim()};f("rjm","jm");f("rfirma","firma");f("rmail","mail");f("rtel","tel")}
+function saveReg(){const f=(i,k)=>{const el=$(i);if(el)S.regf[k]=el.value.trim()};f("rjm","jm");f("rtp","tp");f("rtz","tz");f("rsidlo","sidlo");f("rico","ico");f("rdic","dic");f("rpozn","pozn");f("rfirma","firma");f("rmail","mail");f("rtel","tel")}
 
 /* ===== Domů ===== */
 function vDomu(){
-  const days=Math.max(0,Math.ceil((START-new Date())/864e5));
-  const next=PROG.po.find(x=>!x.brk&&x.r);
+    const next=PROG.ut.find(x=>!x.brk&&x.r);
   const g=P.alfa, ios=/iPhone|iPad|iPod/.test(navigator.userAgent);
   return `<section class="sec">
     <div class="hero">
-      <span class="label" style="color:inherit;opacity:.8">Seč · hotel u přehrady</span>
-      <h1>Vítejte na konferenci VHOS 2027</h1>
-      <div class="meta">Pondělí 10. – středa 12. května 2027</div>
-      <div class="count"><b>${days}</b><span>dní do zahájení</span></div>
+      <span class="label" style="color:inherit;opacity:.8">31. ročník · Kongres hotel Jezerka, Seč</span>
+      <h1>Nové metody a postupy při provozování ČOV</h1>
+      <div class="meta">Memoriál Ing. Jakuba S. Čecha, CSc. · duben 2027, přesný termín upřesníme</div>
+      <div class="count"><b>~450</b><span>účastníků</span><b style="margin-left:14px">30–40</b><span>vystavovatelů</span></div>
       <svg class="waves" viewBox="0 0 180 60" fill="none" stroke="currentColor" stroke-width="3"><path d="M0 15c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 35c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 55c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/></svg>
     </div>
     ${S.logged&&S.user?`<button class="card row" data-go="ja" style="border:0;width:100%;text-align:left;justify-content:space-between"><div style="min-width:0"><div class="label">Přihlášen(a)</div><b>${esc(S.user.jm)}</b><div class="muted" style="font-size:13px">${S.user.pokoj?"Pokoj "+S.user.pokoj:S.user.ubyt?"Pokoj přidělujeme":"Vlastní ubytování"} · ${S.user.vecere?"večeře "+S.jidlo:"bez večeře"}</div></div><span class="btn small ghost">Můj pobyt</span></button>`
@@ -379,7 +377,7 @@ function vDomu(){
     <div class="card">
       <div class="label">První přednáška</div>
       <div class="row" style="justify-content:space-between;margin-top:6px;align-items:flex-start">
-        <div style="min-width:0"><b style="font-size:16px">${esc(next.h)}</b><div class="muted" style="font-size:13px">Po ${next.t} · ${esc(next.r)} · ${esc(next.w)}</div></div>
+        <div style="min-width:0"><b style="font-size:16px">${esc(next.h)}</b><div class="muted" style="font-size:13px">Út ${next.t} · ${esc(next.r)} · ${esc(next.w)}</div></div>
         <button class="btn small ghost" data-go="program">Program</button>
       </div>
     </div>
@@ -488,7 +486,7 @@ function vAreal(){
         <rect x="10" y="96" width="120" height="58" rx="6" fill="var(--surface-2)" stroke="var(--line)"/>
         <text x="20" y="114">Budova B – pokoje</text><text x="20" y="128" class="lbl-m">přízemí · 01–24</text>
         <rect x="150" y="12" width="180" height="74" rx="6" fill="var(--water-soft)" stroke="var(--water)"/>
-        <text x="162" y="30">Velký sál</text><text x="162" y="44" class="lbl-m">přednášky · 220 míst</text>
+        <text x="162" y="30">Kongresový sál</text><text x="162" y="44" class="lbl-m">přednášky · 400+ míst</text>
         <rect x="270" y="52" width="54" height="28" rx="4" fill="var(--surface)" stroke="var(--water)"/><text x="276" y="70" style="font-size:8px">Malý sál</text>
         <rect x="150" y="96" width="180" height="104" rx="6" fill="var(--surface-2)" stroke="var(--line)"/>
         <text x="162" y="114">Foyer – výstava partnerů</text><text x="162" y="127" class="lbl-m">klepněte na stánek</text>
@@ -501,7 +499,7 @@ function vAreal(){
       <div class="legend"><span><i style="background:var(--accent)"></i>${S.logged&&S.user&&S.user.pokoj?"Váš pokoj 214":"Ubytování"}</span><span><i style="background:var(--water)"></i>Sály</span><span><i style="background:var(--warn)"></i>Recepce</span></div>
     </div>
     <div class="card"><div class="label" style="margin-bottom:10px">Možnosti ubytování</div>
-      <div class="hotel"><div class="hi" style="background:var(--accent)">H</div><div><h3>Konferenční hotel, Seč</h3><p>Přímo v místě konání. Pokoje pro partnery, přednášející a hosty přiděluje pořadatel.</p></div></div>
+      <div class="hotel"><div class="hi" style="background:var(--accent)">H</div><div><h3>Kongres hotel Jezerka, Seč</h3><p>Přímo v místě konání. Pokoje pro partnery, přednášející a hosty přiděluje pořadatel.</p></div></div>
       <div class="hotel"><div class="hi" style="background:var(--water)">K</div><div><h3>Hotel Kraskov</h3><p>Doplňkové ubytování, když se kapacita v Seči naplní. Na konferenci a zpět jezdí svozový autobus.</p></div></div>
       <div class="hotel"><div class="hi" style="background:var(--warn)">+</div><div><h3>Vlastní ubytování</h3><p>Kdo si zajistí ubytování sám, vyznačí to v přihlášce. Večeři si může objednat i tak.</p></div></div>
     </div>
@@ -509,9 +507,9 @@ function vAreal(){
       <div style="overflow-x:auto"><table class="tt">
         <thead><tr><th>Den</th><th>Kraskov → Seč</th><th>Seč → Kraskov</th></tr></thead>
         <tbody>
-          <tr><td>Po 10. 5.</td><td>13:15</td><td>18:45 · 23:30</td></tr>
-          <tr><td>Út 11. 5.</td><td>08:15 · 18:30</td><td>17:45 · 23:30</td></tr>
-          <tr><td>St 12. 5.</td><td>08:15 (se zavazadly)</td><td>12:45</td></tr>
+          <tr><td>Pondělí</td><td>13:15</td><td>18:45 · 23:30</td></tr>
+          <tr><td>Úterý</td><td>08:15 · 18:30</td><td>17:45 · 23:30</td></tr>
+          <tr><td>Středa</td><td>08:15 (se zavazadly)</td><td>12:45</td></tr>
         </tbody></table></div>
       <p class="muted" style="font-size:13px;margin:8px 0 0">Odjezd před recepcí hotelu Kraskov, v Seči u parkoviště P1. Cesta trvá asi 15 minut. Kdo bydlí v Kraskově, uvidí svůj svoz i v záložce Můj pobyt a dostane připomenutí 10 minut před odjezdem.</p>
     </div>
@@ -520,10 +518,17 @@ function vAreal(){
       <p style="margin:0;font-size:14px">Sborník bude ke stažení po konferenci. Pošleme vám upozornění, jakmile bude hotový.</p></div>
     <div class="card"><div class="label" style="margin-bottom:12px">Z historie</div>
       <div class="tl">
-        <div><b>Seč</b><p>Přehrada na Chrudimce z třicátých let 20. století a nad ní zřícenina hradu Oheb. Tradiční místo setkávání na Vysočině.</p></div>
-        <div><b>První ročník</b><p class="muted">Doplní pořadatel: kdy a kde se konference konala poprvé, kolik bylo účastníků.</p></div>
-        <div><b>Ohlédnutí</b><p class="muted">Doplní pořadatel: fotky a zajímavosti z minulých ročníků, významní hosté.</p></div>
-        <div><b>2027</b><p>Konference Seč 2027 poprvé s vlastní aplikací pro účastníky.</p></div>
+        <div><b>1993</b><p>Výstava „Voda a my“ v Moravské Třebové.</p></div>
+        <div><b>1996</b><p>První ročník semináře Nové metody a postupy při provozování ČOV. Pořádá VHOS, a.s., 57 účastníků.</p></div>
+        <div><b>1998</b><p>Akce nese jméno Ing. Jakuba S. Čecha, CSc. Začíná spolupráce s AČE ČR (dnes CzWA).</p></div>
+        <div><b>2000</b><p>Dohoda AČE ČR a AČE SR, česko-slovenský ráz konference.</p></div>
+        <div><b>2004</b><p>Legislativní sekce se stává pevnou součástí programu.</p></div>
+        <div><b>2007</b><p>400 účastníků, maximum v Moravské Třebové.</p></div>
+        <div><b>2020–2021</b><p>Covid-19, kontinuita díky online blokům.</p></div>
+        <div><b>2022</b><p>Přesun do Kongres hotelu Jezerka v Seči a rebranding na konferenci.</p></div>
+        <div><b>2025</b><p>Rekordních 450 účastníků.</p></div>
+        <div><b>2026</b><p>Jubilejní 30. ročník.</p></div>
+        <div><b>2027</b><p>31. ročník, poprvé s vlastní aplikací pro účastníky.</p></div>
         <div style="padding-bottom:0"><b>2028</b><p>Další ročník v Seči. Termín najdete níže.</p></div>
       </div>
       ${byp("lambda","Fotogalerii a ohlédnutí připravuje")}
@@ -531,11 +536,11 @@ function vAreal(){
     ${save28()}
     <div class="card"><div class="label" style="margin-bottom:8px">Praktické informace</div>
       <dl class="kv">
-        <dt>Adresa</dt><dd>Hotel (ukázka), Seč – Ústupky</dd>
+        <dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd>
         <dt>Parkování</dt><dd>P1 u recepce, zdarma</dd>
         <dt>Check-in</dt><dd>od 12:00, recepce do 22:00</dd>
         <dt>Wi-Fi</dt><dd>Konference-Sec · heslo na jmenovce</dd>
-        <dt>Pořadatel</dt><dd>+420 000 000 000</dd>
+        <dt>Přihlášky</dt><dd>konference@vhos.cz</dd>
       </dl>
       ${byp("iota","Wi-Fi zajišťuje")}
     </div>
@@ -570,7 +575,7 @@ function vJa(){
       <canvas class="qr" id="qr" width="25" height="25" aria-label="QR kód účastníka"></canvas>
     </div>
     <div class="card"><div class="label" style="margin-bottom:8px">Registrace <span class="status">Potvrzena</span></div>
-      <p style="margin:0;font-size:14px">Jste zaregistrován(a) na Konferenci Seč 2027. Potvrzení s kódem a PINem jsme poslali na ${esc(U.mail)}.</p>
+      <p style="margin:0;font-size:14px">Jste zaregistrován(a) na 31. ročník konference Nové metody a postupy při provozování ČOV. Potvrzení s kódem a PINem jsme poslali na ${esc(U.mail)}.</p>
     </div>
     <div class="card"><div class="label" style="margin-bottom:8px">Ubytování ${U.ubyt?pk?'<span class="status">Přiděleno</span>':'<span class="status w">Přidělujeme</span>':'<span class="status w">Vlastní</span>'}</div>
       ${!U.ubyt?`<p style="margin:0;font-size:14px">Ubytování si zajišťujete sami.</p>`:pk?`<dl class="kv">
@@ -584,8 +589,8 @@ function vJa(){
       <dl class="kv" style="margin-top:8px"><dt>Noci</dt><dd>${U.noci}</dd></dl>`}
     </div>
     ${rot(ODB,"ad")}
-    <div class="card"><div class="label" style="margin-bottom:8px">Večeře v pondělí ${U.vecere?'<span class="status">Objednáno</span>':'<span class="status w">Bez večeře</span>'}</div>
-      ${U.vecere?`<dl class="kv"><dt>Kdy</dt><dd>Po 10. 5. od 19:00, restaurace</dd><dt>Jídlo ${S.jidlo}</dt><dd>${esc(JIDLA[S.jidlo])}</dd></dl>
+    <div class="card"><div class="label" style="margin-bottom:8px">Večeře v pondělí (den příjezdu) ${U.vecere?'<span class="status">Objednáno</span>':'<span class="status w">Bez večeře</span>'}</div>
+      ${U.vecere?`<dl class="kv"><dt>Kdy</dt><dd>Pondělí od 19:00, restaurace</dd><dt>Jídlo ${S.jidlo}</dt><dd>${esc(JIDLA[S.jidlo])}</dd></dl>
       <button class="btn small ghost" id="chjidlo" style="margin-top:10px">Změnit jídlo</button>`
       :`<p style="margin:0;font-size:14px">${U.prijezd==="ut"?"Přijíždíte v úterý, pondělní večeře se vás netýká.":"Večeři jste si neobjednal(a)."}</p>`}
       ${byp("gama","Večeři podporuje")}
@@ -606,8 +611,11 @@ function vReg(){
     <h2 style="font-size:22px;margin-bottom:4px">Přihláška na konferenci</h2>
     <p class="muted" style="margin:0 0 12px">Po odeslání hned dostanete kód účastníka a potvrzení e-mailem.</p>
     <form class="form" id="reg">
+      <div class="ads2"><div><label for="rtp">Titul před</label><input id="rtp" value="${esc(r.tp||"")}" placeholder="Ing."></div><div><label for="rtz">Titul za</label><input id="rtz" value="${esc(r.tz||"")}" placeholder="Ph.D."></div></div>
       <div><label for="rjm">Jméno a příjmení</label><input id="rjm" value="${esc(r.jm||"")}" required placeholder="Jana Nováková" autocomplete="name"></div>
       <div><label for="rfirma">Firma / instituce</label><input id="rfirma" value="${esc(r.firma||"")}" placeholder="nepovinné" autocomplete="organization"></div>
+      <div><label for="rsidlo">Sídlo firmy</label><input id="rsidlo" value="${esc(r.sidlo||"")}" placeholder="Ulice, město"></div>
+      <div class="ads2"><div><label for="rico">IČO</label><input id="rico" inputmode="numeric" value="${esc(r.ico||"")}"></div><div><label for="rdic">DIČ</label><input id="rdic" value="${esc(r.dic||"")}"></div></div>
       <div><label for="rmail">E-mail</label><input id="rmail" type="email" value="${esc(r.mail||"")}" required placeholder="jana@firma.cz" autocomplete="email"></div>
       <div><label for="rtel">Telefon</label><input id="rtel" type="tel" value="${esc(r.tel||"")}" required placeholder="+420 …" autocomplete="tel"></div>
       <div><label>Účastním se jako</label><div class="opts" data-grp="role">${["Host","Přednášející","Vystavující partner","Účastník"].map(x=>`<button type="button" data-v="${x}" aria-pressed="${r.role===x}">${x}</button>`).join("")}</div></div>
@@ -615,6 +623,7 @@ function vReg(){
       <div><label>Ubytování</label><div class="opts" data-grp="ubyt"><button type="button" data-v="1" aria-pressed="${r.ubyt==="1"}">Prosím zajistit</button><button type="button" data-v="0" aria-pressed="${r.ubyt==="0"}">Zajistím si sám</button></div></div>
       ${r.prijezd==="po"?`<div><label>Pondělní večeře</label><div class="opts" data-grp="jidlo" style="grid-template-columns:1fr">${Object.keys(JIDLA).map(k=>`<button type="button" data-v="${k}" aria-pressed="${r.jidlo===k}"><b>${k}</b> · ${esc(JIDLA[k])}</button>`).join("")}<button type="button" data-v="ne" aria-pressed="${r.jidlo==="ne"}">Večeři nechci</button></div></div>`
         :`<div class="note">Kdo přijede v úterý, pondělní večeři nevybírá.</div>`}
+      <div><label for="rpozn">Poznámka ke stravě</label><input id="rpozn" value="${esc(r.pozn||"")}" placeholder="např. bezlepková, vegetariánská"></div>
       <div class="err" id="rerr" hidden>Vyplňte prosím jméno, e-mail a telefon.</div>
       <button class="btn">Odeslat přihlášku</button>
       <button class="btn ghost" type="button" id="tologin">Zpět na přihlášení</button>
@@ -622,9 +631,9 @@ function vReg(){
   </div></section>`;
 }
 function sheetJidlo(){
-  openSheet(`<h2>Výběr jídla</h2><div class="muted">Večeře pro ubytované, pondělí 10. 5.</div>
+  openSheet(`<h2>Výběr jídla</h2><div class="muted">Večeře pro ubytované, pondělí (den příjezdu)</div>
     <div class="body"><div class="opts" style="grid-template-columns:1fr">${Object.keys(JIDLA).map(k=>`<button data-j="${k}" aria-pressed="${S.jidlo===k}"><b>${k}</b> · ${esc(JIDLA[k])}</button>`).join("")}</div>
-    <div class="note">Změnu uvidí pořadatel hned a počty pro restauraci se přepočítají samy. Změny jsou možné do 3. 5.</div></div>`,
+    <div class="note">Změnu uvidí pořadatel hned a počty pro restauraci se přepočítají samy. Změny jsou možné do týdne před konferencí.</div></div>`,
   e=>{const b=e.target.closest("[data-j]");if(!b)return;S.jidlo=b.dataset.j;store.set("jidlo",S.jidlo);closeSheet();render();toast("Jídlo změněno, pořadatel dostal upozornění")});
 }
 
@@ -674,11 +683,11 @@ $("view").addEventListener("submit",e=>{
     if(!r.jm||!r.mail||!r.tel){$("rerr").hidden=false;return}
     const id="270"+(150+Math.floor(Math.random()*800))+"-1",pin=String(1000+Math.floor(Math.random()*9000));
     const vec=r.prijezd==="po"&&r.jidlo!=="ne";if(vec)S.jidlo=r.jidlo;
-    S.user={id,pin,jm:r.jm,firma:r.firma||"",role:r.role,mail:r.mail,tel:r.tel,prijezd:r.prijezd,ubyt:r.ubyt==="1",vecere:vec,
+    S.user={id,pin,jm:[r.tp,r.jm].filter(Boolean).join(" ")+(r.tz?", "+r.tz:""),firma:r.firma||"",role:r.role,mail:r.mail,tel:r.tel,prijezd:r.prijezd,ubyt:r.ubyt==="1",vecere:vec,
       noci:r.prijezd==="po"?"Po → Út, 1 noc":"Út → St, 1 noc",pokoj:null};
     S.logged=true;S.reg=false;store.set("logged",true);store.set("user",S.user);render();window.scrollTo(0,0);
     openSheet(`<h2>Přihláška odeslána</h2><div class="body">
-      <p style="margin:0">Děkujeme, ${esc(r.jm)}. Jste zaregistrován(a) na Konferenci Seč 2027.</p>
+      <p style="margin:0">Děkujeme, ${esc(r.jm)}. Jste zaregistrován(a) na 31. ročník konference Nové metody a postupy při provozování ČOV.</p>
       <dl class="kv"><dt>Váš kód</dt><dd class="code">${id}</dd><dt>PIN</dt><dd class="code">${pin}</dd></dl>
       <p style="margin:0;font-size:14px">Potvrzení s kódem a PINem jsme poslali na <b>${esc(r.mail)}</b>.${r.ubyt==="1"?" Pokoj vám přidělíme a dáme vědět.":""}</p>
       <div class="note">Ukázka: e-mail se ve skutečnosti neodesílá a údaje zůstávají jen v tomto prohlížeči.</div>

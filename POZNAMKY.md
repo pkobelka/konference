@@ -2,6 +2,31 @@
 
 Pracovní název aplikace: **Konference Seč 2027**
 
+## O konferenci (z podkladů uživatele, 13. 10. 2026)
+
+- Název: **Nové metody a postupy při provozování ČOV**, memoriál Ing. Jakuba S. Čecha, CSc.
+- 2026 = jubilejní **30. ročník** (14.–15. 4. 2026), **2027 = 31. ročník** (duben, termín upřesní).
+- Místo: **Kongres hotel Jezerka, Seč** (od 2022; dříve Moravská Třebová 1996–2019).
+- Formát: **1,5 dne**, 16–20 vyzvaných přednášek, **30–40 vystavujících firem**, ~**450 účastníků** (rekord 2025).
+- Příjezd a večeře v pondělí, konference úterý–středa (dle termínu 2026: út–st).
+- Zaštiťují: VHOS, a.s. (skupina ENERGIE AG BOHEMIA), CzWA, SOVAK ČR (moderace legislativy).
+- Dlouholetý generální partner: VAE CONTROLS, s.r.o.
+- Historie (pro záložku Info): 1993 výstava „Voda a my“; 1996 1. ročník (57 účastníků);
+  1998 jméno memoriálu + spolupráce s AČE ČR; 2000 dohoda AČE ČR a SR; 2004 legislativní
+  sekce; 2007 400 účastníků; 2020–21 online bloky (2021: 190); 2022 přesun do Seče
+  a rebranding na konferenci; 2025 rekord 450; 2026 30. ročník.
+  *Podklad vznikl v NotebookLM – před zveřejněním fakta ověřit.*
+- Témata 2026: legislativa (směrnice o čištění městských odpadních vod, NIS2, CERD, AI),
+  technologie (MABR, srážení fosforu, terciární čištění), energetika (aerace, soft senzory,
+  emise skleníkových plynů, mikropolutanty).
+
+### Přihláška hostů (vzor 2026, Word)
+Pole: titul před / za, jméno, příjmení, firma, sídlo, IČO, DIČ, kontaktní e-mail,
+kontaktní telefon, poznámka (strava: bezlepková, vegetariánská…).
+Zasílá se na konference@vhos.cz; kontakt: organizační garant.
+→ Zapracováno do přihlášky v ukázce (verze 8). Chybí v ní: příjezd, ubytování, večeře
+A/B/C – v ukázce doplněno navíc.
+
 Průběžně sbírané nápady a požadavky z rozhovorů. Zatím se nic nestaví – nejdřív
 sepíšeme, jak to celé funguje, pak upřesníme otevřené otázky a teprve potom tvoříme.
 
@@ -430,3 +455,7 @@ Přehled ploch v ukázce (verze 4) – podklad pro partnerské balíčky:
   sborník) + upozornění, až to bude.
 - *Rozhodnout: přihláška jen v aplikaci, nebo i na webu VHOS (stejný formulář).
   Firmy (více lidí na jeden VS) dál přes partnerskou přihlášku.*
+
+## Osobní údaje – pravidlo
+- Seznamy účastníků (e-maily, telefony) **nikdy do GitHubu** (repo je pro GitHub Pages
+  nejspíš veřejné) ani do ukázek. Patří jen do aplikace pořadatele (Firebase, Nastavení → Import).
