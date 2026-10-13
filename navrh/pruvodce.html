@@ -265,12 +265,129 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 }
 @media (min-width: 1200px){.g3{grid-template-columns:repeat(7,1fr)}}
 @media (prefers-reduced-motion: reduce){.ticker .track,.logo,.sheet:not([hidden]){animation:none}.ticker{overflow-x:auto}}
+
+/* ===== Redesign v2: plakát, bento, plovoucí lišta ===== */
+.card,.tile{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:0 1px 0 rgba(0,0,0,.02),0 10px 30px -18px rgba(40,30,60,.25)}
+.top{padding-block:14px 10px}
+.top .ttl b{font-family:var(--f-display);font-size:20px;font-weight:700;letter-spacing:-.01em}
+.top .ttl small{font-family:var(--f-display);font-size:11px;letter-spacing:.04em}
+.top.home{display:none}
+.pchip{position:absolute;top:14px;left:16px;z-index:2;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:var(--water-soft);color:var(--water)}
+.app>.sec:first-child,.app main{padding-top:0}
+#view>.sec:first-child .poster{margin-top:12px}
+.poster{position:relative;overflow:hidden;border-radius:26px;background:radial-gradient(120% 90% at 100% 0%,color-mix(in srgb,var(--accent) 10%,var(--surface)) 0%,var(--surface) 55%);border:1px solid var(--line);padding:178px 20px 20px;display:flex;flex-direction:column;justify-content:flex-end}
+.collage{position:absolute;inset:0;pointer-events:none}
+.collage img{position:absolute;object-fit:contain;filter:saturate(1.05);opacity:.95}
+.collage .c1{width:150px;right:-34px;top:-30px;transform:rotate(-8deg)}
+.collage .c2{width:96px;right:112px;top:16px;transform:rotate(12deg)}
+.collage .c3{width:84px;right:28px;top:104px;transform:rotate(4deg)}
+.collage .c4{width:58px;right:200px;top:96px}
+.collage .c5{width:70px;left:-14px;top:70px;transform:rotate(-14deg)}
+.collage .c6{width:64px;left:64px;top:30px;transform:rotate(18deg);opacity:.9}
+.collage .c7{display:none}.collage .c8{display:none}
+.pc{position:relative;display:flex;flex-direction:column;gap:12px}
+.yr{display:flex;align-items:center;gap:10px}
+.yr img{height:62px;width:auto}
+.yr span{font-family:var(--f-display);font-size:12px;line-height:1.25;color:var(--muted);font-weight:500}
+.poster h1{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1.08;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.mem{margin:-4px 0 0;color:var(--muted);font-size:14px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pills span{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 85%,transparent);backdrop-filter:blur(6px);border-radius:99px;padding:7px 12px;font-size:13px;font-weight:600}
+.pills svg{width:15px;height:15px;color:var(--accent)}
+.cd{align-self:flex-start;background:var(--ink);color:var(--bg);border-radius:14px;padding:9px 14px;font-size:14px}
+.cd b{font-family:var(--f-display);font-size:20px;margin-right:4px}
+.bento{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{padding:14px}
+.tl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.t-dnes .clk{font-family:var(--f-display);font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.t-dnes .d{font-weight:700;font-size:14px;margin-top:6px}
+.t-dnes .sv{font-size:12px;color:var(--muted)} .t-dnes .sv b{color:var(--ink)}
+.t-wx .wnow{display:flex;align-items:baseline;gap:8px}
+.t-wx .wnow b{font-family:var(--f-display);font-size:34px;line-height:1}
+.t-wx .wnow span{font-size:13px;color:var(--muted)}
+.wdays{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:10px;border-top:1px solid var(--line);padding-top:8px;text-align:center;font-size:11px;color:var(--muted)}
+.wdays b{display:block;color:var(--ink);font-size:14px} .wdays em{font-style:normal}
+.t-now{grid-column:1/-1;padding:0;border:0;background:none;box-shadow:none}
+.t-now .now{border:1px solid var(--line);border-left:5px solid var(--water);border-radius:20px;box-shadow:0 10px 30px -18px rgba(40,30,60,.25)}
+.t-now .now.brk{border-left-color:var(--warn)}
+.t-stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;padding:12px 6px}
+.t-stats div+div{border-left:1px solid var(--line)}
+.t-stats b{display:block;font-family:var(--f-display);font-size:24px;line-height:1.1}
+.t-stats span{font-size:12px;color:var(--muted)}
+.qk{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.qk button{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:12px;min-width:0}
+.qi{width:40px;height:40px;border-radius:50%;background-size:cover;background-position:center;flex:none}
+.qt{min-width:0;display:flex;flex-direction:column}
+.qt b{font-size:14px} .qt small{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.blockh{display:flex;align-items:baseline;justify-content:space-between;margin-top:6px}
+.blockh h2{font-family:var(--f-display);font-size:17px;font-weight:700}
+.lnk{border:0;background:none;color:var(--accent);font-weight:700;font-size:13px;padding:0}
+.gen{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.genp{border:1px solid var(--line);background:#fff;border-radius:18px;padding:10px;display:flex;align-items:center;justify-content:center;height:78px}
+.genp .lg{width:100%;height:100%;border:0;padding:0}
+.genp .lg img{max-height:54px}
+.news{padding:4px 14px}
+/* plovoucí lišta v mobilu */
+.tabbar{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-bottom:0;border:1px solid var(--line);border-radius:22px;background:color-mix(in srgb,var(--surface) 82%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 12px 30px -12px rgba(30,20,50,.35)}
+.tabbar .in{padding:4px}
+.tabbar button{border-radius:16px;padding:7px 2px}
+.tabbar button[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.app{padding-block:0 110px}
+@media (min-width: 820px){
+  .tabbar{left:0;right:0;top:0;bottom:auto;border-radius:0;border:0;border-bottom:1px solid var(--line);box-shadow:none}
+  .tabbar .in{padding:0 16px}
+  .tabbar button{border-radius:0;padding:15px 14px}
+  .tabbar button[aria-current="page"]{background:none}
+  .app{padding-block:60px 32px}
+  .poster{min-height:440px;padding:56px 44px 40px;justify-content:center}
+  .collage .c5{left:auto}.collage .c6{left:auto}
+  .poster .pc{max-width:560px}
+  .poster h1{font-size:46px}
+  .yr img{height:84px}
+  .collage .c1{width:260px;right:30px;top:-40px}
+  .collage .c2{width:150px;right:300px;top:30px}
+  .collage .c3{width:210px;right:60px;top:200px}
+  .collage .c4{width:120px;right:280px;top:220px}
+  .collage .c5{width:90px;right:20px;top:330px;left:auto}
+  .collage .c6{width:110px;right:420px;top:330px;left:auto}
+  .collage .c7{display:block;width:80px;right:250px;top:-20px}
+  .collage .c8{display:block;width:96px;right:440px;top:150px}
+  .bento{grid-template-columns:1fr 1fr 2fr;align-items:stretch}
+  .t-stats{grid-column:3;grid-row:1;align-content:center}
+  .t-now{grid-column:1/-1}
+  .qk{grid-template-columns:repeat(4,1fr)}
+  .gen{grid-template-columns:repeat(4,1fr)}
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .poster{background:radial-gradient(120% 90% at 100% 0%,#2a2236 0%,var(--surface) 55%)}}
+:root[data-theme="dark"] .poster{background:radial-gradient(120% 90% at 100% 0%,#2a2236 0%,var(--surface) 55%)}
+
+/* pás partnerů – váha podle kategorie */
+.ticker .track{align-items:center}
+.tcat{display:inline-flex;flex-direction:column;justify-content:center;align-items:flex-start;font-family:var(--f-display);font-weight:700;font-size:12px;line-height:1.1;text-transform:uppercase;letter-spacing:.04em;padding:6px 12px;border-radius:10px;white-space:nowrap;margin-left:10px}
+.tcat small{font-size:9px;font-weight:500;letter-spacing:.08em;opacity:.8}
+.tc-generalni{background:linear-gradient(135deg,#f6e7b0,#d9b44a);color:#4a3606}
+.tc-hlavni{background:linear-gradient(135deg,#eceff3,#b9c1cc);color:#2c333d}
+.tc-odborny{background:var(--accent-soft);color:var(--accent)}
+.tc-medialni{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.ticker button.tk{padding:4px}
+.tk-generalni .lg{height:54px;padding:6px 12px;border:2px solid #d4ad3c;box-shadow:0 0 0 3px rgba(212,173,60,.18)}
+.tk-generalni .lg img{height:40px;max-height:40px}
+.tk-hlavni .lg{height:44px;padding:5px 10px;border:2px solid #b6bec9}
+.tk-hlavni .lg img{height:32px;max-height:32px}
+.tk-odborny .lg,.tk-medialni .lg{height:32px}
+.tk-odborny .lg img,.tk-medialni .lg img{height:22px}
+.ticker button.tk-generalni,.ticker button.tk-hlavni{box-shadow:none;background:none}
+.cat h2{margin-bottom:10px}
+.cat-generalni .logo{border:2px solid #d4ad3c;box-shadow:0 0 0 4px rgba(212,173,60,.15)}
+.cat-hlavni .logo{border:2px solid #b6bec9}
+.cat-medialni .logo{opacity:.92}
+.genp{border:2px solid #d4ad3c!important;box-shadow:0 0 0 4px rgba(212,173,60,.12)}
 </style>
 
 <div class="app">
   <header class="top">
     <img class="mark" id="markimg" alt="31. ročník" width="40" height="40">
-    <div style="min-width:0"><b>31. ročník</b><small>Seč · 27.–28. dubna 2027</small></div>
+    <div class="ttl" style="min-width:0"><b id="pgt"></b><small id="pgs"></small></div>
     <span class="chip" title="Obsah podle programu 2026">Ukázka</span>
   </header>
   <main id="view"></main>
@@ -362,11 +479,12 @@ function loadWx(){if(WX.st!=="idle")return;WX.st="load";
  .catch(()=>{WX.st="err";const b=document.getElementById("todaybox");if(b)b.outerHTML=vToday()})}
 function vToday(){
  const d=new Date(), sv=svatek(d);
- const wx=WX.st==="ok"?`<div class="wxh">Počasí v Seči</div><div class="wx" style="border-top:0;padding-top:2px"><div><span class="ic">teď</span><b>${WX.cur.t} °C</b>${WMO(WX.cur.c)}</div>${WX.days.map((x,i)=>{const dd=new Date(x.t);return `<div><span class="ic">${i?DNY[dd.getDay()]:"dnes"}</span><b>${x.mx}° / ${x.mn}°</b>${WMO(x.c)}</div>`}).join("")}</div>`
-  :`<div class="wxh">Počasí v Seči</div><div class="wxnote" style="border-top:0;padding-top:0">${WX.st==="load"?"načítám…":"v ostré verzi se tu zobrazí aktuální teplota a předpověď na 3 dny (v tomto náhledu se načíst nedá)."}</div>`;
- return `<div class="today" id="todaybox"><div><div class="d">${DNY[d.getDay()].replace(/^./,c=>c.toUpperCase())} ${d.getDate()}. ${MES[d.getMonth()]} ${d.getFullYear()}</div>${sv?`<div class="sv">Svátek má <b>${esc(sv)}</b></div>`:""}</div>
-  <div class="clk" id="clk">${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}</div>${wx}</div>`;
+ const wx=WX.st==="ok"?`<div class="wnow"><b>${WX.cur.t}°</b><span>${WMO(WX.cur.c)}</span></div><div class="wdays">${WX.days.map((x,i)=>{const dd=new Date(x.t);return `<div><span>${i?DNY[dd.getDay()].slice(0,2):"dnes"}</span><b>${x.mx}°</b><em>${x.mn}°</em></div>`}).join("")}</div>`
+  :`<p class="muted" style="margin:6px 0 0;font-size:13px">${WX.st==="load"?"načítám…":"Aktuální teplota a předpověď se zobrazí na webu průvodce."}</p>`;
+ return `<div id="todaybox" style="display:contents"><div class="tile t-dnes"><div class="tl">Dnes</div><div class="clk" id="clk">${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}</div><div class="d">${DNY[d.getDay()].replace(/^./,c=>c.toUpperCase())} ${d.getDate()}. ${MES[d.getMonth()]}</div>${sv?`<div class="sv">svátek má <b>${esc(sv)}</b></div>`:""}</div>
+  <div class="tile t-wx"><div class="tl">Počasí v Seči</div>${wx}</div></div>`;
 }
+
 setInterval(()=>{const c=document.getElementById("clk");if(c){const d=new Date();c.textContent=d.getHours()+":"+String(d.getMinutes()).padStart(2,"0")}},10000);
 
 /* ===== Partneři podle pozvánky 2026 (bez log – ta dodají partneři) ===== */
@@ -414,6 +532,9 @@ const IC={
  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
 };
 IC.foto='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>';
+IC.pin='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+IC.cal='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+IC.pen='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>';
 const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["partneri","Partneři",IC.part],["fotky","Fotky",IC.foto],["doprava","Doprava",IC.bus],["info","Info",IC.info]];
 /* Fotky – zatím zástupná místa, skutečné fotky nahraje pořadatel / fotograf */
 const ALBA=[
@@ -423,37 +544,53 @@ const ALBA=[
 ];
 function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2400)}
 
-function ticker(){const one=ALLP.map(p=>`<button data-p="${esc(p.nm)}" tabindex="-1" aria-label="${esc(p.nm)}">${lm(p.nm)}${LOGA[p.nm]?"":esc(p.nm)}</button>`).join("");
+function ticker(){const one=PART.map(([k,t,,l])=>`<span class="tcat tc-${k}">${t.replace(" partneři","")}<small>partneři</small></span>`+l.map(nm=>`<button class="tk tk-${k}" data-p="${esc(nm)}" tabindex="-1" aria-label="${esc(nm)} – ${KATN[k]}">${lm(nm)}${LOGA[nm]?"":esc(nm)}</button>`).join("")).join("");
  return `<div class="ticker" aria-label="Partneři konference"><div class="track">${one}${one}</div></div>`}
+const PGT={domu:["",""],program:["Program","31. ročník · Seč"],partneri:["Partneři","31. ročník · Seč"],fotky:["Fotky","31. ročník · Seč"],doprava:["Doprava","31. ročník · Seč"],info:["Informace","31. ročník · Seč"]};
 function render(){
+ $("pgt").textContent=PGT[S.tab][0];$("pgs").textContent=PGT[S.tab][1];document.querySelector(".top").classList.toggle("home",S.tab==="domu");
  $("tabs").innerHTML=TABS.map(([k,t,i])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${i}<span>${t}</span></button>`).join("");
- $("view").innerHTML=ticker()+{domu:vDomu,program:vProgram,partneri:vPartneri,fotky:vFotky,doprava:vDoprava,info:vInfo}[S.tab]();
+ $("view").innerHTML=(S.tab==="domu"?"":ticker())+{domu:vDomu,program:vProgram,partneri:vPartneri,fotky:vFotky,doprava:vDoprava,info:vInfo}[S.tab]();
 }
 function go(t){S.tab=t;render();window.scrollTo(0,0)}
 
+function odpocet(){const st=Date.UTC(2027,3,27,6,0),en=Date.UTC(2027,3,28,10,0),n=Date.now();
+ if(n<st){const d=Math.ceil((st-n)/864e5);return `<b>${d}</b> ${d===1?"den":d<5?"dny":"dní"} do zahájení`}
+ if(n<en)return "<b>Právě probíhá</b>";return "Děkujeme za účast";}
 function vDomu(){
  loadWx();
- const nn=Object.values(S.notes).filter(Boolean).length;
+ const nn=Object.values(S.notes).filter(Boolean).length, nb=Object.keys(S.alarms).length;
+ const pr=Object.values(PROG).flat().filter(x=>!x.brk&&!x.blok&&!x.ad&&x.w).length;
+ const FL=[[10,"c1"],[6,"c2"],[16,"c3"],[9,"c4"],[3,"c5"],[13,"c6"],[12,"c7"],[17,"c8"]];
+ const qi=(n)=>`<span class="qi" style="background-image:url(${flek(n)})"></span>`;
  return `<section class="sec">
-  <div class="hero">
-   <div class="fl" aria-hidden="true">${[10,6,16,9,3,13].map(n=>`<img src="${IMG}fleky/flek${String(n).padStart(2,"0")}.webp" alt="">`).join("")}</div>
-   <span class="lab">31. ročník · Kongres hotel Jezerka, Seč</span>
-   <h1>Nové metody a postupy při provozování ČOV</h1>
-   <div class="meta">memoriál Ing. Jakuba S. Čecha, CSc. · ${TERMIN}</div>
-   <div class="stats"><div><b>${Object.values(PROG).flat().filter(x=>!x.brk&&!x.blok&&!x.ad&&x.w).length}</b><span>přednášek</span></div><div><b>${ALLP.filter(p=>p.k!=="medialni").length}</b><span>partnerů</span></div><div><b>2</b><span>body ČKAIT</span></div></div>
+  <div class="poster">
+   <span class="pchip" title="Obsah podle programu 2026">Ukázka</span>
+   <div class="collage" aria-hidden="true">${FL.map(([n,c])=>`<img class="${c}" src="${IMG}fleky/flek${String(n).padStart(2,"0")}.webp" alt="">`).join("")}</div>
+   <div class="pc">
+    <div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
+    <h1>Nové metody a postupy při provozování ČOV</h1>
+    <p class="mem">memoriál Ing. Jakuba S. Čecha, CSc.</p>
+    <div class="pills"><span>${IC.cal}27.–28. dubna 2027</span><span>${IC.pin}Kongres hotel Jezerka, Seč</span></div>
+    <div class="cd">${odpocet()}</div>
+   </div>
   </div>
-  ${vToday()}
-  ${vNow()}
-  <div class="quick">
-   <button data-go="program"><b>Program</b><span>Úterý a středa, ${Object.values(PROG).flat().filter(x=>x.blok).length} bloků</span></button>
-   <button data-go="program" data-mine="1"><b>Moje poznámky</b><span>${nn?nn+" "+(nn===1?"poznámka":nn<5?"poznámky":"poznámek"):"K přednáškám si pište poznámky"}</span></button>
-   <button data-go="doprava"><b>Svoz z Kraskova</b><span>Jízdní řád autobusu</span></button>
-   <button data-go="info"><b>${podpis()?esc(S.me.jm):"Můj profil a info"}</b><span>${podpis()?"Profil vyplněn · kontakty":"Nepovinné · adresa, poplatky"}</span></button>
+  ${ticker()}
+  <div class="bento">
+   ${vToday()}
+   <div class="tile t-now">${vNow()}</div>
+   <div class="tile t-stats"><div><b>${pr}</b><span>přednášek</span></div><div><b>${ALLP.filter(p=>p.k!=="medialni").length}</b><span>partnerů</span></div><div><b>2</b><span>body ČKAIT</span></div></div>
   </div>
-  <div><div class="label" style="margin-bottom:8px">Generální partneři</div>
-   <div class="gen">${PART[0][3].map(nm=>`<button class="quick-p card" data-p="${esc(nm)}" style="border:0;display:flex;align-items:center;gap:10px;text-align:left">${lm(nm)}<b style="font-size:14px">${esc(nm)}</b></button>`).join("")}</div></div>
-  <div class="card"><div class="label" style="margin-bottom:8px">Aktuality</div><div class="news">
-   ${NEWS.map(x=>`<article><h3>${esc(x.h)}</h3><p>${esc(x.p)}</p></article>`).join("")}</div></div>
+  <div class="qk">
+   <button data-go="program">${qi(9)}<span class="qt"><b>Program</b><small>${Object.values(PROG).flat().filter(x=>x.blok).length} bloků · dotazy · budíky</small></span></button>
+   <button data-go="program" data-mine="1">${qi(5)}<span class="qt"><b>Moje poznámky</b><small>${nn?nn+" "+(nn===1?"poznámka":nn<5?"poznámky":"poznámek"):"k přednáškám"}${nb?" · "+nb+" ⏰":""}</small></span></button>
+   <button data-go="doprava">${qi(1)}<span class="qt"><b>Svoz a cesta</b><small>Kraskov ⇄ Jezerka</small></span></button>
+   <button data-go="info">${qi(15)}<span class="qt"><b>${podpis()?esc(S.me.jm):"Informace"}</b><small>${podpis()?"profil vyplněn":"kontakty · poplatky"}</small></span></button>
+  </div>
+  <div class="blockh"><h2>Generální partneři</h2><button class="lnk" data-go="partneri">Všichni partneři →</button></div>
+  <div class="gen">${PART[0][3].map(nm=>`<button class="genp" data-p="${esc(nm)}" aria-label="${esc(nm)}">${lm(nm)}</button>`).join("")}</div>
+  <div class="blockh"><h2>Aktuality</h2></div>
+  <div class="tile news">${NEWS.map(x=>`<article><h3>${esc(x.h)}</h3><p>${esc(x.p)}</p></article>`).join("")}</div>
   <div class="note"><b>Do mobilu:</b> na iPhonu v Safari Sdílet → Přidat na plochu, na Androidu Nainstalovat aplikaci. Přihlášení není potřeba.</div>
  </section>`;
 }
@@ -503,7 +640,7 @@ function vProgram(){
 
 function vPartneri(){
  let i=0;
- return `<section class="sec">${PART.map(([k,t,g,l])=>`<div class="cat"><h2>${t}</h2><div class="logos ${g}">${l.map(nm=>`<button class="logo" data-p="${esc(nm)}" style="--i:${i++}">${lm(nm)}<span>${esc(nm)}</span></button>`).join("")}</div></div>`).join("")}
+ return `<section class="sec">${PART.map(([k,t,g,l])=>`<div class="cat cat-${k}"><h2><span class="tcat tc-${k}" style="margin:0">${t.replace(" partneři","")}<small>partneři</small></span></h2><div class="logos ${g}">${l.map(nm=>`<button class="logo" data-p="${esc(nm)}" style="--i:${i++}">${lm(nm)}<span>${esc(nm)}</span></button>`).join("")}</div></div>`).join("")}
   <div class="note">Seznam podle pozvánky 2026. Místo iniciál budou skutečná loga, profil, video a nabídka, které dodají partneři.</div></section>`;
 }
 function sheetP(nm){

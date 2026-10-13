@@ -190,3 +190,9 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   VALARM – nejspolehlivější, funguje i při zavřeném průvodci). Tlačítko „Vyzkoušet“. Časy programu se počítají
   jako pražské (duben = UTC+2) podle `DATES` 2027. Bez serveru: zvuk/oznámení jen když prohlížeč průvodce drží
   otevřený nebo na pozadí; plně zavřená aplikace → jen kalendář. (Push ze serveru by vyžadoval Firebase Cloud Messaging.)
+- **Průvodce – redesign v2 (13. 10. večer, na přání „top grafický design“):** Domů = **plakát** (velké logo 31,
+  název jen jednou, štítky termín/místo, **odpočet dní**, koláž fleků; záhlaví na Domů skryté, na ostatních
+  stránkách záhlaví = název stránky), **bento dlaždice** (Dnes + hodiny + svátek / Počasí v Seči / čísla /
+  Právě teď), rychlé volby s fleky, **plovoucí spodní lišta** se skleněným efektem (na PC menu nahoře).
+- **Váha partnerů:** pás log rozdělený štítky kategorií; **generální = zlatý rámeček a největší logo,
+  hlavní = stříbrný, odborní/mediální menší**; stejné rámečky na stránce Partneři a u generálních na Domů.
