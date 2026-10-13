@@ -198,3 +198,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   hlavní = stříbrný, odborní/mediální menší**; stejné rámečky na stránce Partneři a u generálních na Domů.
 - **Verze průvodce** (konstanta `VERZE` v `navrh/pruvodce.html`, při každém nasazení zvýšit): **0.9 · 13. 10. 2026**
   – štítek „Ukázka · v0.9“ na plakátu a v záhlaví, celé číslo dole v Info.
+- **Průvodce 0.10:** pás log nahrazen **scénou partnerů** – štítky Generální / Hlavní / Odborní / Mediální,
+  vždy jeden svítí (zlatě / stříbrně / fialově / černě) a pod ním jen jeho loga; střídá se samo
+  (generální 7 s, hlavní 6 s, odborní projedou lištou, mediální 6 s), klepnutím na štítek ručně (pauza 20 s).
+  **„Budík“ přejmenován na „Upozornit“** (🔔 Upozornit / „Upozorním 10 min předem“, okno „Upozornit na přednášku“).
