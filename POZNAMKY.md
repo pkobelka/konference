@@ -604,3 +604,8 @@ Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stá
   Jezerka – časy doplnit, adresa, GPS, mapy), Info (poplatky, ČKAIT, sborník, kontakty).
 - Výhoda: žádné osobní údaje → může být veřejná (i na GitHub Pages). Osobní část (pokoj, večeře)
   lze později přidat přihlášením – viz předchozí ukázka.
+- **Dotazy k přednáškám v průvodci (verze 2–3):** u každé přednášky „? Dotaz“ → dotazy **vidí všichni**
+  (ať se neopakují), tlačítko **„+1 Mám stejný“**, řazení podle zájmu; jméno nepovinné.
+  U bloku **„Pohled předsedajícího“** – velké písmo, dotazy ke všem přednáškám bloku, nejžádanější
+  nahoře, odškrtnutí „Přečteno“. Ostrá verze: sdílené živě přes Firebase, pohled předsedajícího
+  jen pro předsedající / pořadatele, volitelně na plátno.
