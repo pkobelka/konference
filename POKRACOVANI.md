@@ -86,8 +86,22 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
    časy svozu, fotky).
 3. Osobní část (přihlášení kódem, potvrzovací e-maily) – až po bodech 1 a 2.
 
+## Test na datech 2026 (13. 10. 2026)
+- Uživatel nemá data 2027 → chce aplikaci vyzkoušet na **datech 2026**.
+- Převodník Excel → JSON pro import (Nastavení → Import): skript mimo repozitář (osobní údaje),
+  postup: list „komplet pokoje“ = 113 pokojů (A 35, B 22, C 40, D 16), přistýlky: apartmá 2,
+  komfort 1, C běžné 1 / relax 2, D 0; list „pokoje 2026“ = 103 lidí (pokoj, sekce, firma,
+  slavnostní/1–3/nechce, jen Po/Út, platí VHOS); „přednášející 26“ = jména, kontakty, Ž/M;
+  „večeře 26“ = skupiny slavnostní večeře (VHOS, koncern, hosté, přednášející) a menu.
+- **Pevná lůžka: všude odhad 2** (Excel uvádí A 78 / C 78 / D 34 – rozdíl ověřit v záložce Pokoje).
+  Pohlaví jen u přednášejících a příjmení na -ová/-á.
+- Aplikace na těchto datech hned našla nesrovnalosti Excelu 2026: pokoj C-609 5 lidí na 3 místa,
+  2 lidé bez pokoje, 2 bez večeře, smíšené pokoje / dvě firmy na pokoji.
+- Nové v Nastavení: **„Vymazat lidi, firmy a pokoje“** (potvrzení SMAZAT, předtím automatická záloha)
+  – po testu smazat a začít čistě pro 2027.
+
 ## Ještě chybí od uživatele
-- Termín 2027 a 2028, program 2027, menu (oběd, jídla 1–3), program společenského večera.
+- Termín 2027 (2028 = **3.–5. dubna 2028**, příjezd v pondělí 3. 4.), program 2027, menu (oběd, jídla 1–3), program společenského večera.
 - Časy svozu z Kraskova, parkování, plánky hotelu.
 - Loga, texty a videa partnerů; fotky z minulých ročníků.
 

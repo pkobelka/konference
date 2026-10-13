@@ -641,6 +641,11 @@ function rNastaveni(){
     <p style="font-size:.86rem;color:#555;line-height:1.6">Import načte soubor JSON (např. <b>konference2027_vychozi_data.json</b>). <b>Doplní jen to, co tu ještě není</b> – existující lidi, firmy a pokoje nepřepíše.</p>
     <div class="lista"><input type="file" id="s_file" accept=".json,application/json" style="max-width:320px"><button class="btn small" id="s_import">Importovat</button><button class="btn ghost small" id="s_export">⬇ Stáhnout zálohu (JSON)</button></div>
     <div class="msg" id="s_imsg"></div>
+  </div>
+  <div class="nast" style="margin-top:18px;border-color:#e3b9b7"><h2 class="sek" style="color:var(--cervena)">Vymazat data (např. po testu nebo před novým ročníkem)</h2>
+    <p style="font-size:.86rem;color:#555;line-height:1.6">Smaže <b>všechny lidi, firmy a pokoje</b>. Nastavení (noci, menu, nároky) zůstane. Před smazáním se automaticky stáhne záloha.</p>
+    <div class="lista"><input id="s_delconf" placeholder="pro potvrzení napiš SMAZAT" style="max-width:240px"><button class="btn red small" id="s_delall">Vymazat lidi, firmy a pokoje</button></div>
+    <div class="msg" id="s_dmsg"></div>
   </div>`;
   document.querySelectorAll(".s_nocdel").forEach(b=>b.addEventListener("click",()=>{
     const k=b.closest("[data-nocid]").dataset.nocid;
@@ -660,6 +665,12 @@ function rNastaveni(){
     const narok={};document.querySelectorAll(".s_nar").forEach(i=>{const v=+i.value||0;if(v){(narok[i.dataset.k]=narok[i.dataset.k]||{})[i.dataset.f]=v;}});
     const obj=Object.assign({},n,{narok,nazev:$("s_nazev").value.trim(),datum:$("s_datum").value.trim(),misto:$("s_misto").value.trim(),menu,noci:nociNew,vecere_ideal:+$("s_ideal").value||null,vecere_max:+$("s_max").value||null,uzaverka:$("s_uzav").value,text_partneri:$("s_text").value.trim()});
     save("nastaveni",stamp(obj)).then(()=>ulozVerejne(obj)).then(()=>{$("s_msg").style.color="var(--zelena)";$("s_msg").textContent="✔ Uloženo";}).catch(e=>{$("s_msg").textContent="⚠️ "+errMsg(e);});
+  });
+  $("s_delall").addEventListener("click",()=>{
+    const out=$("s_dmsg");
+    if($("s_delconf").value.trim()!=="SMAZAT"){out.textContent="Pro potvrzení napiš do pole velkými písmeny SMAZAT.";return;}
+    download("konference_zaloha_pred_smazanim_"+new Date().toISOString().slice(0,10)+".json",JSON.stringify(DB,null,1),"application/json");
+    FDB.ref(ROOT).update({osoby:null,firmy:null,pokoje:null}).then(()=>{out.style.color="var(--zelena)";out.textContent="✔ Smazáno. Záloha se stáhla do počítače.";}).catch(e=>{out.textContent="⚠️ "+errMsg(e);});
   });
   $("s_export").addEventListener("click",()=>download("konference_zaloha_"+new Date().toISOString().slice(0,10)+".json",JSON.stringify(DB,null,1),"application/json"));
   $("s_import").addEventListener("click",()=>{
