@@ -35,7 +35,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .top small{color:var(--muted);font-size:12px}
 .chip{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:var(--water-soft);color:var(--water);flex:none}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
-.tabbar .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabbar .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
 .tabbar button{background:none;border:0;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--muted)}
 .tabbar svg{width:22px;height:22px}
 .tabbar button[aria-current="page"]{color:var(--accent)}
@@ -180,6 +180,22 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .wx div{text-align:center;font-size:12px;color:var(--muted)} .wx b{display:block;font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
 .wx .ic{font-size:11px;color:var(--water);font-weight:700}
 .wxnote{grid-column:1/-1;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
+.album h2{font-size:17px}
+.album .sub{font-size:13px;color:var(--muted);margin:2px 0 8px}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:12px;overflow:hidden}
+.ph{border:0;padding:0;aspect-ratio:1;max-width:100%;position:relative;display:grid;place-items:center;color:rgba(255,255,255,.85);font-size:11px;font-weight:700;text-align:center}
+.ph svg{width:26px;height:26px;opacity:.75}
+.ph span{position:absolute;left:6px;right:6px;bottom:5px;text-align:left;font-weight:600;font-size:10px;line-height:1.2;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.lb{position:fixed;inset:0;z-index:40;background:#0b0f0c;color:#f1f4f1;display:flex;flex-direction:column}
+.lb .bar{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px}
+.lb .bar b{flex:1;font-size:14px;font-weight:600;min-width:0}
+.lb button{border:0;background:rgba(255,255,255,.12);color:#f1f4f1;border-radius:99px;width:40px;height:40px;font-size:20px;flex:none}
+.lb .stage{flex:1;display:grid;place-items:center;padding:0 12px;min-height:0;position:relative;touch-action:pan-y}
+.lb .img{width:min(100%,900px);aspect-ratio:4/3;max-height:100%;border-radius:12px;display:grid;place-items:center;font-size:14px;color:rgba(255,255,255,.8);text-align:center;padding:16px}
+.lb .nav{position:absolute;top:50%;transform:translateY(-50%)}
+.lb .prev{left:14px} .lb .next{right:14px}
+.lb .cap{padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));font-size:14px;text-align:center;color:#c9d3cb}
+@media (min-width: 820px){.photos{grid-template-columns:repeat(6,1fr)}}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
 /* tablet a počítač: menu nahoře, širší obsah */
 @media (min-width: 820px){
@@ -326,6 +342,7 @@ function lm(nm){return `<div class="lm" style="background:${col(nm)}">${esc(ini(
 const NEWS=[
  {d:"ukázka",h:"Program je zveřejněn",p:"Projděte si program. K přednáškám si můžete psát vlastní poznámky a posílat dotazy."},
  {d:"ukázka",h:"Svoz z hotelu Kraskov",p:"Pro ubytované v Kraskově jezdí autobus. Časy najdete v záložce Doprava."},
+ {d:"ukázka",h:"Fotky z konference",p:"V záložce Fotky najdete fotografie z letošního ročníku i archiv minulých let."},
  {d:"ukázka",h:"Sborník v PDF",p:"Sborník bude ke stažení po konferenci. Dáme vědět v aktualitách."},
 ];
 
@@ -347,14 +364,21 @@ const IC={
  bus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16M8 21v-4M16 21v-4"/><circle cx="8" cy="14" r=".6" fill="currentColor"/><circle cx="16" cy="14" r=".6" fill="currentColor"/></svg>',
  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
 };
-const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["partneri","Partneři",IC.part],["doprava","Doprava",IC.bus],["info","Info",IC.info]];
+IC.foto='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>';
+const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["partneri","Partneři",IC.part],["fotky","Fotky",IC.foto],["doprava","Doprava",IC.bus],["info","Info",IC.info]];
+/* Fotky – zatím zástupná místa, skutečné fotky nahraje pořadatel / fotograf */
+const ALBA=[
+ {id:"a27",h:"2027 – 31. ročník",sub:"Fotky přibývají během konference",n:6,hue:150,cap:["Prezence","Zahájení","Legislativní blok","Výstava partnerů","Oběd","Společenský večer"]},
+ {id:"a26",h:"2026 – jubilejní 30. ročník",sub:"14.–15. dubna 2026, Kongres hotel Jezerka",n:9,hue:200,cap:["Zahájení","Kongresový sál","Předsednictvo","Diskuze","Výstava ve foyer","Prezentace partnerů","Oběd","Společenský večer","Závěr konference"]},
+ {id:"arch",h:"Archiv 1996–2025",sub:"Ohlédnutí za historií konference",n:6,hue:30,cap:["Moravská Třebová","Výstava Voda a my","Dohoda AČE ČR a SR (2000)","Seminář v muzeu","První ročník v Seči (2022)","Rekordní ročník 2025"]},
+];
 function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2400)}
 
 function ticker(){const one=ALLP.map(p=>`<button data-p="${esc(p.nm)}" tabindex="-1">${lm(p.nm)}${esc(p.nm)}</button>`).join("");
  return `<div class="ticker" aria-label="Partneři konference"><div class="track">${one}${one}</div></div>`}
 function render(){
  $("tabs").innerHTML=TABS.map(([k,t,i])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${i}<span>${t}</span></button>`).join("");
- $("view").innerHTML=ticker()+{domu:vDomu,program:vProgram,partneri:vPartneri,doprava:vDoprava,info:vInfo}[S.tab]();
+ $("view").innerHTML=ticker()+{domu:vDomu,program:vProgram,partneri:vPartneri,fotky:vFotky,doprava:vDoprava,info:vInfo}[S.tab]();
 }
 function go(t){S.tab=t;render();window.scrollTo(0,0)}
 
@@ -440,6 +464,29 @@ function sheetP(nm){
    ${talks.length?`<div><div class="label" style="margin-bottom:6px">Přednášky partnera</div>${talks.map(x=>`<button class="mini" data-goday="${x.d}" style="margin-bottom:6px"><b>${esc(x.h)}</b><small>${DAYS.find(d=>d.k===x.d).n} ${esc(x.t)}</small></button>`).join("")}</div>`:""}
   </div>`);
 }
+
+function phStyle(a,i){return `background:linear-gradient(${135+i*20}deg,hsl(${a.hue+i*9} 35% ${34+i%3*6}%),hsl(${a.hue+40+i*7} 40% ${24+i%2*8}%))`}
+function vFotky(){
+ return `<section class="sec">${ALBA.map(a=>`<div class="album"><h2>${esc(a.h)}</h2><div class="sub">${esc(a.sub)} · ${a.n} fotek</div>
+  <div class="photos">${a.cap.map((c,i)=>`<button class="ph" data-ph="${a.id}:${i}" style="${phStyle(a,i)}" aria-label="${esc(c)}">${IC.foto}<span>${esc(c)}</span></button>`).join("")}</div></div>`).join("")}
+  <div class="note">Místo barevných ploch budou skutečné fotografie. Nahraje je pořadatel nebo fotograf, během konference i průběžně. Klepnutím fotku zvětšíte, šipkami nebo přejetím prstem listujete.</div></section>`;
+}
+let LB=null;
+function openLb(aid,i){LB={a:ALBA.find(x=>x.id===aid),i};drawLb()}
+function drawLb(){
+ let el=document.getElementById("lb");if(!el){el=document.createElement("div");el.id="lb";el.className="lb";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");document.body.appendChild(el);
+  el.addEventListener("click",e=>{if(e.target.closest("[data-lbx]"))closeLb();else if(e.target.closest("[data-lbp]"))stepLb(-1);else if(e.target.closest("[data-lbn]"))stepLb(1)});
+  let x0=null;el.addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});el.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)stepLb(dx<0?1:-1);x0=null})}
+ const {a,i}=LB;
+ el.innerHTML=`<div class="bar"><b>${esc(a.h)} · ${i+1} / ${a.n}</b><button data-lbx aria-label="Zavřít">×</button></div>
+  <div class="stage"><div class="img" style="${phStyle(a,i)}">Zde bude fotografie<br>„${esc(a.cap[i])}“</div>
+  <button class="nav prev" data-lbp aria-label="Předchozí">‹</button><button class="nav next" data-lbn aria-label="Další">›</button></div>
+  <div class="cap">${esc(a.cap[i])}</div>`;
+ el.querySelector("[data-lbx]").focus();
+}
+function stepLb(d){if(!LB)return;LB.i=(LB.i+d+LB.a.n)%LB.a.n;drawLb()}
+function closeLb(){const el=document.getElementById("lb");if(el)el.remove();LB=null}
+document.addEventListener("keydown",e=>{if(!LB)return;if(e.key==="Escape")closeLb();if(e.key==="ArrowLeft")stepLb(-1);if(e.key==="ArrowRight")stepLb(1)});
 
 function vDoprava(){
  return `<section class="sec">
@@ -529,7 +576,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)
 /* ===== Události ===== */
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
 $("view").addEventListener("click",e=>{
- const t=e.target.closest("[data-go],[data-day],[data-note],[data-p],[data-q],[data-chair],#mine");if(!t)return;
+ const t=e.target.closest("[data-go],[data-day],[data-note],[data-p],[data-q],[data-chair],[data-ph],#mine");if(!t)return;
+ if(t.dataset.ph){const [a,i]=t.dataset.ph.split(":");return openLb(a,+i)}
  if(t.dataset.q)return sheetQ(t.dataset.q);
  if(t.dataset.chair)return sheetChair(t.dataset.chair);
  if(t.dataset.go){if(t.dataset.mine)S.mine=true;return go(t.dataset.go)}

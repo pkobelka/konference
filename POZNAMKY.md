@@ -1,5 +1,7 @@
 # Poznámky k aplikaci – Konference Seč 2027 (VHOS)
 
+> Kde jsme skončili a co dál: **`POKRACOVANI.md`**.
+
 Pracovní název aplikace: **Konference Seč 2027**
 
 ## O konferenci (z podkladů uživatele, 13. 10. 2026)
@@ -631,3 +633,7 @@ Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stá
   svátkem** (český kalendář jmenin z balíčku namedays-cs, MIT, + státní svátky) a **počasím v Seči**
   (Open-Meteo, bez klíče: teplota teď + předpověď na 3 dny). V náhledu artefaktu se počasí
   nenačte (blokované připojení) → ukáže vysvětlení; na vlastním webu poběží živě (ověřeno testem).
+- **Fotky (verze 10):** záložka Fotky – alba 2027 (přibývají během konference), 2026, archiv
+  1996–2025; prohlížení na celou obrazovku (šipky, klávesy, přejetí prstem). Zatím zástupné plochy.
+
+> **Shrnutí stavu a další kroky: viz `POKRACOVANI.md`.**
