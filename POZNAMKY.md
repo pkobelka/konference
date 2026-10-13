@@ -616,3 +616,10 @@ Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stá
   širší obsah, víc log vedle sebe (až 7), okna uprostřed, větší písmo dotazů pro předsedajícího.
   Ostrá verze na GitHub Pages: přidat manifest + ikonu + offline režim (service worker) –
   v náhledu artefaktu to nejde, na vlastním webu ano.
+- **„Právě teď“ (verze 6–7):** karta na Domů podle časového harmonogramu – co probíhá, do kolika,
+  kolik zbývá (proužek), co následuje; přestávka jinou barvou; před začátkem „Program začne za…“,
+  po konci „Program dne skončil“. V programu běžící bod zvýrazněn „Teď · do …“.
+  Ostrá verze podle skutečných hodin (aktualizace každých 30 s), ukázka má posuvník času.
+- **Podrobnosti k jídlu a večerům:** oběd (menu, vegetariánská varianta, diety), přestávky
+  (káva, výstava), večeře pro ubytované (jídla 1–3), společenský večer (raut, program, svoz).
+  *Doplnit: skutečná menu a program večera 2027.*

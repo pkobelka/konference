@@ -147,6 +147,31 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .chk input{width:18px;height:18px}
 .signas{font-size:13px;color:var(--muted)} .signas b{color:var(--ink)}
 .linkb{border:0;background:none;padding:0;color:var(--water);font-weight:700;text-decoration:underline;font-size:13px}
+.now{border:0;width:100%;text-align:left;background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:8px;border-left:5px solid var(--water)}
+.now.brk{border-left-color:var(--warn)}
+.now .lbl{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--water)}
+.now.brk .lbl{color:var(--warn)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.now h2{font-size:18px}
+.now .who{font-size:13px;color:var(--muted)}
+.bar{height:6px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--water);border-radius:6px}
+.now.brk .bar i{background:var(--warn)}
+.left{font-family:var(--f-display);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+.next{font-size:13px;border-top:1px solid var(--line);padding-top:8px}
+.next b{font-weight:700}
+.sim{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line);border-radius:12px;padding:8px 10px}
+.sim .r{display:flex;gap:8px;align-items:center}
+.sim input[type=range]{flex:1;min-width:0;accent-color:var(--water)}
+.sim select{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:3px 4px}
+.sim b{color:var(--ink);font-variant-numeric:tabular-nums}
+.talk.live{box-shadow:0 0 0 2px var(--water),var(--shadow)}
+.livechip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--water);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+@media (prefers-reduced-motion: reduce){.dot{animation:none}}
+.det{margin:8px 0 0;padding:8px 10px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px;display:flex;flex-direction:column;gap:3px}
+.det li::before{content:"·";margin-right:6px;color:var(--warn);font-weight:800}
+.now .det{background:var(--surface-2)}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
 /* tablet a počítač: menu nahoře, širší obsah */
 @media (min-width: 820px){
@@ -194,7 +219,7 @@ const DAYS=[{k:"po",n:"Pondělí",d:"13. 4."},{k:"ut",n:"Úterý",d:"14. 4."},{k
 const PROG={
  po:[
   {t:"odpoledne",h:"Příjezd a ubytování",w:"Kongres hotel Jezerka, recepce",brk:1},
-  {t:"19:00",e:"20:00",h:"Večeře pro ubytované",w:"Restaurace hotelu",brk:1},
+  {t:"19:00",e:"20:00",h:"Večeře pro ubytované",w:"Restaurace hotelu",brk:1,det:["Jídlo podle výběru v přihlášce (1, 2 nebo 3)","Nabídku jídel na rok 2027 doplní pořadatel"]},
  ],
  ut:[
   {t:"08:00",e:"09:00",h:"Prezence",w:"Foyer",brk:1},
@@ -207,20 +232,20 @@ const PROG={
   {t:"11:15",e:"11:45",h:"Umělá inteligence: možnosti, nástrahy, legislativa",w:"Ing. Jiří Kašparec, VAE CONTROLS, s.r.o."},
   {t:"11:45",e:"12:00",h:"Diskuze",w:"",brk:1},
   {t:"12:00",e:"12:15",h:"Prezentace odborných partnerů a sponzorů konference",w:"Kongresový sál",ad:1},
-  {t:"12:15",e:"13:30",h:"Oběd",w:"Restaurace",brk:1},
+  {t:"12:15",e:"13:30",h:"Oběd",w:"Restaurace",brk:1,det:["Polévka · doplní pořadatel","Hlavní jídlo · doplní pořadatel","Vegetariánská varianta · doplní pořadatel","Bezlepkové a jiné diety hlaste předem"]},
   {blok:"Aktuální trendy v čistírenství I. – terciární čištění",pr:"Ing. Ondřej Beneš, Ph.D., MBA, LL.M."},
   {t:"13:30",e:"13:55",h:"Dopady a limity simultánního srážení fosforu",w:"Ing. Katarína Hanusová, Ing. Milan Lánský, Ph.D., Ing. Bc. Martin Srb, Ph.D., Ing. Petr Sýkora, Ph.D., PVK, a.s."},
   {t:"13:55",e:"14:15",h:"Provozní ověření inovativní technologie MABR na PČOV Čertousy",w:"Ing. Martin Koller, Ph.D., Ing. Sára Doubravská, Česká voda – MEMSEP, a.s. · Ing. Radka Rosenbergová, Veolia · Ing. Bc. Martin Srb, Ph.D., Petra Cebe, Jakub Vrbenský, PVK, a.s. · Ing. Jiří Rosický, PVS, a.s."},
   {t:"14:15",e:"14:35",h:"Změna řízení aktivačního procesu na ČOV Jihlava: konec kyslíkové éry – dusík přebírá velení",w:"Mgr. Tomáš Brabenec, Marián Trojan, SLUŽBY MĚSTA JIHLAVY s.r.o."},
   {t:"14:35",e:"15:00",h:"Pile Cloth – Nová filtrační technologie nejen pro terciární stupeň",w:"Ing. Aleš Vaverka, IN-EKO TEAM, s.r.o."},
   {t:"15:00",e:"15:15",h:"Diskuze",w:"",brk:1},
-  {t:"15:15",e:"15:30",h:"Přestávka",w:"Foyer – výstava partnerů",brk:1,ad:1},
+  {t:"15:15",e:"15:30",h:"Přestávka",w:"Foyer – výstava partnerů",brk:1,ad:1,det:["Káva, čaj a občerstvení","Výstava partnerů ve foyer"]},
   {blok:"Aktuální trendy v čistírenství II. – energetická neutralita ČOV",pr:"Ing. Bc. Martin Srb, Ph.D."},
   {t:"15:30",e:"16:00",h:"Moderní řešení při rekonstrukci tradičních ČOV, ČOV Hlinsko – 6 měsíců zkušeností z rekonstrukce provzdušení, technologie EnviroMix",w:"Mgr. Petr Kavalír, Ph.D., VS CHRUDIM, a.s. · Mgr. Iryna Lanko, Ph.D., Stavební Huť Slatiňany, a.s."},
   {t:"16:00",e:"16:30",h:"Koncepce energetiky ve skupině Severočeská voda",w:"Ing. Marcel Gómez, Ph.D., Ing. Filip Harciník, Severočeské vodovody a kanalizace, a.s."},
   {t:"16:30",e:"17:00",h:"Možnosti dosažení energetické neutrality na ČOV Havlíčkův Brod",w:"Ing. Zdeněk Zelený, VAK Havlíčkův Brod, a.s."},
   {t:"17:00",e:"17:30",h:"Diskuze, závěr prvního dne",w:"",brk:1},
-  {t:"19:30",e:"02:00",h:"Společenský večer",w:"Kongres hotel Jezerka",brk:1},
+  {t:"19:30",e:"02:00",h:"Společenský večer",w:"Kongres hotel Jezerka",brk:1,det:["Večeře formou rautu · doplní pořadatel","Program večera (hudba, překvapení) · doplní pořadatel","Svoz do Kraskova po skončení · viz Doprava"]},
  ],
  st:[
   {blok:"Novinky a zkušenosti z provozování a řízení ČOV",pr:"Ing. Martin Pečenka, Ph.D."},
@@ -237,6 +262,22 @@ const PROG={
 };
 let n=0;for(const d in PROG){let bk=null;PROG[d].forEach(x=>{if(x.blok){bk=x;x.bid=d+"b"+(n++)}else{x.id=d+(n++);if(bk&&!x.brk&&!x.ad&&x.w)x.bid=bk.bid}})}
 const ALLT=Object.values(PROG).flat();
+const DATES={po:"2026-04-13",ut:"2026-04-14",st:"2026-04-15"};
+const mm=t=>{const m=/^(\d\d):(\d\d)$/.exec(t||"");return m?+m[1]*60+ +m[2]:null};
+ALLT.forEach(x=>{if(x.blok)return;x.a=mm(x.t);x.b=mm(x.e);if(x.a!=null&&x.b!=null&&x.b<=x.a)x.b+=1440});
+function clock(){ // skutečný čas během konference, jinak simulace
+ const d=new Date(),iso=d.toISOString().slice(0,10),day=Object.keys(DATES).find(k=>DATES[k]===iso);
+ if(day)return {day,m:d.getHours()*60+d.getMinutes(),real:1};
+ return {day:S.sim.day,m:S.sim.m,real:0};
+}
+const hm=m=>{m=((m%1440)+1440)%1440;return Math.floor(m/60)+":"+String(m%60).padStart(2,"0")};
+const dur=m=>m>=60?Math.floor(m/60)+" h "+(m%60?m%60+" min":""):m+" min";
+function nowState(){
+ const c=clock(),l=PROG[c.day].filter(x=>!x.blok&&x.a!=null);
+ const cur=l.find(x=>x.a<=c.m&&c.m<(x.b??x.a+1)), next=l.find(x=>x.a>c.m);
+ const bk=cur&&ALLT.find(y=>y.blok&&y.bid===cur.bid);
+ return {c,cur,next,bk,first:l[0],last:l[l.length-1]};
+}
 
 /* ===== Partneři podle pozvánky 2026 (bez log – ta dodají partneři) ===== */
 const PART=[
@@ -261,7 +302,7 @@ const NEWS=[
 
 /* ===== Stav (jen v tomto telefonu) ===== */
 const store={get(k,d){try{const v=localStorage.getItem("pr_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pr_"+k,JSON.stringify(v))}catch(e){}}};
-const S={tab:"domu",day:"ut",q:"",mine:false,fav:store.get("fav",{}),
+const S={sim:{day:"ut",m:10*60+2},tab:"domu",day:"ut",q:"",mine:false,fav:store.get("fav",{}),
  qa:store.get("qa",null)||{ut5:[{t:"Kdy můžeme čekat transpozici nové směrnice do české legislativy?",a:"Jan, VaK",c:"9:31",v:6}],ut6:[{t:"Týká se nový reporting i ČOV pod 2 000 EO?",a:"anonymně",c:"9:58",v:3},{t:"Budou data z reportingu veřejně dostupná?",a:"Lenka, PVK",c:"10:04"}],ut9:[{t:"Jak řešíte odpovědnost za rozhodnutí, která navrhne AI?",a:"Petra",c:"11:21",v:4}]},
  read:store.get("read",{}),voted:store.get("voted",{}),me:store.get("me",{jm:"",firma:""})};
 function podpis(){return [S.me.jm,S.me.firma].filter(Boolean).join(", ")}
@@ -300,6 +341,7 @@ function vDomu(){
    <div class="stats"><div><b>${Object.values(PROG).flat().filter(x=>!x.brk&&!x.blok&&!x.ad&&x.w).length}</b><span>přednášek</span></div><div><b>${ALLP.filter(p=>p.k!=="medialni").length}</b><span>partnerů</span></div><div><b>2</b><span>body ČKAIT</span></div></div>
    <svg viewBox="0 0 180 60" fill="none" stroke="currentColor" stroke-width="3"><path d="M0 15c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 35c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 55c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/></svg>
   </div>
+  ${vNow()}
   <div class="quick">
    <button data-go="program"><b>Program</b><span>Úterý a středa, ${Object.values(PROG).flat().filter(x=>x.blok).length} bloků</span></button>
    <button data-go="program" data-mine="1"><b>Můj program</b><span>${favs?favs+" označených":"Označte si hvězdičkou"}</span></button>
@@ -314,6 +356,22 @@ function vDomu(){
  </section>`;
 }
 
+function vNow(){
+ const {c,cur,next,bk,first,last}=nowState(), D=DAYS.find(d=>d.k===c.day);
+ let h;
+ if(cur){const tot=(cur.b??cur.a+1)-cur.a, el=c.m-cur.a, pct=Math.min(100,Math.round(el/tot*100));
+  h=`<button class="now ${cur.brk?"brk":""}" data-goday="${c.day}"><div class="lbl"><span class="dot"></span>${cur.brk?"Právě teď":"Právě probíhá"} · ${esc(cur.t)}–${esc(cur.e||"")}</div>
+   <h2>${esc(cur.h)}</h2>${cur.w&&!cur.brk?`<div class="who">${esc(cur.w)}</div>`:""}${bk?`<div class="who">Blok: ${esc(bk.blok)}</div>`:""}${cur.det?`<ul class="det">${cur.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}
+   <div class="bar"><i style="width:${pct}%"></i></div><div class="left">${cur.brk?"Konec":"Do konce"} za ${dur((cur.b??cur.a+1)-c.m)} · v ${hm(cur.b??cur.a+1)}</div>
+   ${next?`<div class="next">Následuje v ${esc(next.t)}: <b>${esc(next.h)}</b></div>`:""}</button>`}
+ else if(next&&first&&c.m<first.a){h=`<button class="now" data-goday="${c.day}"><div class="lbl">${D.n} ${D.d}</div><h2>Program začne za ${dur(first.a-c.m)}</h2><div class="next">V ${esc(first.t)}: <b>${esc(first.h)}</b></div></button>`}
+ else if(next){h=`<button class="now brk" data-goday="${c.day}"><div class="lbl">Volno</div><h2>Další bod programu za ${dur(next.a-c.m)}</h2><div class="next">V ${esc(next.t)}: <b>${esc(next.h)}</b></div></button>`}
+ else{h=`<div class="now"><div class="lbl">${D.n} ${D.d}</div><h2>Program dne skončil</h2><div class="who">${c.day==="st"?"Děkujeme za účast a těšíme se příště.":"Zítra pokračujeme – podívejte se do programu."}</div></div>`}
+ if(!c.real)h+=`<div class="sim"><div>Ukázka: konference teď neprobíhá, posuňte si čas. V ostré verzi to jde podle hodin.</div>
+  <div class="r"><select id="simday" aria-label="Den">${DAYS.map(d=>`<option value="${d.k}" ${S.sim.day===d.k?"selected":""}>${d.n}</option>`).join("")}</select>
+  <input type="range" id="simm" min="420" max="1440" step="5" value="${S.sim.m}" aria-label="Čas"><b id="simt">${hm(S.sim.m)}</b></div></div>`;
+ return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px">${h}</div>`;
+}
 function match(x){if(!S.q)return true;return norm(x.h+" "+x.w).includes(norm(S.q))}
 function vProgram(){
  let list=PROG[S.day];
@@ -328,9 +386,9 @@ function vProgram(){
   ${rows.some(x=>!x.blok)?rows.map(x=>{
    if(x.blok){const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter((q,i)=>!S.read[y.id+":"+i]).length,0);
     return `<div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
-   const f=!!S.fav[x.id];
+   const f=!!S.fav[x.id], st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
    let h=`<div class="slot"><div class="t">${esc(x.t)}${x.e?`<small>–${esc(x.e)}</small>`:""}</div>
-    <div class="talk ${x.brk?"brk":""} ${f?"mine":""}"><div class="body"><h3>${esc(x.h)}</h3>${x.w?`<div class="who">${esc(x.w)}</div>`:""}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}</button>`:""}</div>
+    <div class="talk ${x.brk?"brk":""} ${f?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)}</div>`:""}<h3>${esc(x.h)}</h3>${x.w?`<div class="who">${esc(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}</button>`:""}</div>
     ${x.brk?"":`<button class="star" data-fav="${x.id}" aria-pressed="${f}" aria-label="${f?"Odebrat z mého programu":"Přidat do mého programu"}">${f?IC.star:IC.star0}</button>`}</div></div>`;
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
    return h}).join("")
@@ -440,8 +498,12 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.p)return sheetP(t.dataset.p);
  if(t.id==="mine"){S.mine=!S.mine;return render()}
 });
+$("view").addEventListener("change",e=>{if(e.target.id==="simday"){S.sim.day=e.target.value;$("nowbox").outerHTML=vNow()}});
+$("view").addEventListener("click",e=>{const g=e.target.closest(".now[data-goday]");if(g){S.day=g.dataset.goday;S.q="";S.mine=false;go("program");const l=document.querySelector(".talk.live");if(l)l.scrollIntoView({block:"center"})}});
+setInterval(()=>{if(clock().real)render()},30000);
 $("view").addEventListener("submit",e=>{if(e.target.id!=="pf")return;e.preventDefault();S.me={jm:$("pjm").value.trim(),firma:$("pfirma").value.trim()};store.set("me",S.me);render();toast(podpis()?"Profil uložen":"Profil je prázdný")});
 $("view").addEventListener("click",e=>{if(e.target.id==="pdel"){S.me={jm:"",firma:""};store.set("me",S.me);render();toast("Profil smazán")}});
-$("view").addEventListener("input",e=>{if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
+$("view").addEventListener("input",e=>{
+ if(e.target.id==="simm"){S.sim.m=+e.target.value;$("nowbox").outerHTML=vNow();$("simm").focus();return}if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
 render();
 </script>
