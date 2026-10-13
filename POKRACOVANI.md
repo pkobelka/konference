@@ -156,3 +156,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 5. Později: průvodce pro účastníky na web (fleky, 31, data 2027), osobní část.
 - **Verze aplikace** je vidět vpravo nahoře (a na přihlašovací obrazovce): konstanta `VERZE` v `index.html`.
   **Při každém nasazení zvýšit** (1.2 · 13. 10. 2026 = vše výše). Historie: 1.0 původní, 1.1 pokoje/večeře/Kraskov/kontroly, 1.2 hledání + Potvrdil + verze.
+- **Průvodce pro veřejnost nasazen jako ukázka:** https://pkobelka.github.io/konference/pruvodce/
+  (`pruvodce/index.html` = `navrh/pruvodce.html` obalené hlavičkou; data podle pozvánky 2026, jen veřejné údaje).
+  Při úpravě průvodce upravit `navrh/pruvodce.html` a znovu vygenerovat `pruvodce/index.html`.

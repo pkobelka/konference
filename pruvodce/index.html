@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#2f6b3c" />
+<link rel="icon" href="../ikony/favicon-64.png" type="image/png" />
+<link rel="apple-touch-icon" href="../ikony/apple-touch-icon.png" />
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>Průvodce konferencí ČOV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: veřejný průvodce bez přihlášení – úzký sloupec (max 440px), spodní lišta pěti záložek. */
+:root{
+  --bg:#eef2ec; --surface:#ffffff; --surface-2:#f6f8f4; --ink:#1c2a21; --muted:#5d6b62; --line:#dbe3d7;
+  --accent:#2f6b3c; --accent-ink:#ffffff; --accent-soft:#e1eedf;
+  --water:#1d6a86; --water-soft:#dceef4; --warn:#b8701a;
+  --shadow:0 1px 2px rgba(28,42,33,.06),0 6px 20px rgba(28,42,33,.07);
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101612; --surface:#18211b; --surface-2:#1e2822; --ink:#e4ebe5; --muted:#99a79e; --line:#2a352e;
+  --accent:#74c487; --accent-ink:#0f1a12; --accent-soft:#1f3326; --water:#62b5d3; --water-soft:#16303a; --warn:#e0a24f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#101612; --surface:#18211b; --surface-2:#1e2822; --ink:#e4ebe5; --muted:#99a79e; --line:#2a352e;
+  --accent:#74c487; --accent-ink:#0f1a12; --accent-soft:#1f3326; --water:#62b5d3; --water-soft:#16303a; --warn:#e0a24f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--water)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--water);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+.app{max-width:440px;margin:0 auto;min-height:100vh;padding-inline:16px;padding-block:0 96px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px 8px;display:flex;align-items:center;gap:10px}
+.mark{width:36px;height:36px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:13px;flex:none}
+.top b{font-family:var(--f-display);font-weight:800;font-size:16px;display:block}
+.top small{color:var(--muted);font-size:12px}
+.chip{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:var(--water-soft);color:var(--water);flex:none}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
+.tabbar button{background:none;border:0;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--muted)}
+.tabbar svg{width:22px;height:22px}
+.tabbar button[aria-current="page"]{color:var(--accent)}
+.sec{display:flex;flex-direction:column;gap:12px;padding-block:4px 18px}
+.label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:14px}
+.muted{color:var(--muted)}
+.note{font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line);border-radius:10px;padding:8px 10px}
+.btn{border:0;border-radius:10px;padding:9px 13px;font-weight:700;background:var(--accent-soft);color:var(--accent);font-size:14px}
+.kv{display:grid;grid-template-columns:104px 1fr;gap:8px 10px;font-size:14px;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:600;min-width:0;overflow-wrap:anywhere}
+
+/* pás log */
+.ticker{overflow:hidden;margin-inline:-16px;padding-block:2px 10px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ticker .track{display:flex;gap:8px;width:max-content;animation:tick 70s linear infinite}
+.ticker:hover .track{animation-play-state:paused}
+.ticker button{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:10px;padding:5px 9px 5px 5px;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;white-space:nowrap}
+@keyframes tick{to{transform:translateX(-50%)}}
+.lm{border-radius:8px;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;color:#fff;flex:none;width:26px;height:26px;font-size:12px}
+
+/* domů */
+.hero{background:var(--accent);color:var(--accent-ink);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+.hero h1{font-size:25px;font-weight:800}
+.hero .meta{font-size:14px;opacity:.92}
+.stats{display:flex;gap:16px;margin-top:8px;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.stats b{font-family:var(--f-display);font-size:28px;font-weight:800;display:block;line-height:1}
+.stats span{font-size:12px;opacity:.9}
+.hero svg{position:absolute;right:-10px;bottom:-6px;width:170px;opacity:.22}
+.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.quick button{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:14px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.quick b{font-size:15px} .quick span{font-size:12px;color:var(--muted)}
+.gen{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.news article{padding:10px 0;border-top:1px solid var(--line)}
+.news article:first-child{border-top:0;padding-top:0}
+.news time{font-size:12px;color:var(--muted)} .news h3{font-size:15px;font-family:var(--f-body);font-weight:700} .news p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+
+/* program */
+.days{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--surface);border-radius:12px;padding:4px;box-shadow:var(--shadow)}
+.days button{border:0;background:none;border-radius:9px;padding:7px 4px;font-weight:700;font-size:14px;color:var(--muted)}
+.days small{display:block;font-weight:500;font-size:11px}
+.days button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.tools{display:flex;gap:8px;align-items:center}
+.tools input{flex:1;min-width:0;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit}
+.tog{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-weight:700;font-size:13px;white-space:nowrap}
+.tog[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.block{background:var(--water-soft);color:var(--water);border-radius:12px;padding:10px 12px}
+.block h2{font-size:16px} .block p{margin:2px 0 0;font-size:13px}
+.slot{display:grid;grid-template-columns:52px 1fr;gap:10px}
+.slot .t{font-family:var(--f-display);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;padding-top:11px;line-height:1.1}
+.slot .t small{display:block;font-family:var(--f-body);font-weight:500;font-size:11px;color:var(--muted)}
+.talk{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:11px 12px;min-width:0;display:flex;gap:8px;align-items:flex-start;border-left:4px solid transparent}
+.talk.mine{border-left-color:var(--accent)}
+.mynote{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--accent-soft);font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.mynote b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.nbtn{margin-top:8px;margin-left:6px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--accent)}
+.talk.brk{background:var(--surface-2);box-shadow:none;border:1px solid var(--line)}
+.talk .body{flex:1;min-width:0}
+.talk h3{font-size:15px;font-family:var(--f-body);font-weight:700;line-height:1.3}
+.talk .who{font-size:13px;color:var(--muted);margin-top:3px}
+.empty{text-align:center;padding:24px 12px}
+
+/* partneři */
+.cat h2{font-size:17px;margin-bottom:8px}
+.logos{display:grid;gap:8px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+.logo{border:0;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;animation:pop .45s cubic-bezier(.2,.9,.3,1.3) both;animation-delay:calc(var(--i)*35ms)}
+.logo .lm{width:44px;height:44px;border-radius:12px;font-size:19px}
+.g2 .logo .lm{width:56px;height:56px;font-size:24px}
+.logo span{font-size:12px;font-weight:700;text-align:center;overflow-wrap:anywhere;line-height:1.25}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+
+/* doprava */
+.tt{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.tt th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 6px 6px 0}
+.tt td{padding:8px 6px 8px 0;border-top:1px solid var(--line);vertical-align:top}
+.tt td:first-child{font-weight:700;white-space:nowrap}
+
+/* sheet */
+.backdrop{position:fixed;inset:0;background:rgba(10,16,12,.45);z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-height:86vh;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));max-width:440px;margin:0 auto;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.sheet:not([hidden]){animation:up .28s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet .grab{width:40px;height:4px;border-radius:4px;background:var(--line);margin:0 auto 10px}
+.sheet .close{float:right;border:0;background:var(--surface-2);border-radius:99px;width:32px;height:32px;font-size:18px}
+.sheet h2{font-size:20px;padding-right:40px}
+.sheet .bd{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.mini{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface-2);text-align:left;width:100%}
+.mini b{display:block;font-size:14px} .mini small{color:var(--muted);font-size:12px}
+.qbtn{margin-top:8px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--water);display:inline-flex;gap:5px;align-items:center}
+.qbtn.has{background:var(--water-soft);border-color:transparent}
+.chairbtn{margin-top:8px;border:0;background:var(--water);color:var(--surface);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700}
+.q{padding:10px 0;border-top:1px solid var(--line)} .q:first-child{border-top:0}
+.q{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+.q p{margin:0;font-size:15px} .q small{color:var(--muted);font-size:12px}
+.plus{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 9px;font-weight:700;font-size:12px;white-space:nowrap;color:var(--water)}
+.plus[aria-pressed="true"]{background:var(--water);color:var(--surface);border-color:transparent}
+.votes{display:inline-block;margin-left:6px;font-size:12px;font-weight:700;color:var(--water)}
+.qform{display:flex;flex-direction:column;gap:8px}
+.qform textarea,.qform input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;resize:vertical}
+.send{border:0;border-radius:10px;padding:10px 14px;font-weight:700;background:var(--accent);color:var(--accent-ink)}
+.chair h3{font-size:15px;font-family:var(--f-body);font-weight:700;margin:14px 0 4px;color:var(--water)}
+.cq{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;padding:12px;border-radius:12px;background:var(--surface-2);margin-top:8px}
+.cq p{margin:0;font-size:19px;line-height:1.35;font-weight:600}
+.cq small{color:var(--muted);font-size:12px}
+.cq.read{opacity:.45}
+.cq button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-weight:700;font-size:13px;white-space:nowrap}
+.cq.read button{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px}
+.chk input{width:18px;height:18px}
+.signas{font-size:13px;color:var(--muted)} .signas b{color:var(--ink)}
+.linkb{border:0;background:none;padding:0;color:var(--water);font-weight:700;text-decoration:underline;font-size:13px}
+.now{border:0;width:100%;text-align:left;background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:8px;border-left:5px solid var(--water)}
+.now.brk{border-left-color:var(--warn)}
+.now .lbl{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--water)}
+.now.brk .lbl{color:var(--warn)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.now h2{font-size:18px}
+.now .who{font-size:13px;color:var(--muted)}
+.bar{height:6px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--water);border-radius:6px}
+.now.brk .bar i{background:var(--warn)}
+.left{font-family:var(--f-display);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+.next{font-size:13px;border-top:1px solid var(--line);padding-top:8px}
+.next b{font-weight:700}
+.sim{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line);border-radius:12px;padding:8px 10px}
+.sim .r{display:flex;gap:8px;align-items:center}
+.sim input[type=range]{flex:1;min-width:0;accent-color:var(--water)}
+.sim select{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:3px 4px}
+.sim b{color:var(--ink);font-variant-numeric:tabular-nums}
+.talk.live{box-shadow:0 0 0 2px var(--water),var(--shadow)}
+.livechip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--water);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+@media (prefers-reduced-motion: reduce){.dot{animation:none}}
+.det{margin:8px 0 0;padding:8px 10px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px;display:flex;flex-direction:column;gap:3px}
+.det li::before{content:"·";margin-right:6px;color:var(--warn);font-weight:800}
+.now .det{background:var(--surface-2)}
+.today{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px}
+.today .d{font-weight:700;font-size:15px}
+.today .sv{font-size:13px;color:var(--muted)} .today .sv b{color:var(--ink)}
+.today .clk{font-family:var(--f-display);font-weight:800;font-size:30px;font-variant-numeric:tabular-nums;line-height:1}
+.wx{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;grid-column:1/-1;border-top:1px solid var(--line);padding-top:10px}
+.wx div{text-align:center;font-size:12px;color:var(--muted)} .wx b{display:block;font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+.wx .ic{font-size:11px;color:var(--water);font-weight:700}
+.wxnote{grid-column:1/-1;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
+.album h2{font-size:17px}
+.album .sub{font-size:13px;color:var(--muted);margin:2px 0 8px}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:12px;overflow:hidden}
+.ph{border:0;padding:0;aspect-ratio:1;max-width:100%;position:relative;display:grid;place-items:center;color:rgba(255,255,255,.85);font-size:11px;font-weight:700;text-align:center}
+.ph svg{width:26px;height:26px;opacity:.75}
+.ph span{position:absolute;left:6px;right:6px;bottom:5px;text-align:left;font-weight:600;font-size:10px;line-height:1.2;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.lb{position:fixed;inset:0;z-index:40;background:#0b0f0c;color:#f1f4f1;display:flex;flex-direction:column}
+.lb .bar{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px}
+.lb .bar b{flex:1;font-size:14px;font-weight:600;min-width:0}
+.lb button{border:0;background:rgba(255,255,255,.12);color:#f1f4f1;border-radius:99px;width:40px;height:40px;font-size:20px;flex:none}
+.lb .stage{flex:1;display:grid;place-items:center;padding:0 12px;min-height:0;position:relative;touch-action:pan-y}
+.lb .img{width:min(100%,900px);aspect-ratio:4/3;max-height:100%;border-radius:12px;display:grid;place-items:center;font-size:14px;color:rgba(255,255,255,.8);text-align:center;padding:16px}
+.lb .nav{position:absolute;top:50%;transform:translateY(-50%)}
+.lb .prev{left:14px} .lb .next{right:14px}
+.lb .cap{padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));font-size:14px;text-align:center;color:#c9d3cb}
+@media (min-width: 820px){.photos{grid-template-columns:repeat(6,1fr)}}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
+/* tablet a počítač: menu nahoře, širší obsah */
+@media (min-width: 820px){
+  .app{max-width:1000px;padding-block:60px 32px}
+  .top{position:static;padding-block:16px 10px}
+  .top b{font-size:20px}
+  .tabbar{top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);padding-bottom:0;padding-top:env(safe-area-inset-top,0px)}
+  .tabbar .in{max-width:1000px;display:flex;gap:4px;padding-inline:16px}
+  .tabbar button{flex-direction:row;font-size:14px;padding:15px 14px;gap:8px;border-bottom:3px solid transparent}
+  .tabbar button[aria-current="page"]{border-bottom-color:var(--accent)}
+  .tabbar svg{width:18px;height:18px}
+  .hero{padding:28px}
+  .hero h1{font-size:34px}
+  .quick,.gen{grid-template-columns:repeat(4,1fr)}
+  .g2{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(6,1fr)}
+  .slot{grid-template-columns:72px 1fr}
+  .talk h3{font-size:16px}
+  .sheet{top:6vh;bottom:auto;max-height:88vh;border-radius:20px;max-width:680px}
+  .sheet .grab{display:none}
+  .cq p{font-size:24px}
+  .toast{bottom:24px}
+  #view .sec>.card,#view .sec>.note{max-width:none}
+}
+@media (min-width: 1200px){.g3{grid-template-columns:repeat(7,1fr)}}
+@media (prefers-reduced-motion: reduce){.ticker .track,.logo,.sheet:not([hidden]){animation:none}.ticker{overflow-x:auto}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="mark" aria-hidden="true">ČOV</div>
+    <div style="min-width:0"><b>Nové metody a postupy</b><small>při provozování ČOV · Seč</small></div>
+    <span class="chip" title="Obsah podle programu 2026">Ukázka</span>
+  </header>
+  <main id="view"></main>
+</div>
+<nav class="tabbar" aria-label="Hlavní menu"><div class="in" id="tabs"></div></nav>
+<div class="backdrop" id="bd" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ===== Program podle pozvánky 2026 (30. ročník) ===== */
+const DAYS=[{k:"po",n:"Pondělí",d:"13. 4."},{k:"ut",n:"Úterý",d:"14. 4."},{k:"st",n:"Středa",d:"15. 4."}];
+const PROG={
+ po:[
+  {t:"odpoledne",h:"Příjezd a ubytování",w:"Kongres hotel Jezerka, recepce",brk:1},
+  {t:"19:00",e:"20:00",h:"Večeře pro ubytované",w:"Restaurace hotelu",brk:1,det:["Jídlo podle výběru v přihlášce (1, 2 nebo 3)","Nabídku jídel na rok 2027 doplní pořadatel"]},
+ ],
+ ut:[
+  {t:"08:00",e:"09:00",h:"Prezence",w:"Foyer",brk:1},
+  {t:"09:00",e:"09:15",h:"Zahájení a úvodní slovo",w:"Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA s.r.o. · Petr Kobelka, VHOS, a.s. · Ing. Vilém Žák, SOVAK ČR · Miroslav Krčil, DiS., radní Pardubického kraje, starosta města Hlinska"},
+  {blok:"Legislativa ve vodním hospodářství",pr:"Ing. Vilém Žák"},
+  {t:"09:15",e:"09:45",h:"Co nového si rozbalíme v balíčku DWD, UWWTD, IED, CERD, NIS2, PPD?",w:"Ing. Ondřej Beneš, Ph.D., MBA, LL.M. · Ing. Filip Wanner, Ph.D., SOVAK ČR a EurEau"},
+  {t:"09:45",e:"10:15",h:"Reporting dle směrnice o čištění městských odpadních vod: Jak se mění s novou směrnicí? Co z něj můžeme zjistit?",w:"Mgr. Lada Stejskalová, Ing. Jiří Kučera, Ing. Miroslav Váňa, Výzkumný ústav vodohospodářský T. G. Masaryka, v.v.i."},
+  {t:"10:15",e:"10:45",h:"První návrh legislativních úprav v souvislosti s novou směrnicí o čištění odpadních vod",w:"JUDr. Zdeněk Horáček, Ph.D., Zdeněk Horáček advokátní kancelář, s.r.o."},
+  {t:"10:45",e:"11:15",h:"Opatření obecné povahy vs. zákon, aneb kdo má přednost na křižovatce",w:"Ing. Radka Rosenbergová, Ing. Ondřej Beneš, Ph.D., MBA, LL.M., Veolia Holding Česká republika, a.s. · JUDr. Zdeněk Horáček, Ph.D."},
+  {t:"11:15",e:"11:45",h:"Umělá inteligence: možnosti, nástrahy, legislativa",w:"Ing. Jiří Kašparec, VAE CONTROLS, s.r.o."},
+  {t:"11:45",e:"12:00",h:"Diskuze",w:"",brk:1},
+  {t:"12:00",e:"12:15",h:"Prezentace odborných partnerů a sponzorů konference",w:"Kongresový sál",ad:1},
+  {t:"12:15",e:"13:30",h:"Oběd",w:"Restaurace",brk:1,det:["Polévka · doplní pořadatel","Hlavní jídlo · doplní pořadatel","Vegetariánská varianta · doplní pořadatel","Bezlepkové a jiné diety hlaste předem"]},
+  {blok:"Aktuální trendy v čistírenství I. – terciární čištění",pr:"Ing. Ondřej Beneš, Ph.D., MBA, LL.M."},
+  {t:"13:30",e:"13:55",h:"Dopady a limity simultánního srážení fosforu",w:"Ing. Katarína Hanusová, Ing. Milan Lánský, Ph.D., Ing. Bc. Martin Srb, Ph.D., Ing. Petr Sýkora, Ph.D., PVK, a.s."},
+  {t:"13:55",e:"14:15",h:"Provozní ověření inovativní technologie MABR na PČOV Čertousy",w:"Ing. Martin Koller, Ph.D., Ing. Sára Doubravská, Česká voda – MEMSEP, a.s. · Ing. Radka Rosenbergová, Veolia · Ing. Bc. Martin Srb, Ph.D., Petra Cebe, Jakub Vrbenský, PVK, a.s. · Ing. Jiří Rosický, PVS, a.s."},
+  {t:"14:15",e:"14:35",h:"Změna řízení aktivačního procesu na ČOV Jihlava: konec kyslíkové éry – dusík přebírá velení",w:"Mgr. Tomáš Brabenec, Marián Trojan, SLUŽBY MĚSTA JIHLAVY s.r.o."},
+  {t:"14:35",e:"15:00",h:"Pile Cloth – Nová filtrační technologie nejen pro terciární stupeň",w:"Ing. Aleš Vaverka, IN-EKO TEAM, s.r.o."},
+  {t:"15:00",e:"15:15",h:"Diskuze",w:"",brk:1},
+  {t:"15:15",e:"15:30",h:"Přestávka",w:"Foyer – výstava partnerů",brk:1,ad:1,det:["Káva, čaj a občerstvení","Výstava partnerů ve foyer"]},
+  {blok:"Aktuální trendy v čistírenství II. – energetická neutralita ČOV",pr:"Ing. Bc. Martin Srb, Ph.D."},
+  {t:"15:30",e:"16:00",h:"Moderní řešení při rekonstrukci tradičních ČOV, ČOV Hlinsko – 6 měsíců zkušeností z rekonstrukce provzdušení, technologie EnviroMix",w:"Mgr. Petr Kavalír, Ph.D., VS CHRUDIM, a.s. · Mgr. Iryna Lanko, Ph.D., Stavební Huť Slatiňany, a.s."},
+  {t:"16:00",e:"16:30",h:"Koncepce energetiky ve skupině Severočeská voda",w:"Ing. Marcel Gómez, Ph.D., Ing. Filip Harciník, Severočeské vodovody a kanalizace, a.s."},
+  {t:"16:30",e:"17:00",h:"Možnosti dosažení energetické neutrality na ČOV Havlíčkův Brod",w:"Ing. Zdeněk Zelený, VAK Havlíčkův Brod, a.s."},
+  {t:"17:00",e:"17:30",h:"Diskuze, závěr prvního dne",w:"",brk:1},
+  {t:"19:30",e:"02:00",h:"Společenský večer",w:"Kongres hotel Jezerka",brk:1,det:["Večeře formou rautu · doplní pořadatel","Program večera (hudba, překvapení) · doplní pořadatel","Svoz do Kraskova po skončení · viz Doprava"]},
+ ],
+ st:[
+  {blok:"Novinky a zkušenosti z provozování a řízení ČOV",pr:"Ing. Martin Pečenka, Ph.D."},
+  {t:"09:00",e:"09:20",h:"Řešení nadlimitních producentů OV ve společnosti SčVK",w:"Ing. Monika Švarcová, Severočeské vodovody a kanalizace, a.s."},
+  {t:"09:20",e:"09:40",h:"Vyhodnocování volných kapacit provozované VHI",w:"Ing. Vojtěch Kuncl, Severočeské vodovody a kanalizace, a.s."},
+  {t:"09:40",e:"10:00",h:"Alternativní kontrola odtoků z ČOV",w:"Ing. Lenka Procházková, Ph.D., ČEVAK, a.s. · Ing. Jindřich Procházka, Ph.D., AquIQ s.r.o."},
+  {t:"10:00",e:"10:20",h:"Měření emisí CO₂, CH₄ a N₂O z provzdušňovaných nádrží ČOV – 2023–2025",w:"RNDr. Josef Fuksa, CSc., Ing. Lenka Smetanová, Ing. Martina Plecitá, VÚV T. G. Masaryka, v.v.i. · Ing. Miroslav Češpiva, Ph.D., Ing. Petra Zabloudilová, Ph.D., Národní centrum zemědělského a potravinářského výzkumu, v.v.i."},
+  {t:"10:20",e:"10:40",h:"Soft senzory a strojové učení pro střední a malé ČOV",w:"Mgr. Jaromír Sobotka, Ph.D., ASIO TECH, spol. s r.o."},
+  {t:"10:40",e:"11:00",h:"Odpadní vody jako odpady – zdrojově orientovaná sanitace",w:"Ing. Karel Plotěný, ASIO TECH, spol. s r.o."},
+  {t:"11:00",e:"11:20",h:"Dlouhodobé laboratorní a pilotní zkušenosti s odstraňováním mikropolutantů ve vyčištěných odpadních vodách",w:"Ing. Tomáš Lederer, Ph.D., TU Liberec"},
+  {t:"11:20",e:"11:40",h:"Pokročilá úpravna MINT-NANOREC s umělou inteligencí pro kvartérní čištění vody",w:"Ing. Aleš Černín, Ph.D., Ing. Jan Stárek, New Water Group s.r.o."},
+  {t:"11:40",e:"11:50",h:"Závěrečný souhrn konference",w:"",brk:1},
+ ]
+};
+let n=0;for(const d in PROG){let bk=null;PROG[d].forEach(x=>{if(x.blok){bk=x;x.bid=d+"b"+(n++)}else{x.id=d+(n++);if(bk&&!x.brk&&!x.ad&&x.w)x.bid=bk.bid}})}
+const ALLT=Object.values(PROG).flat();
+const DATES={po:"2026-04-13",ut:"2026-04-14",st:"2026-04-15"};
+const mm=t=>{const m=/^(\d\d):(\d\d)$/.exec(t||"");return m?+m[1]*60+ +m[2]:null};
+ALLT.forEach(x=>{if(x.blok)return;x.a=mm(x.t);x.b=mm(x.e);if(x.a!=null&&x.b!=null&&x.b<=x.a)x.b+=1440});
+function clock(){ // skutečný čas během konference, jinak simulace
+ const d=new Date(),iso=d.toISOString().slice(0,10),day=Object.keys(DATES).find(k=>DATES[k]===iso);
+ if(day)return {day,m:d.getHours()*60+d.getMinutes(),real:1};
+ return {day:S.sim.day,m:S.sim.m,real:0};
+}
+const hm=m=>{m=((m%1440)+1440)%1440;return Math.floor(m/60)+":"+String(m%60).padStart(2,"0")};
+const dur=m=>m>=60?Math.floor(m/60)+" h "+(m%60?m%60+" min":""):m+" min";
+function nowState(){
+ const c=clock(),l=PROG[c.day].filter(x=>!x.blok&&x.a!=null);
+ const cur=l.find(x=>x.a<=c.m&&c.m<(x.b??x.a+1)), next=l.find(x=>x.a>c.m);
+ const bk=cur&&ALLT.find(y=>y.blok&&y.bid===cur.bid);
+ return {c,cur,next,bk,first:l[0],last:l[l.length-1]};
+}
+
+/* ===== Jmeniny: data z balíčku namedays-cs (MIT, © Roman Ožana) + státní svátky ===== */
+const SVATKY={"01-02":"Karina","01-03":["Radmila","Radomil"],"01-04":"Diana","01-05":"Dalimil","01-06":["Kašpar","Melichar","Baltazar"],"01-07":"Vilma","01-08":"Čestmír","01-09":["Vladan","Valtr"],"01-10":"Břetislav","01-11":"Bohdana","01-12":"Pravoslav","01-13":"Edita","01-14":"Radovan","01-15":"Alice","01-16":"Ctirad","01-17":"Drahoslav","01-18":["Vladislav","Vladislava"],"01-19":"Doubravka","01-20":["Ilona","Sebastián"],"01-21":"Běla","01-22":["Slavomír","Slavomíra"],"01-23":"Zdeněk","01-24":"Milena","01-25":"Miloš","01-26":"Zora","01-27":"Ingrid","01-28":"Otýlie","01-29":"Zdislava","01-30":["Robin","Erna"],"01-31":["Marika","Spytihněv"],"02-01":"Hynek","02-02":["Nela","Hromnice"],"02-03":"Blažej","02-04":"Jarmila","02-05":"Dobromila","02-06":"Vanda","02-07":"Veronika","02-08":"Milada","02-09":"Apolena","02-10":"Mojmír","02-11":"Božena","02-12":["Slavěna","Slávka"],"02-13":["Věnceslav","Věnceslava"],"02-14":["Valentýn","Valentýna"],"02-15":"Jiřina","02-16":"Ljuba","02-17":"Miloslava","02-18":"Gizela","02-19":"Patrik","02-20":"Oldřich","02-21":["Lenka","Eleonora"],"02-22":"Petr","02-23":"Svatopluk","02-24":["Matěj","Matyáš"],"02-25":"Liliana","02-26":"Dorota","02-27":"Alexandr","02-28":"Lumír","02-29":"Horymír","03-01":["Bedřich","Bedřiška"],"03-02":"Anežka","03-03":["Kamil","Kunhuta"],"03-04":"Stela","03-05":"Kazimír","03-06":"Miroslav","03-07":"Tomáš","03-08":["Gabriela","Zoltán"],"03-09":"Františka","03-10":"Viktorie","03-11":"Anděla","03-12":"Řehoř","03-13":"Růžena","03-14":["Rút","Matylda"],"03-15":"Ida","03-16":["Elena","Herbert"],"03-17":["Vlastimil","Vlastimila"],"03-18":"Eduard","03-19":["Josef","Josefa"],"03-20":"Světlana","03-21":"Radek","03-22":["Leona","Leontina","Lea"],"03-23":"Ivona","03-24":"Gabriel","03-25":"Marián","03-26":"Emanuel","03-27":"Dita","03-28":"Soňa","03-29":"Taťána","03-30":["Arnošt","Ernest"],"03-31":"Kvido","04-01":"Hugo","04-02":"Erika","04-03":"Richard","04-04":"Ivana","04-05":["Miroslava","Mirka"],"04-06":["Vendula","Venuše"],"04-07":["Heřman","Hermína"],"04-08":"Ema","04-09":"Dušan","04-10":"Darja","04-11":"Izabela","04-12":"Julius","04-13":"Aleš","04-14":"Vincenc","04-15":"Anastázie","04-16":["Irena","Bernadeta"],"04-17":"Rudolf","04-18":"Valérie","04-19":"Rostislav","04-20":"Marcela","04-21":"Alexandra","04-22":"Evženie","04-23":"Vojtěch","04-24":"Jiří","04-25":"Marek","04-26":"Oto","04-27":"Jaroslav","04-28":"Vlastislav","04-29":"Robert","04-30":"Blahoslav","05-02":"Zikmund","05-03":["Alexej","Alex"],"05-04":"Květoslav","05-05":"Klaudie","05-06":"Radoslav","05-07":"Stanislav","05-09":"Ctibor","05-10":"Blažena","05-11":"Svatava","05-12":"Pankrác","05-13":"Servác","05-14":"Bonifác","05-15":["Žofie","Sofie"],"05-16":"Přemysl","05-17":"Aneta","05-18":"Nataša","05-19":"Ivo","05-20":"Zbyšek","05-21":"Monika","05-22":"Emil","05-23":["Vladimír","Vladimíra"],"05-24":["Jana","Vanesa"],"05-25":"Viola","05-26":"Filip","05-27":"Valdemar","05-28":"Vilém","05-29":["Maxmilián","Maxim"],"05-30":"Ferdinand","05-31":"Kamila","06-01":"Laura","06-02":"Jarmil","06-03":["Tamara","Kevin"],"06-04":"Dalibor","06-05":["Dobroslav","Dobroslava"],"06-06":"Norbert","06-07":["Iveta","Slavoj"],"06-08":"Medard","06-09":"Stanislava","06-10":["Gita","Margita"],"06-11":"Bruno","06-12":"Antonie","06-13":"Antonín","06-14":["Roland","Herta"],"06-15":"Vít","06-16":"Zbyněk","06-17":"Adolf","06-18":["Milan","Milana"],"06-19":["Leoš","Leo"],"06-20":["Květa","Květuše"],"06-21":["Alois","Aloisie"],"06-22":"Pavla","06-23":"Zdeňka","06-24":"Jan","06-25":"Ivan","06-26":["Adriana","Adrian"],"06-27":["Ladislav","Ladislava"],"06-28":"Lubomír","06-29":["Petr","Pavel"],"06-30":"Šárka","07-01":"Jaroslava","07-02":"Patricie","07-03":["Radomír","Radomíra"],"07-04":"Prokop","07-05":["Cyril","Metoděj"],"07-07":"Bohuslava","07-08":"Nora","07-09":["Drahoslava","Drahuše"],"07-10":["Libuše","Amálie"],"07-11":["Olga","Helga"],"07-12":"Bořek","07-13":"Markéta","07-14":"Karolína","07-15":"Jindřich","07-16":"Luboš","07-17":"Martina","07-18":["Drahomíra","Drahomír"],"07-19":"Čeněk","07-20":"Ilja","07-21":["Vítězslav","Vítězslava"],"07-22":["Magdaléna","Magda"],"07-23":"Libor","07-24":"Kristýna","07-25":"Jakub","07-26":["Anna","Anita"],"07-27":"Věroslav","07-28":["Viktor","Alina"],"07-29":"Marta","07-30":"Bořivoj","07-31":"Ignác","08-01":"Oskar","08-02":"Gustav","08-03":"Miluše","08-04":["Dominik","Dominika"],"08-05":"Kristián","08-06":"Oldřiška","08-07":"Lada","08-08":"Soběslav","08-09":"Roman","08-10":"Vavřinec","08-11":"Zuzana","08-12":"Klára","08-13":"Alena","08-14":"Alan","08-15":"Hana","08-16":"Jáchym","08-17":"Petra","08-18":["Helena","Jelena"],"08-19":"Ludvík","08-20":"Bernard","08-21":"Johana","08-22":"Bohuslav","08-23":"Sandra","08-24":"Bartoloměj","08-25":"Radim","08-26":"Luděk","08-27":"Otakar","08-28":"Augustýn","08-29":"Evelína","08-30":"Vladěna","08-31":"Pavlína","09-01":["Linda","Samuel"],"09-02":"Adéla","09-03":["Bronislav","Bronislava"],"09-04":["Jindřiška","Rozálie"],"09-05":"Boris","09-06":"Boleslav","09-07":"Regína","09-08":"Mariana","09-09":"Daniela","09-10":"Irma","09-11":["Denisa","Denis"],"09-12":"Marie","09-13":"Lubor","09-14":"Radka","09-15":"Jolana","09-16":["Ludmila","Lidmila"],"09-17":["Naděžda","Naďa"],"09-18":"Kryštof","09-19":"Zita","09-20":"Oleg","09-21":"Matouš","09-22":"Darina","09-23":"Berta","09-24":["Jaromír","Jaromíra"],"09-25":["Zlata","Zlatuše"],"09-26":"Andrea","09-27":"Jonáš","09-28":["Václav","Václava"],"09-29":["Michal","Michael"],"09-30":["Jeroným","Ráchel"],"10-01":"Igor","10-02":["Olívie","Oliver"],"10-03":"Bohumil","10-04":"František","10-05":"Eliška","10-06":"Hanuš","10-07":"Justýna","10-08":"Věra","10-09":["Štefan","Sára"],"10-10":"Marina","10-11":"Andrej","10-12":"Marcel","10-13":"Renáta","10-14":"Agáta","10-15":["Tereza","Terezie"],"10-16":["Havel","Galina"],"10-17":"Hedvika","10-18":"Lukáš","10-19":["Michaela","Michala"],"10-20":"Vendelín","10-21":"Brigita","10-22":"Sabina","10-23":"Teodor","10-24":"Nina","10-25":"Beáta","10-26":"Erik","10-27":["Šarlota","Zoe"],"10-28":["Jidáš","Alfréd"],"10-29":["Silvie","Sylva"],"10-30":"Tadeáš","10-31":"Štěpánka","11-01":"Felix","11-02":"Tobiáš","11-03":"Hubert","11-04":["Karel","Karla"],"11-05":"Miriam","11-06":["Liběna","Leonard"],"11-07":"Saskie","11-08":["Bohumír","Bohumíra"],"11-09":"Bohdan","11-10":"Evžen","11-11":"Martin","11-12":"Benedikt","11-13":"Tibor","11-14":"Sáva","11-15":"Leopold","11-16":"Otmar","11-17":["Mahulena","Gertruda"],"11-18":"Romana","11-19":"Alžběta","11-20":"Nikola","11-21":"Albert","11-22":"Cecílie","11-23":"Klement","11-24":"Emílie","11-25":"Kateřina","11-26":"Artur","11-27":"Xenie","11-28":"René","11-29":"Zina","11-30":"Ondřej","12-01":"Iva","12-02":"Blanka","12-03":"Svatoslav","12-04":"Barbora","12-05":"Jitka","12-06":"Mikuláš","12-07":["Ambrož","Benjamín"],"12-08":"Květoslava","12-09":"Vratislav","12-10":"Julie","12-11":["Dana","Danuše"],"12-12":"Simona","12-13":"Lucie","12-14":"Lýdie","12-15":["Radana","Radan"],"12-16":"Albína","12-17":"Daniel","12-18":"Miloslav","12-19":"Ester","12-20":"Dagmar","12-21":"Natálie","12-22":"Šimon","12-23":"Vlasta","12-24":["Adam","Eva"],"12-26":"Štěpán","12-27":"Žaneta","12-28":"Bohumila","12-29":"Judita","12-30":"David","12-31":"Silvestr","01-01":"Nový rok","05-01":"Svátek práce","05-08":"Den vítězství","07-06":"Mistr Jan Hus","12-25":"Boží hod vánoční"};
+const MES=["ledna","února","března","dubna","května","června","července","srpna","září","října","listopadu","prosince"];
+const DNY=["neděle","pondělí","úterý","středa","čtvrtek","pátek","sobota"];
+function svatek(d){const v=SVATKY[String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")];return Array.isArray(v)?v.join(" a "):v||""}
+/* Počasí: Open-Meteo pro Seč (49,82 N, 15,66 E) – v ostré verzi živě, v náhledu se nenačte */
+const WX={st:"idle",cur:null,days:[]};
+const WMO=c=>c===0?"jasno":c<=2?"polojasno":c===3?"zataženo":c<=48?"mlha":c<=57?"mrholení":c<=67?"déšť":c<=77?"sníh":c<=82?"přeháňky":c<=86?"sněhové přeháňky":"bouřky";
+function loadWx(){if(WX.st!=="idle")return;WX.st="load";
+ fetch("https://api.open-meteo.com/v1/forecast?latitude=49.82&longitude=15.66&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FPrague&forecast_days=3")
+ .then(r=>r.json()).then(j=>{WX.cur={t:Math.round(j.current.temperature_2m),c:j.current.weather_code};WX.days=j.daily.time.map((t,i)=>({t,c:j.daily.weather_code[i],mx:Math.round(j.daily.temperature_2m_max[i]),mn:Math.round(j.daily.temperature_2m_min[i])}));WX.st="ok";const b=document.getElementById("todaybox");if(b)b.outerHTML=vToday()})
+ .catch(()=>{WX.st="err";const b=document.getElementById("todaybox");if(b)b.outerHTML=vToday()})}
+function vToday(){
+ const d=new Date(), sv=svatek(d);
+ const wx=WX.st==="ok"?`<div class="wx"><div><span class="ic">Seč teď</span><b>${WX.cur.t} °C</b>${WMO(WX.cur.c)}</div>${WX.days.map((x,i)=>{const dd=new Date(x.t);return `<div><span class="ic">${i?DNY[dd.getDay()]:"dnes"}</span><b>${x.mx}° / ${x.mn}°</b>${WMO(x.c)}</div>`}).join("")}</div>`
+  :`<div class="wxnote">Počasí v Seči: ${WX.st==="load"?"načítám…":"v ostré verzi se tu zobrazí aktuální teplota a předpověď na 3 dny (v tomto náhledu se načíst nedá)."}</div>`;
+ return `<div class="today" id="todaybox"><div><div class="d">${DNY[d.getDay()].replace(/^./,c=>c.toUpperCase())} ${d.getDate()}. ${MES[d.getMonth()]} ${d.getFullYear()}</div>${sv?`<div class="sv">Svátek má <b>${esc(sv)}</b></div>`:""}</div>
+  <div class="clk" id="clk">${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}</div>${wx}</div>`;
+}
+setInterval(()=>{const c=document.getElementById("clk");if(c){const d=new Date();c.textContent=d.getHours()+":"+String(d.getMinutes()).padStart(2,"0")}},10000);
+
+/* ===== Partneři podle pozvánky 2026 (bez log – ta dodají partneři) ===== */
+const PART=[
+ ["generalni","Generální partneři","g2",["ENERGIE AG BOHEMIA","VAE CONTROLS","HAWLE","LK Pumpservice"]],
+ ["hlavni","Hlavní partneři","g3",["SENSUS","ENVI-PUR","ASIO TECH"]],
+ ["odborny","Odborní partneři","g3",["WILO","AVK","IN-EKO TEAM","KAPKA","Schneider Electric","KUNST","Fontána","HACH","COMAC CAL","GDF","KEMIFLOC","KROHNE","HUBER","ShS","PFT","TECHNOAQUA","DISA","Endress+Hauser","KSB","BD SENSORS","Zemský","KAESER","VaK Jablonné n. O.","TECHNOMA","PCT","MIVALT","HANNA instruments"]],
+ ["medialni","Mediální partneři","g3",["SOVAK","iVodárenství.cz","Moderní obec","Stavebniserver.com","Vodní hospodářství"]],
+];
+const KATN={generalni:"Generální partner",hlavni:"Hlavní partner",odborny:"Odborný partner",medialni:"Mediální partner"};
+const ALLP=PART.flatMap(([k,,,l])=>l.map(nm=>({k,nm})));
+/* hledání přednášek partnera: klíčové slovo v autorech */
+const KEY={"VAE CONTROLS":"VAE CONTROLS","ASIO TECH":"ASIO TECH","IN-EKO TEAM":"IN-EKO","ENERGIE AG BOHEMIA":"ENERGIE AG","ENVI-PUR":"EnviroMix"};
+function col(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return `hsl(${h%360} 38% 38%)`}
+function ini(s){return s.replace(/[^A-Za-zÁ-ž0-9]/g," ").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+function lm(nm){return `<div class="lm" style="background:${col(nm)}">${esc(ini(nm))}</div>`}
+
+const NEWS=[
+ {d:"ukázka",h:"Program je zveřejněn",p:"Projděte si program. K přednáškám si můžete psát vlastní poznámky a posílat dotazy."},
+ {d:"ukázka",h:"Svoz z hotelu Kraskov",p:"Pro ubytované v Kraskově jezdí autobus. Časy najdete v záložce Doprava."},
+ {d:"ukázka",h:"Fotky z konference",p:"V záložce Fotky najdete fotografie z letošního ročníku i archiv minulých let."},
+ {d:"ukázka",h:"Sborník v PDF",p:"Sborník bude ke stažení po konferenci. Dáme vědět v aktualitách."},
+];
+
+/* ===== Stav (jen v tomto telefonu) ===== */
+const store={get(k,d){try{const v=localStorage.getItem("pr_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pr_"+k,JSON.stringify(v))}catch(e){}}};
+const S={sim:{day:"ut",m:10*60+2},tab:"domu",day:"ut",q:"",mine:false,notes:store.get("notes",{}),
+ qa:store.get("qa",null)||{ut5:[{t:"Kdy můžeme čekat transpozici nové směrnice do české legislativy?",a:"Jan, VaK",c:"9:31",v:6}],ut6:[{t:"Týká se nový reporting i ČOV pod 2 000 EO?",a:"anonymně",c:"9:58",v:3},{t:"Budou data z reportingu veřejně dostupná?",a:"Lenka, PVK",c:"10:04"}],ut9:[{t:"Jak řešíte odpovědnost za rozhodnutí, která navrhne AI?",a:"Petra",c:"11:21",v:4}]},
+ read:store.get("read",{}),voted:store.get("voted",{}),me:store.get("me",{jm:"",firma:""})};
+function podpis(){return [S.me.jm,S.me.firma].filter(Boolean).join(", ")}
+function votes(id,i){const q=(S.qa[id]||[])[i];return 1+(q.v||0)+(S.voted[id+":"+i]?1:0)}
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm=s=>String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const IC={
+ home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+ prog:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h4M7 17h7"/></svg>',
+ part:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+ bus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16M8 21v-4M16 21v-4"/><circle cx="8" cy="14" r=".6" fill="currentColor"/><circle cx="16" cy="14" r=".6" fill="currentColor"/></svg>',
+ info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
+};
+IC.foto='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>';
+const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["partneri","Partneři",IC.part],["fotky","Fotky",IC.foto],["doprava","Doprava",IC.bus],["info","Info",IC.info]];
+/* Fotky – zatím zástupná místa, skutečné fotky nahraje pořadatel / fotograf */
+const ALBA=[
+ {id:"a27",h:"2027 – 31. ročník",sub:"Fotky přibývají během konference",n:6,hue:150,cap:["Prezence","Zahájení","Legislativní blok","Výstava partnerů","Oběd","Společenský večer"]},
+ {id:"a26",h:"2026 – jubilejní 30. ročník",sub:"14.–15. dubna 2026, Kongres hotel Jezerka",n:9,hue:200,cap:["Zahájení","Kongresový sál","Předsednictvo","Diskuze","Výstava ve foyer","Prezentace partnerů","Oběd","Společenský večer","Závěr konference"]},
+ {id:"arch",h:"Archiv 1996–2025",sub:"Ohlédnutí za historií konference",n:6,hue:30,cap:["Moravská Třebová","Výstava Voda a my","Dohoda AČE ČR a SR (2000)","Seminář v muzeu","První ročník v Seči (2022)","Rekordní ročník 2025"]},
+];
+function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2400)}
+
+function ticker(){const one=ALLP.map(p=>`<button data-p="${esc(p.nm)}" tabindex="-1">${lm(p.nm)}${esc(p.nm)}</button>`).join("");
+ return `<div class="ticker" aria-label="Partneři konference"><div class="track">${one}${one}</div></div>`}
+function render(){
+ $("tabs").innerHTML=TABS.map(([k,t,i])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${i}<span>${t}</span></button>`).join("");
+ $("view").innerHTML=ticker()+{domu:vDomu,program:vProgram,partneri:vPartneri,fotky:vFotky,doprava:vDoprava,info:vInfo}[S.tab]();
+}
+function go(t){S.tab=t;render();window.scrollTo(0,0)}
+
+function vDomu(){
+ loadWx();
+ const nn=Object.values(S.notes).filter(Boolean).length;
+ return `<section class="sec">
+  <div class="hero">
+   <span class="label" style="color:inherit;opacity:.85">30. ročník · Kongres hotel Jezerka, Seč</span>
+   <h1>Nové metody a postupy při provozování ČOV</h1>
+   <div class="meta">Memoriál Ing. Jakuba S. Čecha, CSc. · 14.–15. dubna 2026</div>
+   <div class="stats"><div><b>${Object.values(PROG).flat().filter(x=>!x.brk&&!x.blok&&!x.ad&&x.w).length}</b><span>přednášek</span></div><div><b>${ALLP.filter(p=>p.k!=="medialni").length}</b><span>partnerů</span></div><div><b>2</b><span>body ČKAIT</span></div></div>
+   <svg viewBox="0 0 180 60" fill="none" stroke="currentColor" stroke-width="3"><path d="M0 15c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 35c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 55c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/></svg>
+  </div>
+  ${vToday()}
+  ${vNow()}
+  <div class="quick">
+   <button data-go="program"><b>Program</b><span>Úterý a středa, ${Object.values(PROG).flat().filter(x=>x.blok).length} bloků</span></button>
+   <button data-go="program" data-mine="1"><b>Moje poznámky</b><span>${nn?nn+" "+(nn===1?"poznámka":nn<5?"poznámky":"poznámek"):"K přednáškám si pište poznámky"}</span></button>
+   <button data-go="doprava"><b>Svoz z Kraskova</b><span>Jízdní řád autobusu</span></button>
+   <button data-go="info"><b>${podpis()?esc(S.me.jm):"Můj profil a info"}</b><span>${podpis()?"Profil vyplněn · kontakty":"Nepovinné · adresa, poplatky"}</span></button>
+  </div>
+  <div><div class="label" style="margin-bottom:8px">Generální partneři</div>
+   <div class="gen">${PART[0][3].map(nm=>`<button class="quick-p card" data-p="${esc(nm)}" style="border:0;display:flex;align-items:center;gap:10px;text-align:left">${lm(nm)}<b style="font-size:14px">${esc(nm)}</b></button>`).join("")}</div></div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Aktuality</div><div class="news">
+   ${NEWS.map(x=>`<article><h3>${esc(x.h)}</h3><p>${esc(x.p)}</p></article>`).join("")}</div></div>
+  <div class="note"><b>Do mobilu:</b> na iPhonu v Safari Sdílet → Přidat na plochu, na Androidu Nainstalovat aplikaci. Přihlášení není potřeba.</div>
+ </section>`;
+}
+
+function vNow(){
+ const {c,cur,next,bk,first,last}=nowState(), D=DAYS.find(d=>d.k===c.day);
+ let h;
+ if(cur){const tot=(cur.b??cur.a+1)-cur.a, el=c.m-cur.a, pct=Math.min(100,Math.round(el/tot*100));
+  h=`<button class="now ${cur.brk?"brk":""}" data-goday="${c.day}"><div class="lbl"><span class="dot"></span>${cur.brk?"Právě teď":"Právě probíhá"} · ${esc(cur.t)}–${esc(cur.e||"")}</div>
+   <h2>${esc(cur.h)}</h2>${cur.w&&!cur.brk?`<div class="who">${esc(cur.w)}</div>`:""}${bk?`<div class="who">Blok: ${esc(bk.blok)}</div>`:""}${cur.det?`<ul class="det">${cur.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}
+   <div class="bar"><i style="width:${pct}%"></i></div><div class="left">${cur.brk?"Konec":"Do konce"} za ${dur((cur.b??cur.a+1)-c.m)} · v ${hm(cur.b??cur.a+1)}</div>
+   ${next?`<div class="next">Následuje v ${esc(next.t)}: <b>${esc(next.h)}</b></div>`:""}</button>`}
+ else if(next&&first&&c.m<first.a){h=`<button class="now" data-goday="${c.day}"><div class="lbl">${D.n} ${D.d}</div><h2>Program začne za ${dur(first.a-c.m)}</h2><div class="next">V ${esc(first.t)}: <b>${esc(first.h)}</b></div></button>`}
+ else if(next){h=`<button class="now brk" data-goday="${c.day}"><div class="lbl">Volno</div><h2>Další bod programu za ${dur(next.a-c.m)}</h2><div class="next">V ${esc(next.t)}: <b>${esc(next.h)}</b></div></button>`}
+ else{h=`<div class="now"><div class="lbl">${D.n} ${D.d}</div><h2>Program dne skončil</h2><div class="who">${c.day==="st"?"Děkujeme za účast a těšíme se příště.":"Zítra pokračujeme – podívejte se do programu."}</div></div>`}
+ if(!c.real)h+=`<div class="sim"><div>Ukázka: konference teď neprobíhá, posuňte si čas. V ostré verzi to jde podle hodin.</div>
+  <div class="r"><select id="simday" aria-label="Den">${DAYS.map(d=>`<option value="${d.k}" ${S.sim.day===d.k?"selected":""}>${d.n}</option>`).join("")}</select>
+  <input type="range" id="simm" min="420" max="1440" step="5" value="${S.sim.m}" aria-label="Čas"><b id="simt">${hm(S.sim.m)}</b></div></div>`;
+ return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px">${h}</div>`;
+}
+function match(x){if(!S.q)return true;return norm(x.h+" "+x.w).includes(norm(S.q))}
+function vProgram(){
+ let list=PROG[S.day];
+ const filt=x=>x.blok?true:(S.mine?!!S.notes[x.id]:true)&&match(x);
+ let rows=list.filter(filt);
+ // bloky bez přednášek po filtru schovat
+ rows=rows.filter((x,i)=>!x.blok||rows.slice(i+1).some(y=>!y.blok)&&!(rows[i+1]&&rows[i+1].blok));
+ const odb=PART[2][3];
+ return `<section class="sec">
+  <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small></button>`).join("")}</div>
+  <div class="tools"><input id="q" placeholder="Hledat přednášku, jméno, firmu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog" id="mine" aria-pressed="${S.mine}">✎ Poznámky</button></div>
+  ${rows.some(x=>!x.blok)?rows.map(x=>{
+   if(x.blok){const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter((q,i)=>!S.read[y.id+":"+i]).length,0);
+    return `<div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
+   const f=!!S.notes[x.id], st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
+   let h=`<div class="slot"><div class="t">${esc(x.t)}${x.e?`<small>–${esc(x.e)}</small>`:""}</div>
+    <div class="talk ${x.brk?"brk":""} ${f?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)}</div>`:""}<h3>${esc(x.h)}</h3>${x.w?`<div class="who">${esc(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${f?`<div class="mynote"><b>Moje poznámka</b>${esc(S.notes[x.id])}</div>`:""}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}</button><button class="nbtn" data-note="${x.id}">✎ ${f?"Upravit poznámku":"Poznámka"}</button>`:""}</div>
+</div></div>`;
+   if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
+   return h}).join("")
+  :`<div class="card empty"><b>${S.mine?"Zatím nemáte žádné poznámky":"Nic jsme nenašli"}</b><p class="muted" style="margin:6px 0 0;font-size:14px">${S.mine?"U přednášky klepněte na ✎ Poznámka a napište si, co vás zaujalo.":"Zkuste jiné slovo."}</p></div>`}
+  <div class="note">Poznámky k přednáškám jsou soukromé a zůstávají jen ve vašem zařízení. Tlačítkem ✎ Poznámky zobrazíte jen přednášky, ke kterým máte poznámku.</div>
+ </section>`;
+}
+
+function vPartneri(){
+ let i=0;
+ return `<section class="sec">${PART.map(([k,t,g,l])=>`<div class="cat"><h2>${t}</h2><div class="logos ${g}">${l.map(nm=>`<button class="logo" data-p="${esc(nm)}" style="--i:${i++}">${lm(nm)}<span>${esc(nm)}</span></button>`).join("")}</div></div>`).join("")}
+  <div class="note">Seznam podle pozvánky 2026. Místo iniciál budou skutečná loga, profil, video a nabídka, které dodají partneři.</div></section>`;
+}
+function sheetP(nm){
+ const p=ALLP.find(x=>x.nm===nm), key=KEY[nm];
+ const talks=key?Object.entries(PROG).flatMap(([d,l])=>l.filter(x=>x.w&&x.w.includes(key)).map(x=>({...x,d}))):[];
+ openSheet(`<div style="display:flex;gap:12px;align-items:center;margin-bottom:6px"><div class="lm" style="width:52px;height:52px;border-radius:14px;font-size:22px;background:${col(nm)}">${esc(ini(nm))}</div><div><h2 style="padding:0">${esc(nm)}</h2><div class="muted" style="font-size:13px">${KATN[p.k]}</div></div></div>
+  <div class="bd">
+   <div class="note">Tady bude prezentace partnera: logo, krátký text, videospot, nabídka, kontakt a číslo stánku. Obsah dodá firma, pořadatel ho schválí.</div>
+   ${talks.length?`<div><div class="label" style="margin-bottom:6px">Přednášky partnera</div>${talks.map(x=>`<button class="mini" data-goday="${x.d}" style="margin-bottom:6px"><b>${esc(x.h)}</b><small>${DAYS.find(d=>d.k===x.d).n} ${esc(x.t)}</small></button>`).join("")}</div>`:""}
+  </div>`);
+}
+
+function phStyle(a,i){return `background:linear-gradient(${135+i*20}deg,hsl(${a.hue+i*9} 35% ${34+i%3*6}%),hsl(${a.hue+40+i*7} 40% ${24+i%2*8}%))`}
+function vFotky(){
+ return `<section class="sec">${ALBA.map(a=>`<div class="album"><h2>${esc(a.h)}</h2><div class="sub">${esc(a.sub)} · ${a.n} fotek</div>
+  <div class="photos">${a.cap.map((c,i)=>`<button class="ph" data-ph="${a.id}:${i}" style="${phStyle(a,i)}" aria-label="${esc(c)}">${IC.foto}<span>${esc(c)}</span></button>`).join("")}</div></div>`).join("")}
+  <div class="note">Místo barevných ploch budou skutečné fotografie. Nahraje je pořadatel nebo fotograf, během konference i průběžně. Klepnutím fotku zvětšíte, šipkami nebo přejetím prstem listujete.</div></section>`;
+}
+let LB=null;
+function openLb(aid,i){LB={a:ALBA.find(x=>x.id===aid),i};drawLb()}
+function drawLb(){
+ let el=document.getElementById("lb");if(!el){el=document.createElement("div");el.id="lb";el.className="lb";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");document.body.appendChild(el);
+  el.addEventListener("click",e=>{if(e.target.closest("[data-lbx]"))closeLb();else if(e.target.closest("[data-lbp]"))stepLb(-1);else if(e.target.closest("[data-lbn]"))stepLb(1)});
+  let x0=null;el.addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});el.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)stepLb(dx<0?1:-1);x0=null})}
+ const {a,i}=LB;
+ el.innerHTML=`<div class="bar"><b>${esc(a.h)} · ${i+1} / ${a.n}</b><button data-lbx aria-label="Zavřít">×</button></div>
+  <div class="stage"><div class="img" style="${phStyle(a,i)}">Zde bude fotografie<br>„${esc(a.cap[i])}“</div>
+  <button class="nav prev" data-lbp aria-label="Předchozí">‹</button><button class="nav next" data-lbn aria-label="Další">›</button></div>
+  <div class="cap">${esc(a.cap[i])}</div>`;
+ el.querySelector("[data-lbx]").focus();
+}
+function stepLb(d){if(!LB)return;LB.i=(LB.i+d+LB.a.n)%LB.a.n;drawLb()}
+function closeLb(){const el=document.getElementById("lb");if(el)el.remove();LB=null}
+document.addEventListener("keydown",e=>{if(!LB)return;if(e.key==="Escape")closeLb();if(e.key==="ArrowLeft")stepLb(-1);if(e.key==="ArrowRight")stepLb(1)});
+
+function vDoprava(){
+ return `<section class="sec">
+  <div class="card"><div class="label" style="margin-bottom:8px">Svoz autobusem · Hotel Kraskov ⇄ Kongres hotel Jezerka</div>
+   <div style="overflow-x:auto"><table class="tt"><thead><tr><th>Den</th><th>Kraskov → Jezerka</th><th>Jezerka → Kraskov</th></tr></thead><tbody>
+    <tr><td>Pondělí</td><td>doplníme</td><td>po večeři · doplníme</td></tr>
+    <tr><td>Úterý</td><td>před prezencí · doplníme</td><td>po společenském večeru · doplníme</td></tr>
+    <tr><td>Středa</td><td>ráno · doplníme</td><td>po závěru · doplníme</td></tr>
+   </tbody></table></div>
+   <p class="muted" style="font-size:13px;margin:8px 0 0">Hotel Kraskov je asi 9 km od Jezerky. Časy svozu doplní pořadatel, případné změny se objeví v aktualitách.</p>
+  </div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Cesta na místo</div>
+   <dl class="kv"><dt>Adresa</dt><dd>Kongres hotel Jezerka, Seč – Ústupky 278</dd><dt>GPS</dt><dd>49°49’17.71“N, 15°39’35.77“E</dd><dt>Parkování</dt><dd>u hotelu (upřesníme)</dd></dl>
+   <p style="margin:10px 0 0"><a href="https://mapy.cz/zakladni?q=Kongres%20hotel%20Jezerka%20Se%C4%8D" target="_blank" rel="noopener">Otevřít v mapách</a></p>
+  </div>
+ </section>`;
+}
+
+function vInfo(){
+ return `<section class="sec">
+  <div class="card"><div class="label" style="margin-bottom:6px">Můj profil · nepovinné</div>
+   <p class="muted" style="margin:0 0 10px;font-size:13px">Když vyplníte jméno a firmu, vaše dotazy k přednáškám se podepíšou samy. Údaje zůstávají jen v tomto telefonu.</p>
+   <form class="qform" id="pf"><input id="pjm" placeholder="Jméno a příjmení" value="${esc(S.me.jm)}" autocomplete="name" aria-label="Jméno a příjmení">
+    <input id="pfirma" placeholder="Firma / instituce" value="${esc(S.me.firma)}" autocomplete="organization" aria-label="Firma">
+    <div style="display:flex;gap:8px"><button class="send" style="flex:1">Uložit</button>${podpis()?'<button type="button" class="btn" id="pdel">Smazat</button>':""}</div></form></div>
+  <div class="card"><div class="label" style="margin-bottom:8px">O konferenci</div>
+   <dl class="kv"><dt>Termín</dt><dd>14.–15. 4. 2026 (příjezd 13. 4.)</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborní garanti</dt><dd>prof. Ing. Jiří Wanner, DrSc., VŠCHT Praha · Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
+   <dl class="kv"><dt>Základní</dt><dd>4 900 Kč bez DPH (5 929 Kč s DPH)</dd><dt>Členové CzWA</dt><dd>4 600 Kč bez DPH (5 566 Kč s DPH)</dd><dt>V ceně</dt><dd>organizace, sborník v PDF, občerstvení, oběd, večerní pohoštění</dd><dt>Storno</dt><dd>poplatek se nevrací, zašleme sborník, lze vyslat náhradníka</dd></dl></div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Sborník <span style="color:var(--warn)">· připravujeme</span></div>
+   <p style="margin:0;font-size:14px">Sborník v PDF bude ke stažení po konferenci.</p></div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Kontakty</div>
+   <dl class="kv"><dt>Informace</dt><dd>461 357 111</dd><dt>E-mail</dt><dd>konference@vhos.cz</dd><dt>Web</dt><dd><a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></dd></dl></div>
+  <div class="note">Údaje podle pozvánky 2026. Pro rok 2027 je pořadatel aktualizuje na jednom místě a všem se změní hned.</div>
+ </section>`;
+}
+
+/* ===== Dotazy ===== */
+function now(){const d=new Date();return d.getHours()+":"+String(d.getMinutes()).padStart(2,"0")}
+function sheetQ(id){
+ const x=ALLT.find(y=>y.id===id), bk=ALLT.find(y=>y.blok&&y.bid===x.bid);
+ const draw=()=>{const l=(S.qa[id]||[]).map((q,i)=>({q,i})).sort((a,b)=>votes(id,b.i)-votes(id,a.i));
+  $("qlist").innerHTML=l.length?`<div class="label" style="margin-bottom:2px">Dotazy ostatních – než napíšete, podívejte se, jestli tu už váš není</div>`+l.map(({q,i})=>{const on=!!S.voted[id+":"+i],n=votes(id,i);
+   return `<div class="q"><div><p>${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)} · ${n} ${n===1?"člověk":n<5?"lidé":"lidí"}</small></div><button class="plus" data-plus="${i}" aria-pressed="${on}">${on?"✓ Mám taky":"+1 Mám stejný"}</button></div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
+ openSheet(`<h2>Dotaz k přednášce</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.h)}</div>
+  <div class="bd"><div id="qlist"></div>
+  <form class="qform" id="qf"><textarea id="qt" rows="3" placeholder="Napište svůj dotaz na přednášejícího…" aria-label="Dotaz"></textarea>
+   ${podpis()?`<div class="signas">Odešle se jako <b>${esc(podpis())}</b></div><label class="chk"><input type="checkbox" id="qanon"> Odeslat anonymně</label>`
+     :`<div class="signas">Dotaz se odešle anonymně. <button type="button" class="linkb" data-profil="1">Vyplnit profil</button>, ať se podepíše sám.</div>`}
+   <button class="send">Odeslat dotaz</button></form>
+  <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první.</div></div>`);
+ draw();
+ $("qlist").addEventListener("click",e=>{const b=e.target.closest("[data-plus]");if(!b)return;const k=id+":"+b.dataset.plus;if(S.voted[k])delete S.voted[k];else{S.voted[k]=1;toast("Přidali jste se k dotazu")}store.set("voted",S.voted);draw()});
+ $("qf").addEventListener("submit",e=>{e.preventDefault();const t=$("qt").value.trim();if(!t)return;
+  const anon=!podpis()||($("qanon")&&$("qanon").checked);(S.qa[id]=S.qa[id]||[]).push({t,a:anon?"anonymně":podpis(),c:now()});store.set("qa",S.qa);$("qt").value="";draw();render();toast("Dotaz odeslán předsedajícímu")});
+}
+function sheetChair(bid){
+ const bk=ALLT.find(y=>y.blok&&y.bid===bid), talks=ALLT.filter(y=>y.id&&y.bid===bid);
+ const draw=()=>{$("clist").innerHTML=talks.map(x=>{const l=(S.qa[x.id]||[]).map((q,i)=>({q,i})).sort((a,b)=>(!!S.read[x.id+":"+a.i]-!!S.read[x.id+":"+b.i])||votes(x.id,b.i)-votes(x.id,a.i));
+   return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(({q,i})=>{const k=x.id+":"+i,r=!!S.read[k],n=votes(x.id,i);
+    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes">+${n-1} se ptá taky</span>`:""}</div><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
+ openSheet(`<h2>Pohled předsedajícího</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(bk.blok)} · předsedá ${esc(bk.pr)}</div>
+  <div class="bd chair"><div id="clist"></div>
+  <div class="note">Dotazy přibývají živě během přednášky. Po přečtení je předsedající odškrtne. V ostré verzi bude tento pohled jen pro předsedající a pořadatele a dá se pustit i na plátno.</div></div>`);
+ draw();
+ $("clist").addEventListener("click",e=>{const b=e.target.closest("[data-read]");if(!b)return;const k=b.dataset.read;if(S.read[k])delete S.read[k];else S.read[k]=1;store.set("read",S.read);draw();render()});
+}
+
+function sheetNote(id){
+ const x=ALLT.find(y=>y.id===id);
+ openSheet(`<h2>Moje poznámka</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.t)} · ${esc(x.h)}</div>
+  <div class="bd"><form class="qform" id="nf"><textarea id="nt" rows="6" placeholder="Co vás zaujalo, na co se zeptat kolegů, odkaz na sborník…" aria-label="Poznámka">${esc(S.notes[id]||"")}</textarea>
+   <div style="display:flex;gap:8px"><button class="send" style="flex:1">Uložit poznámku</button>${S.notes[id]?'<button type="button" class="btn" id="ndel">Smazat</button>':""}</div></form>
+  <div class="note">Poznámku vidíte jen vy. Zůstává v tomto zařízení.</div></div>`);
+ $("nt").focus();
+ $("nf").addEventListener("submit",e=>{e.preventDefault();const v=$("nt").value.trim();if(v)S.notes[id]=v;else delete S.notes[id];store.set("notes",S.notes);closeSheet();render();toast(v?"Poznámka uložena":"Poznámka smazána")});
+ const d=$("ndel");if(d)d.addEventListener("click",()=>{delete S.notes[id];store.set("notes",S.notes);closeSheet();render();toast("Poznámka smazána")});
+}
+
+/* ===== Sheet ===== */
+function openSheet(h){const s=$("sheet");s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+h;s.hidden=false;$("bd").hidden=false;$("sclose").focus()}
+function closeSheet(){$("sheet").hidden=true;$("bd").hidden=true}
+$("bd").addEventListener("click",closeSheet);
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
+
+/* ===== Události ===== */
+$("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
+$("view").addEventListener("click",e=>{
+ const t=e.target.closest("[data-go],[data-day],[data-note],[data-p],[data-q],[data-chair],[data-ph],#mine");if(!t)return;
+ if(t.dataset.ph){const [a,i]=t.dataset.ph.split(":");return openLb(a,+i)}
+ if(t.dataset.q)return sheetQ(t.dataset.q);
+ if(t.dataset.chair)return sheetChair(t.dataset.chair);
+ if(t.dataset.go){if(t.dataset.mine)S.mine=true;return go(t.dataset.go)}
+ if(t.dataset.day){S.day=t.dataset.day;return render()}
+ if(t.dataset.note)return sheetNote(t.dataset.note);
+ if(t.dataset.p)return sheetP(t.dataset.p);
+ if(t.id==="mine"){S.mine=!S.mine;return render()}
+});
+$("view").addEventListener("change",e=>{if(e.target.id==="simday"){S.sim.day=e.target.value;$("nowbox").outerHTML=vNow()}});
+$("view").addEventListener("click",e=>{const g=e.target.closest(".now[data-goday]");if(g){S.day=g.dataset.goday;S.q="";S.mine=false;go("program");const l=document.querySelector(".talk.live");if(l)l.scrollIntoView({block:"center"})}});
+setInterval(()=>{if(clock().real)render()},30000);
+$("view").addEventListener("submit",e=>{if(e.target.id!=="pf")return;e.preventDefault();S.me={jm:$("pjm").value.trim(),firma:$("pfirma").value.trim()};store.set("me",S.me);render();toast(podpis()?"Profil uložen":"Profil je prázdný")});
+$("view").addEventListener("click",e=>{if(e.target.id==="pdel"){S.me={jm:"",firma:""};store.set("me",S.me);render();toast("Profil smazán")}});
+$("view").addEventListener("input",e=>{
+ if(e.target.id==="simm"){S.sim.m=+e.target.value;$("nowbox").outerHTML=vNow();$("simm").focus();return}if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
+render();
+</script>
+
+</body>
+</html>
