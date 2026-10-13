@@ -609,3 +609,6 @@ Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stá
   U bloku **„Pohled předsedajícího“** – velké písmo, dotazy ke všem přednáškám bloku, nejžádanější
   nahoře, odškrtnutí „Přečteno“. Ostrá verze: sdílené živě přes Firebase, pohled předsedajícího
   jen pro předsedající / pořadatele, volitelně na plátno.
+- **Nepovinný profil v průvodci (verze 4):** v Info „Můj profil“ – jméno a firma, uloženo jen
+  v telefonu; dotaz se podepíše sám („Odešle se jako …“), zaškrtnutím lze poslat anonymně;
+  bez profilu se dotaz posílá anonymně s odkazem „Vyplnit profil“.

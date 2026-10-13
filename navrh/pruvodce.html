@@ -143,6 +143,10 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .cq.read{opacity:.45}
 .cq button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-weight:700;font-size:13px;white-space:nowrap}
 .cq.read button{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px}
+.chk input{width:18px;height:18px}
+.signas{font-size:13px;color:var(--muted)} .signas b{color:var(--ink)}
+.linkb{border:0;background:none;padding:0;color:var(--water);font-weight:700;text-decoration:underline;font-size:13px}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
 @media (prefers-reduced-motion: reduce){.ticker .track,.logo,.sheet:not([hidden]){animation:none}.ticker{overflow-x:auto}}
 </style>
@@ -235,7 +239,8 @@ const NEWS=[
 const store={get(k,d){try{const v=localStorage.getItem("pr_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pr_"+k,JSON.stringify(v))}catch(e){}}};
 const S={tab:"domu",day:"ut",q:"",mine:false,fav:store.get("fav",{}),
  qa:store.get("qa",null)||{ut5:[{t:"Kdy můžeme čekat transpozici nové směrnice do české legislativy?",a:"Jan, VaK",c:"9:31",v:6}],ut6:[{t:"Týká se nový reporting i ČOV pod 2 000 EO?",a:"anonymně",c:"9:58",v:3},{t:"Budou data z reportingu veřejně dostupná?",a:"Lenka, PVK",c:"10:04"}],ut9:[{t:"Jak řešíte odpovědnost za rozhodnutí, která navrhne AI?",a:"Petra",c:"11:21",v:4}]},
- read:store.get("read",{}),voted:store.get("voted",{})};
+ read:store.get("read",{}),voted:store.get("voted",{}),me:store.get("me",{jm:"",firma:""})};
+function podpis(){return [S.me.jm,S.me.firma].filter(Boolean).join(", ")}
 function votes(id,i){const q=(S.qa[id]||[])[i];return 1+(q.v||0)+(S.voted[id+":"+i]?1:0)}
 
 const $=id=>document.getElementById(id);
@@ -275,7 +280,7 @@ function vDomu(){
    <button data-go="program"><b>Program</b><span>Úterý a středa, ${Object.values(PROG).flat().filter(x=>x.blok).length} bloků</span></button>
    <button data-go="program" data-mine="1"><b>Můj program</b><span>${favs?favs+" označených":"Označte si hvězdičkou"}</span></button>
    <button data-go="doprava"><b>Svoz z Kraskova</b><span>Jízdní řád autobusu</span></button>
-   <button data-go="info"><b>Místo a kontakty</b><span>Adresa, GPS, poplatky</span></button>
+   <button data-go="info"><b>${podpis()?esc(S.me.jm):"Můj profil a info"}</b><span>${podpis()?"Profil vyplněn · kontakty":"Nepovinné · adresa, poplatky"}</span></button>
   </div>
   <div><div class="label" style="margin-bottom:8px">Generální partneři</div>
    <div class="gen">${PART[0][3].map(nm=>`<button class="quick-p card" data-p="${esc(nm)}" style="border:0;display:flex;align-items:center;gap:10px;text-align:left">${lm(nm)}<b style="font-size:14px">${esc(nm)}</b></button>`).join("")}</div></div>
@@ -344,6 +349,11 @@ function vDoprava(){
 
 function vInfo(){
  return `<section class="sec">
+  <div class="card"><div class="label" style="margin-bottom:6px">Můj profil · nepovinné</div>
+   <p class="muted" style="margin:0 0 10px;font-size:13px">Když vyplníte jméno a firmu, vaše dotazy k přednáškám se podepíšou samy. Údaje zůstávají jen v tomto telefonu.</p>
+   <form class="qform" id="pf"><input id="pjm" placeholder="Jméno a příjmení" value="${esc(S.me.jm)}" autocomplete="name" aria-label="Jméno a příjmení">
+    <input id="pfirma" placeholder="Firma / instituce" value="${esc(S.me.firma)}" autocomplete="organization" aria-label="Firma">
+    <div style="display:flex;gap:8px"><button class="send" style="flex:1">Uložit</button>${podpis()?'<button type="button" class="btn" id="pdel">Smazat</button>':""}</div></form></div>
   <div class="card"><div class="label" style="margin-bottom:8px">O konferenci</div>
    <dl class="kv"><dt>Termín</dt><dd>14.–15. 4. 2026 (příjezd 13. 4.)</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborní garanti</dt><dd>prof. Ing. Jiří Wanner, DrSc., VŠCHT Praha · Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
@@ -366,12 +376,14 @@ function sheetQ(id){
  openSheet(`<h2>Dotaz k přednášce</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.h)}</div>
   <div class="bd"><div id="qlist"></div>
   <form class="qform" id="qf"><textarea id="qt" rows="3" placeholder="Napište svůj dotaz na přednášejícího…" aria-label="Dotaz"></textarea>
-   <input id="qa" placeholder="Jméno a firma (nepovinné)" aria-label="Jméno a firma"><button class="send">Odeslat dotaz</button></form>
+   ${podpis()?`<div class="signas">Odešle se jako <b>${esc(podpis())}</b></div><label class="chk"><input type="checkbox" id="qanon"> Odeslat anonymně</label>`
+     :`<div class="signas">Dotaz se odešle anonymně. <button type="button" class="linkb" data-profil="1">Vyplnit profil</button>, ať se podepíše sám.</div>`}
+   <button class="send">Odeslat dotaz</button></form>
   <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první.</div></div>`);
  draw();
  $("qlist").addEventListener("click",e=>{const b=e.target.closest("[data-plus]");if(!b)return;const k=id+":"+b.dataset.plus;if(S.voted[k])delete S.voted[k];else{S.voted[k]=1;toast("Přidali jste se k dotazu")}store.set("voted",S.voted);draw()});
  $("qf").addEventListener("submit",e=>{e.preventDefault();const t=$("qt").value.trim();if(!t)return;
-  (S.qa[id]=S.qa[id]||[]).push({t,a:$("qa").value.trim()||"anonymně",c:now()});store.set("qa",S.qa);$("qt").value="";draw();render();toast("Dotaz odeslán předsedajícímu")});
+  const anon=!podpis()||($("qanon")&&$("qanon").checked);(S.qa[id]=S.qa[id]||[]).push({t,a:anon?"anonymně":podpis(),c:now()});store.set("qa",S.qa);$("qt").value="";draw();render();toast("Dotaz odeslán předsedajícímu")});
 }
 function sheetChair(bid){
  const bk=ALLT.find(y=>y.blok&&y.bid===bid), talks=ALLT.filter(y=>y.id&&y.bid===bid);
@@ -389,7 +401,7 @@ function sheetChair(bid){
 function openSheet(h){const s=$("sheet");s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+h;s.hidden=false;$("bd").hidden=false;$("sclose").focus()}
 function closeSheet(){$("sheet").hidden=true;$("bd").hidden=true}
 $("bd").addEventListener("click",closeSheet);
-$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
 
 /* ===== Události ===== */
@@ -404,6 +416,8 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.p)return sheetP(t.dataset.p);
  if(t.id==="mine"){S.mine=!S.mine;return render()}
 });
+$("view").addEventListener("submit",e=>{if(e.target.id!=="pf")return;e.preventDefault();S.me={jm:$("pjm").value.trim(),firma:$("pfirma").value.trim()};store.set("me",S.me);render();toast(podpis()?"Profil uložen":"Profil je prázdný")});
+$("view").addEventListener("click",e=>{if(e.target.id==="pdel"){S.me={jm:"",firma:""};store.set("me",S.me);render();toast("Profil smazán")}});
 $("view").addEventListener("input",e=>{if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
 render();
 </script>
