@@ -202,6 +202,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   vždy jeden svítí (zlatě / stříbrně / fialově / černě) a pod ním jen jeho loga; střídá se samo
   (generální 7 s, hlavní 6 s, odborní projedou lištou, mediální 6 s), klepnutím na štítek ručně (pauza 20 s).
   **„Budík“ přejmenován na „Upozornit“** (🔔 Upozornit / „Upozorním 10 min předem“, okno „Upozornit na přednášku“).
+- **Průvodce 0.11:** upozornění na přednášku – kromě tlačítek 5/10/15/30 min i **vlastní počet minut** (1–240), uloží se k přednášce a ukáže na tlačítku („Upozorním 20 min předem“).
 - **Rozhodnutí k dotazům (uživatel souhlasí s doporučením):** žádná zvláštní práva pro přednášející –
   **dotazy vidí všichni** bez přihlášení, „Pohled předsedajícího“ přístupný všem (jen jiné zobrazení);
   **mazání nevhodných dotazů jen pořadatel** v aplikaci pořadatele. **Poznámky zůstávají soukromé** (jen v zařízení).

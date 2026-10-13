@@ -228,6 +228,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .cbtn+.cbtn{background:var(--accent-soft);color:var(--accent)}
 .nbtn.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .how{display:flex;flex-direction:column;gap:8px}
+.amv{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;color:var(--muted)}
+.amv input{width:80px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);font:inherit;font-weight:700;text-align:center}
 .how label{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
 .how label small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 .how input{width:18px;height:18px;margin-top:2px}
@@ -433,7 +435,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.10 · 13. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.11 · 13. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -850,7 +852,8 @@ function sheetAlarm(id){
  const den=DAYS.find(d=>d.k===talkDay(x));
  openSheet(`<h2>Upozornit na přednášku</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(den.n)} ${esc(den.d)} · ${esc(x.t)} · ${esc(x.h)}</div>
   <div class="bd">
-   <div><div class="label" style="margin-bottom:6px">Kolik minut předem</div><div class="days" id="am" role="group" style="grid-template-columns:repeat(4,1fr)">${[5,10,15,30].map(m=>`<button data-m="${m}" aria-pressed="${cur.m===m}">${m} min</button>`).join("")}</div></div>
+   <div><div class="label" style="margin-bottom:6px">Kolik minut předem mě upozornit</div><div class="days" id="am" role="group" style="grid-template-columns:repeat(4,1fr)">${[5,10,15,30].map(m=>`<button data-m="${m}" aria-pressed="${cur.m===m}">${m} min</button>`).join("")}</div>
+    <label class="amv">nebo vlastní: <input id="amin" type="number" min="1" max="240" inputmode="numeric" value="${[5,10,15,30].includes(cur.m)?"":cur.m}" placeholder="např. 20"> minut předem</label></div>
    <div><div class="label" style="margin-bottom:6px">Jak mě upozornit</div><div class="how">
     <label><input type="checkbox" id="az" ${cur.zvuk!==false?"checked":""}><span><b>Zvuk a vibrace</b><small>Zazvoní a zavibruje, když máte průvodce otevřený – třeba v sále nebo na chodbě.</small></span></label>
     <label><input type="checkbox" id="an" ${cur.notif?"checked":""}><span><b>Upozornění v telefonu</b><small>Oznámení na obrazovce, i když je průvodce na pozadí. Telefon se zeptá na povolení.</small></span></label>
@@ -859,7 +862,8 @@ function sheetAlarm(id){
    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="send" id="asave" style="flex:1">Nastavit upozornění</button>${S.alarms[id]?'<button class="btn" id="adel">Zrušit upozornění</button>':""}<button class="btn" id="atest">Vyzkoušet</button></div>
   </div>`);
  let m=cur.m;
- $("am").addEventListener("click",e=>{const b=e.target.closest("[data-m]");if(!b)return;m=+b.dataset.m;$("am").querySelectorAll("button").forEach(z=>z.setAttribute("aria-pressed",z===b))});
+ $("am").addEventListener("click",e=>{const b=e.target.closest("[data-m]");if(!b)return;m=+b.dataset.m;$("amin").value="";$("am").querySelectorAll("button").forEach(z=>z.setAttribute("aria-pressed",z===b))});
+ $("amin").addEventListener("input",()=>{const v=Math.round(+$("amin").value);if(v>=1&&v<=240){m=v;$("am").querySelectorAll("button").forEach(z=>z.setAttribute("aria-pressed",+z.dataset.m===v))}});
  $("an").addEventListener("change",async()=>{if($("an").checked&&"Notification" in window&&Notification.permission!=="granted"){try{const r=await Notification.requestPermission();if(r!=="granted"){$("an").checked=false;toast("Upozornění nejsou povolená – zůstane zvuk a kalendář")}}catch(e){$("an").checked=false}}
    else if($("an").checked&&!("Notification" in window)){$("an").checked=false;toast("Tento prohlížeč upozornění nepodporuje")}});
  $("asave").addEventListener("click",()=>{pip();S.alarms[id]={m,zvuk:$("az").checked,notif:$("an").checked};delete S.fired[id];store.set("alarms",S.alarms);store.set("fired",S.fired);closeSheet();render();
