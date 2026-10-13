@@ -148,6 +148,30 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .signas{font-size:13px;color:var(--muted)} .signas b{color:var(--ink)}
 .linkb{border:0;background:none;padding:0;color:var(--water);font-weight:700;text-decoration:underline;font-size:13px}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
+/* tablet a počítač: menu nahoře, širší obsah */
+@media (min-width: 820px){
+  .app{max-width:1000px;padding-block:60px 32px}
+  .top{position:static;padding-block:16px 10px}
+  .top b{font-size:20px}
+  .tabbar{top:0;bottom:auto;border-top:0;border-bottom:1px solid var(--line);padding-bottom:0;padding-top:env(safe-area-inset-top,0px)}
+  .tabbar .in{max-width:1000px;display:flex;gap:4px;padding-inline:16px}
+  .tabbar button{flex-direction:row;font-size:14px;padding:15px 14px;gap:8px;border-bottom:3px solid transparent}
+  .tabbar button[aria-current="page"]{border-bottom-color:var(--accent)}
+  .tabbar svg{width:18px;height:18px}
+  .hero{padding:28px}
+  .hero h1{font-size:34px}
+  .quick,.gen{grid-template-columns:repeat(4,1fr)}
+  .g2{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(6,1fr)}
+  .slot{grid-template-columns:72px 1fr}
+  .talk h3{font-size:16px}
+  .sheet{top:6vh;bottom:auto;max-height:88vh;border-radius:20px;max-width:680px}
+  .sheet .grab{display:none}
+  .cq p{font-size:24px}
+  .toast{bottom:24px}
+  #view .sec>.card,#view .sec>.note{max-width:none}
+}
+@media (min-width: 1200px){.g3{grid-template-columns:repeat(7,1fr)}}
 @media (prefers-reduced-motion: reduce){.ticker .track,.logo,.sheet:not([hidden]){animation:none}.ticker{overflow-x:auto}}
 </style>
 

@@ -612,3 +612,7 @@ Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stá
 - **Nepovinný profil v průvodci (verze 4):** v Info „Můj profil“ – jméno a firma, uloženo jen
   v telefonu; dotaz se podepíše sám („Odešle se jako …“), zaškrtnutím lze poslat anonymně;
   bez profilu se dotaz posílá anonymně s odkazem „Vyplnit profil“.
+- **Průvodce = PWA pro mobil, tablet i notebook (verze 5):** od šířky ~820 px menu nahoře,
+  širší obsah, víc log vedle sebe (až 7), okna uprostřed, větší písmo dotazů pro předsedajícího.
+  Ostrá verze na GitHub Pages: přidat manifest + ikonu + offline režim (service worker) –
+  v náhledu artefaktu to nejde, na vlastním webu ano.
