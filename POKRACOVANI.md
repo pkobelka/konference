@@ -230,4 +230,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   }
   ```
   (seznam karet čte jen pořadatel, jednu kartu kdokoli, kdo zná její klíč).
+- **14. 10.: uživatel pravidlo pro `konference2027_karty` přidal; spolubydlící na kartě ponechat (souhlas).**
 - Další krok: formuláře pro veřejnost a hosty zapisovat přímo do Firebase (dnes import / ruční zadání).
