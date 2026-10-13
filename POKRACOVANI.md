@@ -125,3 +125,10 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Bez service workeru (offline cache) záměrně – data jsou živá z Firebase a stará verze by se nemusela obnovit.
 - iPhone: přihlašovací odkaz z e-mailu se otevře v Safari, ne v ikoně na ploše → v aplikaci použít
   „Mám odkaz z e-mailu – vložit ručně“ (zkopírovat odkaz z mailu a vložit). Stačí jednou, přihlášení vydrží.
+
+### Vizuál z původních fleků (13. 10. 2026)
+- Z pozvánky 2026 vytaženo **17 původních fleků („bakterie“)** s průhledným pozadím →
+  `obrazky/fleky/flek01–17.webp`; původní logo **„30“** → `obrazky/cislo30.webp`.
+- Nově složené **„31“** ve stejném stylu (trojka z originálu, jednička z fleků 12 a 6) → `obrazky/cislo31.webp`.
+- **Ikona aplikace = varianta E** (4 fleky: 10, 6, 16, 9 na světlém podkladu) – `ikony/` + favicon.
+- Do budoucna použít fleky i v průvodci (záhlaví, zástupná loga, fotky).
