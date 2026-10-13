@@ -159,3 +159,8 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Průvodce pro veřejnost nasazen jako ukázka:** https://pkobelka.github.io/konference/pruvodce/
   (`pruvodce/index.html` = `navrh/pruvodce.html` obalené hlavičkou; data podle pozvánky 2026, jen veřejné údaje).
   Při úpravě průvodce upravit `navrh/pruvodce.html` a znovu vygenerovat `pruvodce/index.html`.
+- **Průvodce – nový vzhled podle pozvánky (13. 10. večer):** zelená pryč (uživatel: „šílená“) → papírový
+  podklad, tmavé písmo, nadpisy IBM Plex Mono (jako pozvánka), akcent fialová z fleků; v záhlaví logo **31**,
+  hero s 6 fleky (na PC mřížka vpravo), partneři = kolečka z fleků s iniciálami, fotky = fleky.
+  **31. ročník**, termín zatím „duben 2027 · přesný termín upřesníme“ (konstanta `TERMIN`) – **čeká na datum od uživatele**.
+  Program je dál ukázka podle 2026 (poznámka v Programu). Počasí na webu funguje živě (ověřil uživatel).
