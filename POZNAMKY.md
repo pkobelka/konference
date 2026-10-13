@@ -472,3 +472,50 @@ Uživatel: „Nejdřív namluvím a pošlu všechny materiály, pak to shrneme a
   sekcích a patrech pro každou noc s barvou obsazenosti (volný / částečně / plný /
   přistýlka / přeplněný) a počtem X/Y lůžek, kontrola přeplnění, „sám“, „spí, ale nemá pokoj“,
   záložka Večeře s počty jídel.
+
+## Excel „Komplet 2026“ – jak dnes pořadatel pracuje (rozbor 13. 10. 2026, bez osobních údajů)
+
+Listy: `pokoje 2026/25/24`, `komplet pokoje`, `přednášející 26/25`, `PŘ 25 KOPIE`,
+`večeře 26/25/24`, `vystav 26`, `vystavovatelé`, `Partneři`, `list11` (finanční rozvaha).
+Ročníky 24/25/26 vedle sebe → pořadatel porovnává, kdo kdy byl a kde spal.
+
+**Pokoje (list pokoje 2026)**
+- Vlevo „mapa“ hotelu: sekce **A, B, C (superiory 6xx/7xx, relax apartmá), D** (3., 2. patro, 101 imobilní),
+  po patrech; pod číslem pokoje 2–3 řádky = lůžka se jmény (+ přistýlky). Typy: 2lůž., apartmá,
+  „bez balkonu“, „k“ u čísla (?), relax apartmá, imobilní.
+- Vpravo abecední seznam ubytovaných (~110): pořadí, jméno, firma, **pokoj**, **sekce** (A/B/C),
+  **VHOS** (1 = platí VHOS?), **večeře 1 / 2 / 3** (číslo jídla; „x x x“ = ?, „ –“ = ?).
+- Dole zvláštní případy: „jen pondělí“, „jen úterý“, seznam „PLATÍ VHOS“.
+- Noci: **pondělí a úterý** (příjezd v pondělí, konference út–st).
+- Kapacity sálu: sál 260 + galerka 50.
+
+**Přednášející (~30)**
+- Blok (legislativa, 1. odpolední, 2. odpolední, Novinky a zkušenosti z ČOV), role (Přednáška N /
+  **Předsedající**), Ž/M, pokoj („sám“, „xxx“ = ?), Več., e-mail, telefon, poznámka,
+  **přihlášen** 1/0; 2025 navíc **odměna**. Vedle sestavený pořad bloků (kdo po kom mluví).
+
+**Slavnostní večeře (pondělí)**
+- Pozvaní po skupinách: **VHOS, KONCERN, partneři (dle firem), HOSTÉ, PŘEDNÁŠEJÍCÍ**;
+  pozván ano/ne, **účast Ano/Ne**, poznámka („omluvil se“, „pozvat 2027“).
+- Kapacita: **ideál 38 / 42 / 46** (rozestavení stolů), max ~54. Počty: pozváno / potvrzeno.
+- Běžná pondělní večeře (výdej 19–20 h): **3 jídla s cenami** (~210–240 Kč), mění se každý rok.
+
+**Vystavovatelé / partneři**
+- ~34 firem: **4 generální, 3 hlavní, 27 odborných**; cena 2025 a 2026, počet stánků;
+  `vystav 26` = 31 stánků; mediální partneři zvlášť (časopisy, SOVAK, kraj…).
+- Finanční rozvaha: výdaje (pronájem, grafika, sborník, dárky, víno, doprava Kraskov…),
+  příjmy z partnerů, počty účastníků se slevou CzWA / bez slevy, rozmístění stánků (hlavní sál / chodba).
+
+**Tři cesty, jak se lidé dostanou do evidence (vysvětlil uživatel)**
+1. **Zve pořadatel** (VHOS, koncern, hosté, přednášející, předsedající…) → pošle pozvánku → potvrdí →
+   pořadatel přidělí pokoj, slavnostní / běžnou večeři.
+2. **Partneři / vystavovatelé** → partnerská přihláška (už existuje `prihlaska/?k=…`).
+3. **Oficiální e-přihláška na webu** → jde mimo pořadatele, ale **někteří chtějí ubytování / stravu**
+   → pořadatel je musí doplnit do evidence (a odlišit, odkud přišli).
+
+**Otázky k upřesnění:** viz chat 13. 10. (písmeno „k“ u pokojů, význam „x x x“ / „ –“ u večeře,
+sloupec VHOS, „xxx“ / „sám“ u přednášejících, Več. u přednášejících, kde je Kraskov,
+odkud přijdou data z webové e-přihlášky, Ž/M pro spolubydlící).
+
+*Pozn.: současná aplikace pořadatele vznikla z Excelu 2025 (sekce, noci, platí VHOS, sám,
+přistýlky, večeře A/B/C) → velká část modelu už sedí.*
