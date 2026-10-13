@@ -178,3 +178,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   (uzel např. `konference2027_dotazy`, čtení/zápis pro všechny, mazání jen pořadatel; pohled předsedajícího
   jen pro předsedající/pořadatele) + pravidla do Firebase.
 - Čeká se na zpětnou vazbu uživatele k aplikaci pořadatele i průvodci.
+- **Průvodce – export poznámek:** v Programu s filtrem „✎ Poznámky“ tlačítka **🖨 Vytisknout / PDF**
+  (čistý tiskový výpis: přednáška, den, čas, autoři, poznámka), **⬇ Stáhnout text** (.txt), **✉ Poslat e-mailem**.
+  Záhlaví průvodce: „31. ročník · Seč · 27.–28. dubna 2027“.

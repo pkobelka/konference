@@ -211,6 +211,18 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .gen .lg{width:110px;height:42px}
 .gen .lg img{max-height:34px}
 .wxh{grid-column:1/-1;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--water);border-top:1px solid var(--line);padding-top:10px;margin-bottom:-4px}
+.nexp{display:flex;gap:6px;flex-wrap:wrap}
+.nexp button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px;color:var(--accent)}
+@media print{
+  body.tisk>*:not(#printarea){display:none!important}
+  body.tisk{background:#fff!important}
+  #printarea h1{font-family:Georgia,"Times New Roman",serif}
+  body.tisk #printarea{display:block!important;font-family:Georgia,"Times New Roman",serif;color:#000;background:#fff;padding:0}
+  #printarea h1{font-size:20pt;margin:0 0 4pt} #printarea .m{font-size:10pt;color:#444;margin-bottom:14pt}
+  #printarea .n{break-inside:avoid;border-top:1px solid #999;padding:8pt 0}
+  #printarea .n b{font-size:12pt} #printarea .n .w{font-size:9.5pt;color:#444;margin:2pt 0 4pt}
+  #printarea .n p{white-space:pre-wrap;font-size:11pt;margin:0}
+}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
 /* tablet a počítač: menu nahoře, širší obsah */
 @media (min-width: 820px){
@@ -253,6 +265,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <div class="backdrop" id="bd" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" hidden></div>
 <div class="toast" id="toast" hidden></div>
+<div id="printarea" hidden></div>
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
@@ -458,6 +471,7 @@ function vProgram(){
  return `<section class="sec">
   <div class="note" style="margin-bottom:-2px">Program je zatím ukázka podle 30. ročníku (2026). Program 31. ročníku doplníme.</div>
   <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small></button>`).join("")}</div>
+  ${S.mine&&Object.keys(S.notes).length?`<div class="nexp"><button id="npr">🖨 Vytisknout / PDF</button><button id="ntxt">⬇ Stáhnout text</button><button id="nmail">✉ Poslat e-mailem</button></div>`:""}
   <div class="tools"><input id="q" placeholder="Hledat přednášku, jméno, firmu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog" id="mine" aria-pressed="${S.mine}">✎ Poznámky</button></div>
   ${rows.some(x=>!x.blok)?rows.map(x=>{
    if(x.blok){const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter((q,i)=>!S.read[y.id+":"+i]).length,0);
@@ -469,7 +483,7 @@ function vProgram(){
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
    return h}).join("")
   :`<div class="card empty"><b>${S.mine?"Zatím nemáte žádné poznámky":"Nic jsme nenašli"}</b><p class="muted" style="margin:6px 0 0;font-size:14px">${S.mine?"U přednášky klepněte na ✎ Poznámka a napište si, co vás zaujalo.":"Zkuste jiné slovo."}</p></div>`}
-  <div class="note">Poznámky k přednáškám jsou soukromé a zůstávají jen ve vašem zařízení. Tlačítkem ✎ Poznámky zobrazíte jen přednášky, ke kterým máte poznámku.</div>
+  <div class="note">Poznámky k přednáškám jsou soukromé a zůstávají jen ve vašem zařízení. Tlačítkem ✎ Poznámky zobrazíte jen přednášky s poznámkou – tam je můžete i vytisknout, uložit jako PDF, stáhnout nebo poslat e-mailem.</div>
  </section>`;
 }
 
@@ -590,6 +604,31 @@ function sheetNote(id){
  const d=$("ndel");if(d)d.addEventListener("click",()=>{delete S.notes[id];store.set("notes",S.notes);closeSheet();render();toast("Poznámka smazána")});
 }
 
+/* ===== Export poznámek ===== */
+function mojePoznamky(){return ALLT.filter(x=>x.id&&S.notes[x.id]).map(x=>{const d=Object.keys(PROG).find(k=>PROG[k].includes(x));return {x,den:DAYS.find(z=>z.k===d)}})}
+function poznamkyText(){
+ const l=mojePoznamky();
+ return "Moje poznámky – Nové metody a postupy při provozování ČOV, 31. ročník ("+TERMIN+")\n"+(podpis()?podpis()+"\n":"")+"\n"+
+  l.map(({x,den})=>`${den.n} ${den.d} · ${x.t}${x.e?"–"+x.e:""}\n${x.h}\n${x.w}\n\n${S.notes[x.id]}\n`).join("\n----------------------------------------\n\n");
+}
+function tiskPoznamek(){
+ const l=mojePoznamky(), pa=$("printarea");
+ pa.innerHTML=`<h1>Moje poznámky</h1><div class="m">Nové metody a postupy při provozování ČOV · 31. ročník · ${esc(TERMIN)}${podpis()?" · "+esc(podpis()):""}</div>`+
+  l.map(({x,den})=>`<div class="n"><b>${esc(x.h)}</b><div class="w">${esc(den.n)} ${esc(den.d)} · ${esc(x.t)}${x.e?"–"+esc(x.e):""} · ${esc(x.w)}</div><p>${esc(S.notes[x.id])}</p></div>`).join("");
+ document.body.classList.add("tisk");
+ const done=()=>{document.body.classList.remove("tisk");window.removeEventListener("afterprint",done)};
+ window.addEventListener("afterprint",done);
+ try{window.print()}catch(e){}
+ setTimeout(()=>{if(document.body.classList.contains("tisk")){done();toast("Tisk tady není dostupný – na webu aplikace funguje")}},1500);
+}
+function stahniPoznamky(){
+ const b=new Blob(["\ufeff"+poznamkyText()],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");
+ a.href=URL.createObjectURL(b);a.download="moje-poznamky-konference-2027.txt";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function mailPoznamky(){
+ const t=poznamkyText();location.href="mailto:?subject="+encodeURIComponent("Moje poznámky – konference ČOV 2027")+"&body="+encodeURIComponent(t.length>1800?t.slice(0,1800)+"\n…(zkráceno, celé poznámky si stáhněte jako text)":t);
+}
+
 /* ===== Sheet ===== */
 function openSheet(h){const s=$("sheet");s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+h;s.hidden=false;$("bd").hidden=false;$("sclose").focus()}
 function closeSheet(){$("sheet").hidden=true;$("bd").hidden=true}
@@ -600,7 +639,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)
 /* ===== Události ===== */
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
 $("view").addEventListener("click",e=>{
- const t=e.target.closest("[data-go],[data-day],[data-note],[data-p],[data-q],[data-chair],[data-ph],#mine");if(!t)return;
+ const t=e.target.closest("[data-go],[data-day],[data-note],[data-p],[data-q],[data-chair],[data-ph],#mine,#npr,#ntxt,#nmail");if(!t)return;
  if(t.dataset.ph){const [a,i]=t.dataset.ph.split(":");return openLb(a,+i)}
  if(t.dataset.q)return sheetQ(t.dataset.q);
  if(t.dataset.chair)return sheetChair(t.dataset.chair);
@@ -609,6 +648,9 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.note)return sheetNote(t.dataset.note);
  if(t.dataset.p)return sheetP(t.dataset.p);
  if(t.id==="mine"){S.mine=!S.mine;return render()}
+ if(t.id==="npr")return tiskPoznamek();
+ if(t.id==="ntxt")return stahniPoznamky();
+ if(t.id==="nmail")return mailPoznamky();
 });
 $("view").addEventListener("change",e=>{if(e.target.id==="simday"){S.sim.day=e.target.value;$("nowbox").outerHTML=vNow()}});
 $("view").addEventListener("click",e=>{const g=e.target.closest(".now[data-goday]");if(g){S.day=g.dataset.goday;S.q="";S.mine=false;go("program");const l=document.querySelector(".talk.live");if(l)l.scrollIntoView({block:"center"})}});
