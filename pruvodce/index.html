@@ -400,7 +400,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
   <header class="top">
     <img class="mark" id="markimg" alt="31. ročník" width="40" height="40">
     <div class="ttl" style="min-width:0"><b id="pgt"></b><small id="pgs"></small></div>
-    <span class="chip" title="Obsah podle programu 2026">Ukázka</span>
+    <span class="chip" title="Obsah podle programu 2026" id="vchip">Ukázka</span>
   </header>
   <main id="view"></main>
 </div>
@@ -412,6 +412,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
+const VERZE="0.9 · 13. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -577,7 +578,7 @@ function vDomu(){
  const qi=(n)=>`<span class="qi" style="background-image:url(${flek(n)})"></span>`;
  return `<section class="sec">
   <div class="poster">
-   <span class="pchip" title="Obsah podle programu 2026">Ukázka</span>
+   <span class="pchip" title="Obsah podle programu 2026">Ukázka · v${VERZE.split(" ")[0]}</span>
    <div class="collage" aria-hidden="true">${FL.map(([n,c])=>`<img class="${c}" src="${IMG}fleky/flek${String(n).padStart(2,"0")}.webp" alt="">`).join("")}</div>
    <div class="pc">
     <div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
@@ -727,6 +728,7 @@ function vInfo(){
   <div class="card"><div class="label" style="margin-bottom:8px">Kontakty</div>
    <dl class="kv"><dt>Informace</dt><dd>461 357 111 · Eva Jančáková</dd><dt>E-mail</dt><dd>konference@vhos.cz</dd><dt>Web</dt><dd><a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></dd></dl></div>
   <div class="note">Údaje podle pozvánky 2026. Pro rok 2027 je pořadatel aktualizuje na jednom místě a všem se změní hned.</div>
+  <p class="muted" style="text-align:center;font-size:12px;margin:4px 0 0;font-family:var(--f-display)">Průvodce konferencí · verze ${VERZE}</p>
  </section>`;
 }
 
@@ -889,6 +891,7 @@ $("view").addEventListener("click",e=>{if(e.target.id==="pdel"){S.me={jm:"",firm
 $("view").addEventListener("input",e=>{
  if(e.target.id==="simm"){S.sim.m=+e.target.value;$("nowbox").outerHTML=vNow();$("simm").focus();return}if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
 document.getElementById("markimg").src=IMG+"cislo31.webp";
+document.getElementById("vchip").textContent="Ukázka · v"+VERZE.split(" ")[0];
 render();
 </script>
 

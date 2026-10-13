@@ -196,3 +196,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   Právě teď), rychlé volby s fleky, **plovoucí spodní lišta** se skleněným efektem (na PC menu nahoře).
 - **Váha partnerů:** pás log rozdělený štítky kategorií; **generální = zlatý rámeček a největší logo,
   hlavní = stříbrný, odborní/mediální menší**; stejné rámečky na stránce Partneři a u generálních na Domů.
+- **Verze průvodce** (konstanta `VERZE` v `navrh/pruvodce.html`, při každém nasazení zvýšit): **0.9 · 13. 10. 2026**
+  – štítek „Ukázka · v0.9“ na plakátu a v záhlaví, celé číslo dole v Info.
