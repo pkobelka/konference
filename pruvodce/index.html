@@ -210,6 +210,19 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .lb .prev{left:14px} .lb .next{right:14px}
 .lb .cap{padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));font-size:14px;text-align:center;color:#c9d3cb}
 @media (min-width: 820px){.photos{grid-template-columns:repeat(6,1fr)}}
+.lg{background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none;width:68px;height:30px;padding:3px 5px;border:1px solid #eee;overflow:hidden}
+.lg img{display:block;width:auto;height:auto;max-width:100%;max-height:22px;object-fit:contain}
+.lg.big{width:160px;height:66px;padding:6px 10px;border-radius:12px}
+.lg.big img{max-height:52px}
+.logo .lg{width:100%;height:58px;padding:6px 8px;border:0}
+.logo .lg img{max-height:46px}
+.g2 .logo .lg{height:76px}
+.g2 .logo .lg img{max-height:62px}
+.ticker .lg{width:auto;height:30px;padding:3px 6px;border:0}
+.ticker .lg img{height:22px;max-height:22px;max-width:none}
+.gen .lg{width:110px;height:42px}
+.gen .lg img{max-height:34px}
+.wxh{grid-column:1/-1;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--water);border-top:1px solid var(--line);padding-top:10px;margin-bottom:-4px}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
 /* tablet a počítač: menu nahoře, širší obsah */
 @media (min-width: 820px){
@@ -255,8 +268,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const TERMIN="duben 2027 · přesný termín upřesníme";
-const DAYS=[{k:"po",n:"Pondělí",d:"příjezd"},{k:"ut",n:"Úterý",d:"1. den"},{k:"st",n:"Středa",d:"2. den"}];
+const TERMIN="27.–28. dubna 2027";
+const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
  po:[
   {t:"odpoledne",h:"Příjezd a ubytování",w:"Kongres hotel Jezerka, recepce",brk:1},
@@ -303,7 +316,7 @@ const PROG={
 };
 let n=0;for(const d in PROG){let bk=null;PROG[d].forEach(x=>{if(x.blok){bk=x;x.bid=d+"b"+(n++)}else{x.id=d+(n++);if(bk&&!x.brk&&!x.ad&&x.w)x.bid=bk.bid}})}
 const ALLT=Object.values(PROG).flat();
-const DATES={po:"2026-04-13",ut:"2026-04-14",st:"2026-04-15"};
+const DATES={po:"2027-04-26",ut:"2027-04-27",st:"2027-04-28"};
 const mm=t=>{const m=/^(\d\d):(\d\d)$/.exec(t||"");return m?+m[1]*60+ +m[2]:null};
 ALLT.forEach(x=>{if(x.blok)return;x.a=mm(x.t);x.b=mm(x.e);if(x.a!=null&&x.b!=null&&x.b<=x.a)x.b+=1440});
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -334,8 +347,8 @@ function loadWx(){if(WX.st!=="idle")return;WX.st="load";
  .catch(()=>{WX.st="err";const b=document.getElementById("todaybox");if(b)b.outerHTML=vToday()})}
 function vToday(){
  const d=new Date(), sv=svatek(d);
- const wx=WX.st==="ok"?`<div class="wx"><div><span class="ic">Seč teď</span><b>${WX.cur.t} °C</b>${WMO(WX.cur.c)}</div>${WX.days.map((x,i)=>{const dd=new Date(x.t);return `<div><span class="ic">${i?DNY[dd.getDay()]:"dnes"}</span><b>${x.mx}° / ${x.mn}°</b>${WMO(x.c)}</div>`}).join("")}</div>`
-  :`<div class="wxnote">Počasí v Seči: ${WX.st==="load"?"načítám…":"v ostré verzi se tu zobrazí aktuální teplota a předpověď na 3 dny (v tomto náhledu se načíst nedá)."}</div>`;
+ const wx=WX.st==="ok"?`<div class="wxh">Počasí v Seči</div><div class="wx" style="border-top:0;padding-top:2px"><div><span class="ic">teď</span><b>${WX.cur.t} °C</b>${WMO(WX.cur.c)}</div>${WX.days.map((x,i)=>{const dd=new Date(x.t);return `<div><span class="ic">${i?DNY[dd.getDay()]:"dnes"}</span><b>${x.mx}° / ${x.mn}°</b>${WMO(x.c)}</div>`}).join("")}</div>`
+  :`<div class="wxh">Počasí v Seči</div><div class="wxnote" style="border-top:0;padding-top:0">${WX.st==="load"?"načítám…":"v ostré verzi se tu zobrazí aktuální teplota a předpověď na 3 dny (v tomto náhledu se načíst nedá)."}</div>`;
  return `<div class="today" id="todaybox"><div><div class="d">${DNY[d.getDay()].replace(/^./,c=>c.toUpperCase())} ${d.getDate()}. ${MES[d.getMonth()]} ${d.getFullYear()}</div>${sv?`<div class="sv">Svátek má <b>${esc(sv)}</b></div>`:""}</div>
   <div class="clk" id="clk">${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}</div>${wx}</div>`;
 }
@@ -357,7 +370,8 @@ function ini(s){return s.replace(/[^A-Za-zÁ-ž0-9]/g," ").trim().split(/\s+/).s
 const IMG=(window.IMGBASE||"obrazky/");
 function flek(n){return IMG+"fleky/flek"+String((n%17)+1).padStart(2,"0")+".webp"}
 function hashN(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h}
-function lm(nm){return `<div class="lm" style="background-image:url(${flek(hashN(nm))})">${esc(ini(nm))}</div>`}
+const LOGA={"VHOS": "vhos.webp", "CzWA": "czwa.webp", "MOV": "mov.webp", "ENERGIE AG BOHEMIA": "energie-ag-bohemia.webp", "VAE CONTROLS": "vae-controls.webp", "HAWLE": "hawle.webp", "LK Pumpservice": "lk-pumpservice.webp", "SENSUS": "sensus.webp", "ENVI-PUR": "envi-pur.webp", "ASIO TECH": "asio-tech.webp", "SOVAK": "sovak.webp", "iVodárenství.cz": "ivodarenstvi-cz.webp", "Moderní obec": "moderni-obec.webp", "Stavebniserver.com": "stavebniserver-com.webp", "Vodní hospodářství": "vodni-hospodarstvi.webp", "WILO": "wilo.webp", "AVK": "avk.webp", "IN-EKO TEAM": "in-eko-team.webp", "KAPKA": "kapka.webp", "Schneider Electric": "schneider-electric.webp", "KUNST": "kunst.webp", "Fontána": "fontana.webp", "HACH": "hach.webp", "COMAC CAL": "comac-cal.webp", "GDF": "gdf.webp", "KEMIFLOC": "kemifloc.webp", "KROHNE": "krohne.webp", "HUBER": "huber.webp", "ShS": "shs.webp", "PFT": "pft.webp", "TECHNOAQUA": "technoaqua.webp", "DISA": "disa.webp", "Endress+Hauser": "endress-hauser.webp", "KSB": "ksb.webp", "BD SENSORS": "bd-sensors.webp", "Zemský": "zemsky.webp", "KAESER": "kaeser.webp", "VaK Jablonné n. O.": "vak-jablonne-n-o.webp", "TECHNOMA": "technoma.webp", "PCT": "pct.webp", "MIVALT": "mivalt.webp", "HANNA instruments": "hanna-instruments.webp"};
+function lm(nm){return LOGA[nm]?`<span class="lg"><img src="${IMG}loga/${LOGA[nm]}" alt="" loading="lazy"></span>`:`<div class="lm" style="background-image:url(${flek(hashN(nm))})">${esc(ini(nm))}</div>`}
 
 const NEWS=[
  {d:"ukázka",h:"Program je zveřejněn",p:"Projděte si program. K přednáškám si můžete psát vlastní poznámky a posílat dotazy."},
@@ -388,13 +402,13 @@ IC.foto='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width
 const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["partneri","Partneři",IC.part],["fotky","Fotky",IC.foto],["doprava","Doprava",IC.bus],["info","Info",IC.info]];
 /* Fotky – zatím zástupná místa, skutečné fotky nahraje pořadatel / fotograf */
 const ALBA=[
- {id:"a27",h:"2027 – 31. ročník",sub:"Fotky přibývají během konference",n:6,hue:150,cap:["Prezence","Zahájení","Legislativní blok","Výstava partnerů","Oběd","Společenský večer"]},
+ {id:"a27",h:"2027 – 31. ročník",sub:"27.–28. dubna 2027 · fotky přibývají během konference",n:6,hue:150,cap:["Prezence","Zahájení","Legislativní blok","Výstava partnerů","Oběd","Společenský večer"]},
  {id:"a26",h:"2026 – jubilejní 30. ročník",sub:"14.–15. dubna 2026, Kongres hotel Jezerka",n:9,hue:200,cap:["Zahájení","Kongresový sál","Předsednictvo","Diskuze","Výstava ve foyer","Prezentace partnerů","Oběd","Společenský večer","Závěr konference"]},
  {id:"arch",h:"Archiv 1996–2025",sub:"Ohlédnutí za historií konference",n:6,hue:30,cap:["Moravská Třebová","Výstava Voda a my","Dohoda AČE ČR a SR (2000)","Seminář v muzeu","První ročník v Seči (2022)","Rekordní ročník 2025"]},
 ];
 function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2400)}
 
-function ticker(){const one=ALLP.map(p=>`<button data-p="${esc(p.nm)}" tabindex="-1">${lm(p.nm)}${esc(p.nm)}</button>`).join("");
+function ticker(){const one=ALLP.map(p=>`<button data-p="${esc(p.nm)}" tabindex="-1" aria-label="${esc(p.nm)}">${lm(p.nm)}${LOGA[p.nm]?"":esc(p.nm)}</button>`).join("");
  return `<div class="ticker" aria-label="Partneři konference"><div class="track">${one}${one}</div></div>`}
 function render(){
  $("tabs").innerHTML=TABS.map(([k,t,i])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${i}<span>${t}</span></button>`).join("");
@@ -436,7 +450,7 @@ function vNow(){
   h=`<button class="now ${cur.brk?"brk":""}" data-goday="${c.day}"><div class="lbl"><span class="dot"></span>${cur.brk?"Právě teď":"Právě probíhá"} · ${esc(cur.t)}–${esc(cur.e||"")}</div>
    <h2>${esc(cur.h)}</h2>${cur.w&&!cur.brk?`<div class="who">${esc(cur.w)}</div>`:""}${bk?`<div class="who">Blok: ${esc(bk.blok)}</div>`:""}${cur.det?`<ul class="det">${cur.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}
    <div class="bar"><i style="width:${pct}%"></i></div><div class="left">${cur.brk?"Konec":"Do konce"} za ${dur((cur.b??cur.a+1)-c.m)} · v ${hm(cur.b??cur.a+1)}</div>
-   ${next?`<div class="next">Následuje v ${esc(next.t)}: <b>${esc(next.h)}</b></div>`:""}</button>`}
+   ${next?`<div class="next">Následuje v ${esc(next.t)}: <b>${esc(next.h)}</b></div>`:""}</button>`+(cur.bid?`<button class="qbtn has" data-q="${cur.id}" style="align-self:flex-start;margin-top:0;font-size:13px;padding:7px 12px">? Napsat dotaz k této přednášce${(S.qa[cur.id]||[]).length?" · "+(S.qa[cur.id]||[]).length+" dotazů":""}</button>`:"")}
  else if(next&&first&&c.m<first.a){h=`<button class="now" data-goday="${c.day}"><div class="lbl">${D.n} ${D.d}</div><h2>Program začne za ${dur(first.a-c.m)}</h2><div class="next">V ${esc(first.t)}: <b>${esc(first.h)}</b></div></button>`}
  else if(next){h=`<button class="now brk" data-goday="${c.day}"><div class="lbl">Volno</div><h2>Další bod programu za ${dur(next.a-c.m)}</h2><div class="next">V ${esc(next.t)}: <b>${esc(next.h)}</b></div></button>`}
  else{h=`<div class="now"><div class="lbl">${D.n} ${D.d}</div><h2>Program dne skončil</h2><div class="who">${c.day==="st"?"Děkujeme za účast a těšíme se příště.":"Zítra pokračujeme – podívejte se do programu."}</div></div>`}
@@ -479,7 +493,7 @@ function vPartneri(){
 function sheetP(nm){
  const p=ALLP.find(x=>x.nm===nm), key=KEY[nm];
  const talks=key?Object.entries(PROG).flatMap(([d,l])=>l.filter(x=>x.w&&x.w.includes(key)).map(x=>({...x,d}))):[];
- openSheet(`<div style="display:flex;gap:12px;align-items:center;margin-bottom:6px"><div class="lm" style="width:52px;height:52px;border-radius:14px;font-size:22px;background-image:url(${flek(hashN(nm))})">${esc(ini(nm))}</div><div><h2 style="padding:0">${esc(nm)}</h2><div class="muted" style="font-size:13px">${KATN[p.k]}</div></div></div>
+ openSheet(`<div style="display:flex;gap:12px;align-items:center;margin-bottom:6px">${LOGA[nm]?`<span class="lg big"><img src="${IMG}loga/${LOGA[nm]}" alt="${esc(nm)}"></span>`:`<div class="lm" style="width:52px;height:52px;font-size:22px;background-image:url(${flek(hashN(nm))})">${esc(ini(nm))}</div>`}<div><h2 style="padding:0">${esc(nm)}</h2><div class="muted" style="font-size:13px">${KATN[p.k]}</div></div></div>
   <div class="bd">
    <div class="note">Tady bude prezentace partnera: logo, krátký text, videospot, nabídka, kontakt a číslo stánku. Obsah dodá firma, pořadatel ho schválí.</div>
    ${talks.length?`<div><div class="label" style="margin-bottom:6px">Přednášky partnera</div>${talks.map(x=>`<button class="mini" data-goday="${x.d}" style="margin-bottom:6px"><b>${esc(x.h)}</b><small>${DAYS.find(d=>d.k===x.d).n} ${esc(x.t)}</small></button>`).join("")}</div>`:""}
@@ -535,7 +549,7 @@ function vInfo(){
     <input id="pfirma" placeholder="Firma / instituce" value="${esc(S.me.firma)}" autocomplete="organization" aria-label="Firma">
     <div style="display:flex;gap:8px"><button class="send" style="flex:1">Uložit</button>${podpis()?'<button type="button" class="btn" id="pdel">Smazat</button>':""}</div></form></div>
   <div class="card"><div class="label" style="margin-bottom:8px">O konferenci</div>
-   <dl class="kv"><dt>Termín</dt><dd>${TERMIN}</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborní garanti</dt><dd>prof. Ing. Jiří Wanner, DrSc., VŠCHT Praha · Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
+   <dl class="kv"><dt>Termín</dt><dd>${TERMIN} (příjezd v pondělí 26. 4.)</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborní garanti</dt><dd>prof. Ing. Jiří Wanner, DrSc., VŠCHT Praha · Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
    <dl class="kv"><dt>Základní</dt><dd>4 900 Kč bez DPH (5 929 Kč s DPH)</dd><dt>Členové CzWA</dt><dd>4 600 Kč bez DPH (5 566 Kč s DPH)</dd><dt>V ceně</dt><dd>organizace, sborník v PDF, občerstvení, oběd, večerní pohoštění</dd><dt>Storno</dt><dd>poplatek se nevrací, zašleme sborník, lze vyslat náhradníka</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Sborník <span style="color:var(--warn)">· připravujeme</span></div>

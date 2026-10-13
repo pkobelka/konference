@@ -164,3 +164,9 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   hero s 6 fleky (na PC mřížka vpravo), partneři = kolečka z fleků s iniciálami, fotky = fleky.
   **31. ročník**, termín zatím „duben 2027 · přesný termín upřesníme“ (konstanta `TERMIN`) – **čeká na datum od uživatele**.
   Program je dál ukázka podle 2026 (poznámka v Programu). Počasí na webu funguje živě (ověřil uživatel).
+- **Termín 31. ročníku: 27.–28. 4. 2027** (úterý–středa, příjezd v pondělí 26. 4.) – v průvodci (TERMIN, DATES pro „Právě teď“).
+  *Pozn.: aplikace pořadatele má termín v Nastavení – testovací data mají 2026.*
+- **Loga partnerů** vyříznuta ze zadní strany pozvánky 2026 (42 log: pořadatelé, generální, hlavní,
+  odborní, mediální) → `obrazky/loga/*.webp` + `loga.json` (název → soubor). Průvodce je používá
+  v pásu log, stěně partnerů, profilu a u generálních na Domů; firmy bez loga mají flek s iniciálami.
+- Počasí má nadpis „Počasí v Seči“; v kartě „Právě teď“ tlačítko „Napsat dotaz k této přednášce“.
