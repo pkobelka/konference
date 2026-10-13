@@ -241,3 +241,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   na osobní kartě jen spolubydlící ze stejných nocí, u částečných noc v závorce.
 - **Odborní partneři:** uživatel nejdřív chtěl rozdělit do skupin, pak si to rozmyslel → **zůstává pruh, zrychlen**
   (≈ 20 s na průjezd místo ≈ 38 s). Varianta se skupinami po 9 byla vyzkoušená (na mobilu 3–4 řádky, pás skákal výškou).
+- **Průvodce 0.14:** bloky v Programu ve **výrazném rámečku** – tyrkysový okraj 2 px, záhlaví bloku jako plný pruh
+  (název, předsedající, Pohled předsedajícího), přednášky bloku uvnitř; přestávky a body mimo blok zůstávají venku.

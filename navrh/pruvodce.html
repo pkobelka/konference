@@ -83,7 +83,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .tools input{flex:1;min-width:0;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit}
 .tog{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-weight:700;font-size:13px;white-space:nowrap}
 .tog[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
-.block{background:var(--water-soft);color:var(--water);border-radius:12px;padding:10px 12px}
+.bgrp{border:2px solid var(--water);border-radius:18px;padding:0 8px 10px;display:flex;flex-direction:column;gap:10px;background:color-mix(in srgb,var(--water-soft) 35%,transparent);box-shadow:0 2px 0 color-mix(in srgb,var(--water) 25%,transparent)}
+.block{background:var(--water);color:var(--surface);border-radius:15px 15px 10px 10px;padding:11px 12px;margin:0 -8px}
+.block .chairbtn{background:color-mix(in srgb,var(--surface) 20%,transparent);color:inherit;border:1px solid color-mix(in srgb,var(--surface) 55%,transparent)}
 .block h2{font-size:16px} .block p{margin:2px 0 0;font-size:13px}
 .slot{display:grid;grid-template-columns:52px 1fr;gap:10px}
 .slot .t{font-family:var(--f-display);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;padding-top:11px;line-height:1.1}
@@ -446,7 +448,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.13 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.14 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -740,15 +742,16 @@ function vProgram(){
   <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small></button>`).join("")}</div>
   ${S.mine&&Object.keys(S.notes).length?`<div class="nexp"><button id="npr">🖨 Vytisknout / PDF</button><button id="ntxt">⬇ Stáhnout text</button><button id="nmail">✉ Poslat e-mailem</button></div>`:""}
   <div class="tools"><input id="q" placeholder="Hledat přednášku, jméno, firmu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog" id="mine" aria-pressed="${S.mine}">✎ Poznámky</button></div>
-  ${rows.some(x=>!x.blok)?rows.map(x=>{
-   if(x.blok){const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter((q,i)=>!S.read[y.id+":"+i]).length,0);
-    return `<div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
+  ${rows.some(x=>!x.blok)?(()=>{let open=null;const out=rows.map(x=>{
+   let pre="";if(open&&(x.blok||x.bid!==open)){pre="</div>";open=null}   // konec rámečku bloku
+   if(x.blok){open=x.bid;const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter((q,i)=>!S.read[y.id+":"+i]).length,0);
+    return pre+`<div class="bgrp"><div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
    const f=!!S.notes[x.id], st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
-   let h=`<div class="slot"><div class="t">${esc(x.t)}${x.e?`<small>–${esc(x.e)}</small>`:""}</div>
+   let h=pre+`<div class="slot"><div class="t">${esc(x.t)}${x.e?`<small>–${esc(x.e)}</small>`:""}</div>
     <div class="talk ${x.brk?"brk":""} ${f?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)}</div>`:""}<h3>${esc(x.h)}</h3>${x.w?`<div class="who">${esc(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${f?`<div class="mynote"><b>Moje poznámka</b>${esc(S.notes[x.id])}</div>`:""}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}</button><button class="nbtn" data-note="${x.id}">✎ ${f?"Upravit poznámku":"Poznámka"}</button><button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?"Upozorním "+S.alarms[x.id].m+" min předem":"Upozornit"}</button>`:""}</div>
 </div></div>`;
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
-   return h}).join("")
+   return h});return out.join("")+(open?"</div>":"")})()
   :`<div class="card empty"><b>${S.mine?"Zatím nemáte žádné poznámky":"Nic jsme nenašli"}</b><p class="muted" style="margin:6px 0 0;font-size:14px">${S.mine?"U přednášky klepněte na ✎ Poznámka a napište si, co vás zaujalo.":"Zkuste jiné slovo."}</p></div>`}
   <div class="note">Poznámky k přednáškám jsou soukromé a zůstávají jen ve vašem zařízení. Tlačítkem ✎ Poznámky zobrazíte jen přednášky s poznámkou – tam je můžete i vytisknout, uložit jako PDF, stáhnout nebo poslat e-mailem.</div>
  </section>`;
