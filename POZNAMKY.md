@@ -561,3 +561,34 @@ fakturu, kontaktní osoba pro fakturaci. Organizační garant YWP je jiný než 
 (web automaticky / ručně / partnerská přihláška / pozvánka), **fakturace** (objednávka, faktura,
 cena, vložné) a **pobyt** (ubytování, noci, pokoj, večeře) – místo dvou oddělených Excelů.
 Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stávající).
+
+## Pozvánka 2026 (PDF, 4 strany) – program, partneři, informace
+**Časová osa (2026):**
+- **Pondělí 13. 4.:** příjezd, slavnostní večeře VHOS (pozvaní) / běžná večeře 19–20 h (jídla 1–3).
+- **Úterý 14. 4.:** 08:00 prezence · 09:00 zahájení (úvodní slovo pořadatelů, SOVAK, kraj) ·
+  blok **Legislativa ve vodním hospodářství** (předsedá) · 12:00 **prezentace odborných partnerů
+  a sponzorů** · 12:15 oběd · bloky **Aktuální trendy v čistírenství I. (terciární čištění)**
+  a **II. (energetická neutralita ČOV)** · diskuze · 17:30 závěr 1. dne ·
+  **19:30–02:00 společenský večer**.
+- **Středa 15. 4.:** blok **Novinky a zkušenosti z provozování a řízení ČOV** (9:00–11:40) ·
+  11:40 závěrečný souhrn.
+- Přednášky po 20–30 min, každý blok má **předsedajícího**, u přednášky více autorů + firma.
+
+**Partneři 2026 (zadní strana pozvánky, loga):**
+- Pořadatelé: VHOS, a.s.; CzWA (+ odborná skupina ČR MOV).
+- **Generální:** ENERGIE AG BOHEMIA, VAE CONTROLS, HAWLE, LK (Pumpservice).
+- **Hlavní:** SENSUS, ENVI-PUR, ASIO.
+- **Odborní (~30):** WILO, AVK, IN-EKO, KAPKA, Schneider Electric, KUNST, Fontána, HACH, COMAC CAL,
+  GDF, KEMIFLOC, KROHNE, HUBER, ShS, PFT, TECHNOAQUA, DISA, Endress+Hauser, KSB, BD SENSORS,
+  Zemský, KAESER, VaK Jablonné n. O., TECHNOMA, PCT, MIVALT, HANNA instruments.
+- **Mediální:** SOVAK, iVodárenství.cz, Moderní obec, Stavebniserver.com, Vodní hospodářství.
+→ Pozvánka = vzor pro „stěnu log“ v aplikaci (stejné pořadí a velikosti dle kategorie).
+
+**Informace z pozvánky (do záložky Info):**
+- Místo: Kongres hotel Jezerka, Seč – Ústupky 278, GPS 49°49’17.71“N, 15°39’35.77“E.
+- E-přihláška na www.vhos.cz do 27. 3.; info konference@vhos.cz; program i na www.czwa.cz.
+- Poplatek 4 900 Kč bez DPH (5 929 s DPH), členové CzWA 4 600 Kč (5 566 s DPH); splatnost do 27. 3.
+- Cena zahrnuje organizaci, **sborník v PDF**, občerstvení, oběd, večerní pohoštění.
+- **ČKAIT – 2 body** odborného vzdělávání.
+- Při neúčasti se poplatek nevrací (pošle se sborník / lze vyslat náhradníka).
+- Organizační garant (VHOS) a odborní garanti (VŠCHT, ENERGIE AG BOHEMIA).
