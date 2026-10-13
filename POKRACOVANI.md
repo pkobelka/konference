@@ -170,3 +170,11 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   odborní, mediální) → `obrazky/loga/*.webp` + `loga.json` (název → soubor). Průvodce je používá
   v pásu log, stěně partnerů, profilu a u generálních na Domů; firmy bez loga mají flek s iniciálami.
 - Počasí má nadpis „Počasí v Seči“; v kartě „Právě teď“ tlačítko „Napsat dotaz k této přednášce“.
+
+### Konec dne 13. 10. 2026 – uživatel si prochází
+- Odkazy: aplikace pořadatele https://pkobelka.github.io/konference/ (v1.2) ·
+  průvodce https://pkobelka.github.io/konference/pruvodce/
+- **Průvodce – další krok:** dotazy k přednáškám zatím jen v zařízení → napojit na Firebase
+  (uzel např. `konference2027_dotazy`, čtení/zápis pro všechny, mazání jen pořadatel; pohled předsedajícího
+  jen pro předsedající/pořadatele) + pravidla do Firebase.
+- Čeká se na zpětnou vazbu uživatele k aplikaci pořadatele i průvodci.
