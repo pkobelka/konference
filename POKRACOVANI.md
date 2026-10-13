@@ -184,3 +184,9 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Průvodce – Info:** karta **Organizační garant** (Petr Kobelka, VHOS, a.s., 602 356 496,
   petr.kobelka@vhos.cz – dle pozvánky, na přání uživatele) s tlačítky Zavolat / Napsat SMS / Napsat e-mail;
   u Informací doplněno jméno Eva Jančáková (dle pozvánky).
+- **Průvodce – budík k přednášce (⏰):** u každé přednášky tlačítko „Budík“ → kolik minut předem (5/10/15/30)
+  a jak upozornit: **zvuk + vibrace** (když je průvodce otevřený), **upozornění v telefonu** (Notification,
+  přes minimální `pruvodce/sw.js`, jen pro oznámení, nic necachuje), **📅 do kalendáře** (.ics s připomenutím
+  VALARM – nejspolehlivější, funguje i při zavřeném průvodci). Tlačítko „Vyzkoušet“. Časy programu se počítají
+  jako pražské (duben = UTC+2) podle `DATES` 2027. Bez serveru: zvuk/oznámení jen když prohlížeč průvodce drží
+  otevřený nebo na pozadí; plně zavřená aplikace → jen kalendář. (Push ze serveru by vyžadoval Firebase Cloud Messaging.)
