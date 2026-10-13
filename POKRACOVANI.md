@@ -243,3 +243,15 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   (≈ 20 s na průjezd místo ≈ 38 s). Varianta se skupinami po 9 byla vyzkoušená (na mobilu 3–4 řádky, pás skákal výškou).
 - **Průvodce 0.14:** bloky v Programu ve **výrazném rámečku** – tyrkysový okraj 2 px, záhlaví bloku jako plný pruh
   (název, předsedající, Pohled předsedajícího), přednášky bloku uvnitř; přestávky a body mimo blok zůstávají venku.
+
+### Konec dne 14. 10. 2026 – stav k pokračování
+- Nasazeno: **aplikace pořadatele 1.4** (https://pkobelka.github.io/konference/) a **průvodce 0.14**
+  (https://pkobelka.github.io/konference/pruvodce/). Ukázka v Claude: artifact 8Pd4XvrWtu5nHH1p91T4NH.
+- Osobní karty ověřil uživatel naživo: **103 karet, funguje**. Pravidlo `konference2027_karty` ve Firebase je.
+- Uživatel spokojen („dobrá práce“). Otevřené body na příště:
+  1. Formuláře pro veřejnost (ubytovací, ~70 %) a pro hosty/přednášející/vystavující/YWP zapisovat **přímo do Firebase**
+     → osoba se založí sama (zdroj web / hoste), pořadatel jen přidělí pokoj → karta se aktualizuje.
+  2. Potvrzovací e-mail s osobním odkazem (dnes ručně tlačítkem ✉ nebo CSV pro hromadnou korespondenci).
+  3. Skutečné počty lůžek u pokojů (všude odhad 2).
+  4. Průvodce: dotazy přes Firebase (`konference2027_dotazy`), program 2027, menu, časy svozu.
+  5. Před ostrým rokem 2027 smazat testovací data 2026 (Nastavení → Vymazat, napsat SMAZAT) – karty se smažou s nimi.
