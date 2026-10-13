@@ -459,3 +459,16 @@ Přehled ploch v ukázce (verze 4) – podklad pro partnerské balíčky:
 ## Osobní údaje – pravidlo
 - Seznamy účastníků (e-maily, telefony) **nikdy do GitHubu** (repo je pro GitHub Pages
   nejspíš veřejné) ani do ukázek. Patří jen do aplikace pořadatele (Firebase, Nastavení → Import).
+
+## Sběr podkladů – 13. 10. 2026 (zatím jen sbírat, nic nestavět)
+Uživatel: „Nejdřív namluvím a pošlu všechny materiály, pak to shrneme a zapracujeme najednou.“
+
+- **Hlavní starost: ubytování pro velké množství lidí.**
+  - Lidé v několika kategoriích: přednášející, host, vystavovatel… (kategorií je víc, doplní).
+  - Pořadatel přiděluje pokoje; večeři vybírá pořadatel, nebo si ji vybírají sami.
+  - Kontrola: obsazené všechny pokoje a lůžka; na dvoulůžkovém ne 3 lidi, na třílůžkovém ne 4 atd.
+- *Pro pozdější porovnání – co už aplikace pořadatele umí:* kategorie osob (VHOS, Koncern, AČE,
+  Přednášející, Generální/Hlavní/Odborný/Mediální partner, Host, Ostatní), pokoje po
+  sekcích a patrech pro každou noc s barvou obsazenosti (volný / částečně / plný /
+  přistýlka / přeplněný) a počtem X/Y lůžek, kontrola přeplnění, „sám“, „spí, ale nemá pokoj“,
+  záložka Večeře s počty jídel.
