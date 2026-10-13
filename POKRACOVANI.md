@@ -154,3 +154,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
    nezdvojí stávající, označí „web“; kdo chce ubytování, doplní pořadatel.
 4. Sjednocení se Seznamem přihlášených (kategorie, fakturace) – jedna karta člověka.
 5. Později: průvodce pro účastníky na web (fleky, 31, data 2027), osobní část.
+- **Verze aplikace** je vidět vpravo nahoře (a na přihlašovací obrazovce): konstanta `VERZE` v `index.html`.
+  **Při každém nasazení zvýšit** (1.2 · 13. 10. 2026 = vše výše). Historie: 1.0 původní, 1.1 pokoje/večeře/Kraskov/kontroly, 1.2 hledání + Potvrdil + verze.

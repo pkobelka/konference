@@ -34,6 +34,7 @@ a{color:var(--zelena);}
 .gsres .it:hover,.gsres .it.on{background:#eef5ec;}
 .gsres .it .s{color:#777;font-size:.8rem;text-align:right;}
 .gsres .nic{padding:12px;color:#888;font-size:.88rem;}
+.verze{font-size:.72rem;color:#999;background:#fff;border:1px solid var(--ramecek);border-radius:99px;padding:2px 8px;}
 .userbox{font-size:.8rem;color:#557;display:flex;gap:8px;align-items:center;}
 .btn{border:1px solid var(--zelena);background:var(--zelena);color:#fff;border-radius:8px;padding:8px 14px;font-size:.86rem;font-weight:600;cursor:pointer;}
 .btn.ghost{background:#fff;color:var(--zelena);}
@@ -153,6 +154,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 <div class="login hidden" id="login">
   <div class="loginbox">
     <h2>🎤 Konference VHOS</h2>
+    <p style="font-size:.75rem;color:#999;margin-top:-4px">verze <span class="vz"></span></p>
     <p id="loginInfo">Přihlas se pracovním e-mailem (stejně jako do Floriána a Voleb). Přijde ti odkaz, kterým se přihlásíš.</p>
     <input id="email" type="email" placeholder="tvůj e-mail" autocomplete="email" />
     <button class="btn" id="sendLink">Poslat přihlašovací odkaz</button>
@@ -172,7 +174,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
       <p id="podnazev"></p>
     </div>
     <div class="gs noprint"><input id="gsq" placeholder="Hledat člověka, firmu, pokoj, e-mail…  ( / )" autocomplete="off" aria-label="Hledat"><div class="gsres hidden" id="gsres"></div></div>
-    <div class="userbox"><span id="who"></span><button class="btn ghost small" id="logout">Odhlásit</button></div>
+    <div class="userbox"><span class="verze" title="Verze aplikace">v<span class="vz"></span></span><span id="who"></span><button class="btn ghost small" id="logout">Odhlásit</button></div>
   </div>
   <nav class="tabs" id="tabs"></nav>
   <div id="stavDat" class="stav hidden"></div>
@@ -186,7 +188,9 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
+const VERZE="1.2 · 13. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
+document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
 const PUB="konference2027_verejne";    // veřejné údaje pro formulář (název, noci, menu)
 const PRI="konference2027_prihlasky";  // přihlášky partnerů – každá pod tajným klíčem (odkazem)
