@@ -236,6 +236,17 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
   #printarea .n p{white-space:pre-wrap;font-size:11pt;margin:0}
 }
 .cact{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.mreg{position:relative;overflow:hidden;border:2px solid var(--accent);display:flex;flex-direction:column;gap:10px}
+.mreg .hi{font-family:var(--f-display);font-size:20px;font-weight:700;line-height:1.2}
+.mreg .st{align-self:flex-start;border-radius:99px;padding:4px 10px;font-size:12px;font-weight:700;background:var(--accent-soft);color:var(--accent)}
+.mreg .st.ok{background:#e3f2e5;color:#2f7a3a} .mreg .st.ne{background:#f8e3e2;color:#a23b37}
+.mreg .rows{display:grid;gap:8px}
+.mreg .r{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start;font-size:14px}
+.mreg .r i{font-style:normal;font-size:20px;line-height:1.1}
+.mreg .r b{display:block;font-size:15px} .mreg .r small{color:var(--muted)}
+.mreg .flk{position:absolute;right:-26px;top:-26px;width:110px;height:110px;background:center/contain no-repeat;opacity:.5;pointer-events:none}
+.mreg.mini{cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.kform{display:flex;gap:8px;margin-top:8px}.kform input{flex:1;min-width:0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);font:inherit}
 .cbtn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:10px;padding:9px 13px;font-weight:700;font-size:14px;background:var(--accent);color:var(--accent-ink)}
 .cbtn+.cbtn{background:var(--accent-soft);color:var(--accent)}
 .nbtn.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
@@ -447,7 +458,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.11 · 13. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.12 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -566,6 +577,57 @@ const store={get(k,d){try{const v=localStorage.getItem("pr_"+k);return v?JSON.pa
 const S={sim:{day:"ut",m:10*60+2},tab:"domu",day:"ut",q:"",mine:false,notes:store.get("notes",{}),alarms:store.get("alarms",{}),fired:store.get("fired",{}),
  qa:store.get("qa",null)||{ut5:[{t:"Kdy můžeme čekat transpozici nové směrnice do české legislativy?",a:"Jan, VaK",c:"9:31",v:6}],ut6:[{t:"Týká se nový reporting i ČOV pod 2 000 EO?",a:"anonymně",c:"9:58",v:3},{t:"Budou data z reportingu veřejně dostupná?",a:"Lenka, PVK",c:"10:04"}],ut9:[{t:"Jak řešíte odpovědnost za rozhodnutí, která navrhne AI?",a:"Petra",c:"11:21",v:4}]},
  read:store.get("read",{}),voted:store.get("voted",{}),me:store.get("me",{jm:"",firma:""})};
+/* ===== Moje registrace (osobní karta z aplikace pořadatele) ===== */
+// Odkaz z potvrzovacího e-mailu …/pruvodce/?k=KLIC. Klíč se uloží do telefonu, karta se čte z Firebase
+// (uzel konference2027_karty/KLIC – čte jen ten, kdo zná klíč) a drží se i offline.
+const KDB="https://moje-budky-default-rtdb.firebaseio.com/konference2027_karty/";
+const KDEMO={jmeno:"Jana Ukázková",firma:"Vodárny Ukázkov, a.s.",kat:"Veřejnost",stav:"ano",noci:["Po 26. 4.","Út 27. 4."],pokoj:"A-214",sekce:"Sekce A",spolu:["Eva Příkladná"],vecere:"Menu 2 – kuřecí steak",vecere_noc:"Út 27. 4.",konf:{nazev:"Nové metody a postupy při provozování ČOV"}};
+S.karta=store.get("karta",null);   // {k, d, ts}
+function kartaKlic(v){v=String(v||"").trim();const m=/[?&]k=([a-z0-9]+)/i.exec(v);return m?m[1]:(/^[a-z0-9]{6,40}$/i.test(v)?v:"")}
+function kartaNacti(k,tiche){
+ k=k||(S.karta&&S.karta.k);if(!k)return;
+ if(k==="ukazka"){S.karta={k,d:KDEMO,ts:Date.now()};store.set("karta",S.karta);kartaProfil();return render()}
+ fetch(KDB+encodeURIComponent(k)+".json",{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject(r.status)).then(d=>{
+  if(!d){if(!tiche)toast("Tento odkaz neznáme – zkontrolujte ho, nebo napište garantovi.");if(S.karta&&S.karta.k===k){S.karta.zmizela=true;store.set("karta",S.karta);render()}return}
+  const nova=!S.karta||S.karta.k!==k;S.karta={k,d,ts:Date.now()};store.set("karta",S.karta);kartaProfil();render();if(nova)toast("Vítejte, "+(d.jmeno||"")+" – vaše registrace je v průvodci");
+ }).catch(()=>{if(!tiche)toast("Bez připojení – zkusím to znovu později")});
+}
+function kartaProfil(){const d=S.karta&&S.karta.d;if(d&&!S.me.jm){S.me={jm:d.jmeno||"",firma:d.firma||""};store.set("me",S.me)}}
+const KSTAV={ano:["Účast potvrzena","ok"],pozvan:["Pozvánka odeslána – čekáme na potvrzení",""],nevim:["Přihláška přijata – zpracováváme",""],ne:["Účast zrušena","ne"]};
+function kartaRadky(d){
+ const R=[];
+ if(d.stav==="ne")return R;
+ if(d.nespi||!(d.noci||[]).length&&!d.pokoj)R.push(["🏨","Ubytování",d.nespi?"bez ubytování":"zatím nepřiděleno"]);
+ else{
+  R.push(["🌙",(d.noci||[]).length===1?"Noc":"Noci",(d.noci||[]).join(" · ")||"—"]);
+  if(d.kraskov)R.push(["🚌","Kraskov – svoz","bydlíte v Kraskově, na Jezerku jezdí svoz (časy v Dopravě)"]);
+  else R.push(["🛏",d.pokoj?"Pokoj "+d.pokoj:"Pokoj",d.pokoj?[d.sekce,d.sam?"sám/sama":""].filter(Boolean).join(" · ")||"Kongres hotel Jezerka":"číslo pokoje doplníme"]);
+  if((d.spolu||[]).length)R.push(["👥","Spolubydlící",d.spolu.join(", ")]);
+ }
+ R.push(["🍽","Večeře"+(d.vecere_noc?" · "+d.vecere_noc:""),d.vecere||"zatím nevybráno"]);
+ return R;
+}
+function vKarta(mini){
+ const K=S.karta;if(!K)return "";const d=K.d||{}, st=KSTAV[d.stav]||KSTAV.nevim, R=kartaRadky(d);
+ const krest=(d.jmeno||"").split(" ")[0];
+ const rows=(mini?R.slice(0,3):R).map(([i,t,v])=>`<div class="r"><i>${i}</i><div><b>${esc(t)}</b><small>${esc(v)}</small></div></div>`).join("");
+ if(mini)return `<button class="card mreg mini" data-go="info"><span class="flk" style="background-image:url(${flek(4)})"></span><div class="label">Moje registrace</div>
+  <div class="hi">${krest?esc(krest)+", ":""}máte zařízeno:</div><span class="st ${st[1]}">${st[0]}</span><div class="rows">${rows}</div><small class="muted">Podrobnosti a změny → Info</small></button>`;
+ const zm=encodeURIComponent(`Dobrý den, ${d.jmeno||""}${d.firma?" ("+d.firma+")":""} – prosím o změnu registrace na konferenci: `);
+ return `<div class="card mreg"><span class="flk" style="background-image:url(${flek(4)})"></span><div class="label">Moje registrace${K.k==="ukazka"?" · ukázka":""}</div>
+  <div class="hi">${esc(d.jmeno||"")}</div>${d.firma?`<div class="muted" style="margin-top:-6px">${esc(d.firma)}${d.kat?" · "+esc(d.kat):""}</div>`:""}
+  <span class="st ${st[1]}">${st[0]}</span><div class="rows">${rows}</div>
+  ${K.zmizela?`<div class="note">Registrace u pořadatele už není – ozvěte se prosím garantovi.</div>`:""}
+  <p class="muted" style="margin:0;font-size:12px">Aktualizováno ${new Date(K.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})}. Vidíte jen svoji registraci, údaje mění pořadatel.</p>
+  <div class="cact" style="margin-top:2px"><a class="cbtn" href="sms:+420602356496?body=${zm}">💬 Požádat o změnu (SMS)</a><a class="cbtn" href="mailto:petr.kobelka@vhos.cz?subject=${encodeURIComponent("Změna registrace – "+(d.jmeno||""))}&body=${zm}">✉ E-mailem</a></div>
+  <button class="lnk" id="kodhl" style="align-self:flex-start;font-size:12px">Odebrat z tohoto telefonu</button></div>`;
+}
+function vKartaVstup(){
+ return `<div class="card"><div class="label" style="margin-bottom:6px">Moje registrace</div>
+  <p style="margin:0;font-size:14px">V potvrzovacím e-mailu od pořadatele máte <b>osobní odkaz</b>. Když ho otevřete v telefonu, uvidíte tady, kde a kdy spíte, s kým, večeři a svoz.</p>
+  <form class="kform" id="kf"><input id="kin" placeholder="nebo sem vložte odkaz z e-mailu" aria-label="Osobní odkaz" autocomplete="off"><button class="send">Načíst</button></form>
+  <button class="lnk" id="kdemo" style="margin-top:8px;font-size:13px">Jak to vypadá? Ukázat ukázku</button></div>`;
+}
 function podpis(){return [S.me.jm,S.me.firma].filter(Boolean).join(", ")}
 function votes(id,i){const q=(S.qa[id]||[])[i];return 1+(q.v||0)+(S.voted[id+":"+i]?1:0)}
 
@@ -640,6 +702,7 @@ function vDomu(){
     <div class="cd">${odpocet()}</div>
    </div>
   </div>
+  ${S.karta?vKarta(true):""}
   ${ticker()}
   <div class="bento">
    ${vToday()}
@@ -761,6 +824,7 @@ function vDoprava(){
 
 function vInfo(){
  return `<section class="sec">
+  ${S.karta?vKarta(false):vKartaVstup()}
   <div class="card"><div class="label" style="margin-bottom:6px">Můj profil · nepovinné</div>
    <p class="muted" style="margin:0 0 10px;font-size:13px">Když vyplníte jméno a firmu, vaše dotazy k přednáškám se podepíšou samy. Údaje zůstávají jen v tomto telefonu.</p>
    <form class="qform" id="pf"><input id="pjm" placeholder="Jméno a příjmení" value="${esc(S.me.jm)}" autocomplete="name" aria-label="Jméno a příjmení">
@@ -942,9 +1006,16 @@ $("view").addEventListener("change",e=>{if(e.target.id==="simday"){S.sim.day=e.t
 $("view").addEventListener("click",e=>{const g=e.target.closest(".now[data-goday]");if(g){S.day=g.dataset.goday;S.q="";S.mine=false;go("program");const l=document.querySelector(".talk.live");if(l)l.scrollIntoView({block:"center"})}});
 setInterval(()=>{if(clock().real)render()},30000);
 $("view").addEventListener("submit",e=>{if(e.target.id!=="pf")return;e.preventDefault();S.me={jm:$("pjm").value.trim(),firma:$("pfirma").value.trim()};store.set("me",S.me);render();toast(podpis()?"Profil uložen":"Profil je prázdný")});
+$("view").addEventListener("click",e=>{
+ if(e.target.id==="kdemo")return kartaNacti("ukazka");
+ if(e.target.id==="kodhl"){if(confirm("Odebrat registraci z tohoto telefonu? Znovu ji načtete odkazem z e-mailu.")){S.karta=null;store.set("karta",null);render();toast("Odebráno")}}});
+$("view").addEventListener("submit",e=>{if(e.target.id!=="kf")return;e.preventDefault();const k=kartaKlic($("kin").value);if(!k)return toast("To nevypadá jako odkaz z e-mailu");kartaNacti(k)});
 $("view").addEventListener("click",e=>{if(e.target.id==="pdel"){S.me={jm:"",firma:""};store.set("me",S.me);render();toast("Profil smazán")}});
 $("view").addEventListener("input",e=>{
  if(e.target.id==="simm"){S.sim.m=+e.target.value;$("nowbox").outerHTML=vNow();$("simm").focus();return}if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
+(function(){try{const k=new URLSearchParams(location.search).get("k");
+ if(k){history.replaceState(null,"",location.pathname+location.hash);kartaNacti(kartaKlic(k))}else if(S.karta)kartaNacti(null,true)}catch(e){}})();
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.karta&&S.karta.k!=="ukazka"&&Date.now()-S.karta.ts>120000)kartaNacti(null,true)});
 document.getElementById("markimg").src=IMG+"cislo31.webp";
 document.getElementById("vchip").textContent="Ukázka · v"+VERZE.split(" ")[0];
 render();

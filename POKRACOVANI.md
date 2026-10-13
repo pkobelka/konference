@@ -207,3 +207,27 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   **dotazy vidí všichni** bez přihlášení, „Pohled předsedajícího“ přístupný všem (jen jiné zobrazení);
   **mazání nevhodných dotazů jen pořadatel** v aplikaci pořadatele. **Poznámky zůstávají soukromé** (jen v zařízení).
   → Při napojení na Firebase: uzel `konference2027_dotazy` (čtení i přidání pro všechny, +1 hlasy, mazání jen přihlášený pořadatel).
+
+### Osobní karty „Moje registrace“ (14. 10. 2026) – admin 1.3, průvodce 0.12
+- Cíl uživatele: **sjednotit všechny cesty přihlášení** (≈70 % ubytovací formulář pro veřejnost; zbytek formulář/odkaz
+  rozeslaný hostům, přednášejícím, vystavujícím, YWP; partneři svým odkazem) → vše končí jako osoba v adminu →
+  **každý v průvodci vidí jen svoje** (kdy/kde spí, s kým, večeře, svoz) + program pro všechny.
+- Admin: každá osoba má klíč `karta`; uzel **`konference2027_karty/KLIC`** = jen jméno, firma, kategorie, stav,
+  noci, pokoj+sekce, spolubydlící (jména), sám, Kraskov, večeře. **Bez e-mailu, telefonu, poznámky.**
+  Synchronizace sama 1,5 s po každé změně (zapisuje jen rozdíly; smazaná osoba → karta smazána).
+  V kartě osoby: Kopírovat odkaz / Otevřít / ✉ Poslat e-mailem (předvyplněný mail). Nastavení → „Osobní karty“:
+  počet, stav, **CSV s odkazy pro hromadný e-mail**. Zdroj rozšířen: „Ubytovací formulář (veřejnost)“, „Formulář pro hosty“.
+- Průvodce: odkaz `…/pruvodce/?k=KLIC` → klíč uložen v telefonu (adresa se hned vyčistí), karta načtena
+  přes REST z Firebase, drží se offline, obnoví se při návratu do aplikace. Domů = malá karta, Info = celá
+  + „Požádat o změnu“ (SMS / e-mail garantovi) + „Odebrat z telefonu“. Bez odkazu: vložit odkaz ručně / „Ukázat ukázku“.
+  Jméno a firma z karty se samy doplní do profilu (podpis dotazů).
+- **Uživatel musí přidat pravidlo do Firebase** (vedle ostatních):
+  ```
+  "konference2027_karty": {
+    ".read":  "auth != null && root.child('florian_login_email').child(auth.token.email.toLowerCase().replace('.', ',')).exists()",
+    ".write": "auth != null && root.child('florian_login_email').child(auth.token.email.toLowerCase().replace('.', ',')).exists()",
+    "$klic": { ".read": true }
+  }
+  ```
+  (seznam karet čte jen pořadatel, jednu kartu kdokoli, kdo zná její klíč).
+- Další krok: formuláře pro veřejnost a hosty zapisovat přímo do Firebase (dnes import / ruční zadání).
