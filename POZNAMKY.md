@@ -627,3 +627,7 @@ Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stá
   „oblíbené“ by vyznělo nevhodně. Místo ★ je u přednášky **„✎ Poznámka“** – soukromá poznámka
   (jen v zařízení), zobrazí se pod přednáškou; filtr „✎ Poznámky“ v programu, dlaždice
   „Moje poznámky“ na Domů. Připomenutí před přednáškou zatím vypuštěno.
+- **Dnes v Seči (verze 9, přání uživatele):** na Domů karta s **dnešním datem, živými hodinami,
+  svátkem** (český kalendář jmenin z balíčku namedays-cs, MIT, + státní svátky) a **počasím v Seči**
+  (Open-Meteo, bez klíče: teplota teď + předpověď na 3 dny). V náhledu artefaktu se počasí
+  nenačte (blokované připojení) → ukáže vysvětlení; na vlastním webu poběží živě (ověřeno testem).
