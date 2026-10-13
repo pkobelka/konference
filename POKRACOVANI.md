@@ -100,6 +100,16 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Nové v Nastavení: **„Vymazat lidi, firmy a pokoje“** (potvrzení SMAZAT, předtím automatická záloha)
   – po testu smazat a začít čistě pro 2027.
 
+### Moje pokoje vs. veřejnost (13. 10. 2026)
+- Pořadatel obsazuje **jen pokoje žlutě označené** v Excelu (oranžové = dodatečně, také jeho);
+  ostatní si rezervuje veřejnost sama mimo pořadatele. 2026: **61 mých pokojů** (A 15, B 15, C 31), 122 lůžek + 41 přistýlek.
+- Aplikace: u pokoje **„můj pokoj“** (`vlastni`); záložka Pokoje ukazuje jen moje (tlačítko
+  „Zobrazit i pokoje veřejnosti“ – ty jsou šedé, čárkované); počty a volná lůžka jen z mých;
+  přehled „mých pokojů · lůžek + přistýlek“; ve výběru pokoje u osoby jsou moje nahoře, ostatní
+  ve skupině „Pokoje veřejnosti“; kontrola „pokoj není mezi mými (žlutými)“.
+  Když žádný pokoj nemá „můj“, chová se jako dřív (všechny jsou moje).
+- Test 2026: 2 lidé (HAWLE) v pokoji C-605, který není žlutý → aplikace upozorní.
+
 ## Ještě chybí od uživatele
 - Termín 2027 (2028 = **3.–5. dubna 2028**, příjezd v pondělí 3. 4.), program 2027, menu (oběd, jídla 1–3), program společenského večera.
 - Časy svozu z Kraskova, parkování, plánky hotelu.

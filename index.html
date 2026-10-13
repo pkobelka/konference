@@ -196,7 +196,7 @@ let DB={nastaveni:{},firmy:{},osoby:{},pokoje:{}};
 let LOADED=false;
 let VIEW=localGet("konf_view")||"prehled";
 const FILTR={q:"",stav:"",kat:"",firma:"",noc:"",pokoj:"",vecere:"",prob:false};
-let POKOJ_NOC="";   // vybraná noc v plánku pokojů
+let POKOJ_NOC=""; let POKOJE_VSE=false;   // false = jen moje (žluté) pokoje   // vybraná noc v plánku pokojů
 let MODAL_OPEN=false;
 
 function localGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -266,6 +266,8 @@ function menuKeys(){return Object.keys(N().menu||{"1":1,"2":1,"3":1}).sort();}
 function jmeno(o){const s=((o.prijmeni||"")+" "+(o.jmeno||"")).trim();return s||"(bez jména)";}
 function firmaNazev(id){return id&&DB.firmy[id]?DB.firmy[id].nazev:"";}
 function spi(o){return Object.keys(o.noci||{}).filter(k=>o.noci[k]&&(N().noci||{})[k]);}
+function maVlastni(){return Object.values(DB.pokoje).some(p=>p.vlastni);}
+function mujPokoj(id){return !maVlastni()||!!(DB.pokoje[id]||{}).vlastni;}
 function pokojLabel(id){const p=DB.pokoje[id];return p?(p.sekce+"-"+p.cislo):id;}
 function sortOsoby(ids){return ids.sort((a,b)=>jmeno(DB.osoby[a]).localeCompare(jmeno(DB.osoby[b]),"cs"));}
 function badgeStav(s){const st=STAV[s||"nevim"];return `<span class="b" style="background:${st[1]}">${st[0]}</span>`;}
@@ -304,6 +306,7 @@ function problemyOsoby(id,o,OBS){
   if(!jede&&nn.length&&st==="ne")p.push(["e","Nejede, ale má zaškrtnuté noci"]);
   if(o.pokoj&&!nn.length)p.push(["w","Má pokoj "+pokojLabel(o.pokoj)+", ale nemá zaškrtnutou žádnou noc"]);
   if(o.pokoj&&!DB.pokoje[o.pokoj])p.push(["e","Pokoj "+o.pokoj+" v hotelu neexistuje"]);
+  if(o.pokoj&&DB.pokoje[o.pokoj]&&!mujPokoj(o.pokoj))p.push(["w","Pokoj "+pokojLabel(o.pokoj)+" není mezi mými (žlutými) pokoji – patří veřejnosti"]);
   if(o.pokoj&&OBS&&DB.pokoje[o.pokoj]){
     const pk=DB.pokoje[o.pokoj], max=(+pk.luzka||0)+(+pk.pristylky||0);
     for(const n of Object.keys(OBS[o.pokoj]||{}))if(OBS[o.pokoj][n].length>max){p.push(["e","Pokoj "+pokojLabel(o.pokoj)+" je v noci "+nocNazev(n)+" přeplněný ("+OBS[o.pokoj][n].length+"/"+max+")"]);break;}
@@ -390,6 +393,7 @@ function rPrehled(pr){
   }).join("");
   const bezPokoje=jede.filter(o=>spi(o).length&&!o.pokoj&&!o.kraskov).length;
   const kraskov=jede.filter(o=>o.kraskov).length;
+  const MP=Object.keys(DB.pokoje).filter(mujPokoj), mpL=MP.reduce((a,i)=>a+(+DB.pokoje[i].luzka||0),0), mpP=MP.reduce((a,i)=>a+(+DB.pokoje[i].pristylky||0),0);
   const nv=nocVecere();
   const bezVecere=nv?jede.filter(o=>spi(o).includes(nv)&&!o.vecere).length:0;
   const menuCnt=menuKeys().map(k=>[k,os.filter(o=>o.vecere===k&&o.stav!=="ne").length]);
@@ -401,7 +405,7 @@ function rPrehled(pr){
     <div class="kpi" data-tab="lide"><div class="v">${os.length}</div><div class="t">celkem v seznamu</div></div>
   </div>
   <h2 class="sek">Ubytování</h2>
-  <div class="kpis">${nociHtml}
+  <div class="kpis"><div class="kpi" data-tab="pokoje"><div class="v">${MP.length}</div><div class="t">${maVlastni()?"<b>mých</b> pokojů":"pokojů"} · ${mpL} lůžek + ${mpP} přistýlek</div></div>${nociHtml}
     <div class="kpi ${bezPokoje?"bad":""}" data-filtr='${JSON.stringify({stav:"ano",pokoj:"chybi"})}'><div class="v">${bezPokoje}</div><div class="t">jede a spí, ale <b>nemá pokoj</b></div></div>
     <div class="kpi" data-filtr='${JSON.stringify({stav:"ano",pokoj:"kraskov"})}'><div class="v">${kraskov}</div><div class="t">bydlí v <b>Kraskově</b> (jen svoz)</div></div>
   </div>
@@ -546,13 +550,14 @@ function rPokoje(){
   if(!POKOJ_NOC||!(N().noci||{})[POKOJ_NOC])POKOJ_NOC=nn.length?nn[0][0]:"";
   const OBS=obsazenost();
   const bySek={};
-  for(const [id,p] of Object.entries(DB.pokoje)){const s=p.sekce||"?";(bySek[s]=bySek[s]||{});(bySek[s][p.patro||""]=bySek[s][p.patro||""]||[]).push(id);}
+  const VID=Object.keys(DB.pokoje).filter(id=>POKOJE_VSE||mujPokoj(id)), mv=maVlastni();
+  for(const id of VID){const p=DB.pokoje[id];const s=p.sekce||"?";(bySek[s]=bySek[s]||{});(bySek[s][p.patro||""]=bySek[s][p.patro||""]||[]).push(id);}
   let volne=0,obs=0,luz=0,pri=0,obsL=0;const castecne=[];
-  for(const id in DB.pokoje){const p=DB.pokoje[id],k=((OBS[id]||{})[POKOJ_NOC]||[]),l=+p.luzka||0,x=+p.pristylky||0;k.length?obs++:volne++;luz+=l;pri+=x;obsL+=k.length;
+  for(const id of VID.filter(mujPokoj)){const p=DB.pokoje[id],k=((OBS[id]||{})[POKOJ_NOC]||[]),l=+p.luzka||0,x=+p.pristylky||0;k.length?obs++:volne++;luz+=l;pri+=x;obsL+=k.length;
     if(k.length&&k.length<l&&!k.some(i=>DB.osoby[i].sam)){const g=[...new Set(k.map(i=>DB.osoby[i].pohlavi).filter(Boolean))];castecne.push({id,v:l-k.length,x,g,kdo:k});}}
   const volL=Math.max(0,luz-obsL);
   let h=`<div class="lista"><span style="font-size:.88rem">Noc:</span><div class="seg">${nn.map(([k,n])=>`<button class="${k===POKOJ_NOC?"on":""}" style="${k===POKOJ_NOC?"background:var(--zelena);border-color:var(--zelena)":""}" data-noc="${esc(k)}">${esc(n.nazev)}</button>`).join("")}</div>
-    <span class="pocet">${obs} obsazených · ${volne} volných pokojů · volno <b>${pl(volL,"lůžko","lůžka","lůžek")}</b> z ${luz} (+${pl(pri,"přistýlka","přistýlky","přistýlek")})</span><button class="btn ghost small" id="novyPokoj">+ Pokoj</button></div>
+    <span class="pocet">${mv?"<b>Moje pokoje:</b> ":""}${obs} obsazených · ${volne} volných pokojů · volno <b>${pl(volL,"lůžko","lůžka","lůžek")}</b> z ${luz} (+${pl(pri,"přistýlka","přistýlky","přistýlek")})</span>${mv?`<button class="btn ghost small" id="pvse">${POKOJE_VSE?"Skrýt pokoje veřejnosti":"Zobrazit i pokoje veřejnosti"}</button>`:""}<button class="btn ghost small" id="novyPokoj">+ Pokoj</button></div>
   <div class="legenda"><span><i style="background:#fff"></i>volný</span><span><i style="background:#fff8e1"></i>částečně</span><span><i style="background:#e8f3e6"></i>plný</span><span><i style="background:#e3eefa"></i>s přistýlkou</span><span><i style="background:#fbe5e4"></i>přeplněný</span></div>`;
   if(castecne.length)h+=`<details class="nast" style="margin-bottom:10px"><summary style="cursor:pointer;font-weight:700">Volná místa v obsazených pokojích (${pl(castecne.reduce((a,c)=>a+c.v,0),"lůžko","lůžka","lůžek")} v ${pl(castecne.length,"pokoji","pokojích","pokojích")}) – kam ještě někoho přidat</summary>
     <table class="t" style="margin-top:8px">${castecne.sort((a,b)=>pokojLabel(a.id).localeCompare(pokojLabel(b.id),"cs",{numeric:true})).map(c=>`<tr class="cl" data-pokoj="${esc(c.id)}"><td><b>${esc(pokojLabel(c.id))}</b></td><td>${c.v} volné lůžko${c.v>1?"a":""}${c.x?" (+"+c.x+" přist.)":""}</td><td>${c.g.length===1?(c.g[0]==="z"?"pro ženu":"pro muže"):c.g.length>1?"smíšený!":""}</td><td class="sub">${c.kdo.map(i=>esc(jmeno(DB.osoby[i]))+(DB.osoby[i].firma?" – "+esc(firmaNazev(DB.osoby[i].firma)):"")).join(", ")}</td></tr>`).join("")}</table></details>`;
@@ -563,7 +568,7 @@ function rPokoje(){
       const ids=bySek[s][pt].sort((a,b)=>String(DB.pokoje[a].cislo).localeCompare(String(DB.pokoje[b].cislo),"cs",{numeric:true}));
       h+=`<div class="patro"><div class="pt">${esc(pt)}</div><div class="pokoje">`+ids.map(id=>{
         const p=DB.pokoje[id], kdo=(OBS[id]||{})[POKOJ_NOC]||[], max=(+p.luzka||0)+(+p.pristylky||0);
-        return `<div class="pokoj ${pokojTrida(p,kdo.length)}" data-pokoj="${esc(id)}" title="${esc(p.typ||"")}${p.poznamka?" – "+esc(p.poznamka):""}">
+        return `<div class="pokoj ${pokojTrida(p,kdo.length)}" data-pokoj="${esc(id)}" style="${mv&&!p.vlastni?"opacity:.45;border-style:dashed":""}" title="${mv&&!p.vlastni?"pokoj veřejnosti – ":""}${esc(p.typ||"")}${p.poznamka?" – "+esc(p.poznamka):""}">
           <div class="cis"><span>${esc(p.cislo)}</span><span style="font-weight:600;font-size:.72rem;color:#777">${kdo.length}/${esc(p.luzka||0)}${+p.pristylky?"+"+esc(p.pristylky):""}</span></div>
           <div class="typ">${esc(p.typ||"")}</div>
           <div class="kdo">${kdo.map(i=>{const o=DB.osoby[i];return (o.sam?"👤 ":"")+esc(jmeno(o))+(o.pohlavi?' <span style="color:#888;font-size:.7rem">'+POHL[o.pohlavi]+"</span>":"")+(o.stav!=="ano"?' <span class="prob">⚠</span>':"");}).join("<br>")}</div></div>`;
@@ -573,6 +578,7 @@ function rPokoje(){
   $("view").innerHTML=h;
   document.querySelectorAll("[data-noc]").forEach(b=>b.addEventListener("click",()=>{POKOJ_NOC=b.dataset.noc;rPokoje();}));
   $("novyPokoj").addEventListener("click",()=>openPokoj(null));
+  if($("pvse"))$("pvse").addEventListener("click",()=>{POKOJE_VSE=!POKOJE_VSE;rPokoje();});
 }
 
 /* ---------- VEČEŘE ---------- */
@@ -888,14 +894,16 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&MODAL_OPEN)closeMod
 /* ---------- OSOBA ---------- */
 function pokojOptions(sel,selfId){
   const OBS=obsazenost(), bySek={};
-  for(const [id,p] of Object.entries(DB.pokoje))(bySek[p.sekce]=bySek[p.sekce]||[]).push(id);
+  const mv=maVlastni(), ciz=[];
+  for(const [id,p] of Object.entries(DB.pokoje)){if(mv&&!p.vlastni){ciz.push(id);continue;}(bySek[p.sekce]=bySek[p.sekce]||[]).push(id);}
+  if(ciz.length)bySek["~"]=ciz;
   let h=opt("","— bez pokoje —",sel||"");
   for(const s of Object.keys(bySek).sort()){
-    h+=`<optgroup label="${esc(SEKCE[s]||s)}">`+bySek[s].sort((a,b)=>String(DB.pokoje[a].cislo).localeCompare(String(DB.pokoje[b].cislo),"cs",{numeric:true})).map(id=>{
+    h+=`<optgroup label="${esc(s==="~"?"Pokoje veřejnosti (nejsou moje)":SEKCE[s]||s)}">`+bySek[s].sort((a,b)=>String(DB.pokoje[a].cislo).localeCompare(String(DB.pokoje[b].cislo),"cs",{numeric:true})).map(id=>{
       const p=DB.pokoje[id], o=OBS[id]||{};
       const maxN=Math.max(0,...Object.values(o).map(l=>l.filter(x=>x!==selfId).length));
       const kdo=[...new Set([].concat(...Object.values(o)))].filter(x=>x!==selfId).map(x=>DB.osoby[x]?jmeno(DB.osoby[x]):"").join(", ");
-      return opt(id,`${p.cislo}${p.typ?" ("+p.typ+")":""} – ${maxN}/${p.luzka||0}${+p.pristylky?"+"+p.pristylky:""}${kdo?" · "+kdo:" · volný"}`,sel||"");
+      return opt(id,`${s==="~"?p.sekce+"-":""}${p.cislo}${p.typ?" ("+p.typ+")":""} – ${maxN}/${p.luzka||0}${+p.pristylky?"+"+p.pristylky:""}${kdo?" · "+kdo:" · volný"}`,sel||"");
     }).join("")+"</optgroup>";
   }
   return h;
@@ -1037,6 +1045,7 @@ function openPokoj(id){
       <div><label class="l">Pevná lůžka</label><input id="p_luzka" type="number" min="0" value="${esc(p.luzka||0)}"></div>
       <div><label class="l">Přistýlky (max.)</label><input id="p_prist" type="number" min="0" value="${esc(p.pristylky||0)}"></div>
     </div>
+    <div class="checks" style="margin-top:8px"><label><input type="checkbox" id="p_vlastni" ${p.vlastni?"checked":""}> <b>můj pokoj</b> – mám ho k dispozici já (v Excelu žlutý), ostatní jsou pro veřejnost</label></div>
     <label class="l">Poznámka</label><textarea id="p_poz">${esc(p.poznamka||"")}</textarea>
     <div class="mfoot"><div>${id?`<button class="btn red small" id="p_del">Smazat pokoj</button>`:""}</div><div><button class="btn ghost" id="p_cancel">Zavřít</button> <button class="btn" id="p_save">Uložit</button></div></div>
     <div class="msg" id="p_msg"></div>`);
@@ -1047,7 +1056,7 @@ function openPokoj(id){
     $("p_add").addEventListener("click",()=>{const k=$("p_kdo").value;if(!k)return;setPokoj(k,id).then(()=>openPokoj(id));});
   }
   $("p_save").addEventListener("click",()=>{
-    const r=Object.assign({},p,{sekce:$("p_sekce").value,cislo:$("p_cislo").value.trim(),patro:$("p_patro").value.trim(),typ:$("p_typ").value.trim(),luzka:+$("p_luzka").value||0,pristylky:+$("p_prist").value||0,poznamka:$("p_poz").value.trim()});
+    const r=Object.assign({},p,{sekce:$("p_sekce").value,cislo:$("p_cislo").value.trim(),patro:$("p_patro").value.trim(),typ:$("p_typ").value.trim(),luzka:+$("p_luzka").value||0,pristylky:+$("p_prist").value||0,poznamka:$("p_poz").value.trim(),vlastni:$("p_vlastni").checked});
     if(!r.cislo){$("p_msg").textContent="Vyplň číslo pokoje.";return;}
     const key=id||(r.sekce+"-"+r.cislo);
     if(!id&&DB.pokoje[key]){$("p_msg").textContent="Pokoj "+key+" už existuje.";return;}
