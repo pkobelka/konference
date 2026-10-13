@@ -137,3 +137,20 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Vše výše sloučeno do `main` a **nasazeno na https://pkobelka.github.io/konference/** (sestavení GitHub Pages úspěšné).
 - Uživatel má **Android** → Chrome → ⋮ → Nainstalovat aplikaci / Přidat na plochu.
 - Další krok uživatele: Nastavení → Import → `TEST_konference2026_import.json`, vyzkoušet, pak „Vymazat lidi, firmy a pokoje“.
+
+### Stav k večeru 13. 10. 2026 – uživatel testuje na webu, „vypadá to dobře“
+- Firebase pravidla pro `konference2027`, `konference2027_prihlasky`, `konference2027_verejne`
+  uživatel přidal a publikoval (projekt moje-budky → Realtime Database → Rules).
+- **Testovací data 2026 jsou naimportovaná ve Firebase** (103 lidí, 32 firem, 113 pokojů).
+  Před ostrým rokem 2027 smazat: Nastavení → „Vymazat lidi, firmy a pokoje“ (napsat SMAZAT).
+- Nasazeno navíc: **hledání nahoře** (lidé, firmy, pokoje, e-mail; klávesa /, šipky, Enter),
+  stav účasti **„Jede“ → „Potvrdil“**.
+- Pozor při importu: soubor „konference_zaloha_….json“ je záloha (prázdná), testovací je `TEST_konference2026_import.json`.
+
+**Další kroky (návrh):**
+1. Zpětná vazba uživatele z testování (co nesedí / chybí) → opravit.
+2. Doplnit skutečné počty lůžek u pokojů (všude odhad 2; Excel: A 78, C 78, D 34).
+3. **Import exportu webové e-přihlášky** (Seznam přihlášených .xls, list Veřejnost) – doplní nové,
+   nezdvojí stávající, označí „web“; kdo chce ubytování, doplní pořadatel.
+4. Sjednocení se Seznamem přihlášených (kategorie, fakturace) – jedna karta člověka.
+5. Později: průvodce pro účastníky na web (fleky, 31, data 2027), osobní část.
