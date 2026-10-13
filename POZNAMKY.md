@@ -592,3 +592,15 @@ Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stá
 - **ČKAIT – 2 body** odborného vzdělávání.
 - Při neúčasti se poplatek nevrací (pošle se sborník / lze vyslat náhradníka).
 - Organizační garant (VHOS) a odborní garanti (VŠCHT, ENERGIE AG BOHEMIA).
+
+## Samostatná kapitola: veřejný průvodce pro všechny účastníky (13. 10. 2026)
+- Nápad uživatele: jednoduchá aplikace ke stažení **pro všechny účastníky, bez přihlášení**:
+  program, klik na sponzory, informace, odjezdy autobusu…
+- Ukázka: `navrh/pruvodce.html` → https://claude.ai/artifact/8Pd4XvrWtu5nHH1p91T4NH
+  – **skutečný program a partneři z pozvánky 2026**:
+  Domů (rychlé dlaždice, generální partneři, aktuality), Program (Po/Út/St, bloky s předsedajícím,
+  hledání, ★ Můj program v telefonu, reklama odborného partnera u přestávek),
+  Partneři (4 kategorie, klik → profil + odkaz na přednášky partnera), Doprava (svoz Kraskov ⇄
+  Jezerka – časy doplnit, adresa, GPS, mapy), Info (poplatky, ČKAIT, sborník, kontakty).
+- Výhoda: žádné osobní údaje → může být veřejná (i na GitHub Pages). Osobní část (pokoj, večeře)
+  lze později přidat přihlášením – viz předchozí ukázka.

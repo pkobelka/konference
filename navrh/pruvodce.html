@@ -1,0 +1,354 @@
+<title>Průvodce konferencí ČOV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: veřejný průvodce bez přihlášení – úzký sloupec (max 440px), spodní lišta pěti záložek. */
+:root{
+  --bg:#eef2ec; --surface:#ffffff; --surface-2:#f6f8f4; --ink:#1c2a21; --muted:#5d6b62; --line:#dbe3d7;
+  --accent:#2f6b3c; --accent-ink:#ffffff; --accent-soft:#e1eedf;
+  --water:#1d6a86; --water-soft:#dceef4; --warn:#b8701a;
+  --shadow:0 1px 2px rgba(28,42,33,.06),0 6px 20px rgba(28,42,33,.07);
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101612; --surface:#18211b; --surface-2:#1e2822; --ink:#e4ebe5; --muted:#99a79e; --line:#2a352e;
+  --accent:#74c487; --accent-ink:#0f1a12; --accent-soft:#1f3326; --water:#62b5d3; --water-soft:#16303a; --warn:#e0a24f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#101612; --surface:#18211b; --surface-2:#1e2822; --ink:#e4ebe5; --muted:#99a79e; --line:#2a352e;
+  --accent:#74c487; --accent-ink:#0f1a12; --accent-soft:#1f3326; --water:#62b5d3; --water-soft:#16303a; --warn:#e0a24f;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--water)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--water);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+.app{max-width:440px;margin:0 auto;min-height:100vh;padding-inline:16px;padding-block:0 96px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px 8px;display:flex;align-items:center;gap:10px}
+.mark{width:36px;height:36px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:13px;flex:none}
+.top b{font-family:var(--f-display);font-weight:800;font-size:16px;display:block}
+.top small{color:var(--muted);font-size:12px}
+.chip{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:var(--water-soft);color:var(--water);flex:none}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabbar button{background:none;border:0;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--muted)}
+.tabbar svg{width:22px;height:22px}
+.tabbar button[aria-current="page"]{color:var(--accent)}
+.sec{display:flex;flex-direction:column;gap:12px;padding-block:4px 18px}
+.label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:14px}
+.muted{color:var(--muted)}
+.note{font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line);border-radius:10px;padding:8px 10px}
+.btn{border:0;border-radius:10px;padding:9px 13px;font-weight:700;background:var(--accent-soft);color:var(--accent);font-size:14px}
+.kv{display:grid;grid-template-columns:104px 1fr;gap:8px 10px;font-size:14px;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:600;min-width:0;overflow-wrap:anywhere}
+
+/* pás log */
+.ticker{overflow:hidden;margin-inline:-16px;padding-block:2px 10px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ticker .track{display:flex;gap:8px;width:max-content;animation:tick 70s linear infinite}
+.ticker:hover .track{animation-play-state:paused}
+.ticker button{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:10px;padding:5px 9px 5px 5px;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;white-space:nowrap}
+@keyframes tick{to{transform:translateX(-50%)}}
+.lm{border-radius:8px;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;color:#fff;flex:none;width:26px;height:26px;font-size:12px}
+
+/* domů */
+.hero{background:var(--accent);color:var(--accent-ink);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+.hero h1{font-size:25px;font-weight:800}
+.hero .meta{font-size:14px;opacity:.92}
+.stats{display:flex;gap:16px;margin-top:8px;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.stats b{font-family:var(--f-display);font-size:28px;font-weight:800;display:block;line-height:1}
+.stats span{font-size:12px;opacity:.9}
+.hero svg{position:absolute;right:-10px;bottom:-6px;width:170px;opacity:.22}
+.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.quick button{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:14px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.quick b{font-size:15px} .quick span{font-size:12px;color:var(--muted)}
+.gen{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.news article{padding:10px 0;border-top:1px solid var(--line)}
+.news article:first-child{border-top:0;padding-top:0}
+.news time{font-size:12px;color:var(--muted)} .news h3{font-size:15px;font-family:var(--f-body);font-weight:700} .news p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+
+/* program */
+.days{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--surface);border-radius:12px;padding:4px;box-shadow:var(--shadow)}
+.days button{border:0;background:none;border-radius:9px;padding:7px 4px;font-weight:700;font-size:14px;color:var(--muted)}
+.days small{display:block;font-weight:500;font-size:11px}
+.days button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.tools{display:flex;gap:8px;align-items:center}
+.tools input{flex:1;min-width:0;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit}
+.tog{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-weight:700;font-size:13px;white-space:nowrap}
+.tog[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.block{background:var(--water-soft);color:var(--water);border-radius:12px;padding:10px 12px}
+.block h2{font-size:16px} .block p{margin:2px 0 0;font-size:13px}
+.slot{display:grid;grid-template-columns:52px 1fr;gap:10px}
+.slot .t{font-family:var(--f-display);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;padding-top:11px;line-height:1.1}
+.slot .t small{display:block;font-family:var(--f-body);font-weight:500;font-size:11px;color:var(--muted)}
+.talk{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:11px 12px;min-width:0;display:flex;gap:8px;align-items:flex-start;border-left:4px solid transparent}
+.talk.mine{border-left-color:var(--accent)}
+.talk.brk{background:var(--surface-2);box-shadow:none;border:1px solid var(--line)}
+.talk .body{flex:1;min-width:0}
+.talk h3{font-size:15px;font-family:var(--f-body);font-weight:700;line-height:1.3}
+.talk .who{font-size:13px;color:var(--muted);margin-top:3px}
+.star{border:0;background:none;padding:2px;width:32px;height:32px;display:grid;place-items:center;color:var(--muted);flex:none;border-radius:8px}
+.star[aria-pressed="true"]{color:var(--warn)}
+.star svg{width:20px;height:20px}
+.empty{text-align:center;padding:24px 12px}
+
+/* partneři */
+.cat h2{font-size:17px;margin-bottom:8px}
+.logos{display:grid;gap:8px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+.logo{border:0;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;animation:pop .45s cubic-bezier(.2,.9,.3,1.3) both;animation-delay:calc(var(--i)*35ms)}
+.logo .lm{width:44px;height:44px;border-radius:12px;font-size:19px}
+.g2 .logo .lm{width:56px;height:56px;font-size:24px}
+.logo span{font-size:12px;font-weight:700;text-align:center;overflow-wrap:anywhere;line-height:1.25}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+
+/* doprava */
+.tt{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.tt th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 6px 6px 0}
+.tt td{padding:8px 6px 8px 0;border-top:1px solid var(--line);vertical-align:top}
+.tt td:first-child{font-weight:700;white-space:nowrap}
+
+/* sheet */
+.backdrop{position:fixed;inset:0;background:rgba(10,16,12,.45);z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-height:86vh;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom,0px));max-width:440px;margin:0 auto;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.sheet:not([hidden]){animation:up .28s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet .grab{width:40px;height:4px;border-radius:4px;background:var(--line);margin:0 auto 10px}
+.sheet .close{float:right;border:0;background:var(--surface-2);border-radius:99px;width:32px;height:32px;font-size:18px}
+.sheet h2{font-size:20px;padding-right:40px}
+.sheet .bd{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.mini{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface-2);text-align:left;width:100%}
+.mini b{display:block;font-size:14px} .mini small{color:var(--muted);font-size:12px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
+@media (prefers-reduced-motion: reduce){.ticker .track,.logo,.sheet:not([hidden]){animation:none}.ticker{overflow-x:auto}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="mark" aria-hidden="true">ČOV</div>
+    <div style="min-width:0"><b>Nové metody a postupy</b><small>při provozování ČOV · Seč</small></div>
+    <span class="chip" title="Obsah podle programu 2026">Ukázka</span>
+  </header>
+  <main id="view"></main>
+</div>
+<nav class="tabbar" aria-label="Hlavní menu"><div class="in" id="tabs"></div></nav>
+<div class="backdrop" id="bd" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ===== Program podle pozvánky 2026 (30. ročník) ===== */
+const DAYS=[{k:"po",n:"Pondělí",d:"13. 4."},{k:"ut",n:"Úterý",d:"14. 4."},{k:"st",n:"Středa",d:"15. 4."}];
+const PROG={
+ po:[
+  {t:"odpoledne",h:"Příjezd a ubytování",w:"Kongres hotel Jezerka, recepce",brk:1},
+  {t:"19:00",e:"20:00",h:"Večeře pro ubytované",w:"Restaurace hotelu",brk:1},
+ ],
+ ut:[
+  {t:"08:00",e:"09:00",h:"Prezence",w:"Foyer",brk:1},
+  {t:"09:00",e:"09:15",h:"Zahájení a úvodní slovo",w:"Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA s.r.o. · Petr Kobelka, VHOS, a.s. · Ing. Vilém Žák, SOVAK ČR · Miroslav Krčil, DiS., radní Pardubického kraje, starosta města Hlinska"},
+  {blok:"Legislativa ve vodním hospodářství",pr:"Ing. Vilém Žák"},
+  {t:"09:15",e:"09:45",h:"Co nového si rozbalíme v balíčku DWD, UWWTD, IED, CERD, NIS2, PPD?",w:"Ing. Ondřej Beneš, Ph.D., MBA, LL.M. · Ing. Filip Wanner, Ph.D., SOVAK ČR a EurEau"},
+  {t:"09:45",e:"10:15",h:"Reporting dle směrnice o čištění městských odpadních vod: Jak se mění s novou směrnicí? Co z něj můžeme zjistit?",w:"Mgr. Lada Stejskalová, Ing. Jiří Kučera, Ing. Miroslav Váňa, Výzkumný ústav vodohospodářský T. G. Masaryka, v.v.i."},
+  {t:"10:15",e:"10:45",h:"První návrh legislativních úprav v souvislosti s novou směrnicí o čištění odpadních vod",w:"JUDr. Zdeněk Horáček, Ph.D., Zdeněk Horáček advokátní kancelář, s.r.o."},
+  {t:"10:45",e:"11:15",h:"Opatření obecné povahy vs. zákon, aneb kdo má přednost na křižovatce",w:"Ing. Radka Rosenbergová, Ing. Ondřej Beneš, Ph.D., MBA, LL.M., Veolia Holding Česká republika, a.s. · JUDr. Zdeněk Horáček, Ph.D."},
+  {t:"11:15",e:"11:45",h:"Umělá inteligence: možnosti, nástrahy, legislativa",w:"Ing. Jiří Kašparec, VAE CONTROLS, s.r.o."},
+  {t:"11:45",e:"12:00",h:"Diskuze",w:"",brk:1},
+  {t:"12:00",e:"12:15",h:"Prezentace odborných partnerů a sponzorů konference",w:"Kongresový sál",ad:1},
+  {t:"12:15",e:"13:30",h:"Oběd",w:"Restaurace",brk:1},
+  {blok:"Aktuální trendy v čistírenství I. – terciární čištění",pr:"Ing. Ondřej Beneš, Ph.D., MBA, LL.M."},
+  {t:"13:30",e:"13:55",h:"Dopady a limity simultánního srážení fosforu",w:"Ing. Katarína Hanusová, Ing. Milan Lánský, Ph.D., Ing. Bc. Martin Srb, Ph.D., Ing. Petr Sýkora, Ph.D., PVK, a.s."},
+  {t:"13:55",e:"14:15",h:"Provozní ověření inovativní technologie MABR na PČOV Čertousy",w:"Ing. Martin Koller, Ph.D., Ing. Sára Doubravská, Česká voda – MEMSEP, a.s. · Ing. Radka Rosenbergová, Veolia · Ing. Bc. Martin Srb, Ph.D., Petra Cebe, Jakub Vrbenský, PVK, a.s. · Ing. Jiří Rosický, PVS, a.s."},
+  {t:"14:15",e:"14:35",h:"Změna řízení aktivačního procesu na ČOV Jihlava: konec kyslíkové éry – dusík přebírá velení",w:"Mgr. Tomáš Brabenec, Marián Trojan, SLUŽBY MĚSTA JIHLAVY s.r.o."},
+  {t:"14:35",e:"15:00",h:"Pile Cloth – Nová filtrační technologie nejen pro terciární stupeň",w:"Ing. Aleš Vaverka, IN-EKO TEAM, s.r.o."},
+  {t:"15:00",e:"15:15",h:"Diskuze",w:"",brk:1},
+  {t:"15:15",e:"15:30",h:"Přestávka",w:"Foyer – výstava partnerů",brk:1,ad:1},
+  {blok:"Aktuální trendy v čistírenství II. – energetická neutralita ČOV",pr:"Ing. Bc. Martin Srb, Ph.D."},
+  {t:"15:30",e:"16:00",h:"Moderní řešení při rekonstrukci tradičních ČOV, ČOV Hlinsko – 6 měsíců zkušeností z rekonstrukce provzdušení, technologie EnviroMix",w:"Mgr. Petr Kavalír, Ph.D., VS CHRUDIM, a.s. · Mgr. Iryna Lanko, Ph.D., Stavební Huť Slatiňany, a.s."},
+  {t:"16:00",e:"16:30",h:"Koncepce energetiky ve skupině Severočeská voda",w:"Ing. Marcel Gómez, Ph.D., Ing. Filip Harciník, Severočeské vodovody a kanalizace, a.s."},
+  {t:"16:30",e:"17:00",h:"Možnosti dosažení energetické neutrality na ČOV Havlíčkův Brod",w:"Ing. Zdeněk Zelený, VAK Havlíčkův Brod, a.s."},
+  {t:"17:00",e:"17:30",h:"Diskuze, závěr prvního dne",w:"",brk:1},
+  {t:"19:30",e:"02:00",h:"Společenský večer",w:"Kongres hotel Jezerka",brk:1},
+ ],
+ st:[
+  {blok:"Novinky a zkušenosti z provozování a řízení ČOV",pr:"Ing. Martin Pečenka, Ph.D."},
+  {t:"09:00",e:"09:20",h:"Řešení nadlimitních producentů OV ve společnosti SčVK",w:"Ing. Monika Švarcová, Severočeské vodovody a kanalizace, a.s."},
+  {t:"09:20",e:"09:40",h:"Vyhodnocování volných kapacit provozované VHI",w:"Ing. Vojtěch Kuncl, Severočeské vodovody a kanalizace, a.s."},
+  {t:"09:40",e:"10:00",h:"Alternativní kontrola odtoků z ČOV",w:"Ing. Lenka Procházková, Ph.D., ČEVAK, a.s. · Ing. Jindřich Procházka, Ph.D., AquIQ s.r.o."},
+  {t:"10:00",e:"10:20",h:"Měření emisí CO₂, CH₄ a N₂O z provzdušňovaných nádrží ČOV – 2023–2025",w:"RNDr. Josef Fuksa, CSc., Ing. Lenka Smetanová, Ing. Martina Plecitá, VÚV T. G. Masaryka, v.v.i. · Ing. Miroslav Češpiva, Ph.D., Ing. Petra Zabloudilová, Ph.D., Národní centrum zemědělského a potravinářského výzkumu, v.v.i."},
+  {t:"10:20",e:"10:40",h:"Soft senzory a strojové učení pro střední a malé ČOV",w:"Mgr. Jaromír Sobotka, Ph.D., ASIO TECH, spol. s r.o."},
+  {t:"10:40",e:"11:00",h:"Odpadní vody jako odpady – zdrojově orientovaná sanitace",w:"Ing. Karel Plotěný, ASIO TECH, spol. s r.o."},
+  {t:"11:00",e:"11:20",h:"Dlouhodobé laboratorní a pilotní zkušenosti s odstraňováním mikropolutantů ve vyčištěných odpadních vodách",w:"Ing. Tomáš Lederer, Ph.D., TU Liberec"},
+  {t:"11:20",e:"11:40",h:"Pokročilá úpravna MINT-NANOREC s umělou inteligencí pro kvartérní čištění vody",w:"Ing. Aleš Černín, Ph.D., Ing. Jan Stárek, New Water Group s.r.o."},
+  {t:"11:40",e:"11:50",h:"Závěrečný souhrn konference",w:"",brk:1},
+ ]
+};
+let n=0;for(const d in PROG)PROG[d].forEach(x=>{if(!x.blok)x.id=d+(n++)});
+
+/* ===== Partneři podle pozvánky 2026 (bez log – ta dodají partneři) ===== */
+const PART=[
+ ["generalni","Generální partneři","g2",["ENERGIE AG BOHEMIA","VAE CONTROLS","HAWLE","LK Pumpservice"]],
+ ["hlavni","Hlavní partneři","g3",["SENSUS","ENVI-PUR","ASIO TECH"]],
+ ["odborny","Odborní partneři","g3",["WILO","AVK","IN-EKO TEAM","KAPKA","Schneider Electric","KUNST","Fontána","HACH","COMAC CAL","GDF","KEMIFLOC","KROHNE","HUBER","ShS","PFT","TECHNOAQUA","DISA","Endress+Hauser","KSB","BD SENSORS","Zemský","KAESER","VaK Jablonné n. O.","TECHNOMA","PCT","MIVALT","HANNA instruments"]],
+ ["medialni","Mediální partneři","g3",["SOVAK","iVodárenství.cz","Moderní obec","Stavebniserver.com","Vodní hospodářství"]],
+];
+const KATN={generalni:"Generální partner",hlavni:"Hlavní partner",odborny:"Odborný partner",medialni:"Mediální partner"};
+const ALLP=PART.flatMap(([k,,,l])=>l.map(nm=>({k,nm})));
+/* hledání přednášek partnera: klíčové slovo v autorech */
+const KEY={"VAE CONTROLS":"VAE CONTROLS","ASIO TECH":"ASIO TECH","IN-EKO TEAM":"IN-EKO","ENERGIE AG BOHEMIA":"ENERGIE AG","ENVI-PUR":"EnviroMix"};
+function col(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return `hsl(${h%360} 38% 38%)`}
+function ini(s){return s.replace(/[^A-Za-zÁ-ž0-9]/g," ").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+function lm(nm){return `<div class="lm" style="background:${col(nm)}">${esc(ini(nm))}</div>`}
+
+const NEWS=[
+ {d:"ukázka",h:"Program je zveřejněn",p:"Projděte si program a hvězdičkou si označte přednášky do svého programu."},
+ {d:"ukázka",h:"Svoz z hotelu Kraskov",p:"Pro ubytované v Kraskově jezdí autobus. Časy najdete v záložce Doprava."},
+ {d:"ukázka",h:"Sborník v PDF",p:"Sborník bude ke stažení po konferenci. Dáme vědět v aktualitách."},
+];
+
+/* ===== Stav (jen v tomto telefonu) ===== */
+const store={get(k,d){try{const v=localStorage.getItem("pr_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pr_"+k,JSON.stringify(v))}catch(e){}}};
+const S={tab:"domu",day:"ut",q:"",mine:false,fav:store.get("fav",{})};
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm=s=>String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const IC={
+ home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+ prog:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h4M7 17h7"/></svg>',
+ part:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+ bus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16M8 21v-4M16 21v-4"/><circle cx="8" cy="14" r=".6" fill="currentColor"/><circle cx="16" cy="14" r=".6" fill="currentColor"/></svg>',
+ info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
+ star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8 6.6 19.7l1.1-6.1L3.2 9.4l6.1-.8z"/></svg>',
+ star0:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8 6.6 19.7l1.1-6.1L3.2 9.4l6.1-.8z"/></svg>',
+};
+const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["partneri","Partneři",IC.part],["doprava","Doprava",IC.bus],["info","Info",IC.info]];
+function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2400)}
+
+function ticker(){const one=ALLP.map(p=>`<button data-p="${esc(p.nm)}" tabindex="-1">${lm(p.nm)}${esc(p.nm)}</button>`).join("");
+ return `<div class="ticker" aria-label="Partneři konference"><div class="track">${one}${one}</div></div>`}
+function render(){
+ $("tabs").innerHTML=TABS.map(([k,t,i])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${i}<span>${t}</span></button>`).join("");
+ $("view").innerHTML=ticker()+{domu:vDomu,program:vProgram,partneri:vPartneri,doprava:vDoprava,info:vInfo}[S.tab]();
+}
+function go(t){S.tab=t;render();window.scrollTo(0,0)}
+
+function vDomu(){
+ const favs=Object.keys(S.fav).length;
+ return `<section class="sec">
+  <div class="hero">
+   <span class="label" style="color:inherit;opacity:.85">30. ročník · Kongres hotel Jezerka, Seč</span>
+   <h1>Nové metody a postupy při provozování ČOV</h1>
+   <div class="meta">Memoriál Ing. Jakuba S. Čecha, CSc. · 14.–15. dubna 2026</div>
+   <div class="stats"><div><b>${Object.values(PROG).flat().filter(x=>!x.brk&&!x.blok&&!x.ad&&x.w).length}</b><span>přednášek</span></div><div><b>${ALLP.filter(p=>p.k!=="medialni").length}</b><span>partnerů</span></div><div><b>2</b><span>body ČKAIT</span></div></div>
+   <svg viewBox="0 0 180 60" fill="none" stroke="currentColor" stroke-width="3"><path d="M0 15c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 35c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/><path d="M0 55c15-8 30-8 45 0s30 8 45 0 30-8 45 0 30 8 45 0"/></svg>
+  </div>
+  <div class="quick">
+   <button data-go="program"><b>Program</b><span>Úterý a středa, ${Object.values(PROG).flat().filter(x=>x.blok).length} bloků</span></button>
+   <button data-go="program" data-mine="1"><b>Můj program</b><span>${favs?favs+" označených":"Označte si hvězdičkou"}</span></button>
+   <button data-go="doprava"><b>Svoz z Kraskova</b><span>Jízdní řád autobusu</span></button>
+   <button data-go="info"><b>Místo a kontakty</b><span>Adresa, GPS, poplatky</span></button>
+  </div>
+  <div><div class="label" style="margin-bottom:8px">Generální partneři</div>
+   <div class="gen">${PART[0][3].map(nm=>`<button class="quick-p card" data-p="${esc(nm)}" style="border:0;display:flex;align-items:center;gap:10px;text-align:left">${lm(nm)}<b style="font-size:14px">${esc(nm)}</b></button>`).join("")}</div></div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Aktuality</div><div class="news">
+   ${NEWS.map(x=>`<article><h3>${esc(x.h)}</h3><p>${esc(x.p)}</p></article>`).join("")}</div></div>
+  <div class="note"><b>Do mobilu:</b> na iPhonu v Safari Sdílet → Přidat na plochu, na Androidu Nainstalovat aplikaci. Přihlášení není potřeba.</div>
+ </section>`;
+}
+
+function match(x){if(!S.q)return true;return norm(x.h+" "+x.w).includes(norm(S.q))}
+function vProgram(){
+ let list=PROG[S.day];
+ const filt=x=>x.blok?true:(S.mine?S.fav[x.id]:true)&&match(x);
+ let rows=list.filter(filt);
+ // bloky bez přednášek po filtru schovat
+ rows=rows.filter((x,i)=>!x.blok||rows.slice(i+1).some(y=>!y.blok)&&!(rows[i+1]&&rows[i+1].blok));
+ const odb=PART[2][3];
+ return `<section class="sec">
+  <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small></button>`).join("")}</div>
+  <div class="tools"><input id="q" placeholder="Hledat přednášku, jméno, firmu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog" id="mine" aria-pressed="${S.mine}">★ Můj</button></div>
+  ${rows.some(x=>!x.blok)?rows.map(x=>{
+   if(x.blok)return `<div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p></div>`;
+   const f=!!S.fav[x.id];
+   let h=`<div class="slot"><div class="t">${esc(x.t)}${x.e?`<small>–${esc(x.e)}</small>`:""}</div>
+    <div class="talk ${x.brk?"brk":""} ${f?"mine":""}"><div class="body"><h3>${esc(x.h)}</h3>${x.w?`<div class="who">${esc(x.w)}</div>`:""}</div>
+    ${x.brk?"":`<button class="star" data-fav="${x.id}" aria-pressed="${f}" aria-label="${f?"Odebrat z mého programu":"Přidat do mého programu"}">${f?IC.star:IC.star0}</button>`}</div></div>`;
+   if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
+   return h}).join("")
+  :`<div class="card empty"><b>${S.mine?"Zatím nemáte nic označeno":"Nic jsme nenašli"}</b><p class="muted" style="margin:6px 0 0;font-size:14px">${S.mine?"U přednášky klepněte na hvězdičku a přidá se do vašeho programu.":"Zkuste jiné slovo."}</p></div>`}
+  <div class="note">Hvězdička uloží přednášku do „Můj program“ v tomto telefonu. V ostré verzi přijde i připomenutí před začátkem.</div>
+ </section>`;
+}
+
+function vPartneri(){
+ let i=0;
+ return `<section class="sec">${PART.map(([k,t,g,l])=>`<div class="cat"><h2>${t}</h2><div class="logos ${g}">${l.map(nm=>`<button class="logo" data-p="${esc(nm)}" style="--i:${i++}">${lm(nm)}<span>${esc(nm)}</span></button>`).join("")}</div></div>`).join("")}
+  <div class="note">Seznam podle pozvánky 2026. Místo iniciál budou skutečná loga, profil, video a nabídka, které dodají partneři.</div></section>`;
+}
+function sheetP(nm){
+ const p=ALLP.find(x=>x.nm===nm), key=KEY[nm];
+ const talks=key?Object.entries(PROG).flatMap(([d,l])=>l.filter(x=>x.w&&x.w.includes(key)).map(x=>({...x,d}))):[];
+ openSheet(`<div style="display:flex;gap:12px;align-items:center;margin-bottom:6px"><div class="lm" style="width:52px;height:52px;border-radius:14px;font-size:22px;background:${col(nm)}">${esc(ini(nm))}</div><div><h2 style="padding:0">${esc(nm)}</h2><div class="muted" style="font-size:13px">${KATN[p.k]}</div></div></div>
+  <div class="bd">
+   <div class="note">Tady bude prezentace partnera: logo, krátký text, videospot, nabídka, kontakt a číslo stánku. Obsah dodá firma, pořadatel ho schválí.</div>
+   ${talks.length?`<div><div class="label" style="margin-bottom:6px">Přednášky partnera</div>${talks.map(x=>`<button class="mini" data-goday="${x.d}" style="margin-bottom:6px"><b>${esc(x.h)}</b><small>${DAYS.find(d=>d.k===x.d).n} ${esc(x.t)}</small></button>`).join("")}</div>`:""}
+  </div>`);
+}
+
+function vDoprava(){
+ return `<section class="sec">
+  <div class="card"><div class="label" style="margin-bottom:8px">Svoz autobusem · Hotel Kraskov ⇄ Kongres hotel Jezerka</div>
+   <div style="overflow-x:auto"><table class="tt"><thead><tr><th>Den</th><th>Kraskov → Jezerka</th><th>Jezerka → Kraskov</th></tr></thead><tbody>
+    <tr><td>Pondělí</td><td>doplníme</td><td>po večeři · doplníme</td></tr>
+    <tr><td>Úterý</td><td>před prezencí · doplníme</td><td>po společenském večeru · doplníme</td></tr>
+    <tr><td>Středa</td><td>ráno · doplníme</td><td>po závěru · doplníme</td></tr>
+   </tbody></table></div>
+   <p class="muted" style="font-size:13px;margin:8px 0 0">Hotel Kraskov je asi 9 km od Jezerky. Časy svozu doplní pořadatel, případné změny se objeví v aktualitách.</p>
+  </div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Cesta na místo</div>
+   <dl class="kv"><dt>Adresa</dt><dd>Kongres hotel Jezerka, Seč – Ústupky 278</dd><dt>GPS</dt><dd>49°49’17.71“N, 15°39’35.77“E</dd><dt>Parkování</dt><dd>u hotelu (upřesníme)</dd></dl>
+   <p style="margin:10px 0 0"><a href="https://mapy.cz/zakladni?q=Kongres%20hotel%20Jezerka%20Se%C4%8D" target="_blank" rel="noopener">Otevřít v mapách</a></p>
+  </div>
+ </section>`;
+}
+
+function vInfo(){
+ return `<section class="sec">
+  <div class="card"><div class="label" style="margin-bottom:8px">O konferenci</div>
+   <dl class="kv"><dt>Termín</dt><dd>14.–15. 4. 2026 (příjezd 13. 4.)</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborní garanti</dt><dd>prof. Ing. Jiří Wanner, DrSc., VŠCHT Praha · Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
+   <dl class="kv"><dt>Základní</dt><dd>4 900 Kč bez DPH (5 929 Kč s DPH)</dd><dt>Členové CzWA</dt><dd>4 600 Kč bez DPH (5 566 Kč s DPH)</dd><dt>V ceně</dt><dd>organizace, sborník v PDF, občerstvení, oběd, večerní pohoštění</dd><dt>Storno</dt><dd>poplatek se nevrací, zašleme sborník, lze vyslat náhradníka</dd></dl></div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Sborník <span style="color:var(--warn)">· připravujeme</span></div>
+   <p style="margin:0;font-size:14px">Sborník v PDF bude ke stažení po konferenci.</p></div>
+  <div class="card"><div class="label" style="margin-bottom:8px">Kontakty</div>
+   <dl class="kv"><dt>Informace</dt><dd>461 357 111</dd><dt>E-mail</dt><dd>konference@vhos.cz</dd><dt>Web</dt><dd><a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></dd></dl></div>
+  <div class="note">Údaje podle pozvánky 2026. Pro rok 2027 je pořadatel aktualizuje na jednom místě a všem se změní hned.</div>
+ </section>`;
+}
+
+/* ===== Sheet ===== */
+function openSheet(h){const s=$("sheet");s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+h;s.hidden=false;$("bd").hidden=false;$("sclose").focus()}
+function closeSheet(){$("sheet").hidden=true;$("bd").hidden=true}
+$("bd").addEventListener("click",closeSheet);
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
+
+/* ===== Události ===== */
+$("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
+$("view").addEventListener("click",e=>{
+ const t=e.target.closest("[data-go],[data-day],[data-fav],[data-p],#mine");if(!t)return;
+ if(t.dataset.go){if(t.dataset.mine)S.mine=true;return go(t.dataset.go)}
+ if(t.dataset.day){S.day=t.dataset.day;return render()}
+ if(t.dataset.fav){const id=t.dataset.fav;if(S.fav[id]){delete S.fav[id];toast("Odebráno z mého programu")}else{S.fav[id]=1;toast("Přidáno do mého programu")}store.set("fav",S.fav);return render()}
+ if(t.dataset.p)return sheetP(t.dataset.p);
+ if(t.id==="mine"){S.mine=!S.mine;return render()}
+});
+$("view").addEventListener("input",e=>{if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
+render();
+</script>
