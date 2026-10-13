@@ -519,3 +519,14 @@ odkud přijdou data z webové e-přihlášky, Ž/M pro spolubydlící).
 
 *Pozn.: současná aplikace pořadatele vznikla z Excelu 2025 (sekce, noci, platí VHOS, sám,
 přistýlky, večeře A/B/C) → velká část modelu už sedí.*
+
+### Odpovědi uživatele k Excelu (13. 10. 2026)
+- **„k“ u pokoje = komfort, s přistýlkou → 2+1.**
+- Sloupec **VHOS = 1** neznamená platbu ubytování, ale **pozvání na slavnostní večeři VHOS**;
+  takový člověk má u jídel 1/2/3 „x x x“ (nevybírá běžnou večeři).
+- **Kraskov** = jiný hotel cca 9 km; pořadatel tam **zajišťuje jen svoz** (ne ubytování / přidělování pokojů).
+  → v aplikaci: u člověka „ubytován v Kraskově“ = jen svoz, žádný pokoj od pořadatele.
+- **Ž / M** = pomůcka pro párování přednášejících na společné pokoje (stejné pohlaví).
+  → v aplikaci: pole pohlaví (volitelné) + upozornění při smíšeném pokoji, nápověda „volné místo pro muže/ženu“.
+- Ještě otevřené: význam „ –“ u jídel (asi nevybral / nejde?), u přednášejících pokoj „xxx“ / „sám“,
+  jak se pořadatel dostane k datům z webové e-přihlášky.
