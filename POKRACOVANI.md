@@ -53,6 +53,26 @@ partnerů, plánek areálu, historie konference, „Seč 2028“.
 - **Samotné soubory nejsou uložené** (obsahují osobní údaje). Pro další práci s daty je
   bude potřeba nahrát znovu.
 
+## Aplikace pořadatele – 1. dávka změn (13. 10. 2026, ve větvi, ZATÍM NENASAZENO)
+Uživatel: priorita je teď **ubytování v aplikaci pořadatele (`index.html`)**, průvodce počká.
+Hotovo a otestováno s testovacími daty (bez Firebase):
+- **Slavnostní večeře VHOS** jako volba u večeře; ideál/maximum v Nastavení teď platí pro ni,
+  běžná večeře (jídla 1–3) se počítá zvlášť; přehled, záložka Večeře, filtr, kontrola kapacity.
+- **„Ubytování platí VHOS“** zůstává samostatně (zaměstnanci a hosté VHOS).
+- **Bydlí v Kraskově (jen svoz)** – nehlásí „nemá pokoj“, KPI v přehledu, filtr, štítek.
+- **Pohlaví Ž/M** u osoby; u pokoje zobrazeno; kontrola **smíšeného pokoje**.
+- Kontrola **dvou různých firem na pokoji**.
+- **Nárok partnerů** v Nastavení (max. pokojů / lidí podle kategorie) + kontrola (VHOS-placení se nepočítají).
+- Pokoje: **počet volných lůžek a přistýlek** pro noc + rozbalovací **„Volná místa v obsazených
+  pokojích“** (kolik volných lůžek, pro muže/ženu, kdo tam bydlí).
+- Nové kategorie **Vystavující, YWP, Veřejnost**; u osoby **„Odkud přišel“** (pozvánka / partner /
+  web / ručně); CSV export doplněn o Kraskov, pohlaví, zdroj.
+- Změny jsou jen doplňující – stávající data ve Firebase se nemění.
+
+**Otevřené otázky k nasazení:** (1) jsou ve Firebase už data 2027, nebo loňská? (2) nasadit rovnou
+(sloučit do `main` → GitHub Pages), nebo nejdřív pull request ke kontrole?
+**Další na řadě:** import exportu z webové e-přihlášky (Veřejnost), pak sjednocení se Seznamem přihlášených.
+
 ## Co dál (návrh pořadí)
 
 1. **Aplikace pořadatele (`index.html`) – evidence a kontroly**, sjednotit dvě dnešní evidence

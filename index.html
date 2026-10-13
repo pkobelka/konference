@@ -182,11 +182,13 @@ const KAT={
   vhos:["VHOS","#2f6b3c"], koncern:["Koncern","#3d6fb6"], ace:["AČE","#6b4fa0"],
   prednasejici:["Přednášející","#b0413e"],
   generalni:["Generální partner","#8a5a12"], hlavni:["Hlavní partner","#c77d1a"], odborny:["Odborný partner","#d9a441"],
-  medialni:["Mediální partner","#7a6a55"], host:["Host","#1f8a8a"], ostatni:["Ostatní","#999"]
+  medialni:["Mediální partner","#7a6a55"], vystavujici:["Vystavující","#a0632a"], ywp:["YWP","#3b7f78"], verejnost:["Veřejnost","#5d6b62"], host:["Host","#1f8a8a"], ostatni:["Ostatní","#999"]
 };
 const FKAT=[["generalni","Generální partneři"],["hlavni","Hlavní partneři"],["odborny","Odborní partneři"],["medialni","Mediální partneři"],["vhos","VHOS"],["koncern","Koncern"],["ace","AČE"],["ostatni","Ostatní (instituce, firmy)"]];
 const STAV={ano:["Jede","#2f8a3c"],pozvan:["Pozván","#c77d1a"],nevim:["Nevíme","#888"],ne:["Nejede","#b0413e"]};
 const STAV_PORADI=["ano","pozvan","nevim","ne"];
+const ZDROJ={pozvanka:"Pozvánka (zve pořadatel)",partner:"Přihláška partnera",web:"Web – e-přihláška",rucne:"Zadáno ručně"};
+const POHL={z:"Ž",m:"M"};
 const SEKCE={A:"Sekce A",B:"Sekce B",C:"Sekce C – Superior",D:"Sekce D – Depandance"};
 
 /* ================== STAV APLIKACE ================== */
@@ -259,7 +261,7 @@ function N(){return DB.nastaveni||{};}
 function noci(){return Object.entries(N().noci||{}).sort((a,b)=>(a[1].poradi||0)-(b[1].poradi||0));}
 function nocVecere(){const f=noci().find(([,n])=>n.vecere);return f?f[0]:null;}
 function nocNazev(id){const n=(N().noci||{})[id];return n?n.nazev:id;}
-function menuNazev(k){if(k==="ne")return "nechce";const m=(N().menu||{})[k];return m||("Menu "+k);}
+function menuNazev(k){if(k==="ne")return "nechce";if(k==="slav")return "Slavnostní večeře VHOS";const m=(N().menu||{})[k];return m||("Menu "+k);}
 function menuKeys(){return Object.keys(N().menu||{"1":1,"2":1,"3":1}).sort();}
 function jmeno(o){const s=((o.prijmeni||"")+" "+(o.jmeno||"")).trim();return s||"(bez jména)";}
 function firmaNazev(id){return id&&DB.firmy[id]?DB.firmy[id].nazev:"";}
@@ -293,7 +295,8 @@ function pokojTrida(p,cnt){
 function problemyOsoby(id,o,OBS){
   const p=[], st=o.stav||"nevim", nn=spi(o), nv=nocVecere(), jede=st==="ano";
   const maVecer=o.vecere&&o.vecere!=="ne";
-  if(jede&&nn.length&&!o.pokoj)p.push(["e","Spí na konferenci ("+nn.map(nocNazev).join(", ")+"), ale nemá pokoj"]);
+  if(jede&&nn.length&&!o.pokoj&&!o.kraskov)p.push(["e","Spí na konferenci ("+nn.map(nocNazev).join(", ")+"), ale nemá pokoj"]);
+  if(o.kraskov&&o.pokoj)p.push(["w","Bydlí v Kraskově (jen svoz), ale má i pokoj "+pokojLabel(o.pokoj)]);
   if(jede&&!nn.length&&!o.nespi)p.push(["w","Jede – není vyplněno, jestli spí (zaškrtni noci, nebo „nespí“)"]);
   if(jede&&nv&&nn.includes(nv)&&!o.vecere)p.push(["e","Spí v noci "+nocNazev(nv)+", ale nemá vybranou večeři"]);
   if(!jede&&o.pokoj)p.push([st==="ne"?"e":"w",(st==="ne"?"Nejede":"Není potvrzený ("+STAV[st][0]+")")+", ale má zajištěný pokoj "+pokojLabel(o.pokoj)]);
@@ -308,6 +311,8 @@ function problemyOsoby(id,o,OBS){
     if(spolu.length){
       if(o.sam)p.push(["e","Chce spát sám, ale v pokoji "+pokojLabel(o.pokoj)+" je i "+spolu.map(x=>jmeno(DB.osoby[x])).join(", ")]);
       else{const s=spolu.filter(x=>DB.osoby[x].sam);if(s.length)p.push(["e","Bydlí s někým, kdo chce spát sám ("+s.map(x=>jmeno(DB.osoby[x])).join(", ")+")"]);}
+      if(o.pohlavi){const jine=spolu.filter(x=>DB.osoby[x].pohlavi&&DB.osoby[x].pohlavi!==o.pohlavi);if(jine.length)p.push(["w","Smíšený pokoj "+pokojLabel(o.pokoj)+" – bydlí i "+jine.map(x=>jmeno(DB.osoby[x])+" ("+POHL[DB.osoby[x].pohlavi]+")").join(", ")]);}
+      if(o.firma){const jf=spolu.filter(x=>DB.osoby[x].firma&&DB.osoby[x].firma!==o.firma);if(jf.length)p.push(["w","Na pokoji "+pokojLabel(o.pokoj)+" je i jiná firma: "+jf.map(x=>jmeno(DB.osoby[x])+" ("+firmaNazev(DB.osoby[x].firma)+")").join(", ")]);}
     }
   }
   return p;
@@ -317,11 +322,20 @@ function vsechnyProblemy(){
   for(const id of sortOsoby(Object.keys(DB.osoby))){
     for(const [lvl,msg] of problemyOsoby(id,DB.osoby[id],OBS))out.push({lvl,msg,osoba:id});
   }
-  // večeře – limit
-  const v=pocetVecere();
+  // slavnostní večeře – kapacita
+  const v=pocetSlav();
   const mx=+N().vecere_max||0, id=+N().vecere_ideal||0;
-  if(mx&&v>mx)out.push({lvl:"e",msg:"Na večeři je "+v+" lidí – víc než maximum "+mx,tab:"vecere"});
-  else if(id&&v>id)out.push({lvl:"w",msg:"Na večeři je "+v+" lidí – víc než ideál "+id,tab:"vecere"});
+  if(mx&&v>mx)out.push({lvl:"e",msg:"Na slavnostní večeři VHOS je "+v+" lidí – víc než maximum "+mx,tab:"vecere"});
+  else if(id&&v>id)out.push({lvl:"w",msg:"Na slavnostní večeři VHOS je "+v+" lidí – víc než ideál "+id,tab:"vecere"});
+  // nárok firem na ubytování
+  const nar=N().narok||{};
+  for(const [fid,f] of Object.entries(DB.firmy)){
+    const lim=nar[f.kat||""];if(!lim||(!lim.osoby&&!lim.pokoje))continue;
+    const lide=Object.values(DB.osoby).filter(o=>o.firma===fid&&o.stav!=="ne"&&o.pokoj&&!o.platiVHOS);
+    const pok=new Set(lide.map(o=>o.pokoj)).size;
+    if(lim.pokoje&&pok>lim.pokoje)out.push({lvl:"w",msg:f.nazev+" má "+pok+" pokoje – nárok je "+lim.pokoje,tab:"firmy"});
+    if(lim.osoby&&lide.length>lim.osoby)out.push({lvl:"w",msg:f.nazev+" má ubytováno "+lide.length+" lidí – nárok je "+lim.osoby,tab:"firmy"});
+  }
   // duplicity jmen
   const seen={};
   for(const [i,o] of Object.entries(DB.osoby)){const k=norm(jmeno(o));(seen[k]=seen[k]||[]).push(i);}
@@ -329,7 +343,9 @@ function vsechnyProblemy(){
   out.sort((a,b)=>(a.lvl==="e"?0:1)-(b.lvl==="e"?0:1));
   return out;
 }
-function pocetVecere(){return Object.values(DB.osoby).filter(o=>o.vecere&&o.vecere!=="ne"&&(o.stav||"nevim")!=="ne").length;}
+function pocetVecere(){return Object.values(DB.osoby).filter(o=>o.vecere&&o.vecere!=="ne"&&o.vecere!=="slav"&&(o.stav||"nevim")!=="ne").length;}
+function pl(n,a,b,c){return n+" "+(n===1?a:n>=2&&n<=4?b:c);}
+function pocetSlav(){return Object.values(DB.osoby).filter(o=>o.vecere==="slav"&&(o.stav||"nevim")!=="ne").length;}
 
 /* ================== RENDER ================== */
 const TABS=[["prehled","Přehled"],["lide","Lidé"],["firmy","Firmy"],["pokoje","Pokoje"],["vecere","Večeře"],["prihlasky","Přihlášky"],["kontroly","Kontroly"],["nastaveni","Nastavení"]];
@@ -372,7 +388,8 @@ function rPrehled(pr){
     const pokoju=Object.keys(OBS).filter(p=>(OBS[p][k]||[]).length).length;
     return `<div class="kpi" data-filtr='${JSON.stringify({stav:"ano",noc:k})}'><div class="v">${spici}</div><div class="t">spí v noci <b>${esc(n.nazev)}</b> · ${pokoju} pokojů</div></div>`;
   }).join("");
-  const bezPokoje=jede.filter(o=>spi(o).length&&!o.pokoj).length;
+  const bezPokoje=jede.filter(o=>spi(o).length&&!o.pokoj&&!o.kraskov).length;
+  const kraskov=jede.filter(o=>o.kraskov).length;
   const nv=nocVecere();
   const bezVecere=nv?jede.filter(o=>spi(o).includes(nv)&&!o.vecere).length:0;
   const menuCnt=menuKeys().map(k=>[k,os.filter(o=>o.vecere===k&&o.stav!=="ne").length]);
@@ -386,11 +403,13 @@ function rPrehled(pr){
   <h2 class="sek">Ubytování</h2>
   <div class="kpis">${nociHtml}
     <div class="kpi ${bezPokoje?"bad":""}" data-filtr='${JSON.stringify({stav:"ano",pokoj:"chybi"})}'><div class="v">${bezPokoje}</div><div class="t">jede a spí, ale <b>nemá pokoj</b></div></div>
+    <div class="kpi" data-filtr='${JSON.stringify({stav:"ano",pokoj:"kraskov"})}'><div class="v">${kraskov}</div><div class="t">bydlí v <b>Kraskově</b> (jen svoz)</div></div>
   </div>
   <h2 class="sek">Večeře ${nv?"<span class='cnt'>("+esc(nocNazev(nv))+")</span>":""}</h2>
   <div class="kpis">
     ${menuCnt.map(([k,c])=>`<div class="kpi" data-filtr='${JSON.stringify({vecere:k})}'><div class="v">${c}</div><div class="t">${esc(menuNazev(k))}</div></div>`).join("")}
-    <div class="kpi" data-tab="vecere"><div class="v">${pocetVecere()}</div><div class="t">celkem (ideál ${esc(N().vecere_ideal||"–")}, max ${esc(N().vecere_max||"–")})</div></div>
+    <div class="kpi" data-tab="vecere"><div class="v">${pocetVecere()}</div><div class="t">běžná večeře celkem</div></div>
+    <div class="kpi ${N().vecere_max&&pocetSlav()>N().vecere_max?"bad":N().vecere_ideal&&pocetSlav()>N().vecere_ideal?"warn":""}" data-filtr='${JSON.stringify({vecere:"slav"})}'><div class="v">${pocetSlav()}</div><div class="t"><b>slavnostní VHOS</b> (ideál ${esc(N().vecere_ideal||"–")}, max ${esc(N().vecere_max||"–")})</div></div>
     <div class="kpi ${bezVecere?"bad":""}" data-filtr='${JSON.stringify({stav:"ano",vecere:"chybi"})}'><div class="v">${bezVecere}</div><div class="t">spí v noci s večeří, ale <b>nemá vybráno</b></div></div>
   </div>
   <h2 class="sek">Přihlášky partnerů</h2>
@@ -413,7 +432,8 @@ function filtrOsob(){
     if(FILTR.noc&&FILTR.noc!=="nespi"&&!spi(o).includes(FILTR.noc))return false;
     if(FILTR.pokoj==="ma"&&!o.pokoj)return false;
     if(FILTR.pokoj==="nema"&&o.pokoj)return false;
-    if(FILTR.pokoj==="chybi"&&!(spi(o).length&&!o.pokoj))return false;
+    if(FILTR.pokoj==="chybi"&&!(spi(o).length&&!o.pokoj&&!o.kraskov))return false;
+    if(FILTR.pokoj==="kraskov"&&!o.kraskov)return false;
     if(FILTR.pokoj==="vhos"&&!o.platiVHOS)return false;
     if(FILTR.pokoj==="sam"&&!o.sam)return false;
     if(FILTR.vecere==="chybi"&&!(nv&&spi(o).includes(nv)&&!o.vecere))return false;
@@ -445,8 +465,8 @@ function rLide(){
     <select id="fkat">${opt("","Kategorie: vše",f.kat)}${Object.keys(KAT).map(k=>opt(k,KAT[k][0],f.kat)).join("")}</select>
     <select id="ffirma">${firmyOptions(f.firma,opt("","Firma: všechny",f.firma)+opt("-","— bez firmy —",f.firma))}</select>
     <select id="fnoc">${opt("","Noci: vše",f.noc)}${nociOpt}${opt("nespi","nespí",f.noc)}</select>
-    <select id="fpokoj">${opt("","Pokoj: vše",f.pokoj)}${opt("ma","má pokoj",f.pokoj)}${opt("nema","nemá pokoj",f.pokoj)}${opt("chybi","spí, ale nemá pokoj ⚠️",f.pokoj)}${opt("vhos","platí VHOS",f.pokoj)}${opt("sam","chce spát sám",f.pokoj)}</select>
-    <select id="fvecere">${opt("","Večeře: vše",f.vecere)}${opt("ano","jde na večeři",f.vecere)}${menuKeys().map(k=>opt(k,menuNazev(k),f.vecere)).join("")}${opt("ne","nechce",f.vecere)}${opt("nevybrano","nevybráno",f.vecere)}${opt("chybi","spí, ale nemá večeři ⚠️",f.vecere)}</select>
+    <select id="fpokoj">${opt("","Pokoj: vše",f.pokoj)}${opt("ma","má pokoj",f.pokoj)}${opt("nema","nemá pokoj",f.pokoj)}${opt("chybi","spí, ale nemá pokoj ⚠️",f.pokoj)}${opt("vhos","platí VHOS",f.pokoj)}${opt("sam","chce spát sám",f.pokoj)}${opt("kraskov","bydlí v Kraskově",f.pokoj)}</select>
+    <select id="fvecere">${opt("","Večeře: vše",f.vecere)}${opt("ano","jde na večeři",f.vecere)}${menuKeys().map(k=>opt(k,menuNazev(k),f.vecere)).join("")}${opt("slav","slavnostní VHOS",f.vecere)}${opt("ne","nechce",f.vecere)}${opt("nevybrano","nevybráno",f.vecere)}${opt("chybi","spí, ale nemá večeři ⚠️",f.vecere)}</select>
   </div>
   <div class="lista">
     <label class="checks" style="font-size:.86rem"><label><input type="checkbox" id="fprob" ${f.prob?"checked":""}/> jen s problémem</label></label>
@@ -480,7 +500,7 @@ function rLideRows(){
       <div class="sub">${esc(firmaNazev(o.firma))||'<span class="muted">—</span>'}</div>
       <div>${badgeStav(o.stav)}</div>
       <div class="sub">${nn.length?esc(nn.map(nocNazev).join(", ")):(o.nespi?"nespí":'<span class="muted">—</span>')}</div>
-      <div>${o.sam?'<span title="chce spát sám">👤</span> ':""}${o.pokoj?"<b>"+esc(pokojLabel(o.pokoj))+"</b>"+(o.platiVHOS?' <span class="b" style="background:#2f6b3c" title="platí VHOS">VHOS</span>':""):'<span class="muted">—</span>'}</div>
+      <div>${o.kraskov?'<span class="b" style="background:#1d6a86" title="bydlí v Kraskově – jen svoz">Kraskov</span> ':""}${o.sam?'<span title="chce spát sám">👤</span> ':""}${o.pokoj?"<b>"+esc(pokojLabel(o.pokoj))+"</b>"+(o.platiVHOS?' <span class="b" style="background:#2f6b3c" title="platí VHOS">VHOS</span>':""):'<span class="muted">—</span>'}</div>
       <div class="sub">${o.vecere?esc(menuNazev(o.vecere)):'<span class="muted">—</span>'}</div>
       <div class="c-prob">${pr.map(([l,m])=>`<div class="prob${l==="w"?" w":""}">${l==="e"?"⛔":"⚠️"} ${esc(m)}</div>`).join("")||'<span style="color:#3f8a4a;font-size:.8rem">✓</span>'}</div>
     </div>`;
@@ -488,8 +508,8 @@ function rLideRows(){
 }
 function exportCSV(){
   const ids=filtrOsob();
-  const rows=[["Příjmení","Jméno","Firma","Kategorie","Stav","Noci","Pokoj","Sám","Platí VHOS","Večeře","E-mail","Telefon","Poznámka"]];
-  for(const id of ids){const o=DB.osoby[id];rows.push([o.prijmeni||"",o.jmeno||"",firmaNazev(o.firma),Object.keys(o.kat||{}).map(k=>KAT[k]?KAT[k][0]:k).join(", "),STAV[o.stav||"nevim"][0],spi(o).map(nocNazev).join(", ")||(o.nespi?"nespí":""),o.pokoj?pokojLabel(o.pokoj):"",o.sam?"ano":"",o.platiVHOS?"ano":"",o.vecere?menuNazev(o.vecere):"",o.email||"",o.tel||"",o.poznamka||""]);}
+  const rows=[["Příjmení","Jméno","Firma","Kategorie","Stav","Noci","Pokoj","Sám","Platí VHOS","Kraskov","Pohlaví","Zdroj","Večeře","E-mail","Telefon","Poznámka"]];
+  for(const id of ids){const o=DB.osoby[id];rows.push([o.prijmeni||"",o.jmeno||"",firmaNazev(o.firma),Object.keys(o.kat||{}).map(k=>KAT[k]?KAT[k][0]:k).join(", "),STAV[o.stav||"nevim"][0],spi(o).map(nocNazev).join(", ")||(o.nespi?"nespí":""),o.pokoj?pokojLabel(o.pokoj):"",o.sam?"ano":"",o.platiVHOS?"ano":"",o.kraskov?"ano":"",POHL[o.pohlavi]||"",ZDROJ[o.zdroj]||"",o.vecere?menuNazev(o.vecere):"",o.email||"",o.tel||"",o.poznamka||""]);}
   const csv="﻿"+rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(";")).join("\r\n");
   download("konference_lide.csv",csv,"text/csv;charset=utf-8");
 }
@@ -527,11 +547,15 @@ function rPokoje(){
   const OBS=obsazenost();
   const bySek={};
   for(const [id,p] of Object.entries(DB.pokoje)){const s=p.sekce||"?";(bySek[s]=bySek[s]||{});(bySek[s][p.patro||""]=bySek[s][p.patro||""]||[]).push(id);}
-  let volne=0,obs=0;
-  for(const id in DB.pokoje){((OBS[id]||{})[POKOJ_NOC]||[]).length?obs++:volne++;}
+  let volne=0,obs=0,luz=0,pri=0,obsL=0;const castecne=[];
+  for(const id in DB.pokoje){const p=DB.pokoje[id],k=((OBS[id]||{})[POKOJ_NOC]||[]),l=+p.luzka||0,x=+p.pristylky||0;k.length?obs++:volne++;luz+=l;pri+=x;obsL+=k.length;
+    if(k.length&&k.length<l&&!k.some(i=>DB.osoby[i].sam)){const g=[...new Set(k.map(i=>DB.osoby[i].pohlavi).filter(Boolean))];castecne.push({id,v:l-k.length,x,g,kdo:k});}}
+  const volL=Math.max(0,luz-obsL);
   let h=`<div class="lista"><span style="font-size:.88rem">Noc:</span><div class="seg">${nn.map(([k,n])=>`<button class="${k===POKOJ_NOC?"on":""}" style="${k===POKOJ_NOC?"background:var(--zelena);border-color:var(--zelena)":""}" data-noc="${esc(k)}">${esc(n.nazev)}</button>`).join("")}</div>
-    <span class="pocet">${obs} obsazených · ${volne} volných pokojů</span><button class="btn ghost small" id="novyPokoj">+ Pokoj</button></div>
+    <span class="pocet">${obs} obsazených · ${volne} volných pokojů · volno <b>${pl(volL,"lůžko","lůžka","lůžek")}</b> z ${luz} (+${pl(pri,"přistýlka","přistýlky","přistýlek")})</span><button class="btn ghost small" id="novyPokoj">+ Pokoj</button></div>
   <div class="legenda"><span><i style="background:#fff"></i>volný</span><span><i style="background:#fff8e1"></i>částečně</span><span><i style="background:#e8f3e6"></i>plný</span><span><i style="background:#e3eefa"></i>s přistýlkou</span><span><i style="background:#fbe5e4"></i>přeplněný</span></div>`;
+  if(castecne.length)h+=`<details class="nast" style="margin-bottom:10px"><summary style="cursor:pointer;font-weight:700">Volná místa v obsazených pokojích (${pl(castecne.reduce((a,c)=>a+c.v,0),"lůžko","lůžka","lůžek")} v ${pl(castecne.length,"pokoji","pokojích","pokojích")}) – kam ještě někoho přidat</summary>
+    <table class="t" style="margin-top:8px">${castecne.sort((a,b)=>pokojLabel(a.id).localeCompare(pokojLabel(b.id),"cs",{numeric:true})).map(c=>`<tr class="cl" data-pokoj="${esc(c.id)}"><td><b>${esc(pokojLabel(c.id))}</b></td><td>${c.v} volné lůžko${c.v>1?"a":""}${c.x?" (+"+c.x+" přist.)":""}</td><td>${c.g.length===1?(c.g[0]==="z"?"pro ženu":"pro muže"):c.g.length>1?"smíšený!":""}</td><td class="sub">${c.kdo.map(i=>esc(jmeno(DB.osoby[i]))+(DB.osoby[i].firma?" – "+esc(firmaNazev(DB.osoby[i].firma)):"")).join(", ")}</td></tr>`).join("")}</table></details>`;
   const patroKey=s=>{const m=String(s).match(/\d+/);return s.includes("přízemí")?0:(m?+m[0]:99);};
   for(const s of Object.keys(bySek).sort()){
     h+=`<h2 class="sek">${esc(SEKCE[s]||("Sekce "+s))}</h2>`;
@@ -542,7 +566,7 @@ function rPokoje(){
         return `<div class="pokoj ${pokojTrida(p,kdo.length)}" data-pokoj="${esc(id)}" title="${esc(p.typ||"")}${p.poznamka?" – "+esc(p.poznamka):""}">
           <div class="cis"><span>${esc(p.cislo)}</span><span style="font-weight:600;font-size:.72rem;color:#777">${kdo.length}/${esc(p.luzka||0)}${+p.pristylky?"+"+esc(p.pristylky):""}</span></div>
           <div class="typ">${esc(p.typ||"")}</div>
-          <div class="kdo">${kdo.map(i=>{const o=DB.osoby[i];return (o.sam?"👤 ":"")+esc(jmeno(o))+(o.stav!=="ano"?' <span class="prob">⚠</span>':"");}).join("<br>")}</div></div>`;
+          <div class="kdo">${kdo.map(i=>{const o=DB.osoby[i];return (o.sam?"👤 ":"")+esc(jmeno(o))+(o.pohlavi?' <span style="color:#888;font-size:.7rem">'+POHL[o.pohlavi]+"</span>":"")+(o.stav!=="ano"?' <span class="prob">⚠</span>':"");}).join("<br>")}</div></div>`;
       }).join("")+`</div></div>`;
     }
   }
@@ -554,17 +578,20 @@ function rPokoje(){
 /* ---------- VEČEŘE ---------- */
 function rVecere(){
   const nv=nocVecere(), os=Object.entries(DB.osoby).filter(([,o])=>o.stav!=="ne");
+  const slav=os.filter(([,o])=>o.vecere==="slav");
   const skup=menuKeys().map(k=>[k,menuNazev(k),os.filter(([,o])=>o.vecere===k)]);
   const nechce=os.filter(([,o])=>o.vecere==="ne");
   const chybi=os.filter(([,o])=>o.stav==="ano"&&!o.vecere&&(nv&&spi(o).includes(nv)));
   const nevyb=os.filter(([,o])=>o.stav==="ano"&&!o.vecere&&!(nv&&spi(o).includes(nv)));
-  const tot=pocetVecere(), mx=+N().vecere_max||0, idl=+N().vecere_ideal||0;
+  const tot=pocetSlav(), mx=+N().vecere_max||0, idl=+N().vecere_ideal||0;
   const li=list=>list.length?`<table class="t">`+list.sort((a,b)=>jmeno(a[1]).localeCompare(jmeno(b[1]),"cs")).map(([id,o])=>`<tr class="cl" data-osoba="${esc(id)}"><td><b>${esc(jmeno(o))}</b></td><td>${esc(firmaNazev(o.firma))}</td><td>${badgeStav(o.stav)}</td><td>${spi(o).includes(nv)?"🛏 spí":""}</td><td class="sub">${esc(o.poznamka||"")}</td></tr>`).join("")+`</table>`:'<div class="muted" style="font-size:.85rem">nikdo</div>';
   $("view").innerHTML=`
   <div class="kpis">${skup.map(([k,t,l])=>`<div class="kpi" data-filtr='${JSON.stringify({vecere:k})}'><div class="v">${l.length}</div><div class="t">${esc(t)}</div></div>`).join("")}
-    <div class="kpi ${mx&&tot>mx?"bad":idl&&tot>idl?"warn":""}"><div class="v">${tot}</div><div class="t">celkem · ideál ${esc(idl||"–")}, max ${esc(mx||"–")}</div></div></div>
-  <div class="lista noprint"><span class="pocet">Večeře je navázaná na noc <b>${esc(nv?nocNazev(nv):"— (nastav v Nastavení)")}</b>. Kdo v té noci spí, musí mít večeři vybranou (nebo „nechce“).</span><button class="btn ghost small" onclick="window.print()">🖨 Tisk</button></div>
+    <div class="kpi"><div class="v">${pocetVecere()}</div><div class="t">běžná večeře celkem</div></div>
+    <div class="kpi ${mx&&tot>mx?"bad":idl&&tot>idl?"warn":""}" data-filtr='${JSON.stringify({vecere:"slav"})}'><div class="v">${tot}</div><div class="t"><b>slavnostní VHOS</b> · ideál ${esc(idl||"–")}, max ${esc(mx||"–")}</div></div></div>
+  <div class="lista noprint"><span class="pocet">Večeře je navázaná na noc <b>${esc(nv?nocNazev(nv):"— (nastav v Nastavení)")}</b>. Kdo v té noci spí, musí mít vybráno: jídlo, slavnostní večeři VHOS, nebo „nechce“.</span><button class="btn ghost small" onclick="window.print()">🖨 Tisk</button></div>
   ${chybi.length?`<h2 class="sek" style="color:var(--cervena)">⛔ Spí v noci ${esc(nocNazev(nv))}, ale nemá vybráno <span class="cnt">${chybi.length}</span></h2>${li(chybi)}`:""}
+  <h2 class="sek">Slavnostní večeře VHOS <span class="cnt">${slav.length}${idl||mx?" / ideál "+esc(idl||"–")+", max "+esc(mx||"–"):""}</span></h2>${li(slav)}
   ${skup.map(([k,t,l])=>`<h2 class="sek">${esc(t)} <span class="cnt">${l.length}</span></h2>${li(l)}`).join("")}
   <h2 class="sek">Jede, nespí v noci s večeří a nemá vybráno <span class="cnt">${nevyb.length}</span></h2>${li(nevyb)}
   <h2 class="sek">Nechce večeři <span class="cnt">${nechce.length}</span></h2>${li(nechce)}`;
@@ -595,9 +622,13 @@ function rNastaveni(){
   </div>
   <div class="nast"><h2 class="sek">Večeře – nabídka</h2>
     <div class="two">${menuKeys().map(k=>`<div><label class="l">Menu ${esc(k)}</label><input class="s_menu" data-k="${esc(k)}" value="${esc((n.menu||{})[k]||"")}"></div>`).join("")}
-      <div><label class="l">Ideální počet</label><input id="s_ideal" type="number" value="${esc(n.vecere_ideal||"")}"></div>
-      <div><label class="l">Maximum</label><input id="s_max" type="number" value="${esc(n.vecere_max||"")}"></div>
+      <div><label class="l">Slavnostní večeře VHOS – ideální počet</label><input id="s_ideal" type="number" value="${esc(n.vecere_ideal||"")}" placeholder="např. 42"></div>
+      <div><label class="l">Slavnostní večeře VHOS – maximum</label><input id="s_max" type="number" value="${esc(n.vecere_max||"")}" placeholder="např. 46"></div>
     </div>
+  </div>
+  <div class="nast"><h2 class="sek">Nárok partnerů na ubytování</h2>
+    <p style="font-size:.84rem;color:#666">Prázdné = bez omezení. Lidé, kterým ubytování platí VHOS, se do nároku nepočítají.</p>
+    <div class="two">${FKAT.filter(([k])=>["generalni","hlavni","odborny","medialni"].includes(k)).map(([k,t])=>`<div><label class="l">${esc(t)} – max. pokojů / max. lidí</label><div class="lista" style="margin:0"><input class="s_nar" data-k="${k}" data-f="pokoje" type="number" min="0" value="${esc(((n.narok||{})[k]||{}).pokoje||"")}" placeholder="pokoje" style="width:48%"><input class="s_nar" data-k="${k}" data-f="osoby" type="number" min="0" value="${esc(((n.narok||{})[k]||{}).osoby||"")}" placeholder="lidé" style="width:48%"></div></div>`).join("")}</div>
   </div>
   <div class="nast"><h2 class="sek">Přihláška pro partnery</h2>
     <div class="two">
@@ -626,7 +657,8 @@ function rNastaveni(){
     const menu={};document.querySelectorAll(".s_menu").forEach(i=>menu[i.dataset.k]=i.value.trim()||("Menu "+i.dataset.k));
     const vec=(document.querySelector("input[name=s_vec]:checked")||{}).value;
     const nociNew={};document.querySelectorAll("[data-nocid]").forEach((r,i)=>{const k=r.dataset.nocid;nociNew[k]={nazev:r.querySelector(".s_nocnazev").value.trim()||k,poradi:i+1};if(k===vec)nociNew[k].vecere=true;});
-    const obj=Object.assign({},n,{nazev:$("s_nazev").value.trim(),datum:$("s_datum").value.trim(),misto:$("s_misto").value.trim(),menu,noci:nociNew,vecere_ideal:+$("s_ideal").value||null,vecere_max:+$("s_max").value||null,uzaverka:$("s_uzav").value,text_partneri:$("s_text").value.trim()});
+    const narok={};document.querySelectorAll(".s_nar").forEach(i=>{const v=+i.value||0;if(v){(narok[i.dataset.k]=narok[i.dataset.k]||{})[i.dataset.f]=v;}});
+    const obj=Object.assign({},n,{narok,nazev:$("s_nazev").value.trim(),datum:$("s_datum").value.trim(),misto:$("s_misto").value.trim(),menu,noci:nociNew,vecere_ideal:+$("s_ideal").value||null,vecere_max:+$("s_max").value||null,uzaverka:$("s_uzav").value,text_partneri:$("s_text").value.trim()});
     save("nastaveni",stamp(obj)).then(()=>ulozVerejne(obj)).then(()=>{$("s_msg").style.color="var(--zelena)";$("s_msg").textContent="✔ Uloženo";}).catch(e=>{$("s_msg").textContent="⚠️ "+errMsg(e);});
   });
   $("s_export").addEventListener("click",()=>download("konference_zaloha_"+new Date().toISOString().slice(0,10)+".json",JSON.stringify(DB,null,1),"application/json"));
@@ -861,7 +893,7 @@ function openOsoba(id,preset){
   const o=id?JSON.parse(JSON.stringify(DB.osoby[id]||{})):Object.assign({stav:"nevim",kat:{}},preset||{});
   const segStav=STAV_PORADI.map(s=>`<button type="button" data-st="${s}" class="${(o.stav||"nevim")===s?"on":""}" style="${(o.stav||"nevim")===s?`background:${STAV[s][1]};border-color:${STAV[s][1]}`:""}">${STAV[s][0]}</button>`).join("");
   const nv=nocVecere();
-  const vecOpts=[["","nevybráno"]].concat(menuKeys().map(k=>[k,menuNazev(k)]),[["ne","nechce"]]);
+  const vecOpts=[["","nevybráno"]].concat(menuKeys().map(k=>[k,menuNazev(k)]),[["slav","slavnostní VHOS"],["ne","nechce"]]);
   openModal(`
     <h2>${id?esc(jmeno(o)):"Nová osoba"}</h2>
     <div id="o_prob" class="probbox"></div>
@@ -873,13 +905,17 @@ function openOsoba(id,preset){
     <select id="o_firma">${firmyOptions(o.firma||"",opt("","— bez firmy —",o.firma||""))}</select>
     <label class="l">Kategorie</label>
     <div class="checks">${Object.keys(KAT).map(k=>`<label><input type="checkbox" class="o_kat" value="${k}" ${(o.kat||{})[k]?"checked":""}> ${KAT[k][0]}</label>`).join("")}</div>
+    <div class="two">
+      <div><label class="l">Pohlaví (kvůli pokojům)</label><div class="seg" id="o_pohl">${[["","—"],["z","Žena"],["m","Muž"]].map(([k,t])=>`<button type="button" data-p="${k}" class="${(o.pohlavi||"")===k?"on":""}" style="${(o.pohlavi||"")===k?"background:var(--zelena);border-color:var(--zelena)":""}">${t}</button>`).join("")}</div></div>
+      <div><label class="l">Odkud přišel</label><select id="o_zdroj">${opt("","—",o.zdroj||"")}${Object.entries(ZDROJ).map(([k,t])=>opt(k,t,o.zdroj||"")).join("")}</select></div>
+    </div>
     <label class="l">Účast</label>
     <div class="seg" id="o_stav">${segStav}</div>
     <label class="l">Spí (noci)</label>
     <div class="checks">${noci().map(([k,n])=>`<label><input type="checkbox" class="o_noc" value="${esc(k)}" ${(o.noci||{})[k]?"checked":""}> ${esc(n.nazev)}${n.vecere?" 🍽":""}</label>`).join("")}<label><input type="checkbox" id="o_nespi" ${o.nespi?"checked":""}> nespí</label></div>
     <label class="l">Pokoj</label>
     <select id="o_pokoj">${pokojOptions(o.pokoj,id)}</select>
-    <div class="checks" style="margin-top:6px"><label><input type="checkbox" id="o_sam" ${o.sam?"checked":""}> chce spát sám</label><label><input type="checkbox" id="o_vhos" ${o.platiVHOS?"checked":""}> ubytování platí VHOS</label></div>
+    <div class="checks" style="margin-top:6px"><label><input type="checkbox" id="o_sam" ${o.sam?"checked":""}> chce spát sám</label><label><input type="checkbox" id="o_vhos" ${o.platiVHOS?"checked":""}> ubytování platí VHOS</label><label><input type="checkbox" id="o_kraskov" ${o.kraskov?"checked":""}> bydlí v Kraskově (jen svoz)</label></div>
     <label class="l">Večeře${nv?" ("+esc(nocNazev(nv))+")":""}</label>
     <div class="seg" id="o_vecere">${vecOpts.map(([k,t])=>`<button type="button" data-v="${esc(k)}" class="${(o.vecere||"")===k?"on":""}" style="${(o.vecere||"")===k?"background:var(--zelena);border-color:var(--zelena)":""}">${esc(t)}</button>`).join("")}</div>
     <div class="two">
@@ -893,7 +929,7 @@ function openOsoba(id,preset){
     ${o.upravil?`<div class="sub" style="font-size:.74rem;color:#999;margin-top:6px">Naposledy upravil ${esc(o.upravil)} · ${new Date(o.upravil_ts).toLocaleString("cs")}</div>`:""}
     <div class="mfoot"><div>${id?`<button class="btn red small" id="o_del">Smazat osobu</button>`:""}</div><div><button class="btn ghost" id="o_cancel">Zavřít</button> <button class="btn" id="o_save">Uložit</button></div></div>
     <div class="msg" id="o_msg"></div>`);
-  let stav=o.stav||"nevim", vecere=o.vecere||"";
+  let stav=o.stav||"nevim", vecere=o.vecere||"", pohlavi=o.pohlavi||"";
   const collect=()=>{
     const r=Object.assign({},o);
     r.prijmeni=$("o_prijmeni").value.trim();r.jmeno=$("o_jmeno").value.trim();r.firma=$("o_firma").value;
@@ -901,6 +937,7 @@ function openOsoba(id,preset){
     r.stav=stav;r.noci={};document.querySelectorAll(".o_noc:checked").forEach(c=>r.noci[c.value]=true);
     r.nespi=$("o_nespi").checked&&!Object.keys(r.noci).length;
     r.pokoj=$("o_pokoj").value;r.sam=$("o_sam").checked;r.platiVHOS=$("o_vhos").checked;r.vecere=vecere;
+    r.kraskov=$("o_kraskov").checked;r.pohlavi=pohlavi;r.zdroj=$("o_zdroj").value;
     r.email=$("o_email").value.trim();r.tel=$("o_tel").value.trim();r.poznamka=$("o_poz").value.trim();
     return r;
   };
@@ -916,6 +953,7 @@ function openOsoba(id,preset){
   }));
   segClick($("o_stav"),"st",v=>stav=v,v=>STAV[v][1]);
   segClick($("o_vecere"),"v",v=>vecere=v,()=>"var(--zelena)");
+  segClick($("o_pohl"),"p",v=>pohlavi=v,()=>"var(--zelena)");
   $("mbox").querySelectorAll("input,select,textarea").forEach(i=>i.addEventListener("change",showProb));
   $("o_nespi").addEventListener("change",()=>{if($("o_nespi").checked)document.querySelectorAll(".o_noc").forEach(c=>c.checked=false);showProb();});
   document.querySelectorAll(".o_noc").forEach(c=>c.addEventListener("change",()=>{if(c.checked)$("o_nespi").checked=false;}));
