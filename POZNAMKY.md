@@ -535,3 +535,29 @@ přistýlky, večeře A/B/C) → velká část modelu už sedí.*
 - **Webová e-přihláška** se pořadateli stahuje do **Excelu** → v aplikaci bude potřeba **import
   této tabulky** (s označením „přišel z webu“). Tabulka zatím nedorazila (v Komplet 2026 není),
   uživatel ji pošle.
+
+## Seznam přihlášených (export z webu servis.vhos.cz, .xls) – rozbor bez osobních údajů
+Listy podle kategorií (stav 2026):
+| List | Kdo plní | Počet 2026 | Sloupce navíc |
+|---|---|---|---|
+| **Veřejnost** | **automaticky z webové e-přihlášky** | 290 (platící) | č. objednávky, č. faktury, cena bez/s DPH (4 900 / 4 600 Kč bez DPH – nižší asi se slevou CzWA), poznámka |
+| **Vystavující** | ručně pořadatel | 62 | č. faktury, poznámka („vytisknout ručně“) |
+| **VHOS a hosté** | ručně | 32 (HOST / VHOS) | poznámka |
+| **Přednášející** | ručně | 29 | poznámka („doplnil TŘ“, „místo X“) |
+| **YWP** (Young Water Professionals CzWA) | ručně | 11 (platící) | č. faktury, poznámka |
+| Celkový přehled / Aktuálně | souhrn | **424 celkem, 34 firem** | |
+
+- Společné sloupce: titul před, jméno, příjmení, titul za, název společnosti, kategorie.
+- Poznámky u veřejnosti: zálohová faktura, „přihlášen na místě“, partner konference, smlouva na 2 osoby…
+- **Ubytování ani večeře v tomto seznamu nejsou** → dnes jsou to dvě oddělené evidence
+  (Seznam přihlášených = kdo jede a platí; Komplet = kdo kde spí a co jí).
+
+**Přihláška YWP CzWA (Word):** jako přihláška hostů (tituly, jméno, firma, sídlo, IČO, DIČ,
+e-mail, telefon) + **vložné 1 000 Kč bez DPH / 1 210 Kč s DPH**, fakturační adresa, e-mail pro
+fakturu, kontaktní osoba pro fakturaci. Organizační garant YWP je jiný než u hostů.
+
+**Důsledek pro aplikaci:** jedna karta člověka pro všechny kategorie
+(veřejnost / vystavující / VHOS / host / přednášející / YWP / partner…), u ní **zdroj**
+(web automaticky / ručně / partnerská přihláška / pozvánka), **fakturace** (objednávka, faktura,
+cena, vložné) a **pobyt** (ubytování, noci, pokoj, večeře) – místo dvou oddělených Excelů.
+Import exportu „Veřejnost“ z webu opakovaně (doplní nové, nezdvojí stávající).
