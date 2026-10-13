@@ -201,7 +201,7 @@ const KAT={
   medialni:["Mediální partner","#7a6a55"], vystavujici:["Vystavující","#a0632a"], ywp:["YWP","#3b7f78"], verejnost:["Veřejnost","#5d6b62"], host:["Host","#1f8a8a"], ostatni:["Ostatní","#999"]
 };
 const FKAT=[["generalni","Generální partneři"],["hlavni","Hlavní partneři"],["odborny","Odborní partneři"],["medialni","Mediální partneři"],["vhos","VHOS"],["koncern","Koncern"],["ace","AČE"],["ostatni","Ostatní (instituce, firmy)"]];
-const STAV={ano:["Jede","#2f8a3c"],pozvan:["Pozván","#c77d1a"],nevim:["Nevíme","#888"],ne:["Nejede","#b0413e"]};
+const STAV={ano:["Potvrdil","#2f8a3c"],pozvan:["Pozván","#c77d1a"],nevim:["Nevíme","#888"],ne:["Nejede","#b0413e"]};
 const STAV_PORADI=["ano","pozvan","nevim","ne"];
 const ZDROJ={pozvanka:"Pozvánka (zve pořadatel)",partner:"Přihláška partnera",web:"Web – e-přihláška",rucne:"Zadáno ručně"};
 const POHL={z:"Ž",m:"M"};
@@ -352,7 +352,7 @@ function problemyOsoby(id,o,OBS){
   const maVecer=o.vecere&&o.vecere!=="ne";
   if(jede&&nn.length&&!o.pokoj&&!o.kraskov)p.push(["e","Spí na konferenci ("+nn.map(nocNazev).join(", ")+"), ale nemá pokoj"]);
   if(o.kraskov&&o.pokoj)p.push(["w","Bydlí v Kraskově (jen svoz), ale má i pokoj "+pokojLabel(o.pokoj)]);
-  if(jede&&!nn.length&&!o.nespi)p.push(["w","Jede – není vyplněno, jestli spí (zaškrtni noci, nebo „nespí“)"]);
+  if(jede&&!nn.length&&!o.nespi)p.push(["w","Potvrdil – není vyplněno, jestli spí (zaškrtni noci, nebo „nespí“)"]);
   if(jede&&nv&&nn.includes(nv)&&!o.vecere)p.push(["e","Spí v noci "+nocNazev(nv)+", ale nemá vybranou večeři"]);
   if(!jede&&o.pokoj)p.push([st==="ne"?"e":"w",(st==="ne"?"Nejede":"Není potvrzený ("+STAV[st][0]+")")+", ale má zajištěný pokoj "+pokojLabel(o.pokoj)]);
   if(!jede&&maVecer)p.push([st==="ne"?"e":"w",(st==="ne"?"Nejede":"Není potvrzený ("+STAV[st][0]+")")+", ale má objednanou večeři"]);
@@ -459,7 +459,7 @@ function rPrehled(pr){
   </div>
   <h2 class="sek">Ubytování</h2>
   <div class="kpis"><div class="kpi" data-tab="pokoje"><div class="v">${MP.length}</div><div class="t">${maVlastni()?"<b>mých</b> pokojů":"pokojů"} · ${mpL} lůžek + ${mpP} přistýlek</div></div>${nociHtml}
-    <div class="kpi ${bezPokoje?"bad":""}" data-filtr='${JSON.stringify({stav:"ano",pokoj:"chybi"})}'><div class="v">${bezPokoje}</div><div class="t">jede a spí, ale <b>nemá pokoj</b></div></div>
+    <div class="kpi ${bezPokoje?"bad":""}" data-filtr='${JSON.stringify({stav:"ano",pokoj:"chybi"})}'><div class="v">${bezPokoje}</div><div class="t">potvrdil a spí, ale <b>nemá pokoj</b></div></div>
     <div class="kpi" data-filtr='${JSON.stringify({stav:"ano",pokoj:"kraskov"})}'><div class="v">${kraskov}</div><div class="t">bydlí v <b>Kraskově</b> (jen svoz)</div></div>
   </div>
   <h2 class="sek">Večeře ${nv?"<span class='cnt'>("+esc(nocNazev(nv))+")</span>":""}</h2>
@@ -652,7 +652,7 @@ function rVecere(){
   ${chybi.length?`<h2 class="sek" style="color:var(--cervena)">⛔ Spí v noci ${esc(nocNazev(nv))}, ale nemá vybráno <span class="cnt">${chybi.length}</span></h2>${li(chybi)}`:""}
   <h2 class="sek">Slavnostní večeře VHOS <span class="cnt">${slav.length}${idl||mx?" / ideál "+esc(idl||"–")+", max "+esc(mx||"–"):""}</span></h2>${li(slav)}
   ${skup.map(([k,t,l])=>`<h2 class="sek">${esc(t)} <span class="cnt">${l.length}</span></h2>${li(l)}`).join("")}
-  <h2 class="sek">Jede, nespí v noci s večeří a nemá vybráno <span class="cnt">${nevyb.length}</span></h2>${li(nevyb)}
+  <h2 class="sek">Potvrdil, nespí v noci s večeří a nemá vybráno <span class="cnt">${nevyb.length}</span></h2>${li(nevyb)}
   <h2 class="sek">Nechce večeři <span class="cnt">${nechce.length}</span></h2>${li(nechce)}`;
 }
 
@@ -924,7 +924,7 @@ function openPrevzeti(t){
   const p=PRIH[t], z=pripravPrevzeti(t);
   const TYP={novy:["➕","Nový","#2f8a3c"],zmena:["✏️","Změna","#c77d1a"],stejne:["✓","Beze změny","#888"],odhlasen:["➖","Odhlášen","#b0413e"]};
   openModal(`<h2>Převzít přihlášku – ${esc(p.firma_nazev)}</h2>
-    <p style="font-size:.86rem;color:#666;margin:6px 0">Lidé z přihlášky se zapíšou do seznamu se stavem <b>Jede</b> (noci, spaní, večeře, kontakty). Pokoje zůstávají, jak jsou – přiděluješ je ty.</p>
+    <p style="font-size:.86rem;color:#666;margin:6px 0">Lidé z přihlášky se zapíšou do seznamu se stavem <b>Potvrdil</b> (noci, spaní, večeře, kontakty). Pokoje zůstávají, jak jsou – přiděluješ je ty.</p>
     <table class="t">${z.map(x=>`<tr><td>${TYP[x.typ][0]} <span style="color:${TYP[x.typ][2]};font-weight:700">${TYP[x.typ][1]}</span></td><td><b>${esc(x.jm)}</b>${x.oid&&x.typ!=="odhlasen"?` <span class="sub">(spárováno se seznamem)</span>`:""}</td><td class="sub">${esc(x.zm.join(", "))}</td></tr>`).join("")||"<tr><td>Přihláška je prázdná.</td></tr>"}</table>
     ${p.kontakt?`<div class="loni">Kontakt firmy se uloží k firmě: ${esc([p.kontakt.jmeno,p.kontakt.email,p.kontakt.tel].filter(Boolean).join(" · "))}</div>`:""}
     <div class="mfoot"><div></div><div><button class="btn ghost" id="pv_cancel">Zrušit</button> <button class="btn" id="pv_ok">Převzít</button></div></div><div class="msg" id="pv_msg"></div>`);
