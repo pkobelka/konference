@@ -118,3 +118,10 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 ## Pravidla
 - Seznamy s e-maily a telefony **nikdy do GitHubu** ani do ukázek (repo je pro Pages veřejné).
 - Komunikace česky; uživatel nejdřív sbírá podklady, pak se zapracovává najednou.
+
+### Aplikace pořadatele do mobilu (13. 10. 2026)
+- Přidán `manifest.webmanifest`, ikony `ikony/` (VHOS Seč s vlnkami), meta značky pro iPhone/Android
+  → po nasazení jde „Přidat na plochu“ / „Nainstalovat aplikaci“, otevírá se bez lišty prohlížeče.
+- Bez service workeru (offline cache) záměrně – data jsou živá z Firebase a stará verze by se nemusela obnovit.
+- iPhone: přihlašovací odkaz z e-mailu se otevře v Safari, ne v ikoně na ploše → v aplikaci použít
+  „Mám odkaz z e-mailu – vložit ručně“ (zkopírovat odkaz z mailu a vložit). Stačí jednou, přihlášení vydrží.
