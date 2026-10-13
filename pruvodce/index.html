@@ -235,6 +235,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
   #printarea .n b{font-size:12pt} #printarea .n .w{font-size:9.5pt;color:#444;margin:2pt 0 4pt}
   #printarea .n p{white-space:pre-wrap;font-size:11pt;margin:0}
 }
+.cact{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.cbtn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:10px;padding:9px 13px;font-weight:700;font-size:14px;background:var(--accent);color:var(--accent-ink)}
+.cbtn+.cbtn{background:var(--accent-soft);color:var(--accent)}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
 /* tablet a počítač: menu nahoře, širší obsah */
 @media (min-width: 820px){
@@ -568,8 +571,13 @@ function vInfo(){
    <dl class="kv"><dt>Základní</dt><dd>4 900 Kč bez DPH (5 929 Kč s DPH)</dd><dt>Členové CzWA</dt><dd>4 600 Kč bez DPH (5 566 Kč s DPH)</dd><dt>V ceně</dt><dd>organizace, sborník v PDF, občerstvení, oběd, večerní pohoštění</dd><dt>Storno</dt><dd>poplatek se nevrací, zašleme sborník, lze vyslat náhradníka</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Sborník <span style="color:var(--warn)">· připravujeme</span></div>
    <p style="margin:0;font-size:14px">Sborník v PDF bude ke stažení po konferenci.</p></div>
+  <div class="card garant"><div class="label" style="margin-bottom:8px">Organizační garant</div>
+   <div style="display:flex;flex-direction:column;gap:2px"><b style="font-size:17px">Petr Kobelka</b><span class="muted" style="font-size:14px">VHOS, a.s.</span></div>
+   <dl class="kv" style="margin-top:10px"><dt>Telefon</dt><dd>602 356 496</dd><dt>E-mail</dt><dd>petr.kobelka@vhos.cz</dd></dl>
+   <div class="cact"><a class="cbtn" href="tel:+420602356496">📞 Zavolat</a><a class="cbtn" href="sms:+420602356496">💬 Napsat SMS</a><a class="cbtn" href="mailto:petr.kobelka@vhos.cz?subject=${encodeURIComponent("Konference ČOV 2027")}">✉ Napsat e-mail</a></div>
+  </div>
   <div class="card"><div class="label" style="margin-bottom:8px">Kontakty</div>
-   <dl class="kv"><dt>Informace</dt><dd>461 357 111</dd><dt>E-mail</dt><dd>konference@vhos.cz</dd><dt>Web</dt><dd><a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></dd></dl></div>
+   <dl class="kv"><dt>Informace</dt><dd>461 357 111 · Eva Jančáková</dd><dt>E-mail</dt><dd>konference@vhos.cz</dd><dt>Web</dt><dd><a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></dd></dl></div>
   <div class="note">Údaje podle pozvánky 2026. Pro rok 2027 je pořadatel aktualizuje na jednom místě a všem se změní hned.</div>
  </section>`;
 }

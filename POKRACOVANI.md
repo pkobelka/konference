@@ -181,3 +181,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Průvodce – export poznámek:** v Programu s filtrem „✎ Poznámky“ tlačítka **🖨 Vytisknout / PDF**
   (čistý tiskový výpis: přednáška, den, čas, autoři, poznámka), **⬇ Stáhnout text** (.txt), **✉ Poslat e-mailem**.
   Záhlaví průvodce: „31. ročník · Seč · 27.–28. dubna 2027“.
+- **Průvodce – Info:** karta **Organizační garant** (Petr Kobelka, VHOS, a.s., 602 356 496,
+  petr.kobelka@vhos.cz – dle pozvánky, na přání uživatele) s tlačítky Zavolat / Napsat SMS / Napsat e-mail;
+  u Informací doplněno jméno Eva Jančáková (dle pozvánky).
