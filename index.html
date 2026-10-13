@@ -25,6 +25,15 @@ a{color:var(--zelena);}
 .top h1{color:var(--zelena-tmava);font-size:1.45rem;}
 .top p{color:#666;font-size:.9rem;margin-top:3px;}
 .zpet{font-size:.85rem;text-decoration:none;display:inline-block;margin-bottom:6px;}
+.gs{position:relative;flex:1;min-width:220px;max-width:460px;}
+.gs input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--ramecek);border-radius:10px;font-size:.95rem;background:#fff;}
+.gs::before{content:"🔍";position:absolute;left:10px;top:8px;font-size:.9rem;opacity:.6;}
+.gsres{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--ramecek);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:30;max-height:60vh;overflow:auto;}
+.gsres .h{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#888;padding:8px 12px 4px;}
+.gsres .it{padding:8px 12px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;font-size:.9rem;border-top:1px solid #f1ede4;}
+.gsres .it:hover,.gsres .it.on{background:#eef5ec;}
+.gsres .it .s{color:#777;font-size:.8rem;text-align:right;}
+.gsres .nic{padding:12px;color:#888;font-size:.88rem;}
 .userbox{font-size:.8rem;color:#557;display:flex;gap:8px;align-items:center;}
 .btn{border:1px solid var(--zelena);background:var(--zelena);color:#fff;border-radius:8px;padding:8px 14px;font-size:.86rem;font-weight:600;cursor:pointer;}
 .btn.ghost{background:#fff;color:var(--zelena);}
@@ -162,6 +171,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
       <h1 id="nazev">🎤 Konference VHOS</h1>
       <p id="podnazev"></p>
     </div>
+    <div class="gs noprint"><input id="gsq" placeholder="Hledat člověka, firmu, pokoj, e-mail…  ( / )" autocomplete="off" aria-label="Hledat"><div class="gsres hidden" id="gsres"></div></div>
     <div class="userbox"><span id="who"></span><button class="btn ghost small" id="logout">Odhlásit</button></div>
   </div>
   <nav class="tabs" id="tabs"></nav>
@@ -245,6 +255,43 @@ AUTH.onAuthStateChanged(user=>{
     else{showLogin("E-mail <b>"+esc(user.email)+"</b> zatím nemá přístup. Ozvi se Petru Kobelkovi (stejný seznam jako Florián).");AUTH.signOut();}
   }).catch(()=>showLogin("Nepodařilo se ověřit přístup, zkus to znovu."));
 });
+
+/* ================== HLEDÁNÍ (všude nahoře) ================== */
+let GS_SEL=0, GS_ITEMS=[];
+function gsHledej(q){
+  const t=norm(q).split(/\s+/).filter(Boolean);if(!t.length)return [];
+  const hit=s=>t.every(x=>s.includes(x));
+  const os=Object.entries(DB.osoby).filter(([,o])=>hit(norm([jmeno(o),o.jmeno,firmaNazev(o.firma),o.email,o.tel,o.pokoj?pokojLabel(o.pokoj):"",o.poznamka].join(" "))))
+    .sort((a,b)=>jmeno(a[1]).localeCompare(jmeno(b[1]),"cs")).slice(0,12)
+    .map(([id,o])=>({typ:"osoba",id,t:jmeno(o)+(o.jmeno&&!jmeno(o).includes(o.jmeno)?" "+o.jmeno:""),s:[firmaNazev(o.firma),o.pokoj?"pokoj "+pokojLabel(o.pokoj):(o.kraskov?"Kraskov":""),o.vecere==="slav"?"slavnostní večeře":o.vecere==="ne"?"bez večeře":o.vecere?"jídlo "+o.vecere:""].filter(Boolean).join(" · ")}));
+  const fi=Object.entries(DB.firmy).filter(([,f])=>hit(norm(f.nazev))).slice(0,8)
+    .map(([id,f])=>{const n=Object.values(DB.osoby).filter(o=>o.firma===id&&o.stav!=="ne").length;return {typ:"firma",id,t:f.nazev,s:((FKAT.find(x=>x[0]===f.kat)||[,""])[1])+" · "+n+" lidí"}});
+  const po=Object.entries(DB.pokoje).filter(([id,p])=>hit(norm(pokojLabel(id)+" "+p.cislo))).slice(0,6)
+    .map(([id,p])=>{const n=Object.values(DB.osoby).filter(o=>o.pokoj===id).length;return {typ:"pokoj",id,t:"Pokoj "+pokojLabel(id),s:n+"/"+(p.luzka||0)+(+p.pristylky?"+"+p.pristylky:"")+(maVlastni()&&!p.vlastni?" · veřejnost":"")}});
+  return os.concat(fi,po);
+}
+function gsRender(){
+  const q=$("gsq").value, box=$("gsres");
+  if(!q.trim()){box.classList.add("hidden");return;}
+  GS_ITEMS=gsHledej(q);GS_SEL=Math.min(GS_SEL,Math.max(0,GS_ITEMS.length-1));
+  const sk={osoba:"Lidé",firma:"Firmy",pokoj:"Pokoje"};let last="";
+  box.innerHTML=GS_ITEMS.length?GS_ITEMS.map((x,i)=>{const h=x.typ!==last?`<div class="h">${sk[x.typ]}</div>`:"";last=x.typ;
+    return h+`<div class="it${i===GS_SEL?" on":""}" data-gi="${i}"><b>${esc(x.t)}</b><span class="s">${esc(x.s)}</span></div>`}).join(""):`<div class="nic">Nic nenalezeno.</div>`;
+  box.classList.remove("hidden");
+}
+function gsOtevri(i){const x=GS_ITEMS[i];if(!x)return;$("gsres").classList.add("hidden");$("gsq").blur();
+  if(x.typ==="osoba")openOsoba(x.id);else if(x.typ==="firma")openFirma(x.id);else openPokoj(x.id);}
+$("gsq").addEventListener("input",()=>{GS_SEL=0;gsRender();});
+$("gsq").addEventListener("focus",gsRender);
+$("gsq").addEventListener("keydown",e=>{
+  if(e.key==="ArrowDown"){GS_SEL=Math.min(GS_SEL+1,GS_ITEMS.length-1);gsRender();e.preventDefault();}
+  else if(e.key==="ArrowUp"){GS_SEL=Math.max(GS_SEL-1,0);gsRender();e.preventDefault();}
+  else if(e.key==="Enter"){gsOtevri(GS_SEL);}
+  else if(e.key==="Escape"){$("gsq").value="";gsRender();$("gsq").blur();}
+});
+$("gsres").addEventListener("mousedown",e=>{const it=e.target.closest("[data-gi]");if(it){e.preventDefault();gsOtevri(+it.dataset.gi);}});
+$("gsq").addEventListener("blur",()=>setTimeout(()=>$("gsres").classList.add("hidden"),150));
+document.addEventListener("keydown",e=>{if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();$("gsq").focus();}});
 
 /* ================== DATA ================== */
 function loadData(){
