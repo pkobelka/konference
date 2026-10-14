@@ -277,3 +277,8 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   (partneři, malý obor, ranní bloky). Technicky přes Firebase spolu s dotazy.
 - **Průvodce 0.19:** „Dnes st 14. 10. · čas · svátek má …“ v plakátu ve **výrazném rámečku** (fialový okraj,
   světlé neprůhledné pozadí s rozmazáním, stín) – přes fleky bakterií bylo špatně čitelné.
+- **Průvodce 0.20 – červená čísla nových dotazů (přání uživatele):** u tlačítka „? Dotaz“ u přednášky, u dne (Po/Út/St),
+  na záložce **Program** ve spodní liště a u „Napsat dotaz“ v kartě Právě teď. Číslo = dotazy, které člověk ještě neviděl
+  (`S.seen[id]` v telefonu); otevřením okna dotazů zmizí, vlastní dotaz se počítá jako viděný.
+  Připravena `noveDotazy(stare)` – po příchodu nového dotazu ukáže upozornění „Nový dotaz k přednášce: …“.
+  **Aby to fungovalo mezi telefony, je potřeba napojit dotazy na Firebase** (`konference2027_dotazy`) – další krok průvodce.
