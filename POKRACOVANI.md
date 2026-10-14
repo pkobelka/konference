@@ -559,3 +559,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Loga (Petr):** bílé karty se zaoblenými rohy (img.lg, radius 22 px, stín); VHOS největší, CzWA menší, Energie AG střední
   – v závěru i ve scéně „Zveme vás“.
 - **Scéna Zveme vás:** „31“ přesunuto z řady log do volného místa vpravo od „Zveme vás.“ (300 px).
+- **Datum ve videu:** „27. – 28.“ s mezerami kolem pomlčky (užší, margin -.12em); větší mezera pod „Zveme vás.“ (64 px).
