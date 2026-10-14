@@ -495,3 +495,11 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
     (místo `alert`), bez spodní lišty (`data-lista="0"`, mapa), SW florian-v256. **Nasazeno do main** (Merge: …), STAV.md doplněn.
   - **AquaCtrl** (pkobelka/aquactrl; uživatel: název je „AquaCtrl“) v124 – lišta „📲 AquaCtrl na plochu“ až po 20 s
     (`data-pozdeji="1"`), barva #0b5cae, SW aquactrl-v124. Na pokyn uživatele **PR #54 sloučen do main** (squash, nasazeno).
+
+### ▶ KDE POKRAČOVAT (konec 14. 10. 2026)
+- Vše nasazeno: admin **1.17 „Pořadatel“**, průvodce **0.34 „Seč 27“**, Florián **1.253**, AquaCtrl **v124** (PR #54).
+- **Další nápad uživatele: upoutávka (promo video) na průvodce Seč 27** „jako jsme už dělali“ (Florián).
+  Návrh scénáře: `navrh/promo-sec27.md` (8 scén, ~62 s, 16:9 + 9:16, jen hudba, skutečné obrazovky, QR na konci);
+  postup převzít z `pkobelka/florian/promo/src-hasici/` (render(t) → Playwright snímky → ffmpeg, hudba numpy).
+  Čeká na reakci uživatele ke scénáři a 3 otázkám v souboru → pak stavět.
+- Uživatel testuje instalaci na iPhonu / Androidu (pomocník `instalace.js` ve všech aplikacích).
