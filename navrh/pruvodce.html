@@ -146,6 +146,25 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .qform{display:flex;flex-direction:column;gap:8px}
 .qform textarea,.qform input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;resize:vertical}
 .send{border:0;border-radius:10px;padding:10px 14px;font-weight:700;background:var(--accent);color:var(--accent-ink)}
+.proj{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;background:#f6f4ef;color:#1d1b20;padding:3vh 4vw;gap:2vh;font-family:var(--f-body)}
+.proj.dark{background:#141218;color:#f4f1f8}
+.proj .pjh{display:flex;align-items:flex-start;gap:2vw}.proj .pjh .pjtl{flex:1;min-width:0}
+.proj .pjh .pjbl{font:700 clamp(12px,1.4vw,22px) var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:#5b2d82}.proj.dark .pjh .pjbl{color:#c9a6ea}
+.proj .pjh .pjtt{font-weight:700;font-size:clamp(16px,2.2vw,36px);line-height:1.2;margin-top:.4vh}
+.proj .pjh .pjsp{font-size:clamp(13px,1.6vw,26px);opacity:.7;margin-top:.3vh}
+.proj .pjh .pjcnt{font:700 clamp(14px,1.8vw,30px) var(--f-mono);opacity:.6;white-space:nowrap}
+.proj .pjm{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3vh;text-align:center}
+.proj .pjq{font-weight:700;line-height:1.18;max-width:92vw;overflow-wrap:anywhere}
+.proj .pjq.rd{opacity:.45}
+.proj .pjspk{font-size:min(28vh,28vw);line-height:1}
+.proj .pjplay{border:0;border-radius:999px;background:#1f7a8c;color:#fff;font:800 clamp(18px,2.6vw,44px) var(--f-body);padding:1.6vh 3.2vw;display:inline-flex;align-items:center;gap:1vw;cursor:pointer}
+.proj .pjf{display:flex;align-items:center;gap:1.4vw;flex-wrap:wrap}
+.proj .pjf .pjwho{flex:1;min-width:0;font-size:clamp(14px,1.9vw,32px);opacity:.75}
+.proj .pjf .pjvt{font-weight:800;color:#5b2d82;margin-left:1vw}.proj.dark .pjf .pjvt{color:#c9a6ea}
+.proj .pjf button{border:1.5px solid rgba(120,110,130,.35);background:transparent;color:inherit;border-radius:12px;padding:1vh 1.4vw;font:700 clamp(13px,1.5vw,24px) var(--f-body);cursor:pointer}
+.proj .pjf button.on{background:#5b2d82;border-color:#5b2d82;color:#fff}
+.proj .pjempty{font-size:clamp(20px,3vw,48px);opacity:.6}
+.chair .projall{display:block;width:100%;margin:4px 0 6px;border:0;border-radius:12px;padding:12px;font-weight:800;font-size:15px;background:var(--accent);color:var(--accent-ink)}
 .chair h3{font-size:15px;font-family:var(--f-body);font-weight:700;margin:14px 0 4px;color:var(--water)}
 .cq{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;padding:12px;border-radius:12px;background:var(--surface-2);margin-top:8px}
 .cq p{margin:0;font-size:19px;line-height:1.35;font-weight:600}
@@ -503,7 +522,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.39 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.40 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -858,7 +877,7 @@ function liveRebuild(){
  S.qa=nove;
  if(liveRebuild.hotovo)noveDotazy(stare);else{liveRebuild.hotovo=true;liveRefresh()}
 }
-function liveRefresh(){render();if(SHEET_DRAW&&!$("sheet").hidden)SHEET_DRAW()}
+function liveRefresh(){render();if(SHEET_DRAW&&!$("sheet").hidden)SHEET_DRAW();if(PJ&&!HR)pjKresli()}   // při přehrávání projekci nepřekreslujeme (tlačítko by ztratilo stav)
 function qKlic(){return "q"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function qPut(path,val){return fetch(QDB+path+".json",{method:val===null?"DELETE":"PUT",body:val===null?undefined:JSON.stringify(val)}).then(r=>{if(!r.ok)throw new Error(r.status);return r})}
 function audioDotazu(q){
@@ -1168,16 +1187,65 @@ function prehraj(q,btn,popis){
   a.onended=()=>{btn.textContent=popis.replace("Přehrát do sálu","Přehrát znovu");HR=null};return a.play()})
   .catch(()=>{btn.textContent=popis;HR=null;toast("Nahrávku se nepodařilo přehrát")});
 }
+/* ===== Projekce dotazů na plátno (předsedající / přednášející, tablet nebo PC u projektoru) ===== */
+let PJ=null;   // {bid, key, dark}
+function pjSeznam(bid){   // stejné pořadí jako v pohledu předsedajícího: nepřečtené a nejžádanější první
+ const talks=ALLT.filter(y=>y.id&&y.bid===bid), r=[];
+ talks.forEach(x=>(S.qa[x.id]||[]).slice().sort((a,b)=>(!!S.read[x.id+":"+a.k]-!!S.read[x.id+":"+b.k])||votes(x.id,b.k)-votes(x.id,a.k)).forEach(q=>r.push({x,q,key:x.id+":"+q.k})));
+ return r;
+}
+function promitej(bid,key){
+ if(HR){HR.pause();HR=null}
+ const L=pjSeznam(bid);PJ={bid,key:key||((L.find(o=>!S.read[o.key])||L[0]||{}).key),dark:store.get("pjdark",false)};
+ let el=$("proj");if(!el){el=document.createElement("div");el.id="proj";el.className="proj";el.setAttribute("role","dialog");el.setAttribute("aria-label","Projekce dotazů");document.body.appendChild(el)}
+ pjKresli();
+}
+function pjZavri(){if(HR){HR.pause();HR=null}const el=$("proj");if(el)el.remove();PJ=null;if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});if(SHEET_DRAW&&!$("sheet").hidden)SHEET_DRAW()}
+function pjKresli(){
+ const el=$("proj");if(!el||!PJ)return;
+ const L=pjSeznam(PJ.bid), bk=ALLT.find(y=>y.blok&&y.bid===PJ.bid)||{};let i=L.findIndex(o=>o.key===PJ.key);if(i<0&&L.length){i=0;PJ.key=L[0].key}
+ el.classList.toggle("dark",!!PJ.dark);
+ const o=L[i], bez=o&&/^🎤 Namluvený dotaz/.test(o.q.t), n=o?votes(o.x.id,o.q.k):0, rd=o&&!!S.read[o.key];
+ el.innerHTML=`<div class="pjh"><div class="pjtl"><div class="pjbl">${esc(bk.blok||"Dotazy z publika")}</div>${o?`<div class="pjtt">${esc(o.x.h)}</div><div class="pjsp">${esc(o.x.t)}${o.x.w?" · "+esc(o.x.w):""}</div>`:""}</div><div class="pjcnt">${L.length?(i+1)+" / "+L.length:""}</div></div>
+  <div class="pjm">${!o?`<div class="pjempty">Zatím žádné dotazy – přibývají živě z telefonů účastníků.</div>`
+   :`${bez?`<div class="pjspk" aria-hidden="true">🔊</div>`:`<div class="pjq${rd?" rd":""}" id="pjq">${esc(o.q.t)}</div>`}
+     ${o.q.au?`<button class="pjplay" id="pjplay">🔊 Přehrát do sálu</button>`:""}`}</div>
+  <div class="pjf"><div class="pjwho">${o?esc(o.q.a)+" · "+esc(o.q.c)+(n>1?`<span class="pjvt">+${n-1} se ptá taky</span>`:""):""}</div>
+   <button id="pjprev" aria-label="Předchozí dotaz">‹ Předchozí</button>${o?`<button id="pjrd" class="${rd?"on":""}">${rd?"Přečteno ✓":"Označit přečtené"}</button>`:""}<button id="pjnext" aria-label="Další dotaz">Další ›</button>
+   <button id="pjfs" aria-label="Celá obrazovka">⛶</button><button id="pjdk" aria-label="Tmavé / světlé pozadí">🌓</button><button id="pjx" aria-label="Zavřít projekci">✕</button></div>`;
+ // písmo co největší, ale aby se dotaz vešel
+ const q=$("pjq");if(q){const box=q.parentNode;let f=Math.min(innerWidth*.075,innerHeight*.16);q.style.fontSize=f+"px";
+  while(f>18&&(q.scrollHeight>box.clientHeight*.86||q.scrollWidth>box.clientWidth)){f*=.92;q.style.fontSize=f+"px"}}
+ const go=d=>{if(!L.length)return;if(HR){HR.pause();HR=null}PJ.key=L[(i+d+L.length)%L.length].key;pjKresli()};
+ $("pjprev").onclick=()=>go(-1);$("pjnext").onclick=()=>go(1);
+ if($("pjrd"))$("pjrd").onclick=()=>pjPrecteno(o.key);
+ if($("pjplay"))$("pjplay").onclick=()=>prehraj(o.q,$("pjplay"),"🔊 Přehrát do sálu");
+ $("pjfs").onclick=()=>{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else if(el.requestFullscreen)el.requestFullscreen().catch(()=>toast("Celá obrazovka tady nejde – použijte F11"))};
+ $("pjdk").onclick=()=>{PJ.dark=!PJ.dark;store.set("pjdark",PJ.dark);pjKresli()};
+ $("pjx").onclick=pjZavri;
+}
+function pjPrecteno(k){if(S.read[k])delete S.read[k];else S.read[k]=1;store.set("read",S.read);pjKresli();render()}
+document.addEventListener("keydown",e=>{if(!PJ||e.target.closest("input,textarea"))return;
+ const k=e.key;if(k==="Escape")return pjZavri();
+ if(k==="ArrowRight"||k==="PageDown"){e.preventDefault();return $("pjnext").click()}
+ if(k==="ArrowLeft"||k==="PageUp"){e.preventDefault();return $("pjprev").click()}
+ if(k===" "){e.preventDefault();if($("pjplay"))$("pjplay").click();return}
+ if(k==="r"||k==="R"){if($("pjrd"))$("pjrd").click();return}
+ if(k==="f"||k==="F")return $("pjfs").click();
+ if(k==="d"||k==="D")return $("pjdk").click()});
+addEventListener("resize",()=>{if(PJ)pjKresli()});
 function sheetChair(bid){
  const bk=ALLT.find(y=>y.blok&&y.bid===bid), talks=ALLT.filter(y=>y.id&&y.bid===bid);
  const draw=()=>{$("clist").innerHTML=talks.map(x=>{const l=(S.qa[x.id]||[]).slice().sort((a,b)=>(!!S.read[x.id+":"+a.k]-!!S.read[x.id+":"+b.k])||votes(x.id,b.k)-votes(x.id,a.k));
    return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(q=>{const k=x.id+":"+q.k,r=!!S.read[k],n=votes(x.id,q.k);
-    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p>${q.au?`<button class="play" data-play="${esc(k)}">▶ Přehrát do sálu</button>`:""}<small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes">+${n-1} se ptá taky</span>`:""}</div><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
+    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p>${q.au?`<button class="play" data-play="${esc(k)}">▶ Přehrát do sálu</button>`:""}<small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes">+${n-1} se ptá taky</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">📽 Promítnout</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
  openSheet(`<h2>Pohled předsedajícího</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(bk.blok)} · předsedá ${esc(bk.pr)}</div>
-  <div class="bd chair"><div id="clist"></div>
-  <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe. Pohled se dá pustit i na plátno.</div></div>`);
+  <div class="bd chair"><button class="projall" data-projall="1">📽 Promítat dotazy na plátno</button><div id="clist"></div>
+  <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe.<br>Na plátno: připojte tablet nebo počítač k projektoru a stiskněte <b>Promítat</b> – dotaz se ukáže velkým písmem přes celou plochu, hlasový se pustí tlačítkem 🔊. Ovládání: ← → další dotaz, mezerník přehrát, R přečteno, F celá obrazovka, Esc zpět.<br>Přímý odkaz pro počítač v sále: <b>…/pruvodce/?pr=${esc(bid)}</b></div></div>`);
  draw();SHEET_DRAW=draw;
- $("clist").addEventListener("click",e=>{const pb=e.target.closest("[data-play]");if(pb){const [tid,k]=pb.dataset.play.split(":");return prehraj(qk(tid,k),pb)}
+ $("sheet").querySelector("[data-projall]").addEventListener("click",()=>promitej(bid));
+ $("clist").addEventListener("click",e=>{const pj=e.target.closest("[data-proj]");if(pj)return promitej(bid,pj.dataset.proj);
+  const pb=e.target.closest("[data-play]");if(pb){const [tid,k]=pb.dataset.play.split(":");return prehraj(qk(tid,k),pb)}
   const b=e.target.closest("[data-read]");if(!b)return;const k=b.dataset.read;if(S.read[k])delete S.read[k];else S.read[k]=1;store.set("read",S.read);draw();render()});
 }
 
@@ -1322,6 +1390,7 @@ $("view").addEventListener("submit",e=>{if(e.target.id!=="kf")return;e.preventDe
 $("view").addEventListener("click",e=>{if(e.target.id==="pdel"){S.me={jm:"",firma:""};store.set("me",S.me);render();toast("Profil smazán")}});
 $("view").addEventListener("input",e=>{
  if(e.target.id==="simm"){S.sim.m=+e.target.value;$("nowbox").outerHTML=vNow();$("simm").focus();return}if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
+(function(){try{const pr=new URLSearchParams(location.search).get("pr");if(pr&&ALLT.some(y=>y.blok&&y.bid===pr))setTimeout(()=>sheetChair(pr),300)}catch(e){}})();   // počítač v sále: …/pruvodce/?pr=utb4
 (function(){try{const k=new URLSearchParams(location.search).get("k");
  if(k){if(!PL.ios)history.replaceState(null,"",location.pathname+location.hash);kartaNacti(kartaKlic(k))}else if(S.karta)kartaNacti(null,true)
  // iPhone: ikona na ploše má vlastní úložiště – klíč karty proto necháme v adrese, aby se přenesl při „Přidat na plochu“

@@ -611,3 +611,11 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Čeká na Petra:** místo zastávky v Seči (má adresu i mapu) → doplnit do Dopravy (text „upřesníme“ → místo + navigace
   na zastávku, případně 3. tlačítko navigace) a do formuláře/aktualit. Petr si zkusí odeslat testovací zájem o dopravu a
   ověří ho v aplikaci pořadatele (pak smazat).
+
+### Projekce dotazů na plátno (14. 10. 2026) – průvodce 0.40
+- Pohled předsedajícího → „📽 Promítat dotazy na plátno“ / u dotazu „📽 Promítnout“ → celoobrazovková projekce (#proj):
+  nahoře blok, přednáška, přednášející, počítadlo; uprostřed dotaz obřím písmem (auto-fit); hlasový dotaz = tlačítko
+  „🔊 Přehrát do sálu“ (bez přepisu velký reproduktor); dole autor, čas, „+N se ptá taky“, Předchozí/Přečteno/Další,
+  celá obrazovka, 🌓 tmavé/světlé (pamatuje se), ✕. Klávesy ← → mezerník R F D Esc. Živě se obnovuje (ne při přehrávání).
+- Přímý odkaz pro PC v sále: `…/pruvodce/?pr=<bid>` (např. utb4) otevře pohled předsedajícího daného bloku.
+- Možné doladit: tlačítko/odkaz pro přednášejícího v aplikaci pořadatele (seznam odkazů ?pr= pro každý blok), test na reálném projektoru.
