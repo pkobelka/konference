@@ -457,3 +457,10 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Čeká na uživatele: fotka garanta do Info; hodnocení přednášek (a/b) po poradě; smazat testovací aktuality/dotazy.
 - Další práce (aplikace pořadatele): skutečné počty lůžek, hromadné e-maily s osobním odkazem (karta v průvodci),
   rozšíření Poznámek (propojení s osobou, termín), před ostrým provozem smazat testovací data 2026.
+- **Průvodce 0.32 – Kontakty v Info** (podle pozvánky 2026 + přihlášek): karty osob s rolí, Zavolat/SMS/E-mail –
+  **Organizační garant** Petr Kobelka (technický ředitel, VHOS; „ubytování, večeře, organizace na místě“),
+  **Odborný garant** Ing. Filip Wanner, Ph.D. (ENERGIE AG BOHEMIA, 724 576 097, filip.wanner@energieag.cz; „program,
+  přednášky, YWP CzWA“), **Odborný garant** prof. Ing. Jiří Wanner, DrSc. (VŠCHT, bez kontaktu), **Informace a přihlášky**
+  Eva Jančáková (461 357 111, konference@vhos.cz), **Fakturace** Danuše Kaderková (vedoucí ÚTV UCE, 461 357 151,
+  danuse.kaderkova@vhos.cz). Data v konstantě `KONTAKTY` v navrh/pruvodce.html. Poplatek doplněn o „Platba“.
+  Popisky oblastí („ubytování, večeře…“, „program, přednášky…“) jsou návrh – uživatel může upravit.

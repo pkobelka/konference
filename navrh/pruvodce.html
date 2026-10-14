@@ -232,6 +232,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
   #printarea .n p{white-space:pre-wrap;font-size:11pt;margin:0}
 }
 .cact{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.kont .cact{margin-top:10px}.kont .cbtn{padding:8px 12px;font-size:13px}
 .mic{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .micb{border:1px dashed var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:8px 12px;font-weight:700;font-size:14px}
 .micb.on{border-style:solid;background:#b0413e;color:#fff;border-color:#b0413e;animation:glowR 1.4s ease-in-out infinite}
@@ -483,7 +484,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.31 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.32 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -568,6 +569,14 @@ const WIC=c=>c===0?"☀️":c<=2?"🌤️":c===3?"☁️":c<=48?"🌫️":c<=67?
 function vToday(){
  return `<button class="wxb" id="todaybox" data-wx="1">${WX.st==="ok"?WIC(WX.cur.c)+" "+WX.cur.t+"° · ":"🌤️ "}Počasí<em class="wxl">v Seči</em></button>`;
 }
+/* ===== Kontakty (podle pozvánky a přihlášek; pro 2027 upravit tady) ===== */
+const KONTAKTY=[
+ {role:"Organizační garant",jm:"Petr Kobelka",org:"technický ředitel, VHOS, a.s.",pozn:"ubytování, večeře, organizace na místě",tel:"602 356 496",mail:"petr.kobelka@vhos.cz",sms:true,hl:true},
+ {role:"Odborný garant",jm:"Ing. Filip Wanner, Ph.D.",org:"ENERGIE AG BOHEMIA s.r.o.",pozn:"program, přednášky, YWP CzWA",tel:"724 576 097",mail:"filip.wanner@energieag.cz"},
+ {role:"Odborný garant",jm:"prof. Ing. Jiří Wanner, DrSc.",org:"VŠCHT Praha"},
+ {role:"Informace a přihlášky",jm:"Eva Jančáková",org:"VHOS, a.s.",tel:"461 357 111",mail:"konference@vhos.cz"},
+ {role:"Fakturace",jm:"Danuše Kaderková",org:"vedoucí ÚTV UCE, VHOS, a.s.",pozn:"platby, daňové doklady",tel:"461 357 151",mail:"danuse.kaderkova@vhos.cz"}
+];
 /* ===== Termín do kalendáře, navigace do hotelu ===== */
 const MISTO={nazev:"Kongres hotel Jezerka",adr:"Ústupky 278, 538 07 Seč",lat:49.821586,lon:15.659936};
 const KONF_NAZEV="Konference Nové metody a postupy při provozování ČOV – 31. ročník";
@@ -972,18 +981,18 @@ function vInfo(){
     <input id="pfirma" placeholder="Firma / instituce" value="${esc(S.me.firma)}" autocomplete="organization" aria-label="Firma">
     <div style="display:flex;gap:8px"><button class="send" style="flex:1">Uložit</button>${podpis()?'<button type="button" class="btn" id="pdel">Smazat</button>':""}</div></form></div>
   <div class="card"><div class="label" style="margin-bottom:8px">O konferenci</div>
-   <dl class="kv"><dt>Termín</dt><dd>${TERMIN} (příjezd v pondělí 26. 4.)</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborní garanti</dt><dd>prof. Ing. Jiří Wanner, DrSc., VŠCHT Praha · Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
+   <dl class="kv"><dt>Termín</dt><dd>${TERMIN} (příjezd v pondělí 26. 4.)</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborní garanti</dt><dd>prof. Ing. Jiří Wanner, DrSc., VŠCHT Praha · Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA (kontakty níže)</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
-   <dl class="kv"><dt>Základní</dt><dd>4 900 Kč bez DPH (5 929 Kč s DPH)</dd><dt>Členové CzWA</dt><dd>4 600 Kč bez DPH (5 566 Kč s DPH)</dd><dt>V ceně</dt><dd>organizace, sborník v PDF, občerstvení, oběd, večerní pohoštění</dd><dt>Storno</dt><dd>poplatek se nevrací, zašleme sborník, lze vyslat náhradníka</dd></dl></div>
+   <dl class="kv"><dt>Základní</dt><dd>4 900 Kč bez DPH (5 929 Kč s DPH)</dd><dt>Členové CzWA</dt><dd>4 600 Kč bez DPH (5 566 Kč s DPH)</dd><dt>V ceně</dt><dd>organizace, sborník v PDF, občerstvení, oběd, večerní pohoštění</dd><dt>Platba</dt><dd>pokyny k platbě přijdou e-mailem v potvrzení e-přihlášky; daňový doklad zašleme na uvedený e-mail</dd><dt>Storno</dt><dd>poplatek se nevrací, zašleme sborník, lze vyslat náhradníka</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Sborník <span style="color:var(--warn)">· připravujeme</span></div>
    <p style="margin:0;font-size:14px">Sborník v PDF bude ke stažení přímo tady v průvodci <b>už během konference</b>, takže ho budete mít po ruce při přednáškách. Jakmile bude připravený, dáme vám vědět v aktualitách.</p></div>
-  <div class="card garant"><div class="label" style="margin-bottom:8px">Organizační garant</div>
-   <div style="display:flex;flex-direction:column;gap:2px"><b style="font-size:17px">Petr Kobelka</b><span class="muted" style="font-size:14px">VHOS, a.s.</span></div>
-   <dl class="kv" style="margin-top:10px"><dt>Telefon</dt><dd>602 356 496</dd><dt>E-mail</dt><dd>petr.kobelka@vhos.cz</dd></dl>
-   <div class="cact"><a class="cbtn" href="tel:+420602356496">📞 Zavolat</a><a class="cbtn" href="sms:+420602356496">💬 Napsat SMS</a><a class="cbtn" href="mailto:petr.kobelka@vhos.cz?subject=${encodeURIComponent("Konference ČOV 2027")}">✉ Napsat e-mail</a></div>
-  </div>
-  <div class="card"><div class="label" style="margin-bottom:8px">Kontakty</div>
-   <dl class="kv"><dt>Informace</dt><dd>461 357 111 · Eva Jančáková</dd><dt>E-mail</dt><dd>konference@vhos.cz</dd><dt>Web</dt><dd><a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></dd></dl></div>
+  <div class="blockh"><h2>Kontakty</h2></div>
+  ${KONTAKTY.map(k=>`<div class="card kont${k.hl?" garant":""}"><div class="label" style="margin-bottom:6px">${esc(k.role)}</div>
+   <b style="font-size:16px">${esc(k.jm)}</b>${k.org?`<div class="muted" style="font-size:13px">${esc(k.org)}</div>`:""}${k.pozn?`<div style="font-size:13px;margin-top:4px">${esc(k.pozn)}</div>`:""}
+   ${k.tel||k.mail?`<dl class="kv" style="margin-top:8px">${k.tel?`<dt>Telefon</dt><dd>${esc(k.tel)}</dd>`:""}${k.mail?`<dt>E-mail</dt><dd>${esc(k.mail)}</dd>`:""}</dl>
+   <div class="cact">${k.tel?`<a class="cbtn" href="tel:+420${k.tel.replace(/\D/g,"")}">📞 Zavolat</a>`:""}${k.sms?`<a class="cbtn" href="sms:+420${k.tel.replace(/\D/g,"")}">💬 SMS</a>`:""}${k.mail?`<a class="cbtn" href="mailto:${k.mail}?subject=${encodeURIComponent("Konference ČOV 2027")}">✉ E-mail</a>`:""}</div>`:""}</div>`).join("")}
+  <div class="card"><div class="label" style="margin-bottom:8px">Web</div>
+   <p style="margin:0;font-size:14px">Program a přihlášky: <a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></p></div>
   <div class="note">Údaje podle pozvánky 2026. Pro rok 2027 je pořadatel aktualizuje na jednom místě a všem se změní hned.</div>
   <p class="muted" style="text-align:center;font-size:12px;margin:4px 0 0;font-family:var(--f-display)">Průvodce konferencí · verze ${VERZE}</p>
  </section>`;
