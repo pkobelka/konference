@@ -282,3 +282,33 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   (`S.seen[id]` v telefonu); otevřením okna dotazů zmizí, vlastní dotaz se počítá jako viděný.
   Připravena `noveDotazy(stare)` – po příchodu nového dotazu ukáže upozornění „Nový dotaz k přednášce: …“.
   **Aby to fungovalo mezi telefony, je potřeba napojit dotazy na Firebase** (`konference2027_dotazy`) – další krok průvodce.
+
+### Dotazy živě přes Firebase (14. 10. 2026) – průvodce 0.21, admin 1.5
+- Uzel **`konference2027_dotazy`**: `q/{přednáška}/{klíč}` = {t, a, c, ts, dev, h, au:true?} · `au/{klíč}` = data:URL nahrávky
+  (stahuje se až při přehrání – nestahuje se všem) · `v/{přednáška}/{klíč}/{zařízení}` = true (+1 Mám stejný).
+- Průvodce: živé napojení přes **REST + EventSource** (bez Firebase SDK), zařízení má náhodné `dev` v localStorage.
+  Nový dotaz od kohokoli → všem ① u přednášky/dne/záložky Program + upozornění „Nový dotaz k přednášce…“; otevřené okno
+  dotazů i Pohled předsedajícího se překreslí samy. Vlastní dotaz = „váš dotaz“ (bez +1). „Přečteno“ si předsedající
+  odškrtává jen u sebe. Bez připojení / bez pravidla zůstává ukázka s lokálními daty (Claude ukázka).
+- Admin: Nastavení → **„Dotazy k přednáškám z průvodce“** – živý seznam, Smazat (dotaz + nahrávka + hlasy),
+  „Smazat všechny dotazy (po zkoušce)“ (napsat SMAZAT). Obnovuje jen tuto sekci, rozepsané Nastavení nezmizí.
+- Otestováno: falešný Firebase server (REST+SSE) a dva „telefony“ – dotaz, +1, namluvený dotaz, přehrání u předsedajícího.
+- **Pravidlo do Firebase** (ORG = stejný výraz jako u ostatních uzlů, `auth != null && root.child('florian_login_email')…exists()`):
+  ```
+  "konference2027_dotazy": {
+    ".read": true,
+    ".write": ORG,
+    "q": { "$talk": { "$qid": {
+      ".write": "!data.exists() || ORG",
+      ".validate": "newData.hasChildren(['t','a','c','ts','dev']) && newData.child('t').isString() && newData.child('t').val().length <= 1000 && newData.child('a').isString() && newData.child('a').val().length <= 120 && newData.child('ts').isNumber() && newData.child('ts').val() <= now + 60000 && $talk.matches(/^[a-z]{2}[0-9]{1,3}$/)"
+    }}},
+    "au": { "$qid": {
+      ".write": "!data.exists() || ORG",
+      ".validate": "newData.isString() && newData.val().length <= 900000 && newData.val().beginsWith('data:audio/')"
+    }},
+    "v": { "$talk": { "$qid": { "$dev": {
+      ".write": true,
+      ".validate": "newData.val() === true && $dev.length <= 40"
+    }}}}
+  }
+  ```

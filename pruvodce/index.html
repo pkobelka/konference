@@ -484,7 +484,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.20 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.21 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -668,10 +668,55 @@ function novychDen(d){return PROG[d].reduce((a,x)=>a+(x.id?novych(x.id):0),0)}
 function novychVse(){return Object.keys(PROG).reduce((a,d)=>a+novychDen(d),0)}
 function badge(n){return n?`<span class="bdg" aria-label="${n} ${n===1?"nový dotaz":n<5?"nové dotazy":"nových dotazů"}">${n>9?"9+":n}</span>`:""}
 function videno(id){S.seen[id]=(S.qa[id]||[]).length;store.set("seen",S.seen)}
-// Až budou dotazy ve Firebase: po každé změně zavolat noveDotazy(staré S.qa) → upozornění „Nový dotaz k …“
-function noveDotazy(stare){for(const id in S.qa){const p=(stare[id]||[]).length,n=(S.qa[id]||[]).length;if(n>p){const x=ALLT.find(y=>y.id===id);if(x)toast("Nový dotaz k přednášce: "+x.h)}}render()}
+function noveDotazy(stare){for(const id in S.qa){const st=new Set((stare[id]||[]).map(q=>q.k));const cizi=(S.qa[id]||[]).filter(q=>!st.has(q.k)&&q.dev!==DEV);
+  if(cizi.length){const x=ALLT.find(y=>y.id===id);if(x)toast("Nový dotaz k přednášce: "+x.h)}}liveRefresh()}
+Object.keys(S.qa).forEach(id=>S.qa[id].forEach((q,i)=>{if(!q.k)q.k="d"+i}));   // ukázková data: klíč = pořadí
 function podpis(){return [S.me.jm,S.me.firma].filter(Boolean).join(", ")}
-function votes(id,i){const q=(S.qa[id]||[])[i];return 1+(q.v||0)+(S.voted[id+":"+i]?1:0)}
+function qk(id,k){return (S.qa[id]||[]).find(q=>q.k===k)}
+function hlasoval(id,k){return LIVE.on?!!(((LIVE.v[id]||{})[k]||{})[DEV]):!!S.voted[id+":"+k]}
+function votes(id,k){const q=qk(id,k);if(!q)return 1;return 1+(LIVE.on?Object.keys((LIVE.v[id]||{})[k]||{}).length:(q.v||0)+(S.voted[id+":"+k]?1:0))}
+
+/* ===== Dotazy živě přes Firebase (konference2027_dotazy) ===== */
+// q/{přednáška}/{klíč} = {t, a, c, ts, dev, h, au?:true}   – text dotazu, podpis, čas, zařízení, název přednášky
+// au/{klíč} = data:URL nahrávky (stahuje se až při přehrání)   ·   v/{přednáška}/{klíč}/{zařízení} = true (+1 Mám stejný)
+// Číst může každý, přidat dotaz každý (nemůže ho ale měnit), mazat jen pořadatel. Bez připojení běží ukázková data.
+const QDB=window.QDB_URL||"https://moje-budky-default-rtdb.firebaseio.com/konference2027_dotazy/";   // QDB_URL jen pro testy
+const DEV=(()=>{let d=store.get("dev","");if(!d){d=Date.now().toString(36)+Math.random().toString(36).slice(2,8);store.set("dev",d)}return d})();
+const LIVE={on:false,q:{},v:{},es:[],au:{}};
+let SHEET_DRAW=null;   // překreslení otevřeného okna dotazů / předsedajícího po změně
+function treeSet(root,path,data,patch){
+ const ks=path.split("/").filter(Boolean);if(!ks.length){if(patch){for(const k in data)root[k]=data[k];return root}return data||{}}
+ let o=root;ks.slice(0,-1).forEach(k=>{if(typeof o[k]!=="object"||!o[k])o[k]={};o=o[k]});const last=ks[ks.length-1];
+ if(patch){o[last]=o[last]||{};for(const k in data){if(data[k]==null)delete o[last][k];else o[last][k]=data[k]}}else if(data==null)delete o[last];else o[last]=data;
+ return root;
+}
+function liveStart(){
+ if(!window.EventSource||!window.fetch)return;
+ const pending={q:false,v:false};
+ ["q","v"].forEach(kind=>{
+  let es;try{es=new EventSource(QDB+kind+".json")}catch(e){return}
+  LIVE.es.push(es);
+  const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;
+   LIVE[kind]=treeSet(LIVE[kind],d.path,d.data,ev.type==="patch");
+   if(kind==="q"){if(!LIVE.on){LIVE.on=true;S.voted={};}liveRebuild()}else liveRefresh()};
+  es.addEventListener("put",on);es.addEventListener("patch",on);
+  es.addEventListener("cancel",()=>{es.close()});
+ });
+}
+function liveRebuild(){
+ const stare=S.qa, nove={};
+ for(const id in LIVE.q){const o=LIVE.q[id]||{};nove[id]=Object.keys(o).map(k=>Object.assign({k},o[k])).filter(q=>q&&q.t).sort((a,b)=>(a.ts||0)-(b.ts||0))}
+ S.qa=nove;
+ if(liveRebuild.hotovo)noveDotazy(stare);else{liveRebuild.hotovo=true;liveRefresh()}
+}
+function liveRefresh(){render();if(SHEET_DRAW&&!$("sheet").hidden)SHEET_DRAW()}
+function qKlic(){return "q"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function qPut(path,val){return fetch(QDB+path+".json",{method:val===null?"DELETE":"PUT",body:val===null?undefined:JSON.stringify(val)}).then(r=>{if(!r.ok)throw new Error(r.status);return r})}
+function audioDotazu(q){
+ if(!q||!q.au)return Promise.reject();if(typeof q.au==="string")return Promise.resolve(q.au);
+ if(LIVE.au[q.k])return Promise.resolve(LIVE.au[q.k]);
+ return fetch(QDB+"au/"+q.k+".json").then(r=>r.json()).then(u=>{if(!u)throw 0;LIVE.au[q.k]=u;return u});
+}
 
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -795,7 +840,7 @@ function vProgram(){
   <div class="tools"><input id="q" placeholder="Hledat přednášku, jméno, firmu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog" id="mine" aria-pressed="${S.mine}">✎ Poznámky</button></div>
   ${rows.some(x=>!x.blok)?(()=>{let open=null;const out=rows.map(x=>{
    let pre="";if(open&&(x.blok||x.bid!==open)){pre="</div>";open=null}   // konec rámečku bloku
-   if(x.blok){open=x.bid;const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter((q,i)=>!S.read[y.id+":"+i]).length,0);
+   if(x.blok){open=x.bid;const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter(q=>!S.read[y.id+":"+q.k]).length,0);
     return pre+`<div class="bgrp"><div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
    const f=!!S.notes[x.id], st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
    let h=pre+`<div class="slot"><div class="t">${esc(x.t)}${x.e?`<small>–${esc(x.e)}</small>`:""}</div>
@@ -894,9 +939,10 @@ function vInfo(){
 function now(){const d=new Date();return d.getHours()+":"+String(d.getMinutes()).padStart(2,"0")}
 function sheetQ(id){
  const x=ALLT.find(y=>y.id===id), bk=ALLT.find(y=>y.blok&&y.bid===x.bid);
- const draw=()=>{const l=(S.qa[id]||[]).map((q,i)=>({q,i})).sort((a,b)=>votes(id,b.i)-votes(id,a.i));
-  $("qlist").innerHTML=l.length?`<div class="label" style="margin-bottom:2px">Dotazy ostatních – než napíšete, podívejte se, jestli tu už váš není</div>`+l.map(({q,i})=>{const on=!!S.voted[id+":"+i],n=votes(id,i);
-   return `<div class="q"><div><p>${esc(q.t)}</p>${q.au?`<audio class="qau" controls preload="none" src="${q.au}" aria-label="Namluvený dotaz"></audio>`:""}<small>${esc(q.a)} · ${esc(q.c)} · ${n} ${n===1?"člověk":n<5?"lidé":"lidí"}</small></div><button class="plus" data-plus="${i}" aria-pressed="${on}">${on?"✓ Mám taky":"+1 Mám stejný"}</button></div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
+ const draw=()=>{const l=(S.qa[id]||[]).slice().sort((a,b)=>votes(id,b.k)-votes(id,a.k));videno(id);
+  $("qlist").innerHTML=l.length?`<div class="label" style="margin-bottom:2px">Dotazy ostatních – než napíšete, podívejte se, jestli tu už váš není</div>`+l.map(q=>{const on=hlasoval(id,q.k),n=votes(id,q.k),muj=q.dev&&q.dev===DEV;
+   return `<div class="q"><div><p>${esc(q.t)}</p>${q.au?`<button type="button" class="linkb" data-qplay="${esc(q.k)}">🔊 Poslechnout nahrávku</button>`:""}<small>${esc(q.a)} · ${esc(q.c)} · ${n} ${n===1?"člověk":n<5?"lidé":"lidí"}</small></div>${muj?'<span class="muted" style="font-size:12px">váš dotaz</span>':`<button class="plus" data-plus="${esc(q.k)}" aria-pressed="${on}">${on?"✓ Mám taky":"+1 Mám stejný"}</button>`}</div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
+ SHEET_DRAW=draw;
  videno(id);setTimeout(render,0);
  openSheet(`<h2>Dotaz k přednášce</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.h)}</div>
   <div class="bd"><div id="qlist"></div>
@@ -911,10 +957,23 @@ function sheetQ(id){
  let AU=null;   // namluvený dotaz (data: URL)
  $("qmic").addEventListener("click",()=>nahravej(u=>{AU=u;$("qaud").src=u;$("qprev").hidden=false}));
  $("qadel").addEventListener("click",()=>{AU=null;$("qprev").hidden=true;$("qaud").removeAttribute("src")});
- $("qlist").addEventListener("click",e=>{const b=e.target.closest("[data-plus]");if(!b)return;const k=id+":"+b.dataset.plus;if(S.voted[k])delete S.voted[k];else{S.voted[k]=1;toast("Přidali jste se k dotazu")}store.set("voted",S.voted);draw()});
+ $("qlist").addEventListener("click",e=>{
+  const pl=e.target.closest("[data-qplay]");if(pl)return prehraj(qk(id,pl.dataset.qplay),pl,"🔊 Poslechnout nahrávku");
+  const b=e.target.closest("[data-plus]");if(!b)return;const k=b.dataset.plus, bylo=hlasoval(id,k);
+  if(LIVE.on){qPut("v/"+id+"/"+k+"/"+DEV,bylo?null:true).then(()=>{if(!bylo)toast("Přidali jste se k dotazu")}).catch(()=>toast("Nepodařilo se – zkontrolujte připojení"));return}
+  const kk=id+":"+k;if(bylo)delete S.voted[kk];else{S.voted[kk]=1;toast("Přidali jste se k dotazu")}store.set("voted",S.voted);draw()});
  $("qf").addEventListener("submit",e=>{e.preventDefault();if(REC.mr)return toast("Nejdřív ukončete nahrávání");const t=$("qt").value.trim();if(!t&&!AU)return;
-  const anon=!podpis()||($("qanon")&&$("qanon").checked);(S.qa[id]=S.qa[id]||[]).push(Object.assign({t:t||"🎤 Namluvený dotaz (bez přepisu)",a:anon?"anonymně":podpis(),c:now()},AU?{au:AU}:{}));
-  store.set("qa",S.qa);videno(id);$("qt").value="";AU=null;$("qprev").hidden=true;draw();render();toast("Dotaz odeslán předsedajícímu")});
+  const anon=!podpis()||($("qanon")&&$("qanon").checked);
+  const q={t:(t||"🎤 Namluvený dotaz (bez přepisu)").slice(0,1000),a:(anon?"anonymně":podpis()).slice(0,120),c:now(),ts:Date.now(),dev:DEV,h:String(x.h).slice(0,300)};
+  const hotovo=()=>{$("qt").value="";AU=null;$("qprev").hidden=true;draw();render();toast("Dotaz odeslán předsedajícímu")};
+  if(LIVE.on){
+   if(AU&&AU.length>900000)return toast("Nahrávka je moc dlouhá – zkraťte ji");
+   const k=qKlic(), btn=e.target.querySelector(".send");btn.disabled=true;btn.textContent="Odesílám…";
+   (AU?qPut("au/"+k,AU):Promise.resolve()).then(()=>qPut("q/"+id+"/"+k,Object.assign(q,AU?{au:true}:{})))
+    .then(()=>{if(AU)LIVE.au[k]=AU;hotovo()}).catch(()=>toast("Dotaz se nepodařilo odeslat – zkontrolujte připojení a zkuste znovu"))
+    .finally(()=>{btn.disabled=false;btn.textContent="Odeslat dotaz"});
+   return}
+  (S.qa[id]=S.qa[id]||[]).push(Object.assign(q,{k:qKlic()},AU?{au:AU}:{}));store.set("qa",S.qa);videno(id);hotovo()});
 }
 /* ===== Namluvený dotaz: nahrání (max 60 s) a přehrání do sálu ===== */
 const REC={mr:null,t:null,start:0,sr:null};
@@ -943,21 +1002,24 @@ function nahravej(hotovo){
  }).catch(()=>toast("Bez povolení mikrofonu to nejde – povolte ho v prohlížeči"));
 }
 let HR=null;
-function prehraj(q,btn){
- if(HR){HR.pause();const was=HR.btn;HR=null;document.querySelectorAll("[data-play]").forEach(x=>x.textContent="▶ Přehrát do sálu");if(was===btn)return}
- if(!q||!q.au)return;const a=new Audio(q.au);HR=a;a.btn=btn;btn.textContent="⏸ Zastavit";
- a.onended=()=>{btn.textContent="▶ Přehrát znovu";HR=null};a.play().catch(()=>{btn.textContent="▶ Přehrát do sálu";HR=null;toast("Nahrávku se nepodařilo přehrát")});
+function prehraj(q,btn,popis){
+ popis=popis||"▶ Přehrát do sálu";
+ if(HR){HR.pause();const was=HR.btn;HR=null;document.querySelectorAll("[data-play],[data-qplay]").forEach(x=>x.textContent=x.dataset.qplay?"🔊 Poslechnout nahrávku":"▶ Přehrát do sálu");if(was===btn)return}
+ if(!q||!q.au)return;btn.textContent="Načítám…";
+ audioDotazu(q).then(u=>{const a=new Audio(u);HR=a;a.btn=btn;btn.textContent="⏸ Zastavit";
+  a.onended=()=>{btn.textContent=popis.replace("Přehrát do sálu","Přehrát znovu");HR=null};return a.play()})
+  .catch(()=>{btn.textContent=popis;HR=null;toast("Nahrávku se nepodařilo přehrát")});
 }
 function sheetChair(bid){
  const bk=ALLT.find(y=>y.blok&&y.bid===bid), talks=ALLT.filter(y=>y.id&&y.bid===bid);
- const draw=()=>{$("clist").innerHTML=talks.map(x=>{const l=(S.qa[x.id]||[]).map((q,i)=>({q,i})).sort((a,b)=>(!!S.read[x.id+":"+a.i]-!!S.read[x.id+":"+b.i])||votes(x.id,b.i)-votes(x.id,a.i));
-   return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(({q,i})=>{const k=x.id+":"+i,r=!!S.read[k],n=votes(x.id,i);
+ const draw=()=>{$("clist").innerHTML=talks.map(x=>{const l=(S.qa[x.id]||[]).slice().sort((a,b)=>(!!S.read[x.id+":"+a.k]-!!S.read[x.id+":"+b.k])||votes(x.id,b.k)-votes(x.id,a.k));
+   return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(q=>{const k=x.id+":"+q.k,r=!!S.read[k],n=votes(x.id,q.k);
     return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p>${q.au?`<button class="play" data-play="${esc(k)}">▶ Přehrát do sálu</button>`:""}<small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes">+${n-1} se ptá taky</span>`:""}</div><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
  openSheet(`<h2>Pohled předsedajícího</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(bk.blok)} · předsedá ${esc(bk.pr)}</div>
   <div class="bd chair"><div id="clist"></div>
-  <div class="note">Dotazy přibývají živě během přednášky. Po přečtení je předsedající odškrtne. V ostré verzi bude tento pohled jen pro předsedající a pořadatele a dá se pustit i na plátno.</div></div>`);
- draw();
- $("clist").addEventListener("click",e=>{const pb=e.target.closest("[data-play]");if(pb){const [tid,i]=pb.dataset.play.split(":");return prehraj((S.qa[tid]||[])[+i],pb)}
+  <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe. Pohled se dá pustit i na plátno.</div></div>`);
+ draw();SHEET_DRAW=draw;
+ $("clist").addEventListener("click",e=>{const pb=e.target.closest("[data-play]");if(pb){const [tid,k]=pb.dataset.play.split(":");return prehraj(qk(tid,k),pb)}
   const b=e.target.closest("[data-read]");if(!b)return;const k=b.dataset.read;if(S.read[k])delete S.read[k];else S.read[k]=1;store.set("read",S.read);draw();render()});
 }
 
@@ -1061,7 +1123,7 @@ if(window.IMGBASE&&"serviceWorker" in navigator){navigator.serviceWorker.registe
 
 /* ===== Sheet ===== */
 function openSheet(h){const s=$("sheet");s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+h;s.hidden=false;$("bd").hidden=false;$("sclose").focus()}
-function closeSheet(){if(REC.mr)REC.mr.stop();if(HR){HR.pause();HR=null}$("sheet").hidden=true;$("bd").hidden=true}
+function closeSheet(){SHEET_DRAW=null;if(REC.mr)REC.mr.stop();if(HR){HR.pause();HR=null}$("sheet").hidden=true;$("bd").hidden=true}
 $("bd").addEventListener("click",closeSheet);
 $("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
@@ -1099,6 +1161,7 @@ $("view").addEventListener("input",e=>{
 (function(){try{const k=new URLSearchParams(location.search).get("k");
  if(k){history.replaceState(null,"",location.pathname+location.hash);kartaNacti(kartaKlic(k))}else if(S.karta)kartaNacti(null,true)}catch(e){}})();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.karta&&S.karta.k!=="ukazka"&&Date.now()-S.karta.ts>120000)kartaNacti(null,true)});
+liveStart();
 document.getElementById("markimg").src=IMG+"cislo31.webp";
 document.getElementById("vchip").textContent="Ukázka · v"+VERZE.split(" ")[0];
 render();

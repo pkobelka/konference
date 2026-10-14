@@ -188,12 +188,13 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.4 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.5 · 14. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
 const PUB="konference2027_verejne";    // veřejné údaje pro formulář (název, noci, menu)
 const PRI="konference2027_prihlasky";  // přihlášky partnerů – každá pod tajným klíčem (odkazem)
+const DOT="konference2027_dotazy";     // dotazy k přednáškám z průvodce (q = texty, au = nahrávky, v = +1)
 const KAR="konference2027_karty";      // osobní karty účastníků pro průvodce – každá pod tajným klíčem, bez kontaktů
 const LOGIN_URL=location.origin+location.pathname;
 let USER=null;
@@ -256,7 +257,7 @@ if(AUTH.isSignInWithEmailLink(location.href)){
 AUTH.onAuthStateChanged(user=>{
   if(!user){USER=null;showLogin();return;}
   FDB.ref("florian_login_email/"+leKey(user.email)).get().then(s=>{
-    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();}
+    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();}
     else{showLogin("E-mail <b>"+esc(user.email)+"</b> zatím nemá přístup. Ozvi se Petru Kobelkovi (stejný seznam jako Florián).");AUTH.signOut();}
   }).catch(()=>showLogin("Nepodařilo se ověřit přístup, zkus to znovu."));
 });
@@ -708,6 +709,10 @@ function rNastaveni(){
       `<p style="font-size:.9rem"><b>${Object.keys(KARTY).length}</b> karet · ${esc(KARTY_INFO||"vše aktuální")}</p>`}
     <button class="btn ghost small" id="s_karty_csv">⬇ Odkazy pro hromadný e-mail (CSV)</button>
   </div>
+  <div class="nast"><h2 class="sek">Dotazy k přednáškám z průvodce</h2>
+    <p style="font-size:.84rem;color:#666">Účastníci píší a namlouvají dotazy v průvodci, všichni je vidí živě. Mazat (nevhodný dotaz, vyčištění po zkoušce) můžeš jen ty.</p>
+    <div id="s_dotazy">${htmlDotazy()}</div>
+  </div>
   <div class="nast"><h2 class="sek">Přihláška pro partnery</h2>
     <div class="two">
       <div><label class="l">Uzávěrka přihlášek (po ní jde formulář jen číst)</label><input id="s_uzav" type="date" value="${esc(n.uzaverka||"")}"></div>
@@ -732,6 +737,7 @@ function rNastaveni(){
     FDB.ref(ROOT+"/nastaveni/noci/"+k).remove();
   }));
   $("s_karty_csv").addEventListener("click",exportKarty);
+  if($("s_dot_vse"))$("s_dot_vse").addEventListener("click",smazVse);
   $("s_nocadd").addEventListener("click",()=>{
     const nazev=prompt("Název noci (např. Úterý 13. 4.):");if(!nazev)return;
     const k="n"+Date.now().toString(36);
@@ -799,6 +805,23 @@ function prihStav(p){
 function prihKPrevzeti(){return Object.keys(PRIH).filter(t=>["nova","zmena"].includes(prihStav(PRIH[t])[0]));}
 function verejneData(n){n=n||N();return clean({nazev:n.nazev||"",datum:n.datum||"",misto:n.misto||"",noci:n.noci||{},menu:n.menu||{},uzaverka:n.uzaverka||"",text:n.text_partneri||""});}
 function ulozVerejne(n){return FDB.ref(PUB).set(verejneData(n));}
+
+/* ---------- DOTAZY Z PRŮVODCE (moderace – mazat smí jen pořadatel) ---------- */
+let DOTAZY={}, DOTAZY_ERR="";
+function loadDotazy(){FDB.ref(DOT+"/q").on("value",s=>{DOTAZY=s.val()||{};DOTAZY_ERR="";dotazyBox();},e=>{DOTAZY_ERR=errMsg(e);dotazyBox();});}
+function dotazyBox(){const b=$("s_dotazy");if(!b)return;b.innerHTML=htmlDotazy();const v=$("s_dot_vse");if(v)v.addEventListener("click",smazVse);}   // jen tahle sekce – rozepsané Nastavení zůstane
+function smazVse(){if(prompt("Smazat VŠECHNY dotazy, nahrávky a hlasy? Napiš SMAZAT")==="SMAZAT")FDB.ref(DOT).remove().catch(er=>alert("⚠️ "+errMsg(er)));}
+function dotazySeznam(){const r=[];for(const t in DOTAZY)for(const k in DOTAZY[t]||{})r.push(Object.assign({talk:t,k},DOTAZY[t][k]));return r.sort((a,b)=>(b.ts||0)-(a.ts||0));}
+function smazDotaz(t,k){const u={};u[DOT+"/q/"+t+"/"+k]=null;u[DOT+"/au/"+k]=null;u[DOT+"/v/"+t+"/"+k]=null;return FDB.ref().update(u);}
+function htmlDotazy(){
+  const l=dotazySeznam();
+  if(DOTAZY_ERR)return `<div class="probbox"><div>⛔ Dotazy nejde načíst: <b>${esc(DOTAZY_ERR)}</b>. Chybí pravidlo pro <b>${DOT}</b> ve Firebase.</div></div>`;
+  return `<p style="font-size:.9rem"><b>${l.length}</b> ${l.length===1?"dotaz":l.length>=2&&l.length<=4?"dotazy":"dotazů"} od účastníků (nejnovější nahoře).</p>`+
+    (l.length?`<table class="t">${l.slice(0,200).map(q=>`<tr><td class="sub" style="white-space:nowrap">${esc(q.c||"")}</td><td><b>${esc(q.t)}</b>${q.au?" 🎤":""}<div class="sub">${esc(q.a||"")} · ${esc(q.h||q.talk)}</div></td><td><button class="btn red small" data-dotdel="${esc(q.talk)}|${esc(q.k)}">Smazat</button></td></tr>`).join("")}</table>
+    <button class="btn red small" id="s_dot_vse" style="margin-top:8px">Smazat všechny dotazy (po zkoušce)</button>`:"");
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-dotdel]");if(!b)return;const [t,k]=b.dataset.dotdel.split("|");
+  if(confirm("Smazat dotaz? Zmizí všem účastníkům."))smazDotaz(t,k).catch(er=>alert("⚠️ "+errMsg(er)));});
 
 /* ---------- OSOBNÍ KARTY (průvodce: „Moje registrace“) ---------- */
 // Každý člověk má v osobě klíč „karta“. Pod ním je v KAR jen to, co má vidět on sám:
