@@ -271,3 +271,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Průvodce 0.18:** řádek s počasím zrušen → v plakátu u štítků termínu a místa **tlačítko „🌤️ 11° · Počasí v Seči“**
   (teplota se doplní po načtení); klepnutí otevře okno s počasím teď + 3 dny (ikona, max/min, popis).
   Na mobilu je tlačítko vedle termínu a zkrácené na „Počasí“, aby nezabíralo další řádek; na PC „Počasí v Seči“.
+- **Hodnocení přednášek (👍 „Zaujalo mě“) – ODLOŽENO**, uživatel to probere s kolegy. Návrh pro případ, že se bude dělat:
+  anonymně, 1 hlas z telefonu (jde vzít zpět), počty vidí jen pořadatel (přednášející případně jen své číslo),
+  veřejně po konferenci jen Top 3 / „Přednáška ročníku podle účastníků“. Varianta b) počty hned všem – riziko
+  (partneři, malý obor, ranní bloky). Technicky přes Firebase spolu s dotazy.
