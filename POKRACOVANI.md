@@ -563,3 +563,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Garanti:** Martin naskočí 1,8 s po Filipovi (časová pauza, ať jména vyniknou).
 - **Přihlášky ve videu nezmiňovat** (Petr: budou asi až v lednu) – řádek „Přihlášky brzy na www.vhos.cz“ odstraněn.
 - Pod „Zveme vás.“ nic (Petr: „těšíme se 2× po sobě není ono“) – těšíme se jen v závěru.
+- **Scéna Zveme vás (Petr):** „Zveme vás...“ (3 tečky) + „31“ vpravo + QR; po chvilce jen velké logo VHOS (130 px). Tři loga až v závěru.
