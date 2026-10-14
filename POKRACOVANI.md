@@ -647,3 +647,11 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   27. 4. 2027 8:00; během konference „Právě probíhá“, po ní „Děkujeme“), „Těšíme se na vás!“ + pořadatelé,
   tlačítka Video pozvánka a Průvodce. Široká = banner (výška 240 px), úzká = sloupec (360×540) – přes container query.
 - Ukázka vložení s kódem: https://pkobelka.github.io/konference/upoutavka/ukazka.html
+
+### ▶ KDE POKRAČOVAT (14. 10. 2026, úplný konec dne)
+- Hotovo a nasazeno: video pozvánky (šířka + výška), průvodce 0.41 (Doprava, zájem o svoz, dotazy velkým písmem),
+  pořadatel 1.18 (zájem o svoz), **upoutávka na web** `upoutavka/` (iframe, odpočet) + ukázka vložení `upoutavka/ukazka.html`.
+- Čeká na Petra: zastávka v Seči (adresa/mapa), test zájmu o dopravu, test dotazů velkým písmem v mobilu,
+  předat kód iframe správci webu vhos.cz.
+- Nápady: dálkové promítání dotazů (PIN + pravidlo mojebudky), odkazy `?pr=<blok>` v aplikaci pořadatele,
+  prezentace z LinkedIn článků, admin (lůžka, hromadné e-maily, smazat testovací data 2026).
