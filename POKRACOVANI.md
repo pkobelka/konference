@@ -332,3 +332,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Průvodce 0.25 se jmenuje „Seč 27“** (přání uživatele; nejdřív napsal „Seč 26“, potvrdil 27 podle roku konání).
   Titulek stránky, vlastní `pruvodce/manifest.webmanifest` (name „Seč 27 – průvodce konferencí“, short_name „Seč 27“
   = název pod ikonou), `apple-mobile-web-app-title`. Aplikace pořadatele zůstává „Konference“ (ať se na ploše nepletou).
+- **Průvodce 0.26:** odborní partneři jedou ve **dvou řadách** (každá polovina log, druhá řada opačným směrem),
+  menší okénka (výška 38 px, logo 26 px); průjezd ~11 s, pak se scéna přepne na mediální.
