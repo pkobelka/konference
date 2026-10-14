@@ -591,3 +591,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Další možné: prezentace z LinkedIn článků (8–10 slidů), dál organizační aplikace (lůžka, hromadné e-maily, testovací data).
 - Úder i při naskočení „Seč 31“ (B[2]+0,8 = 12,8 s) – Petr: „jsem nadšený“. Údery: název 2,8 s · 31 7,2 s · Seč 31 12,8 s.
 - „TERMÍN“ zarovnán doprava nad „28.“ (byl ve fleku) – obě verze.
+- Štítky v telefonní scéně naskakují po 1,1 s (dřív 0,7 s), ať se dají přečíst.

@@ -196,7 +196,7 @@ function render(t){
   // 6 aplikace
   const ag=B[5];setP('sgk',p(t,ag+.3));GAR.forEach((g,i)=>setP('gr'+i,p(t,ag+.6+i*1.7,.6)));setP('sgz',p(t,ag+3.2));setP('sgs',p(t,ag+5.5));
   const a6=B[6];setP('s6k',p(t,a6+.3));setP('s6h',p(t,a6+.7));setP('s6s',p(t,a6+1.2));setP('ph',p(t,a6+.5,1));
-  CH.forEach((c,i)=>setP('ch'+i,p(t,a6+2+i*.7,.5)));
+  CH.forEach((c,i)=>setP('ch'+i,p(t,a6+1.8+i*1.1,.5)));   // štítky s odstupem 1,1 s – ať se dají přečíst
   for(let i=0;i<5;i++){const s0=a6+1+i*2.1,o=i===0?cl((s0+2.3-t)/.4):i===4?cl((t-s0)/.4):cl((t-s0)/.4)*cl((s0+2.3-t)/.4);$('i'+i).style.opacity=t<a6+1?(i===0?1:0):o}
   // 7
   const a7=B[7];setP('s7h',p(t,a7+.4));setP('s7s',p(t,a7+1));setP('qr',p(t,a7+1.4,.8));setP('n31b',p(t,a7+.8,.9));setP('logos',p(t,a7+2.6,.9));
