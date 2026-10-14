@@ -562,4 +562,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Datum ve videu:** „27. – 28.“ s mezerami kolem pomlčky (užší, margin -.12em); větší mezera pod „Zveme vás.“ (64 px).
 - **Garanti:** Martin naskočí 1,8 s po Filipovi (časová pauza, ať jména vyniknou).
 - **Přihlášky ve videu nezmiňovat** (Petr: budou asi až v lednu) – řádek „Přihlášky brzy na www.vhos.cz“ odstraněn.
-- Pod „Zveme vás.“ místo přihlášek: „Těšíme se na setkání.“ (závěr zůstává „Těšíme se na vás na Seči!“).
+- Pod „Zveme vás.“ nic (Petr: „těšíme se 2× po sobě není ono“) – těšíme se jen v závěru.
