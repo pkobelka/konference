@@ -163,6 +163,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .proj .pjf .pjvt{font-weight:800;color:#5b2d82;margin-left:1vw}.proj.dark .pjf .pjvt{color:#c9a6ea}
 .proj .pjf button{border:1.5px solid rgba(120,110,130,.35);background:transparent;color:inherit;border-radius:12px;padding:1vh 1.4vw;font:700 clamp(13px,1.5vw,24px) var(--f-body);cursor:pointer}
 .proj .pjf button.on{background:#5b2d82;border-color:#5b2d82;color:#fff}
+.proj.dark .pjq.rd{opacity:.55}
+@media (max-width:700px){.proj{padding:2vh 4vw calc(2vh + env(safe-area-inset-bottom))}.proj .pjf .pjwho{flex-basis:100%;font-size:15px}.proj .pjf{gap:8px}.proj .pjf button{padding:10px 12px;font-size:15px}.proj .pjplay{font-size:20px;padding:14px 24px}}
 .proj .pjempty{font-size:clamp(20px,3vw,48px);opacity:.6}
 .chair .projall{display:block;width:100%;margin:4px 0 6px;border:0;border-radius:12px;padding:12px;font-weight:800;font-size:15px;background:var(--accent);color:var(--accent-ink)}
 .chair h3{font-size:15px;font-family:var(--f-body);font-weight:700;margin:14px 0 4px;color:var(--water)}
@@ -522,7 +524,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.40 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.41 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -1214,7 +1216,7 @@ function pjKresli(){
    <button id="pjprev" aria-label="Předchozí dotaz">‹ Předchozí</button>${o?`<button id="pjrd" class="${rd?"on":""}">${rd?"Přečteno ✓":"Označit přečtené"}</button>`:""}<button id="pjnext" aria-label="Další dotaz">Další ›</button>
    <button id="pjfs" aria-label="Celá obrazovka">⛶</button><button id="pjdk" aria-label="Tmavé / světlé pozadí">🌓</button><button id="pjx" aria-label="Zavřít projekci">✕</button></div>`;
  // písmo co největší, ale aby se dotaz vešel
- const q=$("pjq");if(q){const box=q.parentNode;let f=Math.min(innerWidth*.075,innerHeight*.16);q.style.fontSize=f+"px";
+ const q=$("pjq");if(q){const box=q.parentNode;let f=Math.min(innerWidth*.12,innerHeight*.16);q.style.fontSize=f+"px";
   while(f>18&&(q.scrollHeight>box.clientHeight*.86||q.scrollWidth>box.clientWidth)){f*=.92;q.style.fontSize=f+"px"}}
  const go=d=>{if(!L.length)return;if(HR){HR.pause();HR=null}PJ.key=L[(i+d+L.length)%L.length].key;pjKresli()};
  $("pjprev").onclick=()=>go(-1);$("pjnext").onclick=()=>go(1);
@@ -1238,10 +1240,10 @@ function sheetChair(bid){
  const bk=ALLT.find(y=>y.blok&&y.bid===bid), talks=ALLT.filter(y=>y.id&&y.bid===bid);
  const draw=()=>{$("clist").innerHTML=talks.map(x=>{const l=(S.qa[x.id]||[]).slice().sort((a,b)=>(!!S.read[x.id+":"+a.k]-!!S.read[x.id+":"+b.k])||votes(x.id,b.k)-votes(x.id,a.k));
    return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(q=>{const k=x.id+":"+q.k,r=!!S.read[k],n=votes(x.id,q.k);
-    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p>${q.au?`<button class="play" data-play="${esc(k)}">▶ Přehrát do sálu</button>`:""}<small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes">+${n-1} se ptá taky</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">📽 Promítnout</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
+    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p>${q.au?`<button class="play" data-play="${esc(k)}">▶ Přehrát do sálu</button>`:""}<small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes">+${n-1} se ptá taky</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">🔎 Velkým písmem</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
  openSheet(`<h2>Pohled předsedajícího</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(bk.blok)} · předsedá ${esc(bk.pr)}</div>
-  <div class="bd chair"><button class="projall" data-projall="1">📽 Promítat dotazy na plátno</button><div id="clist"></div>
-  <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe.<br>Na plátno: připojte tablet nebo počítač k projektoru a stiskněte <b>Promítat</b> – dotaz se ukáže velkým písmem přes celou plochu, hlasový se pustí tlačítkem 🔊. Ovládání: ← → další dotaz, mezerník přehrát, R přečteno, F celá obrazovka, Esc zpět.<br>Přímý odkaz pro počítač v sále: <b>…/pruvodce/?pr=${esc(bid)}</b></div></div>`);
+  <div class="bd chair"><button class="projall" data-projall="1">🔎 Dotazy velkým písmem · na plátno</button><div id="clist"></div>
+  <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe.<br><b>Na mobilu</b> (předsedající s mikrofonem): „Velkým písmem“ ukáže dotaz přes celý displej – pohodlně ho přečtete do mikrofonu, hlasový dotaz pustíte tlačítkem 🔊 a telefon podržíte u mikrofonu.<br><b>Na počítači u projektoru</b> (např. v diskuzi po přednášce): stejný pohled přes celé plátno. Ovládání: ← → další dotaz, mezerník přehrát, R přečteno, F celá obrazovka, Esc zpět.<br>Přímý odkaz pro počítač v sále: <b>…/pruvodce/?pr=${esc(bid)}</b></div></div>`);
  draw();SHEET_DRAW=draw;
  $("sheet").querySelector("[data-projall]").addEventListener("click",()=>promitej(bid));
  $("clist").addEventListener("click",e=>{const pj=e.target.closest("[data-proj]");if(pj)return promitej(bid,pj.dataset.proj);

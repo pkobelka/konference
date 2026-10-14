@@ -619,3 +619,8 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   celá obrazovka, 🌓 tmavé/světlé (pamatuje se), ✕. Klávesy ← → mezerník R F D Esc. Živě se obnovuje (ne při přehrávání).
 - Přímý odkaz pro PC v sále: `…/pruvodce/?pr=<bid>` (např. utb4) otevře pohled předsedajícího daného bloku.
 - Možné doladit: tlačítko/odkaz pro přednášejícího v aplikaci pořadatele (seznam odkazů ?pr= pro každý blok), test na reálném projektoru.
+- **Průvodce 0.41 (Petr: předsedající má jen mobil + mikrofon, projektor je na notebooku přednášejícího):** pohled
+  „🔎 Velkým písmem“ funguje hlavně jako čtečka v mobilu – dotaz přes celý displej přečte do mikrofonu, hlasový pustí 🔊
+  a podrží telefon u mikrofonu. Na PC u projektoru stejný pohled přes plátno (např. v diskuzi). Mobilní rozložení doladěno.
+- Nápad na později (nestavěno): „dálkové promítání“ – předsedající vybere dotaz v mobilu a ten se ukáže v okně prohlížeče
+  na počítači u projektoru (přes Firebase; potřebovalo by zabezpečení, např. PIN bloku, a nové pravidlo v mojebudky).
