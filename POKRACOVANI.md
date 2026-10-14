@@ -116,6 +116,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Loga, texty a videa partnerů; fotky z minulých ročníků.
 
 ## Pravidla
+- **Tykáme si** (uživatel Petr Kobelka si to přál 14. 10. 2026).
 - Seznamy s e-maily a telefony **nikdy do GitHubu** ani do ukázek (repo je pro Pages veřejné).
 - Komunikace česky; uživatel nejdřív sbírá podklady, pak se zapracovává najednou.
 
