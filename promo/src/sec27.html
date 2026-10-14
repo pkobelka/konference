@@ -77,8 +77,8 @@ img.lg{background:#fff;padding:14px 22px;border-radius:22px;box-shadow:0 10px 26
 .vert #s3 .c{top:800px!important}
 .vert #s4>div:first-child{left:90px!important;top:600px!important}
 .vert .cal{right:auto;left:260px;top:1080px}
-.vert .w4{left:60px;top:700px}
-.vert .w4 div{font-size:70px;gap:20px;white-space:nowrap}
+.vert .w4{left:50px;top:700px}
+.vert .w4 div{font-size:66px;gap:20px;white-space:nowrap}
 .vert .w4 i{width:78px;height:78px}
 .vert #sg>div{top:620px!important}
 .vert .gar>div>div{min-width:0}
@@ -155,7 +155,7 @@ const st=$('st');FL.forEach((f,i)=>{const e=document.createElement('div');e.clas
 // kalendář duben 2027 (1. 4. = čtvrtek)
 (function(){const g=$('calg');g.innerHTML=['Po','Út','St','Čt','Pá','So','Ne'].map(d=>`<b>${d}</b>`).join('')+'<span></span>'.repeat(3)+Array.from({length:30},(_,i)=>`<span class="${i+1===27||i+1===28?'on':''}">${i+1}</span>`).join('')})();
 // slova scény 5
-const W=[["Přednášky.",9],["Diskuze.",6],["Setkání.",16],["Večer s přáteli.",3]];
+const W=[["Přednášky",9],["Diskuze",6],["Setkání",16],["Večer s přáteli",3]];
 $('w4').innerHTML=W.map(([w,f],i)=>`<div id="wd${i}" class="r" style="margin-left:${i*(V?50:140)}px"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i>${w}</div>`).join('');
 const CH=["📣 Online aktuální informace přímo do mobilu","❓ Dotazy k přednáškám do diskuze","🎙️ Průběžně – písemně i hlasem","✎ Poznámky","📅 Program","🌤️ Počasí","🧭 Navigace do hotelu","🪪 Moje registrace"];
 const GAR=[["Ing. Filip Wanner, Ph.D.","ENERGIE AG BOHEMIA s.r.o.",10],["Ing. Martin Srb, Ph.D.","Pražské vodovody a kanalizace, a.s.",16]];

@@ -624,3 +624,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   a podrží telefon u mikrofonu. Na PC u projektoru stejný pohled přes plátno (např. v diskuzi). Mobilní rozložení doladěno.
 - Nápad na později (nestavěno): „dálkové promítání“ – předsedající vybere dotaz v mobilu a ten se ukáže v okně prohlížeče
   na počítači u projektoru (přes Firebase; potřebovalo by zabezpečení, např. PIN bloku, a nové pravidlo v mojebudky).
+- Video: scéna „Přednášky / Diskuze / Setkání / Večer s přáteli“ bez teček (Petr). Na výšku písmo 66 px.
