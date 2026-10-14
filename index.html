@@ -191,7 +191,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.11 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.12 · 14. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -213,7 +213,7 @@ const KAT={
 const FKAT=[["generalni","Generální partneři"],["hlavni","Hlavní partneři"],["odborny","Odborní partneři"],["medialni","Mediální partneři"],["vhos","VHOS"],["koncern","Koncern"],["ace","AČE"],["ostatni","Ostatní (instituce, firmy)"]];
 const STAV={ano:["Potvrdil","#2f8a3c"],pozvan:["Pozván","#c77d1a"],nevim:["Nevíme","#888"],ne:["Nejede","#b0413e"]};
 const STAV_PORADI=["ano","pozvan","nevim","ne"];
-const ZDROJ={web:"Web – e-přihláška (ubytování si rezervují sami v hotelu)",hoste:"Formulář pro hosty (zaslaný odkaz)",partner:"Přihláška partnera",pozvanka:"Pozvánka (zve pořadatel)",rucne:"Zadáno ručně"};
+const ZDROJ={web:"Web – e-přihláška (ubytování si rezervují sami v hotelu)",hoste:"Formulář pro hosty (zaslaný odkaz)",partner:"Přihláška partnera",formular:"Přihláška – formulář (Word/PDF)",pozvanka:"Pozvánka (zve pořadatel)",rucne:"Zadáno ručně"};
 const POHL={z:"Ž",m:"M"};
 const SEKCE={A:"Sekce A",B:"Sekce B",C:"Sekce C – Superior",D:"Sekce D – Depandance"};
 
@@ -858,6 +858,65 @@ function parsujPrihlasku(L){
   r.osoby.forEach((o,i)=>{o.clen=cl[i]==="člen";});
   return r;
 }
+let JSZIPL=null;
+function nactiJszip(){
+  if(JSZIPL)return Promise.resolve(JSZIPL);
+  return new Promise((ok,ko)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+    sc.onload=()=>{JSZIPL=window.JSZip;ok(JSZIPL);};sc.onerror=()=>ko(new Error("Nepodařilo se načíst čtečku Wordu – zkontroluj připojení."));document.head.appendChild(sc);});
+}
+async function docxRadky(JSZip,data){
+  const z=await JSZip.loadAsync(data), xml=await z.file("word/document.xml").async("string");
+  const d=new DOMParser().parseFromString(xml,"application/xml"), NS="http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+  const t=el=>Array.from(el.getElementsByTagNameNS(NS,"t")).map(x=>x.textContent).join("").trim();
+  const body=d.getElementsByTagNameNS(NS,"body")[0], out=[];
+  const kids=n=>Array.from({length:n.childNodes.length},(_,i)=>n.childNodes[i]).filter(x=>x.nodeType===1);
+  for(const el of kids(body)){
+    if(el.localName==="p"){const s=t(el);if(s)out.push([s]);}
+    else if(el.localName==="tbl")for(const tr of Array.from(el.getElementsByTagNameNS(NS,"tr")))out.push(kids(tr).filter(c=>c.localName==="tc").map(t));
+  }
+  return out;
+}
+const FTYP=[[/PRO\s+PŘEDNÁŠEJÍCÍ/i,"prednasejici","Přednášející"],[/VYSTAVUJÍCÍ|VYSTAVOVATEL/i,"vystavujici","Vystavující"],[/YWP/i,"ywp","YWP"],[/\bHOST(É|E|Ů)?\b/i,"host","Host"]];
+const FPOLE={"titul před jménem":"titul_pred","titul za jménem":"titul_za","jméno":"jmeno","příjmení":"prijmeni","firma":"firma","sídlo":"sidlo","ičo":"ico","ič":"ico","dič":"dic",
+  "kontaktní e-mail":"email","kontaktní telefon":"tel","kontaktní e-mail firma":"f_email","kontaktní telefon firma":"f_tel","poznámka":"poznamka","fakturační adresa":"fakt_adresa","e-mail pro zaslání faktury":"fakt_email","vložné":"vlozne","datum konání konference":"datum","další účastník":"dalsi"};
+const ZA_OSOBU=["titul_pred","titul_za","jmeno","prijmeni","email","tel"];
+function parsujFormular(rows){
+  const vse=rows.map(r=>r.join(" ")).join("\n"), typ=FTYP.find(([re])=>re.test(vse));
+  const r={typ:typ?typ[1]:"",typNazev:typ?typ[2]:"",firma:"",ico:"",dic:"",sidlo:"",f_email:"",f_tel:"",fakt_adresa:"",fakt_email:"",poznamka:"",osoby:[]};
+  let o={};const dalsi=()=>{if(o.jmeno||o.prijmeni||o.email)r.osoby.push(o);o={};};
+  const zpracuj=(lab,val)=>{
+    const k=FPOLE[lab.toLowerCase().replace(/\s+/g," ").trim()];if(!k)return;
+    val=(val||"").replace(/\(požadavek na stravu[^)]*\)/i,"").trim();
+    if(k==="dalsi")return dalsi();
+    if(ZA_OSOBU.includes(k)){if((k==="titul_pred"||k==="jmeno")&&(o.jmeno||o.prijmeni))dalsi();if(val)o[k]=val;}
+    else if(val&&!r[k])r[k]=val;
+  };
+  for(const row of rows){
+    const cells=row.flatMap(c=>String(c).split(/\s{3,}/)).map(c=>c.trim()).filter(Boolean);
+    for(let i=0;i<cells.length;i++){
+      const m=/^([^:]{2,40}):\s*(.*)$/.exec(cells[i]);if(!m)continue;
+      let val=m[2];if(!val&&i+1<cells.length&&!/^[^:]{2,40}:/.test(cells[i+1])){val=cells[i+1];i++;}
+      zpracuj(m[1],val);
+    }
+  }
+  dalsi();
+  // kontakt firmy u vystavovatele = firemní e-mail/tel, jinak první osoba
+  return r;
+}
+// Jeden soubor → společný tvar {druh:"web"|"form", typ, firma, ico, dic, kontakt, osoby, poznamka, …}
+function prectiSoubor(fl){
+  const docx=/\.docx$/i.test(fl.name);
+  if(/\.doc$/i.test(fl.name))return Promise.reject(new Error("starý formát .doc – ulož ho ve Wordu jako .docx nebo PDF"));
+  return fl.arrayBuffer().then(b=>docx
+    ? nactiJszip().then(jz=>docxRadky(jz,b)).then(rows=>formNaZaznam(parsujFormular(rows)))
+    : nactiPdfjs().then(pj=>pdfRadky(pj,new Uint8Array(b))).then(L=>/Přihláška na konferenci\s*-\s*\d+/.test(L.join("\n"))
+        ? Object.assign(parsujPrihlasku(L),{druh:"web"})
+        : formNaZaznam(parsujFormular(L.map(l=>[l])))));
+}
+function formNaZaznam(f){
+  const o0=f.osoby[0]||{};
+  return Object.assign(f,{druh:"form",kontakt:{jmeno:[o0.jmeno,o0.prijmeni].filter(Boolean).join(" "),email:f.f_email||o0.email||"",tel:f.f_tel||o0.tel||""}});
+}
 function firmaPodle(r){const ico=String(r.ico||"").replace(/\D/g,"");
   return Object.keys(DB.firmy).find(f=>ico&&String(DB.firmy[f].ico||"").replace(/\D/g,"")===ico)||Object.keys(DB.firmy).find(f=>norm(DB.firmy[f].nazev)===norm(r.firma))||"";}
 function osobaPodle(x){const e=norm(x.email);return Object.keys(DB.osoby).find(i=>e&&norm(DB.osoby[i].email)===e)||Object.keys(DB.osoby).find(i=>norm(jmeno(DB.osoby[i]))===norm(x.prijmeni+" "+x.jmeno))||"";}
@@ -866,24 +925,25 @@ function eimpInit(){
   f.addEventListener("change",()=>eimpSoubory([...f.files]));
   d.addEventListener("dragover",e=>{e.preventDefault();d.classList.add("on");});
   d.addEventListener("dragleave",()=>d.classList.remove("on"));
-  d.addEventListener("drop",e=>{e.preventDefault();d.classList.remove("on");eimpSoubory([...e.dataTransfer.files].filter(x=>/pdf$/i.test(x.name)||x.type==="application/pdf"));});
+  d.addEventListener("drop",e=>{e.preventDefault();d.classList.remove("on");eimpSoubory([...e.dataTransfer.files].filter(x=>/\.(pdf|docx?)$/i.test(x.name)));});
   if(EIMP.length)eimpNahled();else if(EIMP_MSG)$("eimp_out").innerHTML=EIMP_MSG;   // hláška přežije překreslení po uložení
 }
 function eimpSoubory(files){
   if(!files.length)return;EIMP_MSG="";const out=$("eimp_out");out.innerHTML=`<p class="muted">Čtu ${files.length} PDF…</p>`;
-  nactiPdfjs().then(pj=>Promise.all(files.map(fl=>fl.arrayBuffer().then(b=>pdfRadky(pj,new Uint8Array(b))).then(L=>Object.assign(parsujPrihlasku(L),{soubor:fl.name})).catch(e=>({soubor:fl.name,chyba:errMsg(e),osoby:[]})))))
-    .then(l=>{EIMP=l;eimpNahled();}).catch(e=>{out.innerHTML=`<div class="probbox"><div>⚠️ ${esc(errMsg(e))}</div></div>`;});
+  Promise.all(files.map(fl=>prectiSoubor(fl).then(r=>Object.assign(r,{soubor:fl.name})).catch(e=>({soubor:fl.name,chyba:errMsg(e),osoby:[]}))))
+    .then(l=>{EIMP=l;eimpNahled();});
 }
 function eimpNahled(){
   const out=$("eimp_out");if(!out)return;let nov=0;
   const h=EIMP.map((r,ri)=>{
     if(r.chyba||!r.osoby.length)return `<div class="probbox"><div>⚠️ <b>${esc(r.soubor)}</b>: ${r.chyba?esc(r.chyba):"nenašel jsem v něm přihlášené osoby – je to e-přihláška z webu?"}</div></div>`;
     const fid=firmaPodle(r);
-    return `<div class="nast" style="margin:8px 0;padding:10px 12px"><b>${esc(r.firma||"(bez firmy)")}</b> <span class="sub">· IČ ${esc(r.ico||"–")} · přihláška č. ${esc(r.objednavka||"–")} · ${fid?"firma už je v seznamu":"<b>nová firma</b>"}</span>
+    const druh=r.druh==="web"?"e-přihláška z webu č. "+esc(r.objednavka||"–")+" → Veřejnost":r.typ?"přihláška <b>"+esc(r.typNazev)+"</b>":"<span style='color:var(--cervena)'>druh přihlášky nerozpoznán → Ostatní</span>";
+    return `<div class="nast" style="margin:8px 0;padding:10px 12px"><div class="sub" style="font-size:.8rem">📄 ${esc(r.soubor)} · ${druh}</div><b>${esc(r.firma||"(bez firmy)")}</b> <span class="sub">· IČ ${esc(r.ico||"–")} · ${fid?"firma už je v seznamu":"<b>nová firma</b>"}</span>
       ${r.kontakt.jmeno?`<div class="sub">Kontakt: ${esc(r.kontakt.jmeno)} · ${esc(r.kontakt.email)} · ${esc(r.kontakt.tel)}</div>`:""}
       ${r.poznamka?`<div class="loni" style="background:#fff8e1;margin-top:4px">📝 <b>Poznámka:</b> ${esc(r.poznamka)}</div>`:""}
       <table class="t" style="margin-top:6px">${r.osoby.map((x,oi)=>{const ex=osobaPodle(x);if(!ex)nov++;
-        return `<tr style="${ex?"opacity:.5":""}"><td><label><input type="checkbox" class="eimp_c" data-r="${ri}" data-o="${oi}" ${ex?"":"checked"}> <b>${esc([x.titul_pred,x.jmeno,x.prijmeni].filter(Boolean).join(" "))}${x.titul_za?", "+esc(x.titul_za):""}</b></label></td><td>${esc(x.email)}</td><td>${esc(x.tel)}</td><td>${x.clen?"člen CzWA":"nečlen"}</td><td>${ex?"už je v seznamu":"<b>nový</b>"}</td></tr>`;}).join("")}</table></div>`;}).join("");
+        return `<tr style="${ex?"opacity:.5":""}"><td><label><input type="checkbox" class="eimp_c" data-r="${ri}" data-o="${oi}" ${ex?"":"checked"}> <b>${esc([x.titul_pred,x.jmeno,x.prijmeni].filter(Boolean).join(" "))}${x.titul_za?", "+esc(x.titul_za):""}</b></label></td><td>${esc(x.email)}</td><td>${esc(x.tel)}</td><td>${r.druh==="web"?(x.clen?"člen CzWA":"nečlen"):""}</td><td>${ex?"už je v seznamu":"<b>nový</b>"}</td></tr>`;}).join("")}</table></div>`;}).join("");
   out.innerHTML=h+(nov?`<div class="lista"><button class="btn" id="eimp_go">Založit vybrané (${nov})</button><button class="btn ghost small" id="eimp_x">Zrušit</button><span class="msg" id="eimp_msg"></span></div>`:`<div class="lista"><span class="pocet">Nic nového k založení.</span><button class="btn ghost small" id="eimp_x">Zavřít</button></div>`);
   $("eimp_x").addEventListener("click",()=>{EIMP=[];out.innerHTML="";});
   if($("eimp_go"))$("eimp_go").addEventListener("click",eimpZaloz);
@@ -895,14 +955,15 @@ function eimpZaloz(){
     const r=EIMP[ri], x=r.osoby[oi];if(osobaPodle(x))continue;
     let fid=firmaPodle(r)||novaF[r.ico||r.firma];
     if(!fid&&r.firma){fid=FDB.ref(ROOT+"/firmy").push().key;novaF[r.ico||r.firma]=fid;nF++;
-      upd["firmy/"+fid]=clean({nazev:r.firma,kat:"ostatni",ico:r.ico,dic:r.dic,kontakt:clean({jmeno:r.kontakt.jmeno,email:r.kontakt.email,tel:r.kontakt.tel})});}
+      upd["firmy/"+fid]=clean({nazev:r.firma,kat:"ostatni",ico:r.ico,dic:r.dic,sidlo:r.sidlo,fakt_adresa:r.fakt_adresa,fakt_email:r.fakt_email,kontakt:clean({jmeno:r.kontakt.jmeno,email:r.kontakt.email,tel:r.kontakt.tel})});}
     const bez=/bez\s+ubytov/i.test(r.poznamka||"");
     const id=FDB.ref(ROOT+"/osoby").push().key;nO++;
+    const web=r.druh==="web", kat={};kat[web?"verejnost":(r.typ||"ostatni")]=true;
     upd["osoby/"+id]=clean(stamp({prijmeni:x.prijmeni,jmeno:x.jmeno,titul_pred:x.titul_pred,titul_za:x.titul_za,email:x.email,tel:x.tel,firma:fid||"",
-      kat:{verejnost:true},stav:"ano",zdroj:"web",objednavka:r.objednavka,clen:!!x.clen,nespi:bez,pozn_partner:r.poznamka||""}));
+      kat,stav:"ano",zdroj:web?"web":"formular",ubyt:web?"":"ja",objednavka:web?r.objednavka:"",clen:web&&!!x.clen,nespi:bez,pozn_partner:r.poznamka||""}));
   }
   if(!nO)return;
-  EIMP_MSG=`<p style="color:var(--zelena)">✔ Založeno ${pl(nO,"člověk","lidé","lidí")}${nF?" a "+pl(nF,"firma","firmy","firem"):""}. Najdeš je v Lidech (zdroj e-přihláška, štítek „hotel sám“). Kdo psal „bez ubytování“, má rovnou „nespí“.</p>`;
+  EIMP_MSG=`<p style="color:var(--zelena)">✔ Založeno ${pl(nO,"člověk","lidé","lidí")}${nF?" a "+pl(nF,"firma","firmy","firem"):""}. Najdeš je v Lidech. Veřejnost z webu má „hotel sám“ (kdo psal „bez ubytování“, má „nespí“); hostům, přednášejícím, vystavovatelům a YWP doplň noci, pokoj a večeři.</p>`;
   FDB.ref(ROOT).update(upd).then(()=>{EIMP=[];const o=$("eimp_out");if(o)o.innerHTML=EIMP_MSG;})
     .catch(e=>{$("eimp_msg").textContent="⚠️ "+errMsg(e);});
 }
@@ -1112,9 +1173,9 @@ function rPrihlasky(){
   const bezOdkazu=partneri.filter(f=>!tokenFirmy(f));
   const firmyS=[...new Set(partneri.concat(Object.values(PRIH).map(p=>p.firma)))].filter(f=>DB.firmy[f]);
   const cnt={};firmyS.forEach(f=>{const s=prihStav(PRIH[tokenFirmy(f)])[0];cnt[s]=(cnt[s]||0)+1;});
-  let h=`<div class="nast" id="eimp"><h2 class="sek">📄 Import e-přihlášek z webu (PDF)</h2>
-    <p style="font-size:.84rem;color:#666">Přetáhni sem PDF přihlášky, které chodí z webu (klidně víc najednou), nebo je vyber. Aplikace z nich vytáhne firmu, IČ, kontaktní osobu a přihlášené lidi, ukáže náhled a po potvrzení je založí jako <b>Potvrdil · Veřejnost · e-přihláška</b>. Kdo už v seznamu je (stejný e-mail), se nezaloží znovu.</p>
-    <label class="dropz" id="eimp_drop"><input type="file" id="eimp_f" accept="application/pdf,.pdf" multiple hidden>⬇ Přetáhni PDF sem nebo <u>klikni a vyber</u></label>
+  let h=`<div class="nast" id="eimp"><h2 class="sek">📄 Import přihlášek (PDF z webu, Word/PDF formuláře)</h2>
+    <p style="font-size:.84rem;color:#666">Přetáhni sem přihlášky, klidně víc najednou: <b>e-přihlášky z webu</b> (PDF) → Veřejnost, ubytování sami v hotelu; <b>vyplněné formuláře</b> pro hosty, přednášející, vystavovatele a YWP (Word .docx nebo PDF) → kategorie podle druhu přihlášky, ubytování zajišťuješ ty. Aplikace ukáže náhled a po potvrzení je založí jako <b>Potvrdil</b>. Kdo už v seznamu je (stejný e-mail), se nezaloží znovu.</p>
+    <label class="dropz" id="eimp_drop"><input type="file" id="eimp_f" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple hidden>⬇ Přetáhni přihlášky sem (PDF nebo Word) nebo <u>klikni a vyber</u></label>
     <div id="eimp_out"></div></div>
   <div class="stav">Každá firma má <b>vlastní tajný odkaz</b> na přihlášku. Partner vyplní své lidi, noci, spaní a večeři; tady pak přihlášku jedním klikem <b>převezmeš</b> do seznamu lidí. Pokoje přiděluješ ty.</div>
   <div class="kpis">

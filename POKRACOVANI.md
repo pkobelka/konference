@@ -415,3 +415,17 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
      spolubydlících a **pondělní večeře**, pokud přijedou už v pondělí.
 - Úpravy: „hotel sám“ se odvodí i z **kategorie Veřejnost** (ne jen ze zdroje web); na kartě „hotel sám“ bez vybrané
   večeře se řádek Večeře neukazuje (veřejnosti večeři nezajišťujeme).
+
+### Import vyplněných formulářů Word/PDF (14. 10. 2026) – admin 1.12
+- Uživatel poslal **šablony přihlášek (Word .docx)**: **hosté, přednášející, vystavovatel (2 osoby + firma), YWP CzWA**.
+  Jsou to obyčejné tabulky „popisek: | hodnota“ (žádná pole formuláře). Šablony nejsou v repozitáři.
+- Admin → Přihlášky → **„📄 Import přihlášek (PDF z webu, Word/PDF formuláře)“** bere .pdf i .docx (víc najednou):
+  e-přihláška z webu (PDF s „Přihláška na konferenci - číslo“) → Veřejnost, hotel sám (jako dřív);
+  **formulář** (Word přes JSZip 3.10.1 z cdnjs, nebo stejný formulář uložený jako PDF) → druh podle nadpisu
+  (PRO PŘEDNÁŠEJÍCÍ / VYSTAVUJÍCÍ / YWP / HOSTÉ) → kategorie prednasejici / vystavujici / ywp / host, zdroj
+  „Přihláška – formulář (Word/PDF)“, ubytování **zajišťuji já**, Poznámka (strava) → pozn_partner; firma se sídlem,
+  fakturační adresou a e-mailem (YWP). Vystavovatel: více osob („Další účastník“). Starý .doc → hláška „ulož jako .docx/PDF“.
+- Otestováno na vyplněných kopiích šablon s vymyšlenými údaji (host.docx, prednasejici.pdf, vystavovatel.docx, ywp.docx)
+  + e-přihláška z webu najednou → 6 lidí, 5 firem, správné kategorie.
+- **Připomínky k šablonám pro uživatele:** datum 14.–15. 4. 2026 → 27.–28. 4. 2027; název („ČOV“ vs „ODPADNÍCH VOD“);
+  YWP má jako garanta F. Wannera; chybí řádky pro ubytování (noci Po/Út), pondělní večeři a stravu (kromě hostů).
