@@ -602,3 +602,12 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Pravidla: mojebudky PR #186 (sloučeno se svolením Petra) – veřejně jen zápis nového záznamu s kontrolou polí.
 - Video: „Novinka 31. ročníku“ v bílém štítku (34 px), v telefonní scéně vše postupně (nadpis 1,1 s, 2 řádky 2,0/2,9 s, štítky od 3,9 s po 0,9 s); snímky průvodce přefoceny (nová Doprava).
 - Časy svozu (Petr): odjezd z Kraskova 19:00 (přes Seč), zpět z Jezerky 1:30 – průvodce 0.39.
+
+### ▶ KDE POKRAČOVAT (14. 10. 2026, pozdě večer)
+- Nasazeno: průvodce **0.39** (Doprava: svoz jen na úterní společenský večer, Kraskov 19:00 → Seč → Jezerka, zpět 1:30;
+  „Mám zájem o dopravu“ → Firebase `konference2027_doprava/z`; navigace Jezerka i Kraskov), pořadatel **1.18**
+  (záložka Průvodce → „🚌 Zájem o svoz“ se součty), pravidla mojebudky **#186** (nasazeno OK).
+- Video pozvánky: obě verze hotové (na šířku + na výšku), „Novinka 31. ročníku“ v bílém štítku, telefonní scéna postupně.
+- **Čeká na Petra:** místo zastávky v Seči (má adresu i mapu) → doplnit do Dopravy (text „upřesníme“ → místo + navigace
+  na zastávku, případně 3. tlačítko navigace) a do formuláře/aktualit. Petr si zkusí odeslat testovací zájem o dopravu a
+  ověří ho v aplikaci pořadatele (pak smazat).
