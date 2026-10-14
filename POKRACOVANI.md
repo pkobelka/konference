@@ -275,3 +275,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   anonymně, 1 hlas z telefonu (jde vzít zpět), počty vidí jen pořadatel (přednášející případně jen své číslo),
   veřejně po konferenci jen Top 3 / „Přednáška ročníku podle účastníků“. Varianta b) počty hned všem – riziko
   (partneři, malý obor, ranní bloky). Technicky přes Firebase spolu s dotazy.
+- **Průvodce 0.19:** „Dnes st 14. 10. · čas · svátek má …“ v plakátu ve **výrazném rámečku** (fialový okraj,
+  světlé neprůhledné pozadí s rozmazáním, stín) – přes fleky bakterií bylo špatně čitelné.
