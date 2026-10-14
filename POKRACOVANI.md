@@ -255,3 +255,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   3. Skutečné počty lůžek u pokojů (všude odhad 2).
   4. Průvodce: dotazy přes Firebase (`konference2027_dotazy`), program 2027, menu, časy svozu.
   5. Před ostrým rokem 2027 smazat testovací data 2026 (Nastavení → Vymazat, napsat SMAZAT) – karty se smažou s nimi.
+- **Průvodce 0.15 – oprava:** pruh odborných partnerů stál (animace najetí `stgIn` přebila animaci pruhu `tick`),
+  na mobilu bylo vidět jen první 4 loga. Najetí u odborných je teď jen prolnutí, pruh jede (~20 s, projedou všichni).

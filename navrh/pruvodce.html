@@ -411,7 +411,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 @keyframes glowS{50%{box-shadow:0 0 0 4px rgba(169,178,190,.3),0 0 18px rgba(169,178,190,.8)}}
 @keyframes glowP{50%{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent),0 0 18px color-mix(in srgb,var(--accent) 55%,transparent)}}
 .stg-body{margin-top:10px;min-height:124px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.stg-body.in .stg-row,.stg-body.in .stg-mq{animation:stgIn .55s ease both}
+.stg-body.in .stg-row{animation:stgIn .55s ease both}
+.stg-body.in.b-odborny{animation:stgFade .55s ease both}   /* pruh má vlastní animaci (tick) – nepřebíjet */
+@keyframes stgFade{from{opacity:0}to{opacity:1}}
 @keyframes stgIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
 .stg-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 10px}
 .b-odborny{justify-content:flex-start;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
@@ -429,7 +431,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .stage .tk-medialni .lg img{max-height:30px;height:auto}
 .tkn{font-size:12px;font-weight:700}
 @media (min-width: 820px){.stg-body{min-height:76px}.stage .tk-generalni .lg{width:190px;height:64px}.stage .tk-generalni .lg img{max-height:48px}}
-@media (prefers-reduced-motion: reduce){.stg-pills button.on{animation:none}.stg-body.in .stg-row,.stg-body.in .stg-mq{animation:none}.stg-mq{animation:none;flex-wrap:wrap;width:auto;justify-content:center}.b-odborny{mask-image:none;-webkit-mask-image:none}}
+@media (prefers-reduced-motion: reduce){.stg-pills button.on{animation:none}.stg-body.in .stg-row,.stg-body.in.b-odborny{animation:none}.stg-mq{animation:none;flex-wrap:wrap;width:auto;justify-content:center}.b-odborny{mask-image:none;-webkit-mask-image:none}}
 </style>
 
 <div class="app">
@@ -448,7 +450,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.14 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.15 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
