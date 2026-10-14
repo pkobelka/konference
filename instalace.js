@@ -1,6 +1,7 @@
 /* Instalace do telefonu – univerzální pomocník (VHOS aplikace: Konference, Florián, Aquakontrol…)
    Vložení:  <script src="instalace.js" data-nazev="Pořadatel" data-barva="#2f6b3c" defer></script>
-   Volitelně: data-qr="obrazky/qr.png" (QR pro počítač), data-pozdeji="1" (lišta se ukáže až po 20 s).
+   Volitelně: data-qr="obrazky/qr.png" (QR pro počítač), data-pozdeji="1" (lišta se ukáže až po 20 s),
+   data-lista="0" (žádná lišta – jen návod přes window.instalaceNavod(), např. z vlastního tlačítka v menu).
    Co dělá: když aplikace NENÍ nainstalovaná, ukáže dole malou lištu „📲 Přidat na plochu“.
    - Android/Chrome: tlačítko Nainstalovat (jedno klepnutí, beforeinstallprompt), jinak návod ⋮ → Nainstalovat.
    - iPhone/iPad: návod Safari → Sdílet → Přidat na plochu → Přidat; ve vnitřním prohlížeči (Gmail, Messenger,
@@ -9,6 +10,7 @@
    Lišta jde zavřít (pamatuje si to 14 dní). Funkce window.instalaceNavod() otevře návod odkudkoli (třeba z menu). */
 (function(){
   var sc=document.currentScript||{dataset:{}}, D=sc.dataset||{}, NAZEV=D.nazev||document.title, BARVA=D.barva||"#2f6b3c", QR=D.qr||"";
+  var BEZLISTY=D.lista==="0";
   var UA=navigator.userAgent, ios=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1), android=/Android/i.test(UA);
   var inapp=/FBAN|FBAV|FB_IAB|Instagram|Messenger|WhatsApp|GSA\/|LinkedInApp|Line\/|Twitter|MicroMessenger|Snapchat|SznProhlizec/i.test(UA), jinyIos=/CriOS|FxiOS|EdgiOS|OPiOS/.test(UA);
   function nainst(){try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}}
@@ -33,6 +35,8 @@
     if(ios){h=(inapp||jinyIos?'<div class="w">Máte aplikaci otevřenou '+(inapp?'uvnitř jiné aplikace (e-mail, Messenger, Facebook…)':'v jiném prohlížeči než Safari')+'. Na plochu ji jde přidat <b>jen ze Safari</b>. Zkopírujte odkaz, otevřete Safari a vložte ho do adresy.<br><button class="inst-b" id="inst-kop" style="margin-top:8px">📋 Zkopírovat odkaz</button></div>':'')+
       '<ol>'+krok(1,'Dole klepněte na <b>Sdílet</b>'+(/iPad/.test(UA)?' (na iPadu nahoře vpravo)':''),SHARE)+krok(2,'Sjeďte níž a vyberte <b>Přidat na plochu</b>',PLUS)+krok(3,'Vpravo nahoře klepněte na <b>Přidat</b>','')+'</ol>'+
       '<p class="p">Nevidíte dole lištu? Klepněte nahoře doprostřed stránky, nebo na ikonu kompasu / „Otevřít v Safari“.</p>';}
+    else if(/SamsungBrowser/.test(UA)){h='<ol>'+krok(1,'Klepněte na menu <b>☰</b> (dole vpravo)','')+krok(2,'Vyberte <b>Přidat stránku do</b> → <b>Domovská obrazovka</b>','')+'</ol>';}
+    else if(android&&/Firefox/.test(UA)){h='<ol>'+krok(1,'Klepněte na menu <b>⋮</b>','')+krok(2,'Vyberte <b>Nainstalovat</b> nebo <b>Přidat na plochu</b>','')+'</ol><p class="p">Když tam volba není, otevřete stránku v Chromu – tam instalace funguje nejspolehlivěji.</p>';}
     else if(android){h='<ol>'+krok(1,'V Chromu klepněte vpravo nahoře na <b>⋮</b>','')+krok(2,'Vyberte <b>Nainstalovat aplikaci</b> nebo <b>Přidat na plochu</b>','')+krok(3,'Potvrďte <b>Nainstalovat</b>','')+'</ol><p class="p">Otevřeli jste odkaz v jiné aplikaci (Gmail, Messenger)? Klepněte na ⋮ a zvolte <b>Otevřít v Chromu</b>.</p>';}
     else{h=QR?'<p>Naskenujte QR kód fotoaparátem telefonu – aplikace se otevře v prohlížeči a pak si ji přidáte na plochu.</p><img src="'+QR+'" alt="QR kód">':'<p>Otevřete tuto stránku v telefonu a přidejte si ji na plochu. V Chromu/Edge na počítači můžete kliknout na ikonu instalace v adresním řádku.</p>';}
     var m=document.createElement("div");m.className="inst-m";m.innerHTML='<div class="inst-k" role="dialog" aria-label="Přidat na plochu"><h3>📲 '+NAZEV+' do telefonu</h3><p class="s">'+(ios?'iPhone / iPad – Safari':android?'Android – Chrome':'Počítač')+'</p>'+h+'<button class="inst-b" id="inst-ok" style="width:100%;margin-top:6px">Rozumím</button></div>';
@@ -42,7 +46,7 @@
   }
   window.instalaceNavod=navod;
   function lista(){
-    if(nainst()||pryc()||document.getElementById("inst-lista"))return;
+    if(BEZLISTY||nainst()||pryc()||document.getElementById("inst-lista"))return;
     if(!ios&&!android&&!VYZVA&&!QR)return;       // počítač bez QR: nic neotravovat
     styl();var l=document.createElement("div");l.id="inst-lista";l.className="inst-l";
     l.innerHTML='<span class="i">📲</span><span class="t"><b>'+NAZEV+' na plochu</b><small>'+(VYZVA?'Nainstalujete jedním klepnutím.':ios?'Na iPhonu 3 klepnutí v Safari – ukážeme kde.':'Otevře se jako aplikace.')+'</small></span><button class="inst-b">'+(VYZVA?'Nainstalovat':'Jak na to')+'</button><button class="inst-x" aria-label="Skrýt">×</button>';
