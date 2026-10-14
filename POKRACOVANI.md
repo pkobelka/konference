@@ -387,3 +387,19 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   formuláře přímo do Firebase (veřejnost / hosté / přednášející / vystavující / YWP), hromadné e-maily s osobním odkazem,
   rozšíření Poznámek (propojení s osobou, termín „slíbil jsem do…“).
 - Sestavení průvodce: `./navrh/sestav-pruvodce.sh`; při každém nasazení zvýšit `VERZE` (admin i průvodce).
+
+### Import e-přihlášek z webu – PDF (14. 10. 2026) – admin 1.10
+- Uživatel poslal ukázky: **e-přihláška z webu = PDF „order_ČÍSLO.pdf“** (firma, č. objednávky, IČ/DIČ, účet,
+  kontaktní osoba, tabulka přihlášených osob: titul před, jméno, titul za, e-mail, telefon, člen/nečlen + cena,
+  poznámka) a **papírová přihláška YWP** (sken, rukou psaná – strojově nečitelná → zadat ručně).
+  PDF s osobními údaji **nejsou v repozitáři** (jen v uploads této relace).
+- Admin → **Přihlášky → „📄 Import e-přihlášek z webu (PDF)“**: přetáhnout / vybrat víc PDF → čtení v prohlížeči
+  (pdf.js 3.11.174 z cdnjs, nic se nikam neposílá) → náhled (firma nová/existující podle IČ nebo názvu, lidé
+  nový/už v seznamu podle e-mailu nebo jména, poznámka) → „Založit vybrané“.
+  Založí: osoba {titul_pred, jmeno, prijmeni, titul_za, email, tel, firma, kat verejnost, stav **Potvrdil**,
+  zdroj web, objednavka, clen, pozn_partner = poznámka}; poznámka „bez ubytování“ → **nespí**, jinak „hotel sám“.
+  Nová firma {nazev, ico, dic, kontakt, kat ostatni}. Opakovaný import stejného PDF nic nezdvojí.
+- Zdroj „web“ přejmenován na **„Web – e-přihláška (ubytování si rezervují sami v hotelu)“** (e-přihláška = registrace,
+  ubytování přes link hotelu). Kontrola „není vyplněno, jestli spí“ se u „hotel sám“ nehlásí (noci nezná pořadatel).
+- Osoba má nově pole **Titul před / Titul za** a u importovaných rámeček „🧾 E-přihláška z webu č. … · člen/nečlen“.
+- Testováno na obou PDF uživatele (převodník i v /tmp/claude-0/t/pdfp/parse.js).

@@ -20,6 +20,8 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--svetla);color:#222;padding:18px 14px 60px;}
 .hidden{display:none!important;}
+.dropz{display:block;border:2px dashed #b9c7b3;border-radius:12px;padding:18px;text-align:center;color:#556;cursor:pointer;background:#fbfcf9}
+.dropz.on{background:#eaf3e6;border-color:var(--zelena)}
 a{color:var(--zelena);}
 .wrap{max-width:1150px;margin:0 auto;}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
@@ -189,7 +191,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.9 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.10 · 14. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -211,7 +213,7 @@ const KAT={
 const FKAT=[["generalni","Generální partneři"],["hlavni","Hlavní partneři"],["odborny","Odborní partneři"],["medialni","Mediální partneři"],["vhos","VHOS"],["koncern","Koncern"],["ace","AČE"],["ostatni","Ostatní (instituce, firmy)"]];
 const STAV={ano:["Potvrdil","#2f8a3c"],pozvan:["Pozván","#c77d1a"],nevim:["Nevíme","#888"],ne:["Nejede","#b0413e"]};
 const STAV_PORADI=["ano","pozvan","nevim","ne"];
-const ZDROJ={web:"Ubytovací link hotelu Jezerka (veřejnost)",hoste:"Formulář pro hosty (zaslaný odkaz)",partner:"Přihláška partnera",pozvanka:"Pozvánka (zve pořadatel)",rucne:"Zadáno ručně"};
+const ZDROJ={web:"Web – e-přihláška (ubytování si rezervují sami v hotelu)",hoste:"Formulář pro hosty (zaslaný odkaz)",partner:"Přihláška partnera",pozvanka:"Pozvánka (zve pořadatel)",rucne:"Zadáno ručně"};
 const POHL={z:"Ž",m:"M"};
 const SEKCE={A:"Sekce A",B:"Sekce B",C:"Sekce C – Superior",D:"Sekce D – Depandance"};
 
@@ -336,7 +338,7 @@ function badgesKat(o){return Object.keys(o.kat||{}).filter(k=>KAT[k]).map(k=>`<s
 
 /* obsazenost pokojů: {pokojId:{nocId:[osobaId]}} – kdo má pokoj bez nocí, počítá se do všech nocí */
 // Ubytování si rezervuje sám přes link hotelu Jezerka → pokoj nezná pořadatel. o.ubyt: "ja" | "hotel" | (prázdné = podle zdroje)
-function hotelSam(o){return o.ubyt==="hotel"||(!o.ubyt&&o.zdroj==="web"&&!o.pokoj);}
+function hotelSam(o){return o.ubyt==="hotel"||(!o.ubyt&&o.zdroj==="web"&&!o.pokoj&&!o.nespi);}
 function nociPokoje(o){const s=spi(o);return s.length?s:noci().map(([k])=>k);}   // bez zaškrtnutých nocí = všechny
 function nocKratce(k){return String(nocNazev(k)).split(/\s+/)[0].slice(0,2);}
 // kdo sdílí pokoj s osobou aspoň jednu stejnou noc (pondělí ≠ úterý – ti spolu nespí)
@@ -367,7 +369,7 @@ function problemyOsoby(id,o,OBS){
   if(jede&&nn.length&&!o.pokoj&&!o.kraskov&&!hotelSam(o))p.push(["e","Spí na konferenci ("+nn.map(nocNazev).join(", ")+"), ale nemá pokoj"]);
   if(o.kraskov&&o.pokoj)p.push(["w","Bydlí v Kraskově (jen svoz), ale má i pokoj "+pokojLabel(o.pokoj)]);
   if(o.ubyt==="hotel"&&o.pokoj)p.push(["w","Rezervuje si sám v hotelu, ale má přidělený pokoj "+pokojLabel(o.pokoj)]);
-  if(jede&&!nn.length&&!o.nespi)p.push(["w","Potvrdil – není vyplněno, jestli spí (zaškrtni noci, nebo „nespí“)"]);
+  if(jede&&!nn.length&&!o.nespi&&!hotelSam(o))p.push(["w","Potvrdil – není vyplněno, jestli spí (zaškrtni noci, nebo „nespí“)"]);
   if(jede&&nv&&nn.includes(nv)&&!o.vecere)p.push(["e","Spí v noci "+nocNazev(nv)+", ale nemá vybranou večeři"]);
   if(!jede&&o.pokoj)p.push([st==="ne"?"e":"w",(st==="ne"?"Nejede":"Není potvrzený ("+STAV[st][0]+")")+", ale má zajištěný pokoj "+pokojLabel(o.pokoj)]);
   if(!jede&&maVecer)p.push([st==="ne"?"e":"w",(st==="ne"?"Nejede":"Není potvrzený ("+STAV[st][0]+")")+", ale má objednanou večeři"]);
@@ -809,6 +811,102 @@ function prihKPrevzeti(){return Object.keys(PRIH).filter(t=>["nova","zmena"].inc
 function verejneData(n){n=n||N();return clean({nazev:n.nazev||"",datum:n.datum||"",misto:n.misto||"",noci:n.noci||{},menu:n.menu||{},uzaverka:n.uzaverka||"",text:n.text_partneri||""});}
 function ulozVerejne(n){return FDB.ref(PUB).set(verejneData(n));}
 
+/* ---------- IMPORT E-PŘIHLÁŠEK (PDF z webu) ---------- */
+// PDF se čte v prohlížeči knihovnou pdf.js (nikam se neposílá). Řádky se složí podle polohy textu, pak se rozpoznají pole.
+let PDFJS=null, EIMP=[], EIMP_MSG="";
+function nactiPdfjs(){
+  if(PDFJS)return Promise.resolve(PDFJS);
+  return new Promise((ok,ko)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    sc.onload=()=>{PDFJS=window.pdfjsLib;PDFJS.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";ok(PDFJS);};
+    sc.onerror=()=>ko(new Error("Nepodařilo se načíst čtečku PDF – zkontroluj připojení."));document.head.appendChild(sc);});
+}
+async function pdfRadky(pdfjs,data){
+  const doc=await pdfjs.getDocument({data}).promise, out=[];
+  for(let i=1;i<=doc.numPages;i++){
+    const pg=await doc.getPage(i), tc=await pg.getTextContent(), rows=[];
+    for(const it of tc.items){if(!it.str||!it.str.trim())continue;const x=it.transform[4],y=it.transform[5];
+      let r=rows.find(r=>Math.abs(r.y-y)<3);if(!r){r={y,it:[]};rows.push(r);}r.it.push({x,w:it.width,s:it.str});}
+    rows.sort((a,b)=>b.y-a.y);
+    for(const r of rows){r.it.sort((a,b)=>a.x-b.x);let line="",end=null;
+      for(const t of r.it){if(end!==null){const gap=t.x-end;line+=gap>12?"   ":gap>1.5?" ":"";}line+=t.s;end=t.x+t.w;}
+      out.push(line.replace(/\s+$/,""));}
+  }
+  return out;
+}
+const TITULY_PRED=/^(prof|doc|ing|mgr|bc|rndr|mudr|judr|phdr|paedr|ing\.\s*arch|dr|mga|mvdr|pharmdr|thdr)\.?/i;
+const TITULY_ZA=/(ph\.?\s*d|csc|drsc|mba|dis|ll\.?m|msc|bsc|ba|ma|dba)\.?/i;
+function parsujPrihlasku(L){
+  const T=L.join("\n"), g=(re)=>{const m=re.exec(T);return m?m[1].trim():"";};
+  const r={objednavka:g(/Přihláška na konferenci\s*-\s*(\d+)/),firma:g(/Název společnosti\s{2,}(.+)/),ico:g(/\bIČ\s{2,}(\d{6,10})/),dic:g(/DIČ\s{2,}(\S+)/),
+    kontakt:{jmeno:"",email:"",tel:""},osoby:[],poznamka:""};
+  const ki=L.findIndex(l=>/^\s*Kontaktní osoba\s*$/.test(l)), pi=L.findIndex(l=>/Přihlášené osoby/.test(l));
+  if(ki>=0)for(const l of L.slice(ki,pi>0?pi:ki+8)){let m;if(m=/Jméno a příjmení\s{2,}(.+)/.exec(l))r.kontakt.jmeno=m[1].trim();if(m=/E-mail\s{2,}(\S+@\S+)/.exec(l))r.kontakt.email=m[1].trim();if(m=/Telefon\s{2,}(.+)/.exec(l))r.kontakt.tel=m[1].trim();}
+  const pz=L.findIndex(l=>/^\s*Poznámka:/.test(l));
+  if(pz>=0){let t=L[pz].replace(/^\s*Poznámka:\s*/,"");for(const l of L.slice(pz+1)){if(/Cena celkem/.test(l))break;t+=" "+l.trim();}r.poznamka=t.trim();}
+  const blok=L.slice(pi>=0?pi:0,pz>=0?pz:L.length), cl=[];
+  for(const l of blok){const m=/^\s*(\d+)\.\s+(.+)$/.exec(l);if(m&&/@/.test(m[2])){
+      const em=/[^\s@]+@[^\s@]+\.[a-z]{2,}/i.exec(m[2]), pre=m[2].slice(0,em.index), post=m[2].slice(em.index+em[0].length);
+      const pred=pre.split(/\s{2,}/).map(s=>s.trim()).filter(Boolean);let tp="",tz="",nm="";
+      if(pred.length>=2&&TITULY_PRED.test(pred[0]))tp=pred.shift();
+      if(pred.length>=2&&TITULY_ZA.test(pred[pred.length-1]))tz=pred.pop();
+      nm=pred.join(" ");
+      if(!tp){const mm=/^((?:(?:prof|doc|ing|mgr|bc|rndr|mudr|judr|phdr|dr)\.\s*)+)(.+)$/i.exec(nm);if(mm){tp=mm[1].trim();nm=mm[2];}}
+      if(!tz){const mm=/^(.+?)[,\s]+((?:ph\.?\s*d\.?|csc\.?|drsc\.?|mba|dis\.?|ll\.?m\.?|msc\.?)(?:[,\s]+.*)?)$/i.exec(nm);if(mm){nm=mm[1];tz=mm[2].trim();}}
+      const w=nm.trim().split(/\s+/);r.osoby.push({titul_pred:tp,titul_za:tz,jmeno:w.slice(0,-1).join(" "),prijmeni:w[w.length-1]||"",email:em[0],tel:post.trim().replace(/\s{2,}.*$/,"")});}
+    const c=/(?:^|\s)(nečlen|člen)(?=\s|$)/i.exec(l);if(c)cl.push(/nečlen/i.test(c[1])?"nečlen":"člen");
+  }
+  r.osoby.forEach((o,i)=>{o.clen=cl[i]==="člen";});
+  return r;
+}
+function firmaPodle(r){const ico=String(r.ico||"").replace(/\D/g,"");
+  return Object.keys(DB.firmy).find(f=>ico&&String(DB.firmy[f].ico||"").replace(/\D/g,"")===ico)||Object.keys(DB.firmy).find(f=>norm(DB.firmy[f].nazev)===norm(r.firma))||"";}
+function osobaPodle(x){const e=norm(x.email);return Object.keys(DB.osoby).find(i=>e&&norm(DB.osoby[i].email)===e)||Object.keys(DB.osoby).find(i=>norm(jmeno(DB.osoby[i]))===norm(x.prijmeni+" "+x.jmeno))||"";}
+function eimpInit(){
+  const d=$("eimp_drop"), f=$("eimp_f");if(!d)return;
+  f.addEventListener("change",()=>eimpSoubory([...f.files]));
+  d.addEventListener("dragover",e=>{e.preventDefault();d.classList.add("on");});
+  d.addEventListener("dragleave",()=>d.classList.remove("on"));
+  d.addEventListener("drop",e=>{e.preventDefault();d.classList.remove("on");eimpSoubory([...e.dataTransfer.files].filter(x=>/pdf$/i.test(x.name)||x.type==="application/pdf"));});
+  if(EIMP.length)eimpNahled();else if(EIMP_MSG)$("eimp_out").innerHTML=EIMP_MSG;   // hláška přežije překreslení po uložení
+}
+function eimpSoubory(files){
+  if(!files.length)return;EIMP_MSG="";const out=$("eimp_out");out.innerHTML=`<p class="muted">Čtu ${files.length} PDF…</p>`;
+  nactiPdfjs().then(pj=>Promise.all(files.map(fl=>fl.arrayBuffer().then(b=>pdfRadky(pj,new Uint8Array(b))).then(L=>Object.assign(parsujPrihlasku(L),{soubor:fl.name})).catch(e=>({soubor:fl.name,chyba:errMsg(e),osoby:[]})))))
+    .then(l=>{EIMP=l;eimpNahled();}).catch(e=>{out.innerHTML=`<div class="probbox"><div>⚠️ ${esc(errMsg(e))}</div></div>`;});
+}
+function eimpNahled(){
+  const out=$("eimp_out");if(!out)return;let nov=0;
+  const h=EIMP.map((r,ri)=>{
+    if(r.chyba||!r.osoby.length)return `<div class="probbox"><div>⚠️ <b>${esc(r.soubor)}</b>: ${r.chyba?esc(r.chyba):"nenašel jsem v něm přihlášené osoby – je to e-přihláška z webu?"}</div></div>`;
+    const fid=firmaPodle(r);
+    return `<div class="nast" style="margin:8px 0;padding:10px 12px"><b>${esc(r.firma||"(bez firmy)")}</b> <span class="sub">· IČ ${esc(r.ico||"–")} · přihláška č. ${esc(r.objednavka||"–")} · ${fid?"firma už je v seznamu":"<b>nová firma</b>"}</span>
+      ${r.kontakt.jmeno?`<div class="sub">Kontakt: ${esc(r.kontakt.jmeno)} · ${esc(r.kontakt.email)} · ${esc(r.kontakt.tel)}</div>`:""}
+      ${r.poznamka?`<div class="loni" style="background:#fff8e1;margin-top:4px">📝 <b>Poznámka:</b> ${esc(r.poznamka)}</div>`:""}
+      <table class="t" style="margin-top:6px">${r.osoby.map((x,oi)=>{const ex=osobaPodle(x);if(!ex)nov++;
+        return `<tr style="${ex?"opacity:.5":""}"><td><label><input type="checkbox" class="eimp_c" data-r="${ri}" data-o="${oi}" ${ex?"":"checked"}> <b>${esc([x.titul_pred,x.jmeno,x.prijmeni].filter(Boolean).join(" "))}${x.titul_za?", "+esc(x.titul_za):""}</b></label></td><td>${esc(x.email)}</td><td>${esc(x.tel)}</td><td>${x.clen?"člen CzWA":"nečlen"}</td><td>${ex?"už je v seznamu":"<b>nový</b>"}</td></tr>`;}).join("")}</table></div>`;}).join("");
+  out.innerHTML=h+(nov?`<div class="lista"><button class="btn" id="eimp_go">Založit vybrané (${nov})</button><button class="btn ghost small" id="eimp_x">Zrušit</button><span class="msg" id="eimp_msg"></span></div>`:`<div class="lista"><span class="pocet">Nic nového k založení.</span><button class="btn ghost small" id="eimp_x">Zavřít</button></div>`);
+  $("eimp_x").addEventListener("click",()=>{EIMP=[];out.innerHTML="";});
+  if($("eimp_go"))$("eimp_go").addEventListener("click",eimpZaloz);
+}
+function eimpZaloz(){
+  const upd={}, vyb=[...document.querySelectorAll(".eimp_c:checked")].map(c=>[+c.dataset.r,+c.dataset.o]);if(!vyb.length)return;
+  const novaF={};let nO=0,nF=0;
+  for(const [ri,oi] of vyb){
+    const r=EIMP[ri], x=r.osoby[oi];if(osobaPodle(x))continue;
+    let fid=firmaPodle(r)||novaF[r.ico||r.firma];
+    if(!fid&&r.firma){fid=FDB.ref(ROOT+"/firmy").push().key;novaF[r.ico||r.firma]=fid;nF++;
+      upd["firmy/"+fid]=clean({nazev:r.firma,kat:"ostatni",ico:r.ico,dic:r.dic,kontakt:clean({jmeno:r.kontakt.jmeno,email:r.kontakt.email,tel:r.kontakt.tel})});}
+    const bez=/bez\s+ubytov/i.test(r.poznamka||"");
+    const id=FDB.ref(ROOT+"/osoby").push().key;nO++;
+    upd["osoby/"+id]=clean(stamp({prijmeni:x.prijmeni,jmeno:x.jmeno,titul_pred:x.titul_pred,titul_za:x.titul_za,email:x.email,tel:x.tel,firma:fid||"",
+      kat:{verejnost:true},stav:"ano",zdroj:"web",objednavka:r.objednavka,clen:!!x.clen,nespi:bez,pozn_partner:r.poznamka||""}));
+  }
+  if(!nO)return;
+  EIMP_MSG=`<p style="color:var(--zelena)">✔ Založeno ${pl(nO,"člověk","lidé","lidí")}${nF?" a "+pl(nF,"firma","firmy","firem"):""}. Najdeš je v Lidech (zdroj e-přihláška, štítek „hotel sám“). Kdo psal „bez ubytování“, má rovnou „nespí“.</p>`;
+  FDB.ref(ROOT).update(upd).then(()=>{EIMP=[];const o=$("eimp_out");if(o)o.innerHTML=EIMP_MSG;})
+    .catch(e=>{$("eimp_msg").textContent="⚠️ "+errMsg(e);});
+}
+
 /* ---------- POZNÁMKY: co jsem komu slíbil, kdo o co žádá (jen pro mě) ---------- */
 // konference2027/poznamky/{klíč} = {kdo, co, ts, hotovo?, hotovo_ts?}. Číslo u záložky = nevyřízené.
 let POZN_FILTR="otevrene";
@@ -1014,7 +1112,11 @@ function rPrihlasky(){
   const bezOdkazu=partneri.filter(f=>!tokenFirmy(f));
   const firmyS=[...new Set(partneri.concat(Object.values(PRIH).map(p=>p.firma)))].filter(f=>DB.firmy[f]);
   const cnt={};firmyS.forEach(f=>{const s=prihStav(PRIH[tokenFirmy(f)])[0];cnt[s]=(cnt[s]||0)+1;});
-  let h=`<div class="stav">Každá firma má <b>vlastní tajný odkaz</b> na přihlášku. Partner vyplní své lidi, noci, spaní a večeři; tady pak přihlášku jedním klikem <b>převezmeš</b> do seznamu lidí. Pokoje přiděluješ ty.</div>
+  let h=`<div class="nast" id="eimp"><h2 class="sek">📄 Import e-přihlášek z webu (PDF)</h2>
+    <p style="font-size:.84rem;color:#666">Přetáhni sem PDF přihlášky, které chodí z webu (klidně víc najednou), nebo je vyber. Aplikace z nich vytáhne firmu, IČ, kontaktní osobu a přihlášené lidi, ukáže náhled a po potvrzení je založí jako <b>Potvrdil · Veřejnost · e-přihláška</b>. Kdo už v seznamu je (stejný e-mail), se nezaloží znovu.</p>
+    <label class="dropz" id="eimp_drop"><input type="file" id="eimp_f" accept="application/pdf,.pdf" multiple hidden>⬇ Přetáhni PDF sem nebo <u>klikni a vyber</u></label>
+    <div id="eimp_out"></div></div>
+  <div class="stav">Každá firma má <b>vlastní tajný odkaz</b> na přihlášku. Partner vyplní své lidi, noci, spaní a večeři; tady pak přihlášku jedním klikem <b>převezmeš</b> do seznamu lidí. Pokoje přiděluješ ty.</div>
   <div class="kpis">
     <div class="kpi"><div class="v">${cnt.bez||0}</div><div class="t">bez odkazu</div></div>
     <div class="kpi warn"><div class="v">${cnt.ceka||0}</div><div class="t">čeká na vyplnění</div></div>
@@ -1039,6 +1141,7 @@ function rPrihlasky(){
     }).join("")+`</table>`;
   }
   $("view").innerHTML=h;
+  eimpInit();
   $("pr_vse").addEventListener("click",()=>{
     if(!confirm("Vytvořit odkazy na přihlášku pro "+bezOdkazu.length+" partnerů (generální, hlavní, odborní)?"))return;
     vytvorOdkazy(bezOdkazu).then(n=>alert("✔ Vytvořeno "+n+" odkazů.")).catch(e=>alert("⚠️ "+errMsg(e)));
@@ -1169,6 +1272,8 @@ function openOsoba(id,preset){
       <div><label class="l">Příjmení</label><input id="o_prijmeni" value="${esc(o.prijmeni||"")}"></div>
       <div><label class="l">Jméno</label><input id="o_jmeno" value="${esc(o.jmeno||"")}"></div>
     </div>
+    <div class="two"><div><label class="l">Titul před</label><input id="o_tp" value="${esc(o.titul_pred||"")}" placeholder="Ing."></div><div><label class="l">Titul za</label><input id="o_tz" value="${esc(o.titul_za||"")}" placeholder="Ph.D."></div></div>
+    ${o.objednavka?`<div class="loni" style="background:#eef3fb">🧾 E-přihláška z webu č. <b>${esc(o.objednavka)}</b>${o.clen?" · člen CzWA":" · nečlen"}</div>`:""}
     <label class="l">Firma</label>
     <select id="o_firma">${firmyOptions(o.firma||"",opt("","— bez firmy —",o.firma||""))}</select>
     <label class="l">Kategorie</label>
@@ -1204,7 +1309,7 @@ function openOsoba(id,preset){
   let stav=o.stav||"nevim", vecere=o.vecere||"", pohlavi=o.pohlavi||"", ubyt=hotelSam(o)?"hotel":"ja";
   const collect=()=>{
     const r=Object.assign({},o);
-    r.prijmeni=$("o_prijmeni").value.trim();r.jmeno=$("o_jmeno").value.trim();r.firma=$("o_firma").value;
+    r.prijmeni=$("o_prijmeni").value.trim();r.jmeno=$("o_jmeno").value.trim();r.titul_pred=$("o_tp").value.trim();r.titul_za=$("o_tz").value.trim();r.firma=$("o_firma").value;
     r.kat={};document.querySelectorAll(".o_kat:checked").forEach(c=>r.kat[c.value]=true);
     r.stav=stav;r.noci={};document.querySelectorAll(".o_noc:checked").forEach(c=>r.noci[c.value]=true);
     r.nespi=$("o_nespi").checked&&!Object.keys(r.noci).length;
