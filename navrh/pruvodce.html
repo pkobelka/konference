@@ -328,13 +328,17 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .t-dnes .clk{font-family:var(--f-display);font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
 .t-dnes .d{font-weight:700;font-size:14px;margin-top:6px}
 .t-dnes .sv{font-size:12px;color:var(--muted)} .t-dnes .sv b{color:var(--ink)}
-.t-wx{grid-column:1/-1;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.t-wx .wl{flex:1;min-width:130px}
+.wxb{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:99px;padding:7px 12px;font-size:13px;font-weight:700;font-family:inherit}
+.wxl{font-style:normal}
+@media (max-width:420px){.pills .wxb{order:1}.pills .plc{order:2}.wxl{display:none}}
+.wxs{display:flex;flex-direction:column;gap:14px}
+.wxs .wnow{display:flex;align-items:center;gap:12px}.wxs .wi{font-size:44px;line-height:1}
 .t-wx .wnow{display:flex;align-items:baseline;gap:8px}
-.t-wx .wnow b{font-family:var(--f-display);font-size:34px;line-height:1}
-.t-wx .wnow span{font-size:13px;color:var(--muted)}
-.wdays{flex:1.3;min-width:170px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-left:1px solid var(--line);padding-left:10px;text-align:center;font-size:11px;color:var(--muted)}
-.wdays b{display:block;color:var(--ink);font-size:14px} .wdays em{font-style:normal}
+.wxs .wnow b,.t-wx .wnow b{font-family:var(--f-display);font-size:34px;line-height:1}
+.wxs .wnow span,.t-wx .wnow span{font-size:13px;color:var(--muted)}
+.wdays{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-top:1px solid var(--line);padding-top:12px;text-align:center;font-size:11px;color:var(--muted)}
+.wdays b{display:block;color:var(--ink);font-size:18px} .wdays em{font-style:normal}
+.wdays i{display:block;font-style:normal;font-size:26px;margin:4px 0} .wdays small{display:block;font-size:11px;margin-top:2px}
 .t-now{grid-column:1/-1;padding:0;border:0;background:none;box-shadow:none}
 .t-now .now{border:1px solid var(--line);border-left:5px solid var(--water);border-radius:20px;box-shadow:0 10px 30px -18px rgba(40,30,60,.25)}
 .t-now .now.brk{border-left-color:var(--warn)}
@@ -380,9 +384,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
   .collage .c6{width:110px;right:420px;top:330px;left:auto}
   .collage .c7{display:block;width:80px;right:250px;top:-20px}
   .collage .c8{display:block;width:96px;right:440px;top:150px}
-  .bento{grid-template-columns:1fr 1fr;align-items:stretch}
-  .t-wx{grid-column:1;grid-row:1}
-  .t-stats{grid-column:2;grid-row:1;align-content:center}
+  .bento{grid-template-columns:1fr;align-items:stretch}
   .t-now{grid-column:1/-1}
   .qk{grid-template-columns:repeat(4,1fr)}
   .gen{grid-template-columns:repeat(4,1fr)}
@@ -464,7 +466,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.17 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.18 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -540,15 +542,21 @@ const WX={st:"idle",cur:null,days:[]};
 const WMO=c=>c===0?"jasno":c<=2?"polojasno":c===3?"zataženo":c<=48?"mlha":c<=57?"mrholení":c<=67?"déšť":c<=77?"sníh":c<=82?"přeháňky":c<=86?"sněhové přeháňky":"bouřky";
 function loadWx(){if(WX.st!=="idle")return;WX.st="load";
  fetch("https://api.open-meteo.com/v1/forecast?latitude=49.82&longitude=15.66&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FPrague&forecast_days=3")
- .then(r=>r.json()).then(j=>{WX.cur={t:Math.round(j.current.temperature_2m),c:j.current.weather_code};WX.days=j.daily.time.map((t,i)=>({t,c:j.daily.weather_code[i],mx:Math.round(j.daily.temperature_2m_max[i]),mn:Math.round(j.daily.temperature_2m_min[i])}));WX.st="ok";const b=document.getElementById("todaybox");if(b)b.outerHTML=vToday()})
+ .then(r=>r.json()).then(j=>{WX.cur={t:Math.round(j.current.temperature_2m),c:j.current.weather_code};WX.days=j.daily.time.map((t,i)=>({t,c:j.daily.weather_code[i],mx:Math.round(j.daily.temperature_2m_max[i]),mn:Math.round(j.daily.temperature_2m_min[i])}));WX.st="ok";const b=document.getElementById("todaybox");if(b)b.outerHTML=vToday();if(!$("sheet").hidden&&$("sheet").querySelector(".wxs,.wxload"))sheetWx()})
  .catch(()=>{WX.st="err";const b=document.getElementById("todaybox");if(b)b.outerHTML=vToday()})}
 function dnesTxt(){const d=new Date(), sv=svatek(d);
  return `<div class="dnes" id="dnes"><span>Dnes <b>${DNY[d.getDay()].slice(0,2)} ${d.getDate()}. ${d.getMonth()+1}.</b> · <b class="clk" id="clk">${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}</b></span>${sv?`<small>svátek má <b>${esc(sv)}</b></small>`:""}</div>`}
+const WIC=c=>c===0?"☀️":c<=2?"🌤️":c===3?"☁️":c<=48?"🌫️":c<=67?"🌧️":c<=77?"🌨️":c<=82?"🌦️":c<=86?"🌨️":"⛈️";
+// Počasí: jen tlačítko vedle místa konání, podrobnosti v okně
 function vToday(){
- const d=new Date(), sv=svatek(d);
- const wx=WX.st==="ok"?`<div class="wnow"><b>${WX.cur.t}°</b><span>${WMO(WX.cur.c)}</span></div></div><div class="wdays">${WX.days.map((x,i)=>{const dd=new Date(x.t);return `<div><span>${i?DNY[dd.getDay()].slice(0,2):"dnes"}</span><b>${x.mx}°</b><em>${x.mn}°</em></div>`}).join("")}</div>`
-  :`<p class="muted" style="margin:6px 0 0;font-size:13px">${WX.st==="load"?"načítám…":"Aktuální teplota a předpověď se zobrazí na webu průvodce."}</p></div>`;
- return `<div id="todaybox" class="tile t-wx"><div class="wl"><div class="tl">Počasí v Seči</div>${wx}</div>`;
+ return `<button class="wxb" id="todaybox" data-wx="1">${WX.st==="ok"?WIC(WX.cur.c)+" "+WX.cur.t+"° · ":"🌤️ "}Počasí<em class="wxl">&nbsp;v Seči</em></button>`;
+}
+function sheetWx(){
+ loadWx();
+ const b=WX.st==="ok"?`<div class="wxs"><div class="wnow"><span class="wi">${WIC(WX.cur.c)}</span><b>${WX.cur.t}°</b><span>${WMO(WX.cur.c)}<br><small>teď v Seči</small></span></div>
+  <div class="wdays">${WX.days.map((x,i)=>{const dd=new Date(x.t);return `<div><span>${i?DNY[dd.getDay()]:"dnes"}</span><i>${WIC(x.c)}</i><b>${x.mx}°</b><em>${x.mn}°</em><small>${WMO(x.c)}</small></div>`}).join("")}</div></div>`
+  :`<p class="muted wxload">${WX.st==="load"||WX.st==="idle"?"Načítám…":"Počasí se teď nepodařilo načíst. Zobrazí se na webu průvodce s připojením."}</p>`;
+ openSheet(`<h2>Počasí v Seči</h2><div class="muted" style="font-size:13px;margin-top:2px">Kongres hotel Jezerka · předpověď na 3 dny</div><div class="bd">${b}<p class="muted" style="font-size:12px;margin:0">Zdroj: Open-Meteo</p></div>`);
 }
 
 setInterval(()=>{const c=document.getElementById("clk");if(c){const d=new Date();c.textContent=d.getHours()+":"+String(d.getMinutes()).padStart(2,"0")}},10000);
@@ -705,14 +713,13 @@ function vDomu(){
     <div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
     <h1>Nové metody a postupy při provozování ČOV</h1>
     <p class="mem">memoriál Ing. Jakuba S. Čecha, CSc.</p>
-    <div class="pills"><span>${IC.cal}27.–28. dubna 2027</span><span>${IC.pin}Kongres hotel Jezerka, Seč</span></div>
+    <div class="pills"><span>${IC.cal}27.–28. dubna 2027</span><span class="plc">${IC.pin}Kongres hotel Jezerka, Seč</span>${vToday()}</div>
     <div class="cdrow"><div class="cd">${odpocet()}</div>${dnesTxt()}</div>
    </div>
   </div>
   ${S.karta?vKarta(true):""}
   ${ticker()}
   <div class="bento">
-   ${vToday()}
    <div class="tile t-now">${vNow()}</div>
    <div class="tile t-stats"><div><b>${pr}</b><span>přednášek</span></div><div><b>${ALLP.filter(p=>p.k!=="medialni").length}</b><span>partnerů</span></div><div><b>2</b><span>body ČKAIT</span></div></div>
   </div>
@@ -1035,6 +1042,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
 $("view").addEventListener("click",e=>{
  const sg=e.target.closest("[data-stg]");if(sg)return stgGo(+sg.dataset.stg,true);
+ if(e.target.closest("[data-wx]"))return sheetWx();
  const t=e.target.closest("[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,#npr,#ntxt,#nmail");if(!t)return;
  if(t.dataset.alarm)return sheetAlarm(t.dataset.alarm);
  if(t.dataset.ph){const [a,i]=t.dataset.ph.split(":");return openLb(a,+i)}

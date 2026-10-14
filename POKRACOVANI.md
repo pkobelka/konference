@@ -268,3 +268,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   – předsedající pustí telefon/notebook do mikrofonu nebo ozvučení.
   Zatím jen v zařízení (jako ostatní dotazy). **Pro ostrý provoz:** uzel `konference2027_dotazy` + nahrávky do
   Firebase Storage (nebo base64 do RTDB, ~250 kB na dotaz), mazání jen pořadatel; v Claude ukázce mikrofon nejde, jen na webu.
+- **Průvodce 0.18:** řádek s počasím zrušen → v plakátu u štítků termínu a místa **tlačítko „🌤️ 11° · Počasí v Seči“**
+  (teplota se doplní po načtení); klepnutí otevře okno s počasím teď + 3 dny (ikona, max/min, popis).
+  Na mobilu je tlačítko vedle termínu a zkrácené na „Počasí“, aby nezabíralo další řádek; na PC „Počasí v Seči“.
