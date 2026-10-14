@@ -555,3 +555,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   rx 430→760, ry 320→390), fleky zmenšené na ~135 px – dřív se stahovaly pod „31“ a nebylo to výrazné.
 - **Štítky v telefonní scéně (Petr):** „Online aktuální informace přímo do mobilu“ · „Dotazy k přednáškám do diskuze“ ·
   „Průběžně – písemně i hlasem“ · Poznámky · Program · Počasí · Navigace do hotelu · Moje registrace (blok posunut výš, chip 27 px).
+- **Závěr (Petr):** „Těšíme se na vás na Seči!“ → pod tím datum zvlášť (58 px, fialová) → řádek log VHOS · CzWA · Energie AG.
