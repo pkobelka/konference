@@ -600,3 +600,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   v telefonu se pamatuje). Navigace zvlášť na Jezerku a do Kraskova (Kraskov bez souřadnic – hledá se podle názvu).
 - Pořadatel → záložka Průvodce → „🚌 Zájem o svoz“: součty osob podle nástupu a směru + seznam, mazání.
 - Pravidla: mojebudky PR #186 (sloučeno se svolením Petra) – veřejně jen zápis nového záznamu s kontrolou polí.
+- Video: „Novinka 31. ročníku“ v bílém štítku (34 px), v telefonní scéně vše postupně (nadpis 1,1 s, 2 řádky 2,0/2,9 s, štítky od 3,9 s po 0,9 s); snímky průvodce přefoceny (nová Doprava).

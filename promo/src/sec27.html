@@ -122,9 +122,9 @@ img.lg{background:#fff;padding:14px 22px;border-radius:22px;box-shadow:0 10px 26
     <div class="sub r" id="sgs" style="margin-top:34px;color:var(--accent)">Program 31. ročníku právě připravujeme.</div></div></div>
   <!-- 6 Aplikace -->
   <div class="sc" id="s6"><div style="position:absolute;left:180px;top:170px;width:960px">
-    <div class="k r" id="s6k">Novinka 31. ročníku</div>
+    <div class="k r" id="s6k" style="display:inline-block;font-size:34px;background:#fff;padding:14px 26px;border-radius:16px;box-shadow:0 14px 34px -18px rgba(60,40,80,.45);border:2px solid #e3dcef">Novinka 31. ročníku</div>
     <div class="h r" id="s6h" style="font-size:92px;margin-top:30px">Konference<br>v&nbsp;telefonu</div>
-    <div class="sub r" id="s6s" style="margin-top:26px">Aplikace do mobilu, tabletu i počítače.<br>Vše po ruce – bez instalace z obchodu.</div>
+    <div class="sub r" id="s6s" style="margin-top:26px">Aplikace do mobilu, tabletu i počítače.</div><div class="sub r" id="s6t">Vše po ruce – bez instalace z obchodu.</div>
     <div class="chips" id="chips"></div></div>
     <div class="ph r" id="ph"><div class="scr"><img id="i0" src="shots/a-domu.png"><img id="i1" src="shots/a2-program.png"><img id="i2" src="shots/d-aktuality.png"><img id="i3" src="shots/b-pocasi.png"><img id="i4" src="shots/c-navigace.png"></div></div></div>
   <!-- 7 Zveme vás -->
@@ -195,8 +195,8 @@ function render(t){
   const a5=B[4];W.forEach((w,i)=>setP('wd'+i,p(t,a5+.4+i*1.2,.6)));
   // 6 aplikace
   const ag=B[5];setP('sgk',p(t,ag+.3));GAR.forEach((g,i)=>setP('gr'+i,p(t,ag+.6+i*1.7,.6)));setP('sgz',p(t,ag+3.2));setP('sgs',p(t,ag+5.5));
-  const a6=B[6];setP('s6k',p(t,a6+.3));setP('s6h',p(t,a6+.7));setP('s6s',p(t,a6+1.2));setP('ph',p(t,a6+.5,1));
-  CH.forEach((c,i)=>setP('ch'+i,p(t,a6+1.8+i*1.1,.5)));   // štítky s odstupem 1,1 s – ať se dají přečíst
+  const a6=B[6];setP('s6k',p(t,a6+.3));setP('s6h',p(t,a6+1.1));setP('s6s',p(t,a6+2.0));setP('s6t',p(t,a6+2.9));setP('ph',p(t,a6+.5,1));   // vše postupně
+  CH.forEach((c,i)=>setP('ch'+i,p(t,a6+3.9+i*.9,.5)));   // štítky s odstupem 1,1 s – ať se dají přečíst
   for(let i=0;i<5;i++){const s0=a6+1+i*2.1,o=i===0?cl((s0+2.3-t)/.4):i===4?cl((t-s0)/.4):cl((t-s0)/.4)*cl((s0+2.3-t)/.4);$('i'+i).style.opacity=t<a6+1?(i===0?1:0):o}
   // 7
   const a7=B[7];setP('s7h',p(t,a7+.4));setP('s7s',p(t,a7+1));setP('qr',p(t,a7+1.4,.8));setP('n31b',p(t,a7+.8,.9));setP('logos',p(t,a7+2.6,.9));
