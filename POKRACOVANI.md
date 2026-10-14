@@ -570,3 +570,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Hudba:** stejný úder („boom“) jako u „31“ i při naskočení názvu konference (2,85 s) – na přání Petra.
 - Úder u názvu: v mobilu nebyl slyšet (jen hluboký boom) → přidán krátký basový akord E (stab) – teď stejně výrazný jako u „31“.
 - Úder u názvu (Petr: „teď jako výstřel, předtím hluboký“): šum (snap) ztlumen na 25 %, akord jen basy (E1/E2/H2), měkký nástup 45 ms → hluboký dunivý úder.
+- **Úder u názvu zrušen** (Petr: „předtím, jen u 31, to bylo lepší“) – zůstává jen původní hluboký úder u „31“.

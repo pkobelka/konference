@@ -76,15 +76,6 @@ def hit(at,g,big=False,sn=1.0):
     snap=nz*np.exp(-tt/(0.5 if big else 0.06))*(0.5 if big else 0.8)
     x=g*(1.0*boom+0.35*sn*snap)
     L[a:b]+=x; R[a:b]+=x
-hit(2.85,.30,True,sn=.25)   # úder při naskočení názvu konference (scéna 1)
-# k prvnímu úderu krátký basový akord (E) – aby byl slyšet i z reproduktorů mobilu (samotný „boom“ je moc hluboko)
-def stab(at,g):
-    a=int(at*SR); b=min(len(t),a+int(2.2*SR)); tt=t[a:b]-at
-    for mm,vol in ((28,1.0),(40,.8),(47,.35)):
-        f=n(mm); ph=2*np.pi*f*tt
-        x=g*vol*(np.sin(ph)+.5*np.sin(2*ph)+.25*np.sin(3*ph))*(1-np.exp(-tt/0.045))*np.exp(-tt/0.9)
-        L[a:b]+=x; R[a:b]+=x
-stab(2.85,.075)
 hit(DROP,.30,True)   # úder při odhalení „31“
 # jemné „zazvonění“ na začátku každé scény po DROP
 for bb in B[2:-1]:
