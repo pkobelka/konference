@@ -191,13 +191,14 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.17 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.18 · 14. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
 const PUB="konference2027_verejne";    // veřejné údaje pro formulář (název, noci, menu)
 const PRI="konference2027_prihlasky";  // přihlášky partnerů – každá pod tajným klíčem (odkazem)
 const AKTU="konference2027_aktuality"; // zprávy pořadatele pro průvodce (Info, číslo u záložky)
+const DOPR="konference2027_doprava"; // zájem o svoz na úterní společenský večer (z průvodce, zapisuje kdokoli, čte jen pořadatel)
 const DOT="konference2027_dotazy";     // dotazy k přednáškám z průvodce (q = texty, au = nahrávky, v = +1)
 const KAR="konference2027_karty";      // osobní karty účastníků pro průvodce – každá pod tajným klíčem, bez kontaktů
 const LOGIN_URL=location.origin+location.pathname;
@@ -261,7 +262,7 @@ if(AUTH.isSignInWithEmailLink(location.href)){
 AUTH.onAuthStateChanged(user=>{
   if(!user){USER=null;showLogin();return;}
   FDB.ref("florian_login_email/"+leKey(user.email)).get().then(s=>{
-    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();loadAktuality();}
+    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();loadAktuality();loadDoprava();}
     else{showLogin("E-mail <b>"+esc(user.email)+"</b> zatím nemá přístup. Ozvi se Petru Kobelkovi (stejný seznam jako Florián).");AUTH.signOut();}
   }).catch(()=>showLogin("Nepodařilo se ověřit přístup, zkus to znovu."));
 });
@@ -1041,6 +1042,10 @@ function rPruvodce(){
     <div class="lista" style="margin-top:6px"><button class="btn" id="a_send">Zveřejnit zprávu</button><button class="btn ghost small hidden" id="a_cancel">Zrušit úpravu</button><span class="msg" id="a_msg"></span></div>
     <div id="p_akt" style="margin-top:10px">${htmlAktuality()}</div>
   </div>
+  <div class="nast"><h2 class="sek">🚌 Zájem o svoz na společenský večer (úterý)</h2>
+    <p style="font-size:.84rem;color:#666">Účastníci se hlásí v průvodci v záložce Doprava (nástup Kraskov nebo Seč, tam/zpět, počet osob). Změna od stejného člověka nahradí jeho předchozí záznam.</p>
+    <div id="s_doprava">${htmlDoprava()}</div>
+  </div>
   <div class="nast"><h2 class="sek">❓ Dotazy k přednáškám</h2>
     <p style="font-size:.84rem;color:#666">Účastníci píší a namlouvají dotazy v průvodci, všichni je vidí živě. Mazat (nevhodný dotaz, vyčištění po zkoušce) můžeš jen ty.</p>
     <div id="s_dotazy">${htmlDotazy()}</div>
@@ -1066,6 +1071,27 @@ function rPruvodce(){
   });
   if($("s_dot_vse"))$("s_dot_vse").addEventListener("click",smazVse);
 }
+
+/* ---------- ZÁJEM O DOPRAVU (průvodce → Doprava) ---------- */
+let DOPRAVA={}, DOPR_ERR="";
+const DNAST={kraskov:"Kraskov",sec:"Seč"}, DSMER={oba:"tam i zpět",tam:"jen tam",zpet:"jen zpět"};
+function loadDoprava(){FDB.ref(DOPR+"/z").on("value",s=>{DOPRAVA=s.val()||{};DOPR_ERR="";dopravaBox();},e=>{DOPR_ERR=errMsg(e);dopravaBox();});}
+function dopravaBox(){const b=$("s_doprava");if(b)b.innerHTML=htmlDoprava();}
+function dopravaSeznam(){   // záznam, který někdo později změnil (zmena = jeho klíč), se nezobrazuje
+  const nahr=new Set(Object.values(DOPRAVA).map(x=>x.zmena).filter(Boolean));
+  return Object.entries(DOPRAVA).filter(([k])=>!nahr.has(k)).map(([k,x])=>Object.assign({k},x)).sort((a,b)=>(b.ts||0)-(a.ts||0));
+}
+function htmlDoprava(){
+  if(DOPR_ERR)return `<div class="probbox"><div>⛔ Zájem o dopravu nejde načíst: <b>${esc(DOPR_ERR)}</b>. Chybí pravidlo pro <b>${DOPR}</b> ve Firebase.</div></div>`;
+  const l=dopravaSeznam(), sum=(nast,smer)=>l.filter(x=>x.nast===nast&&(x.smer==="oba"||x.smer===smer)).reduce((a,x)=>a+(+x.n||1),0);
+  if(!l.length)return `<p class="muted" style="font-size:.9rem">Zatím se nikdo nepřihlásil.</p>`;
+  return `<table class="t" style="margin-bottom:8px"><tr><th></th><th>Tam (na večer)</th><th>Zpět</th></tr>
+    ${Object.keys(DNAST).map(n=>`<tr><td><b>${DNAST[n]}</b></td><td>${sum(n,"tam")} os.</td><td>${sum(n,"zpet")} os.</td></tr>`).join("")}
+    <tr><td><b>Celkem</b></td><td><b>${sum("kraskov","tam")+sum("sec","tam")} os.</b></td><td><b>${sum("kraskov","zpet")+sum("sec","zpet")} os.</b></td></tr></table>
+    <table class="t">${l.map(x=>`<tr><td class="sub" style="white-space:nowrap">${new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})}</td><td><b>${esc(x.jm)}</b>${x.firma?`<div class="sub">${esc(x.firma)}</div>`:""}${x.pozn?`<div class="sub">💬 ${esc(x.pozn)}</div>`:""}</td><td>${esc(DNAST[x.nast]||x.nast)} · ${esc(DSMER[x.smer]||x.smer)} · <b>${+x.n||1}</b> os.${x.zmena?' <span class="sub">(změna)</span>':""}</td><td><button class="btn red small" data-dopdel="${esc(x.k)}">Smazat</button></td></tr>`).join("")}</table>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-dopdel]");if(!b)return;
+  if(confirm("Smazat tento zájem o dopravu?"))FDB.ref(DOPR+"/z/"+b.dataset.dopdel).remove().catch(er=>alert("⚠️ "+errMsg(er)));});
 
 /* ---------- DOTAZY Z PRŮVODCE (moderace – mazat smí jen pořadatel) ---------- */
 let DOTAZY={}, DOTAZY_ERR="";

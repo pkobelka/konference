@@ -592,3 +592,11 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Úder i při naskočení „Seč 31“ (B[2]+0,8 = 12,8 s) – Petr: „jsem nadšený“. Údery: název 2,8 s · 31 7,2 s · Seč 31 12,8 s.
 - „TERMÍN“ zarovnán doprava nad „28.“ (byl ve fleku) – obě verze.
 - Štítky v telefonní scéně naskakují po 1,1 s (dřív 0,7 s), ať se dají přečíst.
+
+### Doprava (14. 10. 2026) – průvodce 0.38, pořadatel 1.18
+- Svoz jen na **úterní společenský večer**: tam Hotel Kraskov → Seč (zastávka) → Jezerka, zpět opačně; časy a místo
+  zastávky v Seči „doplníme“. Tlačítko **„Mám zájem o dopravu“** (jméno, firma, nástup Kraskov/Seč, tam i zpět/jen tam/
+  jen zpět, 1–5 osob, poznámka) → POST do Firebase `konference2027_doprava/z` (změna = nový záznam s `zmena`=klíč starého;
+  v telefonu se pamatuje). Navigace zvlášť na Jezerku a do Kraskova (Kraskov bez souřadnic – hledá se podle názvu).
+- Pořadatel → záložka Průvodce → „🚌 Zájem o svoz“: součty osob podle nástupu a směru + seznam, mazání.
+- Pravidla: mojebudky PR #186 (sloučeno se svolením Petra) – veřejně jen zápis nového záznamu s kontrolou polí.

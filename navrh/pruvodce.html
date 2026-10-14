@@ -341,6 +341,11 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .pills .pb{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 85%,transparent);backdrop-filter:blur(6px);border-radius:99px;padding:7px 8px 7px 12px;font:inherit;font-size:13px;font-weight:600;color:var(--ink)}
 .pills .pb i{font-style:normal;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:800}
 .big-acts{display:flex;flex-direction:column;gap:8px}
+.dfm{display:flex;flex-direction:column;gap:10px}.dfm label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.dfm input,.dfm textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);font:inherit;font-size:15px}
+.dseg{display:flex;flex-wrap:wrap;gap:6px}.dseg button{flex:1 1 auto;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:10px 12px;font:inherit;font-weight:700;font-size:14px}
+.dseg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.dok{display:flex;gap:10px;align-items:flex-start;background:var(--accent-soft);border-radius:12px;padding:10px 12px;font-size:14px}
 .big-acts a,.big-acts button{display:flex;align-items:center;gap:10px;text-decoration:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:12px;padding:12px 14px;font:inherit;font-weight:700;font-size:15px;text-align:left}
 .big-acts small{display:block;font-weight:500;color:var(--muted);font-size:12px}
 .cdrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -498,7 +503,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.37 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.38 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -633,7 +638,11 @@ const KONTAKTY=[
  {role:"Fakturace",jm:"Danuše Kaderková",org:"vedoucí ÚTV UCE, VHOS, a.s.",pozn:"platby, daňové doklady",tel:"461 357 151",mail:"danuse.kaderkova@vhos.cz"}
 ];
 /* ===== Termín do kalendáře, navigace do hotelu ===== */
-const MISTO={nazev:"Kongres hotel Jezerka",adr:"Ústupky 278, 538 07 Seč",lat:49.821586,lon:15.659936};
+const MISTO={nazev:"Kongres hotel Jezerka",adr:"Ústupky 278, 538 07 Seč",lat:49.821586,lon:15.659936,gps:"49°49’17.71“N, 15°39’35.77“E"};
+const KRASKOV={nazev:"Hotel Kraskov",adr:"Kraskov, Seč"};   // bez souřadnic – navigace hledá podle názvu
+/* ===== Svoz na společenský večer (úterý) – zájem se posílá pořadateli do Firebase ===== */
+const DDB="https://moje-budky-default-rtdb.firebaseio.com/konference2027_doprava/z";
+const DNAST={kraskov:"Hotel Kraskov",sec:"Seč – zastávka"}, DSMER={oba:"tam i zpět",tam:"jen tam",zpet:"jen zpět"};
 const KONF_NAZEV="Konference Nové metody a postupy při provozování ČOV – 31. ročník";
 function sheetKal(){
  const det="31. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Program: https://pkobelka.github.io/konference/pruvodce/";
@@ -651,17 +660,42 @@ function sheetKal(){
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/calendar;charset=utf-8"}));a.download="konference-sec-2027.ics";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
   toast("Otevřete stažený soubor – přidá se do kalendáře")});
 }
-function sheetNav(){
- const ll=MISTO.lat+","+MISTO.lon, q=encodeURIComponent(MISTO.nazev+", "+MISTO.adr);
- openSheet(`<h2>Navigovat do hotelu</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(MISTO.nazev)}</div>
-  <div class="bd"><dl class="kv"><dt>Adresa</dt><dd>${esc(MISTO.adr)}</dd><dt>GPS</dt><dd>49°49’17.71“N, 15°39’35.77“E</dd></dl>
+function sheetNav(kam){
+ const M=kam==="kraskov"?KRASKOV:MISTO, souradnice=!!M.lat, ll=M.lat+","+M.lon, q=encodeURIComponent(M.nazev+", "+M.adr);
+ const gm=souradnice?`destination=${ll}`:`destination=${q}`, mc=souradnice?`q=${q}&x=${M.lon}&y=${M.lat}&z=16`:`q=${q}`, wz=souradnice?`ll=${ll}&navigate=yes`:`q=${q}&navigate=yes`;
+ openSheet(`<h2>Navigovat – ${esc(M.nazev)}</h2><div class="muted" style="font-size:13px;margin-top:2px">${kam==="kraskov"?"ubytování a nástup na svoz":"místo konání konference"}</div>
+  <div class="bd"><dl class="kv"><dt>Adresa</dt><dd>${esc(M.adr)}</dd>${M.gps?`<dt>GPS</dt><dd>${M.gps}</dd>`:""}</dl>
   <div class="big-acts">
-   <a href="https://www.google.com/maps/dir/?api=1&destination=${ll}&travelmode=driving" target="_blank" rel="noopener">🧭<span>Google Mapy<small>spustí navigaci autem</small></span></a>
-   <a href="https://mapy.cz/zakladni?q=${q}&x=${MISTO.lon}&y=${MISTO.lat}&z=16" target="_blank" rel="noopener">🗺️<span>Mapy.cz<small>mapa a plánování trasy</small></span></a>
-   <a href="https://waze.com/ul?ll=${ll}&navigate=yes" target="_blank" rel="noopener">🚗<span>Waze<small>spustí navigaci</small></span></a>
-   <button type="button" id="nkop">📋<span>Kopírovat adresu<small>${esc(MISTO.nazev+", "+MISTO.adr)}</small></span></button>
-  </div><div class="note">Bydlíte v Kraskově? Na Jezerku jezdí svoz – časy najdete v Dopravě.</div></div>`);
- $("nkop").addEventListener("click",()=>{const t=MISTO.nazev+", "+MISTO.adr;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Adresa zkopírována"),()=>prompt("Adresa:",t))});
+   <a href="https://www.google.com/maps/dir/?api=1&${gm}&travelmode=driving" target="_blank" rel="noopener">🧭<span>Google Mapy<small>spustí navigaci autem</small></span></a>
+   <a href="https://mapy.cz/zakladni?${mc}" target="_blank" rel="noopener">🗺️<span>Mapy.cz<small>mapa a plánování trasy</small></span></a>
+   <a href="https://waze.com/ul?${wz}" target="_blank" rel="noopener">🚗<span>Waze<small>spustí navigaci</small></span></a>
+   <button type="button" id="nkop">📋<span>Kopírovat adresu<small>${esc(M.nazev+", "+M.adr)}</small></span></button>
+  </div><div class="note">Na úterní společenský večer jezdí svoz z Kraskova a ze Seče – podrobnosti v Dopravě.</div></div>`);
+ $("nkop").addEventListener("click",()=>{const t=M.nazev+", "+M.adr;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Adresa zkopírována"),()=>prompt("Adresa:",t))});
+}
+function sheetDoprava(){
+ const P=store.get("doprava",null), d=Object.assign({jm:S.me.jm||"",firma:S.me.firma||"",nast:"kraskov",smer:"oba",n:1,pozn:""},P||{});
+ const seg=(id,obj,val)=>`<div class="dseg" id="${id}">${Object.entries(obj).map(([k,t])=>`<button type="button" data-v="${k}" aria-pressed="${k===String(val)}">${t}</button>`).join("")}</div>`;
+ openSheet(`<h2>Mám zájem o dopravu</h2><div class="muted" style="font-size:13px;margin-top:2px">Svoz na společenský večer · úterý 27. 4.</div>
+  <div class="bd"><form class="dfm" id="dfm">
+   <label for="djm">Jméno a příjmení</label><input id="djm" maxlength="80" autocomplete="name" value="${esc(d.jm)}" required>
+   <label for="dfi">Firma</label><input id="dfi" maxlength="120" autocomplete="organization" value="${esc(d.firma)}">
+   <label>Kde nastoupíte</label>${seg("dnast",DNAST,d.nast)}
+   <label>Cesta</label>${seg("dsmer",DSMER,d.smer)}
+   <label>Počet osob</label>${seg("dn",{1:"1",2:"2",3:"3",4:"4",5:"5"},d.n)}
+   <label for="dpo">Poznámka (nepovinné)</label><textarea id="dpo" rows="2" maxlength="300">${esc(d.pozn)}</textarea>
+   <button class="cbtn" style="border:0;justify-content:center;padding:12px">${P?"Odeslat změnu":"Odeslat zájem"}</button>
+  </form><div class="note">Zájem dostane jen pořadatel. Čas odjezdu a místo zastávky v Seči upřesníme v aktualitách.</div></div>`);
+ $("dfm").addEventListener("click",e=>{const b=e.target.closest(".dseg button");if(!b)return;b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+ const vyb=id=>$(id).querySelector("[aria-pressed=true]").dataset.v;
+ $("dfm").addEventListener("submit",e=>{e.preventDefault();
+  const z={jm:$("djm").value.trim(),firma:$("dfi").value.trim(),nast:vyb("dnast"),smer:vyb("dsmer"),n:+vyb("dn"),pozn:$("dpo").value.trim(),ts:Date.now(),karta:(S.karta&&S.karta.k)||"",zmena:P?P.key:""};
+  if(!z.jm){toast("Napište prosím jméno");return}
+  fetch(DDB+".json",{method:"POST",body:JSON.stringify(z)}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(o=>{
+   z.key=o.name;store.set("doprava",z);if(!S.me.jm){S.me={jm:z.jm,firma:z.firma};store.set("me",S.me)}
+   closeSheet();render();toast("Děkujeme – zájem o dopravu jsme zaznamenali");
+  }).catch(()=>toast("Odeslání se nepovedlo – zkuste to prosím znovu, nebo napište pořadateli"));
+ });
 }
 function sheetWx(){
  loadWx();
@@ -694,7 +728,7 @@ function lm(nm){return LOGA[nm]?`<span class="lg"><img src="${IMG}loga/${LOGA[nm
 
 const NEWS=[
  {k:"n1",ts:1,d:"ukázka",h:"Program je zveřejněn",p:"Projděte si program. K přednáškám si můžete psát vlastní poznámky a posílat dotazy."},
- {k:"n2",ts:2,d:"ukázka",h:"Svoz z hotelu Kraskov",p:"Pro ubytované v Kraskově jezdí autobus. Časy najdete v záložce Doprava."},
+ {k:"n2",ts:2,d:"ukázka",h:"Svoz na společenský večer",p:"Na úterní večer jezdí autobus z Kraskova a ze Seče. Zájem nahlaste v záložce Doprava."},
  {k:"n3",ts:3,d:"ukázka",h:"Fotky z konference",p:"V záložce Fotky najdete fotografie z letošního ročníku i archiv minulých let."},
  {k:"n4",ts:4,d:"ukázka",h:"Sborník v PDF už během konference",p:"Sborník si stáhnete přímo tady v průvodci už v průběhu konference – můžete v něm listovat při přednáškách. Jakmile bude připravený, dáme vám vědět v aktualitách."},
 ];
@@ -731,7 +765,7 @@ function kartaRadky(d){
  else if(d.nespi||!(d.noci||[]).length&&!d.pokoj)R.push(["🏨","Ubytování",d.nespi?"bez ubytování":"zatím nepřiděleno"]);
  else{
   R.push(["🌙",(d.noci||[]).length===1?"Noc":"Noci",(d.noci||[]).join(" · ")||"—"]);
-  if(d.kraskov)R.push(["🚌","Kraskov – svoz","bydlíte v Kraskově, na Jezerku jezdí svoz (časy v Dopravě)"]);
+  if(d.kraskov)R.push(["🚌","Kraskov – svoz","bydlíte v Kraskově, na úterní společenský večer jezdí svoz (Doprava)"]);
   else R.push(["🛏",d.pokoj?"Pokoj "+d.pokoj:"Pokoj",d.pokoj?[d.sekce,d.sam?"sám/sama":""].filter(Boolean).join(" · ")||"Kongres hotel Jezerka":"číslo pokoje doplníme"]);
   if((d.spolu||[]).length)R.push(["👥","Spolubydlící",d.spolu.join(", ")]);
  }
@@ -915,7 +949,7 @@ function vDomu(){
   <div class="qk">
    <button data-go="program">${qi(9)}<span class="qt"><b>Program</b><small>${Object.values(PROG).flat().filter(x=>x.blok).length} bloků · dotazy · upozornění</small></span></button>
    <button data-go="program" data-mine="1">${qi(5)}<span class="qt"><b>Moje poznámky</b><small>${nn?nn+" "+(nn===1?"poznámka":nn<5?"poznámky":"poznámek"):"k přednáškám"}${nb?" · "+nb+" 🔔":""}</small></span></button>
-   <button data-go="doprava">${qi(1)}<span class="qt"><b>Svoz a cesta</b><small>Kraskov ⇄ Jezerka</small></span></button>
+   <button data-go="doprava">${qi(1)}<span class="qt"><b>Svoz a cesta</b><small>svoz na večer · navigace</small></span></button>
    <button data-go="info">${qi(15)}<span class="qt"><b>${podpis()?esc(S.me.jm):"Informace"}</b><small>${aktNove()?aktNove()+" "+(aktNove()===1?"nová zpráva":aktNove()<5?"nové zprávy":"nových zpráv"):podpis()?"aktuality · profil":"aktuality · kontakty"}</small></span>${badge(aktNove())}</button>
   </div>
   <div class="blockh"><h2>Generální partneři</h2><button class="lnk" data-go="partneri">Všichni partneři →</button></div>
@@ -1007,17 +1041,21 @@ function closeLb(){const el=document.getElementById("lb");if(el)el.remove();LB=n
 document.addEventListener("keydown",e=>{if(!LB)return;if(e.key==="Escape")closeLb();if(e.key==="ArrowLeft")stepLb(-1);if(e.key==="ArrowRight")stepLb(1)});
 
 function vDoprava(){
+ const P=store.get("doprava",null);
  return `<section class="sec">
-  <div class="card"><div class="label" style="margin-bottom:8px">Svoz autobusem · Hotel Kraskov ⇄ Kongres hotel Jezerka</div>
-   <div style="overflow-x:auto"><table class="tt"><thead><tr><th>Den</th><th>Kraskov → Jezerka</th><th>Jezerka → Kraskov</th></tr></thead><tbody>
-    <tr><td>Úterý</td><td>před prezencí · doplníme</td><td>po společenském večeru · doplníme</td></tr>
-    <tr><td>Středa</td><td>ráno · doplníme</td><td>po závěru · doplníme</td></tr>
+  <div class="card"><div class="label" style="margin-bottom:8px">Svoz na společenský večer · úterý 27. 4.</div>
+   <div style="overflow-x:auto"><table class="tt"><thead><tr><th>Cesta</th><th>Trasa</th><th>Čas</th></tr></thead><tbody>
+    <tr><td>Tam</td><td>Hotel Kraskov → Seč (zastávka) → Kongres hotel Jezerka</td><td>před večerem · doplníme</td></tr>
+    <tr><td>Zpět</td><td>Kongres hotel Jezerka → Seč → Hotel Kraskov</td><td>po skončení večera · doplníme</td></tr>
    </tbody></table></div>
-   <p class="muted" style="font-size:13px;margin:8px 0 0">Hotel Kraskov je asi 9 km od Jezerky. Časy svozu doplní pořadatel, případné změny se objeví v aktualitách.</p>
+   <p class="muted" style="font-size:13px;margin:8px 0 10px">Autobus jezdí jen na úterní společenský večer. Nastoupit můžete v Kraskově nebo v Seči – místo zastávky v Seči a časy upřesníme v aktualitách.</p>
+   ${P?`<div class="dok"><span>✅</span><div><b>Zájem o dopravu odeslán</b><br>${esc(DNAST[P.nast]||"")} · ${esc(DSMER[P.smer]||"")} · ${P.n} ${P.n===1?"osoba":P.n<5?"osoby":"osob"}</div></div>
+     <p style="margin:8px 0 0"><button class="cbtn" data-doprava="1" style="border:0">✎ Změnit zájem o dopravu</button></p>`
+    :`<p style="margin:0"><button class="cbtn" data-doprava="1" style="border:0">🚌 Mám zájem o dopravu</button></p>`}
   </div>
   <div class="card"><div class="label" style="margin-bottom:8px">Cesta na místo</div>
-   <dl class="kv"><dt>Adresa</dt><dd>Kongres hotel Jezerka, Seč – Ústupky 278</dd><dt>GPS</dt><dd>49°49’17.71“N, 15°39’35.77“E</dd><dt>Parkování</dt><dd>u hotelu (upřesníme)</dd></dl>
-   <p style="margin:10px 0 0"><button class="cbtn" data-nav="1" style="border:0">🧭 Navigovat do hotelu</button></p>
+   <dl class="kv"><dt>Konference</dt><dd>Kongres hotel Jezerka, Seč – Ústupky 278</dd><dt>GPS</dt><dd>${MISTO.gps}</dd><dt>Parkování</dt><dd>u hotelu (upřesníme)</dd><dt>Ubytování</dt><dd>část hostů v Hotelu Kraskov (asi 9 km)</dd></dl>
+   <div class="cact" style="margin-top:10px"><button class="cbtn" data-nav="1" style="border:0">🧭 Navigovat na Jezerku</button><button class="cbtn" data-nav="kraskov" style="border:0">🧭 Navigovat do Kraskova</button></div>
   </div>
  </section>`;
 }
@@ -1257,7 +1295,8 @@ $("view").addEventListener("click",e=>{
  if(e.target.closest("[data-instalpryc]")){store.set("instalpryc",1);return render()}
  if(e.target.id==="sdil")return sdilet();
  if(e.target.closest("[data-kal]"))return sheetKal();
- if(e.target.closest("[data-nav]"))return sheetNav();
+ {const nv=e.target.closest("[data-nav]");if(nv)return sheetNav(nv.dataset.nav)}
+ if(e.target.closest("[data-doprava]"))return sheetDoprava();
  const t=e.target.closest("[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,#npr,#ntxt,#nmail");if(!t)return;
  if(t.dataset.alarm)return sheetAlarm(t.dataset.alarm);
  if(t.dataset.ph){const [a,i]=t.dataset.ph.split(":");return openLb(a,+i)}
