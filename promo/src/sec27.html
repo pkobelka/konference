@@ -66,6 +66,36 @@ img.lg{background:#fff;padding:14px 22px;border-radius:22px;box-shadow:0 10px 26
 .qr img{width:330px;height:330px;border-radius:24px;background:#fff;padding:14px;box-shadow:0 30px 70px -30px rgba(60,40,80,.5)}
 .qr div{font:700 24px var(--body);margin-top:14px;color:var(--muted)}
 .bar{position:absolute;left:0;bottom:0;height:8px;background:linear-gradient(90deg,var(--accent),#c66bd6);z-index:9}
+/* ===== verze NA VÝŠKU (?v=1): 1080×1920 pro stories / WhatsApp status / Reels ===== */
+.vert #fit{width:1080px;height:1920px}
+.vert #s1big{top:820px!important;font-size:100px!important}
+.vert #s1 .c+.c{top:700px!important}
+.vert #s1h{font-size:100px!important;margin-top:170px!important}
+.vert #n31{top:40%}
+.vert #s2 .c{top:1330px!important}
+.vert .pin{top:640px}
+.vert #s3 .c{top:800px!important}
+.vert #s4>div:first-child{left:90px!important;top:600px!important}
+.vert .cal{right:auto;left:260px;top:1080px}
+.vert .w4{left:60px;top:700px}
+.vert .w4 div{font-size:70px;gap:20px;white-space:nowrap}
+.vert .w4 i{width:78px;height:78px}
+.vert #sg>div{top:620px!important}
+.vert .gar>div>div{min-width:0}
+.vert .gar b{font-size:48px}
+.vert .gar span{font-size:28px}
+.vert #sgz{font-size:30px!important;padding:0 50px}
+.vert #s6>div:first-child{left:70px!important;top:110px!important;width:940px!important}
+.vert #s6h{font-size:84px!important}
+.vert .chips{max-width:940px}
+.vert .ph{right:auto;left:50%;margin-left:-226px;top:930px;transform:scale(.9);transform-origin:50% 0}
+.vert #s7>div:first-child{left:0!important;right:0;width:auto!important;top:400px!important;text-align:center}
+.vert #n31b{left:50%!important;margin-left:-150px;top:600px!important;height:260px!important}
+.vert #logos{top:930px!important}
+.vert .qr{right:auto;left:50%;margin-left:-165px;top:1200px}
+.vert #s8 .c{top:640px!important}
+.vert #s8h{font-size:96px!important}
+.vert #s8l{flex-direction:column;gap:30px!important}
 </style>
 <div id="fit"><div class="st" id="st">
   <!-- 1 Úvod -->
@@ -113,17 +143,20 @@ img.lg{background:#fff;padding:14px 22px;border-radius:22px;box-shadow:0 10px 26
 const SC=["s1","s2","s3","s4","s5","sg","s6","s7","s8"];
 const D=[7.2,4.8,4.8,4.8,7.2,7.2,12,7.2,4.8], B=[0];D.forEach(d=>B.push(+(B[B.length-1]+d).toFixed(2)));const TOTAL=B[B.length-1];window.TOTAL=TOTAL;window.DURS=D;
 const $=id=>document.getElementById(id);
+const V=/[?&]v=1/.test(location.search), SW=V?1080:1920, SH=V?1920:1080;   // V = verze na výšku
+if(V){document.documentElement.classList.add('vert');document.getElementById('s1h').innerHTML='Nové metody<br>a postupy při<br>provozování ČOV'}
 const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, out=x=>1-Math.pow(1-x,3);
 const p=(t,a,d=.7)=>out(cl((t-a)/d));          // náběh prvku od času a
 function setP(id,v){const e=$(id);if(e)e.style.setProperty('--p',v)}
 // fleky – 10 kusů, každý má domovskou pozici, jemně se vlní
 const FL=[[10,330,260,300],[6,1540,230,280],[16,1700,760,340],[9,260,820,260],[3,980,150,200],[13,1260,880,230],[12,640,930,210],[17,1820,470,190],[1,90,540,180],[5,660,95,150]];
+if(V)FL.forEach(f=>{f[1]=Math.round(f[1]/1920*1080);f[2]=Math.round(f[2]/1080*1920)});
 const st=$('st');FL.forEach((f,i)=>{const e=document.createElement('div');e.className='fl';e.id='f'+i;e.style.setProperty('--s',f[3]+'px');e.style.backgroundImage=`url(../../obrazky/fleky/flek${String(f[0]).padStart(2,'0')}.webp)`;st.appendChild(e)});
 // kalendář duben 2027 (1. 4. = čtvrtek)
 (function(){const g=$('calg');g.innerHTML=['Po','Út','St','Čt','Pá','So','Ne'].map(d=>`<b>${d}</b>`).join('')+'<span></span>'.repeat(3)+Array.from({length:30},(_,i)=>`<span class="${i+1===27||i+1===28?'on':''}">${i+1}</span>`).join('')})();
 // slova scény 5
 const W=[["Přednášky.",9],["Diskuze.",6],["Setkání.",16],["Večer s přáteli.",3]];
-$('w4').innerHTML=W.map(([w,f],i)=>`<div id="wd${i}" class="r" style="margin-left:${i*140}px"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i>${w}</div>`).join('');
+$('w4').innerHTML=W.map(([w,f],i)=>`<div id="wd${i}" class="r" style="margin-left:${i*(V?50:140)}px"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i>${w}</div>`).join('');
 const CH=["📣 Online aktuální informace přímo do mobilu","❓ Dotazy k přednáškám do diskuze","🎙️ Průběžně – písemně i hlasem","✎ Poznámky","📅 Program","🌤️ Počasí","🧭 Navigace do hotelu","🪪 Moje registrace"];
 const GAR=[["Ing. Filip Wanner, Ph.D.","ENERGIE AG BOHEMIA s.r.o.",10],["Ing. Martin Srb, Ph.D.","Pražské vodovody a kanalizace, a.s.",16]];
 $('gar').innerHTML=GAR.map(([n,o,f],i)=>`<div class="r" id="gr${i}"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i><div><b>${n}</b><span>${o}</span></div></div>`).join('');
@@ -139,14 +172,14 @@ function render(t){
     const g=ease(cl((t-B[1]+.6)/1.4)), back=ease(cl((t-B[2]+.4)/1.2));
     // scéna 2: fleky se seřadí do kruhu kolem „31“ (mezera dole pro text) a kruh se rozšíří
     const N=FL.length, ang=Math.PI/2+.6+i*(2*Math.PI-1.2)/(N-1), ex=ease(cl((t-B[1]-.9)/2.4));
-    const cx=960+Math.cos(ang)*(430+330*ex), cy=475+Math.sin(ang)*(320+70*ex);
+    const cx=SW/2+Math.cos(ang)*(V?340+90*ex:430+330*ex), cy=(V?768:475)+Math.sin(ang)*(V?310+70*ex:320+70*ex);
     x=x+(cx-x)*g*(1-back); y=y+(cy-y)*g*(1-back); sc*=1-(1-90/f[3]*1.5)*g*(1-back);
     const quiet=t>B[2]?.55:1; op*=quiet;
-    if(t>B[8]){const k=ease(cl((t-B[8])/3));x+= (f[1]-960)*1.1*k; y+=(f[2]-540)*1.1*k; op*=1-k*.6}
+    if(t>B[8]){const k=ease(cl((t-B[8])/3));x+= (f[1]-SW/2)*1.1*k; y+=(f[2]-SH/2)*1.1*k; op*=1-k*.6}
     e.style.transform=`translate(${x+bob}px,${y+bob2}px) scale(${sc}) rotate(${Math.sin(t*.3+i)*6}deg)`;e.style.opacity=op});
   // 1
   {const bi=out(cl((t-.2)/.8)),sh=ease(cl((t-2.0)/.8)),e=$('s1big');
-   e.style.opacity=bi;e.style.transform=`translateY(${(1-bi)*40-sh*232}px) scale(${(.92+.08*bi)*(1-sh*.6)})`;
+   e.style.opacity=bi;e.style.transform=`translateY(${(1-bi)*40-sh*(V?140:232)}px) scale(${(.92+.08*bi)*(1-sh*.6)})`;
    setP('s1h',p(t,2.8,1));}
   // 2
   const a2=B[1]; const n=$('n31'), q=out(cl((t-a2-.5)/1.2)); n.style.opacity=q; n.style.transform=`scale(${.55+.45*q}) rotate(${(1-q)*-8}deg)`;
@@ -172,7 +205,7 @@ function render(t){
   $('bar').style.width=(t/TOTAL*100)+'%';
 }
 window.render=render;
-function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);$('fit').style.transform=`scale(${s}) translate(-50%,-50%)`;$('fit').style.left='50%';$('fit').style.top='50%';$('fit').style.transformOrigin='0 0';$('fit').style.translate=`${-960*s}px ${-540*s}px`;$('fit').style.transform=`scale(${s})`}
+function fit(){const s=Math.min(innerWidth/SW,innerHeight/SH);$('fit').style.transform=`scale(${s}) translate(-50%,-50%)`;$('fit').style.left='50%';$('fit').style.top='50%';$('fit').style.transformOrigin='0 0';$('fit').style.translate=`${-SW/2*s}px ${-SH/2*s}px`;$('fit').style.transform=`scale(${s})`}
 fit();addEventListener('resize',fit);
 if(!/rec=1/.test(location.search)){const t0=performance.now();(function loop(){const t=((performance.now()-t0)/1000)%TOTAL;render(t);requestAnimationFrame(loop)})()}else render(0);
 </script>

@@ -1,11 +1,11 @@
 // Snímek po snímku: render(t) → screenshot → ffmpeg (deterministické). Použití: node render.js výstup.mp4
 const { chromium } = require('/opt/node22/lib/node_modules/playwright');
 const { spawn } = require('child_process'); const path=require('path');
-const FPS = 30, out = process.argv[2] || 'video_noaudio.mp4';
+const FPS = 30, out = process.argv[2] || 'video_noaudio.mp4', V = process.argv[3] === 'v';   // node render.js out.mp4 v → na výšku
 (async () => {
   const b = await chromium.launch();
-  const p = await b.newPage({ viewport: { width: 1920, height: 1080 } });
-  await p.goto('file://' + path.resolve(__dirname, 'sec27.html') + '?rec=1');
+  const p = await b.newPage({ viewport: V ? { width: 1080, height: 1920 } : { width: 1920, height: 1080 } });
+  await p.goto('file://' + path.resolve(__dirname, 'sec27.html') + '?rec=1' + (V ? '&v=1' : ''));
   await p.waitForTimeout(1000); await p.evaluate(() => document.fonts.ready);
   const T = await p.evaluate(() => window.TOTAL), n = Math.round(T * FPS);
   const f = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',

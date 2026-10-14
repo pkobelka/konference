@@ -573,3 +573,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Úder u názvu zrušen** (Petr: „předtím, jen u 31, to bylo lepší“) – zůstává jen původní hluboký úder u „31“.
 - **Zvuk v prvním okně:** přesná kopie zvuku z odhalení „31“ (úder + nástup basy a melodie, 1,9 s, dozvuk) vložena na 2,83 s (naskočení názvu) – ne samotný úder (ten zněl jako výstřel).
 - **Hudba v1 okně (finál):** kopie zrušena; arpeggio + basa nastoupí už s úderem při naskočení názvu (START=2,8 s), u „31“ druhý úder do hrající hudby – po úderu není ticho.
+- **Verze NA VÝŠKU** `promo/sec27-pozvanka-vyska.mp4` (1080×1920, stejná hudba): šablona `sec27.html?v=1` (třída .vert,
+  CSS přepisy pozic, fleky přepočítané, kruh u 31 menší), render `node render.js out.mp4 v`. Odkaz ke stažení na video.html.
