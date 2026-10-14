@@ -447,3 +447,13 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   (První pokus s modrým rámečkem se mu nelíbil.)
   Manifest pořadatele: name „Seč 27 – pořadatel“, short_name **„Pořadatel“**, theme #005472. Podoba „pak ji změníme“ – prozatímní.
 - YWP: garant **Ing. Filip Wanner je správně** (potvrdil uživatel) – v šabloně YWP ponecháno.
+
+### ▶ KDE POKRAČOVAT (stav 14. 10. 2026 odpoledne)
+- Nasazeno: **admin 1.15 „Pořadatel“** (https://pkobelka.github.io/konference/, ikona 31 + kolečko VHOS),
+  **průvodce 0.31 „Seč 27“** (…/pruvodce/, čistá 31). Ukázka v Claude: artifact 8Pd4XvrWtu5nHH1p91T4NH.
+- Firebase pravidla: konference2027, _prihlasky, _verejne, _karty, _dotazy, _aktuality – vše hotové a ověřené naživo.
+- Import přihlášek (Přihlášky → Import): e-přihlášky z webu (PDF) + formuláře Word/PDF (hosté, přednášející,
+  vystavovatel, YWP) vč. nocí/večeře/stravy ze šablon 2027 (poslány uživateli; YWP garant F. Wanner = správně).
+- Čeká na uživatele: fotka garanta do Info; hodnocení přednášek (a/b) po poradě; smazat testovací aktuality/dotazy.
+- Další práce (aplikace pořadatele): skutečné počty lůžek, hromadné e-maily s osobním odkazem (karta v průvodci),
+  rozšíření Poznámek (propojení s osobou, termín), před ostrým provozem smazat testovací data 2026.
