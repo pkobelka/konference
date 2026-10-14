@@ -131,13 +131,15 @@ function wave(id,t,amp,len,spd,y0){let d=`M0 330 L0 ${y0}`;for(let x=0;x<=1920;x
 function sceneOp(i,t){const a=B[i],b=B[i+1],fi=.45,fo=.45;return cl((t-a)/fi)*cl((b-t)/fo)*(i===0?1:1)}
 function render(t){
   const L=SC.length-1;for(let i=0;i<=L;i++){const o=(i===0?cl((B[1]-t)/.45):i===L?cl((t-B[L])/.45):sceneOp(i,t));const s=$(SC[i]);s.style.opacity=o;s.style.visibility=o>0?'visible':'hidden'}
-  // fleky: scéna 1 se snáší, 2 se stáhnou do středu za 31, 3–7 decentně u okrajů, 8 se rozletí
+  // fleky: scéna 1 se snáší, 2 kruh kolem 31, 3–7 decentně u okrajů, 8 se rozletí
   FL.forEach((f,i)=>{const e=$('f'+i);let x=f[1],y=f[2],sc=1,op=1;
     const bob=Math.sin(t*.7+i)*14, bob2=Math.cos(t*.55+i*1.7)*12;
     const inn=out(cl((t-i*.18)/1.6)); sc=.4+.6*inn; op=inn;
     const g=ease(cl((t-B[1]+.6)/1.4)), back=ease(cl((t-B[2]+.4)/1.2));
-    const cx=960+(f[1]-960)*.25, cy=470+(f[2]-470)*.25;
-    x=x+(cx-x)*g*(1-back); y=y+(cy-y)*g*(1-back); sc*=1-.45*g*(1-back); op*=1-.75*g*(1-back);
+    // scéna 2: fleky se seřadí do kruhu kolem „31“ (mezera dole pro text) a kruh se rozšíří
+    const N=FL.length, ang=Math.PI/2+.6+i*(2*Math.PI-1.2)/(N-1), ex=ease(cl((t-B[1]-.9)/2.4));
+    const cx=960+Math.cos(ang)*(430+330*ex), cy=475+Math.sin(ang)*(320+70*ex);
+    x=x+(cx-x)*g*(1-back); y=y+(cy-y)*g*(1-back); sc*=1-(1-90/f[3]*1.5)*g*(1-back);
     const quiet=t>B[2]?.55:1; op*=quiet;
     if(t>B[8]){const k=ease(cl((t-B[8])/3));x+= (f[1]-960)*1.1*k; y+=(f[2]-540)*1.1*k; op*=1-k*.6}
     e.style.transform=`translate(${x+bob}px,${y+bob2}px) scale(${sc}) rotate(${Math.sin(t*.3+i)*6}deg)`;e.style.opacity=op});

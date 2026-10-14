@@ -550,3 +550,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Úvod v2:** velké „Zveme vás / na konferenci“ se jen zmenší (scale .4, stejné písmo) a zůstane nad názvem – bez
   přepnutí na malé verzálky (Petr: „problikne do jiného formátu, není to pěkné“). Scéna garantů vystředěná.
   „vás“ malé (obecné oslovení), „Vás“ jen v osobních dopisech – na dotaz Petra.
+- **Úvod zkrácen** (Petr: „zveme vás je tam moc dlouho“): velké Zveme vás ~2 s, scéna 1 = 7,2 s, video 60 s.
+- **Scéna 31:** fleky se seřadí do **kruhu** kolem „31“ (mezera dole pro „31. ročník“) a kruh se rozšíří (elipsa
+  rx 430→760, ry 320→390), fleky zmenšené na ~135 px – dřív se stahovaly pod „31“ a nebylo to výrazné.
