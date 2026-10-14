@@ -93,6 +93,11 @@ def rev(x):
         s=int(d*SR); y[s:]+=g*x[:-s]
     return y
 L,R=rev(L),rev(R[::1])
+# přesná kopie zvuku z odhalení „31“ (úder + nástup basy a melodie) i v prvním okně – při naskočení názvu
+CP_AT=2.83; CP_LEN=1.9
+ca=int((DROP-0.03)*SR); cn=int(CP_LEN*SR); fo=np.clip((CP_LEN-np.arange(cn)/SR)/0.7,0,1)**2
+da=int(CP_AT*SR)
+L[da:da+cn]+=L[ca:ca+cn]*fo; R[da:da+cn]+=R[ca:ca+cn]*fo
 # celková obálka: náběh 0,8 s, dozvuk 3 s
 g=np.clip(t/0.8,0,1)*np.clip((TOTAL-t)/3.0,0,1)
 L*=g; R*=g
