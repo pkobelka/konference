@@ -625,3 +625,18 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Nápad na později (nestavěno): „dálkové promítání“ – předsedající vybere dotaz v mobilu a ten se ukáže v okně prohlížeče
   na počítači u projektoru (přes Firebase; potřebovalo by zabezpečení, např. PIN bloku, a nové pravidlo v mojebudky).
 - Video: scéna „Přednášky / Diskuze / Setkání / Večer s přáteli“ bez teček (Petr). Na výšku písmo 66 px.
+
+### ▶ KDE POKRAČOVAT (14. 10. 2026, konec dne) – vše uloženo a nasazeno
+- **Nasazeno:** průvodce **0.41**, pořadatel **1.18**, video pozvánky na šířku i na výšku (poslední: scéna Přednášky /
+  Diskuze / Setkání / Večer s přáteli bez teček), pravidla Firebase mojebudky #186 (konference2027_doprava).
+- **Pravopis ve videu ověřen (Petr se ptal):** „na Seči!“ bez mezery před vykřičníkem, „27. – 28. dubna 2027“ (2. pád),
+  „Duben 2027“ v kalendáři (1. pád) – vše správně, neměnit.
+- **Web a mezipaměť:** GitHub Pages i prohlížeč drží soubory až ~10 min. Po nasazení posílat soubory pod NOVÝM jménem
+  (kopie ve scratchpadu) a na web dávat odkaz s `?nova=1` – jinak Petr vidí starou verzi.
+- **Čeká na Petra:**
+  1. místo zastávky svozu v Seči (má adresu i mapu) → doplnit do Dopravy (text + navigace na zastávku) a do formuláře;
+  2. test zájmu o dopravu v průvodci → ověřit v aplikaci pořadatele → smazat;
+  3. test „Dotazy velkým písmem“ v mobilu předsedajícího a přehrání hlasového dotazu do mikrofonu.
+- **Nápady na později:** dálkové promítání dotazů (mobil předsedajícího → plátno, přes Firebase + PIN bloku; potřebuje
+  nové pravidlo v mojebudky), přehled odkazů `?pr=<blok>` v aplikaci pořadatele, prezentace z LinkedIn článků,
+  dál admin (počty lůžek, hromadné e-maily s osobními odkazy, smazat testovací data 2026 před ostrým provozem).
