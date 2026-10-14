@@ -191,7 +191,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.12 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.13 · 14. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -878,15 +878,17 @@ async function docxRadky(JSZip,data){
 }
 const FTYP=[[/PRO\s+PŘEDNÁŠEJÍCÍ/i,"prednasejici","Přednášející"],[/VYSTAVUJÍCÍ|VYSTAVOVATEL/i,"vystavujici","Vystavující"],[/YWP/i,"ywp","YWP"],[/\bHOST(É|E|Ů)?\b/i,"host","Host"]];
 const FPOLE={"titul před jménem":"titul_pred","titul za jménem":"titul_za","jméno":"jmeno","příjmení":"prijmeni","firma":"firma","sídlo":"sidlo","ičo":"ico","ič":"ico","dič":"dic",
-  "kontaktní e-mail":"email","kontaktní telefon":"tel","kontaktní e-mail firma":"f_email","kontaktní telefon firma":"f_tel","poznámka":"poznamka","fakturační adresa":"fakt_adresa","e-mail pro zaslání faktury":"fakt_email","vložné":"vlozne","datum konání konference":"datum","další účastník":"dalsi"};
-const ZA_OSOBU=["titul_pred","titul_za","jmeno","prijmeni","email","tel"];
+  "kontaktní e-mail":"email","kontaktní telefon":"tel","kontaktní e-mail firma":"f_email","kontaktní telefon firma":"f_tel","poznámka":"poznamka","fakturační adresa":"fakt_adresa","e-mail pro zaslání faktury":"fakt_email","vložné":"vlozne","datum konání konference":"datum","další účastník":"dalsi",
+  "noc 26./27. 4.":"noc1","noc 27./28. 4.":"noc2","večeře 26. 4.":"vec","strava":"strava","bydlet s":"spolu"};
+const ZA_OSOBU=["titul_pred","titul_za","jmeno","prijmeni","email","tel","noc1","noc2","vec","strava","spolu"];
+const NAPOVEDY=/\((ano \/ ne|např\. vegetariánská, bezlepková|jméno kolegy, pokud chcete|požadavek na stravu[^)]*)\)/gi;   // šedé nápovědy v šablonách 2027
 function parsujFormular(rows){
   const vse=rows.map(r=>r.join(" ")).join("\n"), typ=FTYP.find(([re])=>re.test(vse));
   const r={typ:typ?typ[1]:"",typNazev:typ?typ[2]:"",firma:"",ico:"",dic:"",sidlo:"",f_email:"",f_tel:"",fakt_adresa:"",fakt_email:"",poznamka:"",osoby:[]};
   let o={};const dalsi=()=>{if(o.jmeno||o.prijmeni||o.email)r.osoby.push(o);o={};};
   const zpracuj=(lab,val)=>{
-    const k=FPOLE[lab.toLowerCase().replace(/\s+/g," ").trim()];if(!k)return;
-    val=(val||"").replace(/\(požadavek na stravu[^)]*\)/i,"").trim();
+    const k=FPOLE[lab.toLowerCase().replace(/\(.*?\)/g,"").replace(/\s+/g," ").trim()];if(!k)return;
+    val=(val||"").replace(NAPOVEDY,"").trim();
     if(k==="dalsi")return dalsi();
     if(ZA_OSOBU.includes(k)){if((k==="titul_pred"||k==="jmeno")&&(o.jmeno||o.prijmeni))dalsi();if(val)o[k]=val;}
     else if(val&&!r[k])r[k]=val;
@@ -913,6 +915,7 @@ function prectiSoubor(fl){
         ? Object.assign(parsujPrihlasku(L),{druh:"web"})
         : formNaZaznam(parsujFormular(L.map(l=>[l])))));
 }
+function anoNe(v){v=String(v||"").trim();if(/^(ano|a|y|yes|x|✓|✔|1)\b/i.test(v))return true;if(/^(ne|n|no|0|-|–)(\b|$)/i.test(v))return false;return null;}
 function formNaZaznam(f){
   const o0=f.osoby[0]||{};
   return Object.assign(f,{druh:"form",kontakt:{jmeno:[o0.jmeno,o0.prijmeni].filter(Boolean).join(" "),email:f.f_email||o0.email||"",tel:f.f_tel||o0.tel||""}});
@@ -943,27 +946,33 @@ function eimpNahled(){
       ${r.kontakt.jmeno?`<div class="sub">Kontakt: ${esc(r.kontakt.jmeno)} · ${esc(r.kontakt.email)} · ${esc(r.kontakt.tel)}</div>`:""}
       ${r.poznamka?`<div class="loni" style="background:#fff8e1;margin-top:4px">📝 <b>Poznámka:</b> ${esc(r.poznamka)}</div>`:""}
       <table class="t" style="margin-top:6px">${r.osoby.map((x,oi)=>{const ex=osobaPodle(x);if(!ex)nov++;
-        return `<tr style="${ex?"opacity:.5":""}"><td><label><input type="checkbox" class="eimp_c" data-r="${ri}" data-o="${oi}" ${ex?"":"checked"}> <b>${esc([x.titul_pred,x.jmeno,x.prijmeni].filter(Boolean).join(" "))}${x.titul_za?", "+esc(x.titul_za):""}</b></label></td><td>${esc(x.email)}</td><td>${esc(x.tel)}</td><td>${r.druh==="web"?(x.clen?"člen CzWA":"nečlen"):""}</td><td>${ex?"už je v seznamu":"<b>nový</b>"}</td></tr>`;}).join("")}</table></div>`;}).join("");
+        return `<tr style="${ex?"opacity:.5":""}"><td><label><input type="checkbox" class="eimp_c" data-r="${ri}" data-o="${oi}" ${ex?"":"checked"}> <b>${esc([x.titul_pred,x.jmeno,x.prijmeni].filter(Boolean).join(" "))}${x.titul_za?", "+esc(x.titul_za):""}</b></label></td><td>${esc(x.email)}</td><td>${esc(x.tel)}</td><td>${r.druh==="web"?(x.clen?"člen CzWA":"nečlen"):[["Po",x.noc1],["Út",x.noc2],["večeře",x.vec]].filter(([,v])=>v).map(([t,v])=>t+" "+(anoNe(v)===true?"✓":anoNe(v)===false?"✗":esc(v))).join(" · ")}</td><td>${ex?"už je v seznamu":"<b>nový</b>"}</td></tr>`;}).join("")}</table></div>`;}).join("");
   out.innerHTML=h+(nov?`<div class="lista"><button class="btn" id="eimp_go">Založit vybrané (${nov})</button><button class="btn ghost small" id="eimp_x">Zrušit</button><span class="msg" id="eimp_msg"></span></div>`:`<div class="lista"><span class="pocet">Nic nového k založení.</span><button class="btn ghost small" id="eimp_x">Zavřít</button></div>`);
   $("eimp_x").addEventListener("click",()=>{EIMP=[];out.innerHTML="";});
   if($("eimp_go"))$("eimp_go").addEventListener("click",eimpZaloz);
 }
 function eimpZaloz(){
   const upd={}, vyb=[...document.querySelectorAll(".eimp_c:checked")].map(c=>[+c.dataset.r,+c.dataset.o]);if(!vyb.length)return;
-  const novaF={};let nO=0,nF=0;
+  const novaF={}, uz=new Set();let nO=0,nF=0;
   for(const [ri,oi] of vyb){
-    const r=EIMP[ri], x=r.osoby[oi];if(osobaPodle(x))continue;
+    const r=EIMP[ri], x=r.osoby[oi], klic=norm(x.email)||norm(x.prijmeni+" "+x.jmeno);
+    if(osobaPodle(x)||uz.has(klic))continue;uz.add(klic);   // stejný člověk dvakrát v dávce (Word i PDF) → jednou
     let fid=firmaPodle(r)||novaF[r.ico||r.firma];
     if(!fid&&r.firma){fid=FDB.ref(ROOT+"/firmy").push().key;novaF[r.ico||r.firma]=fid;nF++;
       upd["firmy/"+fid]=clean({nazev:r.firma,kat:"ostatni",ico:r.ico,dic:r.dic,sidlo:r.sidlo,fakt_adresa:r.fakt_adresa,fakt_email:r.fakt_email,kontakt:clean({jmeno:r.kontakt.jmeno,email:r.kontakt.email,tel:r.kontakt.tel})});}
     const bez=/bez\s+ubytov/i.test(r.poznamka||"");
     const id=FDB.ref(ROOT+"/osoby").push().key;nO++;
     const web=r.druh==="web", kat={};kat[web?"verejnost":(r.typ||"ostatni")]=true;
+    // noci a pondělní večeře z formuláře 2027 (1. noc = 26./27. 4., 2. noc = 27./28. 4. podle pořadí v Nastavení)
+    const nk=noci().map(([k])=>k), nociO={}, a1=anoNe(x.noc1), a2=anoNe(x.noc2), av=anoNe(x.vec);
+    if(a1&&nk[0])nociO[nk[0]]=true;if(a2&&nk[1])nociO[nk[1]]=true;
+    const pozn=[r.poznamka||"",x.strava?"Strava: "+x.strava:"",x.spolu?"Chce bydlet s: "+x.spolu:"",av===true?"Chce večeři 26. 4. – vybrat menu":""].filter(Boolean).join(" · ");
     upd["osoby/"+id]=clean(stamp({prijmeni:x.prijmeni,jmeno:x.jmeno,titul_pred:x.titul_pred,titul_za:x.titul_za,email:x.email,tel:x.tel,firma:fid||"",
-      kat,stav:"ano",zdroj:web?"web":"formular",ubyt:web?"":"ja",objednavka:web?r.objednavka:"",clen:web&&!!x.clen,nespi:bez,pozn_partner:r.poznamka||""}));
+      kat,stav:"ano",zdroj:web?"web":"formular",ubyt:web?"":"ja",objednavka:web?r.objednavka:"",clen:web&&!!x.clen,
+      noci:nociO,nespi:bez||(a1===false&&a2===false),vecere:av===false?"ne":"",pozn_partner:pozn}));
   }
   if(!nO)return;
-  EIMP_MSG=`<p style="color:var(--zelena)">✔ Založeno ${pl(nO,"člověk","lidé","lidí")}${nF?" a "+pl(nF,"firma","firmy","firem"):""}. Najdeš je v Lidech. Veřejnost z webu má „hotel sám“ (kdo psal „bez ubytování“, má „nespí“); hostům, přednášejícím, vystavovatelům a YWP doplň noci, pokoj a večeři.</p>`;
+  EIMP_MSG=`<p style="color:var(--zelena)">✔ Založeno ${pl(nO,"člověk","lidé","lidí")}${nF?" a "+pl(nF,"firma","firmy","firem"):""}. Najdeš je v Lidech. Veřejnost z webu má „hotel sám“ (kdo psal „bez ubytování“, má „nespí“); hostům, přednášejícím, vystavovatelům a YWP se noci a večeře převzaly z přihlášky (šablony 2027) – doplň jim pokoj a menu.</p>`;
   FDB.ref(ROOT).update(upd).then(()=>{EIMP=[];const o=$("eimp_out");if(o)o.innerHTML=EIMP_MSG;})
     .catch(e=>{$("eimp_msg").textContent="⚠️ "+errMsg(e);});
 }

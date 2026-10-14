@@ -429,3 +429,14 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   + e-přihláška z webu najednou → 6 lidí, 5 firem, správné kategorie.
 - **Připomínky k šablonám pro uživatele:** datum 14.–15. 4. 2026 → 27.–28. 4. 2027; název („ČOV“ vs „ODPADNÍCH VOD“);
   YWP má jako garanta F. Wannera; chybí řádky pro ubytování (noci Po/Út), pondělní večeři a stravu (kromě hostů).
+
+### Šablony přihlášek 2027 (14. 10. 2026) – admin 1.13
+- Na přání uživatele upraveny jeho 4 šablony Word (hosté, přednášející, vystavovatel, YWP): **datum 27.–28. 4. 2027**,
+  název sjednocen na **„… PŘI PROVOZOVÁNÍ ČOV“**, doplněny řádky **Noc 26./27. 4. · Noc 27./28. 4. · Večeře 26. 4.**
+  (šedá nápověda „ano / ne“), u přednášejících a YWP **Strava** a **Bydlet s**, u hostů Bydlet s (strava už je v Poznámce),
+  u vystavovatele noci + večeře u obou účastníků. Všechny na **1 stranu** (nižší řádky), validace docx OK.
+  Soubory: scratchpad `sablony/out/Konference_VHOS_prihlaska_*_2027.docx` (poslány uživateli, nejsou v repu).
+  YWP má dál jako garanta Ing. F. Wannera – nezměněno, čeká na odpověď uživatele.
+- Import čte nové řádky: ano/ne → noci (1. a 2. noc podle pořadí v Nastavení), obě „ne“ → nespí, večeře „ne“ → vecere ne,
+  „ano“ → poznámka „Chce večeři 26. 4. – vybrat menu“; strava a „bydlet s“ → poznámka z přihlášky. Šedé nápovědy se odstraní.
+  Stejný člověk dvakrát v jedné dávce (Word i PDF) se založí jen jednou.
