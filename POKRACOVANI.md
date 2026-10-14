@@ -494,5 +494,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   - **Florián** (pkobelka/florian) v1.253 – tlačítko „📲 Nainstalovat na plochu“ otevírá okno z `instalace.js`
     (místo `alert`), bez spodní lišty (`data-lista="0"`, mapa), SW florian-v256. **Nasazeno do main** (Merge: …), STAV.md doplněn.
   - **AquaCtrl** (pkobelka/aquactrl; uživatel: název je „AquaCtrl“) v124 – lišta „📲 AquaCtrl na plochu“ až po 20 s
-    (`data-pozdeji="1"`), barva #0b5cae, SW aquactrl-v124. **Jen ve větvi `claude/instalace-do-telefonu`** – repo se
-    nasazuje přes pull requesty a dnes v něm pracovala jiná relace → čeká na rozhodnutí uživatele (PR / merge).
+    (`data-pozdeji="1"`), barva #0b5cae, SW aquactrl-v124. Na pokyn uživatele **PR #54 sloučen do main** (squash, nasazeno).
