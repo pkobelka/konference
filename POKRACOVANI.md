@@ -505,4 +505,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Uživatel testuje instalaci na iPhonu / Androidu (pomocník `instalace.js` ve všech aplikacích).
 - **Pravidlo (uživatel, 14. 10.):** veřejně (upoutávka, obecné texty průvodce) **nezmiňovat pondělní příjezd ani
   slavnostní večeři VHOS** – jen pro vybrané osoby (~40). Průvodce 0.35: odstraněno z Info (Termín), z kalendáře
-  (popis události i poznámka). Pondělí zůstává jen v Programu (záložka dne) a na osobních kartách hostů.
+  (popis události i poznámka). **Průvodce 0.36:** pondělí odstraněno i z veřejného Programu (DAYS/PROG/DATES) a ze svozu
+  v Dopravě; číslování přednášek začíná od 2 (`let n=2`), aby klíče ut7… i dotazy ve Firebase zůstaly stejné.
+  Pondělí (noc, večeře) vidí jen vybraní hosté na své osobní kartě; pořadatel ho má v aplikaci pořadatele.

@@ -511,14 +511,10 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.35 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.36 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
-const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
+const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
- po:[
-  {t:"odpoledne",h:"Příjezd a ubytování",w:"Kongres hotel Jezerka, recepce",brk:1},
-  {t:"19:00",e:"20:00",h:"Večeře pro ubytované",w:"Restaurace hotelu",brk:1,det:["Jídlo podle výběru v přihlášce (1, 2 nebo 3)","Nabídku jídel na rok 2027 doplní pořadatel"]},
- ],
  ut:[
   {t:"08:00",e:"09:00",h:"Prezence",w:"Foyer",brk:1},
   {t:"09:00",e:"09:15",h:"Zahájení a úvodní slovo",w:"Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA s.r.o. · Petr Kobelka, VHOS, a.s. · Ing. Vilém Žák, SOVAK ČR · Miroslav Krčil, DiS., radní Pardubického kraje, starosta města Hlinska"},
@@ -558,9 +554,10 @@ const PROG={
   {t:"11:40",e:"11:50",h:"Závěrečný souhrn konference",w:"",brk:1},
  ]
 };
-let n=0;for(const d in PROG){let bk=null;PROG[d].forEach(x=>{if(x.blok){bk=x;x.bid=d+"b"+(n++)}else{x.id=d+(n++);if(bk&&!x.brk&&!x.ad&&x.w)x.bid=bk.bid}})}
+let n=2;for(const d in PROG){   // od 2: dřív tu bylo pondělí (2 body) – klíče přednášek (ut7…) i dotazů ve Firebase zůstanou stejné
+let bk=null;PROG[d].forEach(x=>{if(x.blok){bk=x;x.bid=d+"b"+(n++)}else{x.id=d+(n++);if(bk&&!x.brk&&!x.ad&&x.w)x.bid=bk.bid}})}
 const ALLT=Object.values(PROG).flat();
-const DATES={po:"2027-04-26",ut:"2027-04-27",st:"2027-04-28"};
+const DATES={ut:"2027-04-27",st:"2027-04-28"};
 const mm=t=>{const m=/^(\d\d):(\d\d)$/.exec(t||"");return m?+m[1]*60+ +m[2]:null};
 ALLT.forEach(x=>{if(x.blok)return;x.a=mm(x.t);x.b=mm(x.e);if(x.a!=null&&x.b!=null&&x.b<=x.a)x.b+=1440});
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1026,7 +1023,6 @@ function vDoprava(){
  return `<section class="sec">
   <div class="card"><div class="label" style="margin-bottom:8px">Svoz autobusem · Hotel Kraskov ⇄ Kongres hotel Jezerka</div>
    <div style="overflow-x:auto"><table class="tt"><thead><tr><th>Den</th><th>Kraskov → Jezerka</th><th>Jezerka → Kraskov</th></tr></thead><tbody>
-    <tr><td>Pondělí</td><td>doplníme</td><td>po večeři · doplníme</td></tr>
     <tr><td>Úterý</td><td>před prezencí · doplníme</td><td>po společenském večeru · doplníme</td></tr>
     <tr><td>Středa</td><td>ráno · doplníme</td><td>po závěru · doplníme</td></tr>
    </tbody></table></div>
