@@ -30,3 +30,10 @@ jsou zakladatelé tradice.
 **Soubory:** `promo/src/sec27.html` (šablona, `render(t)`), `promo/src/render.js` (snímky → ffmpeg), `promo/src/music_sec27.py`
 (hudba → `music_sec27.wav`, necommitováno – vygeneruj znovu), výstup `promo/sec27-pozvanka.mp4` + `.jpg`, sdílení `promo/video.html`.
 Re-render: `cd promo/src && python3 music_sec27.py && node render.js /tmp/x.mp4 && ffmpeg -i /tmp/x.mp4 -i music_sec27.wav -c:v copy -c:a aac -b:a 160k -af afade=t=out:st=55.6:d=2 -shortest -movflags +faststart ../sec27-pozvanka.mp4`
+
+**v4 (14. 10.):** scéna 6 = 12 s (celkem 60 s): „Aplikace do mobilu, tabletu i počítače. Vše po ruce – bez instalace z obchodu.“
+Telefon střídá: Domů s dlaždicemi (bez „Dnes/svátek“), **neutrální Program** (šedé pruhy místo přednášek, „Program 31. ročníku
+právě připravujeme“), Aktuality (bez ukázky „Program je zveřejněn“), Počasí, Navigace. Štítky: Aktuality z konference ·
+Dotazy k přednáškám – i hlasem · Poznámky · Program · Počasí · Navigace do hotelu · Moje registrace.
+Garanti: Filip Wanner + Martin Srb „pod dohledem prof. Jiřího Wannera, který tradici založil s Ing. Vladimírem Langerem“.
+„Těšíme se na vás **na Seči**“; u Jezerky bez „Železné hory“. Snímky průvodce: skripty ve scratchpadu (sh.mjs, home.mjs, akt.mjs).

@@ -93,9 +93,9 @@ html,body{height:100%;background:#000;overflow:hidden}
   <div class="sc" id="s6"><div style="position:absolute;left:180px;top:250px;width:900px">
     <div class="k r" id="s6k">Novinka 31. ročníku</div>
     <div class="h r" id="s6h" style="font-size:92px;margin-top:30px">Konference<br>v&nbsp;telefonu</div>
-    <div class="sub r" id="s6s" style="margin-top:26px">Průvodce Seč 27 – vše po ruce, bez instalace z obchodu.</div>
+    <div class="sub r" id="s6s" style="margin-top:26px">Aplikace do mobilu, tabletu i počítače.<br>Vše po ruce – bez instalace z obchodu.</div>
     <div class="chips" id="chips"></div></div>
-    <div class="ph r" id="ph"><div class="scr"><img id="i0" src="shots/a-plakat.png"><img id="i1" src="shots/b-pocasi.png"><img id="i2" src="shots/c-navigace.png"><img id="i3" src="shots/d-aktuality.png"></div></div></div>
+    <div class="ph r" id="ph"><div class="scr"><img id="i0" src="shots/a-domu.png"><img id="i1" src="shots/a2-program.png"><img id="i2" src="shots/d-aktuality.png"><img id="i3" src="shots/b-pocasi.png"><img id="i4" src="shots/c-navigace.png"></div></div></div>
   <!-- 7 Zveme vás -->
   <div class="sc" id="s7"><div style="position:absolute;left:200px;top:260px;width:1100px">
     <div class="h r" id="s7h" style="font-size:120px">Zveme vás.</div>
@@ -110,7 +110,7 @@ html,body{height:100%;background:#000;overflow:hidden}
 <script>
 // Délky scén = násobky taktu 2,4 s (hudba music_sec27.py)
 const SC=["s1","s2","s3","s4","s5","sg","s6","s7","s8"];
-const D=[7.2,4.8,4.8,4.8,7.2,7.2,9.6,7.2,4.8], B=[0];D.forEach(d=>B.push(+(B[B.length-1]+d).toFixed(2)));const TOTAL=B[B.length-1];window.TOTAL=TOTAL;window.DURS=D;
+const D=[7.2,4.8,4.8,4.8,7.2,7.2,12,7.2,4.8], B=[0];D.forEach(d=>B.push(+(B[B.length-1]+d).toFixed(2)));const TOTAL=B[B.length-1];window.TOTAL=TOTAL;window.DURS=D;
 const $=id=>document.getElementById(id);
 const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, out=x=>1-Math.pow(1-x,3);
 const p=(t,a,d=.7)=>out(cl((t-a)/d));          // náběh prvku od času a
@@ -123,7 +123,7 @@ const st=$('st');FL.forEach((f,i)=>{const e=document.createElement('div');e.clas
 // slova scény 5
 const W=[["Přednášky.",9],["Diskuze.",6],["Setkání.",16],["Večer s přáteli.",3]];
 $('w4').innerHTML=W.map(([w,f],i)=>`<div id="wd${i}" class="r"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i>${w}</div>`).join('');
-const CH=["📅 Program","❓ Dotazy – i hlasem","📣 Aktuality","🌤️ Počasí","🧭 Navigace do hotelu","🪪 Moje registrace"];
+const CH=["📣 Aktuality z konference","❓ Dotazy k přednáškám – i hlasem","✎ Poznámky","📅 Program","🌤️ Počasí","🧭 Navigace do hotelu","🪪 Moje registrace"];
 const GAR=[["Ing. Filip Wanner, Ph.D.","ENERGIE AG BOHEMIA s.r.o.",10],["Ing. Martin Srb, Ph.D.","Pražské vodovody a kanalizace, a.s.",16]];
 $('gar').innerHTML=GAR.map(([n,o,f],i)=>`<div class="r" id="gr${i}"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i><div><b>${n}</b><span>${o}</span></div></div>`).join('');
 $('chips').innerHTML=CH.map((c,i)=>`<span class="chip r" id="ch${i}">${c}</span>`).join('');
@@ -158,8 +158,8 @@ function render(t){
   // 6 aplikace
   const ag=B[5];setP('sgk',p(t,ag+.3));GAR.forEach((g,i)=>setP('gr'+i,p(t,ag+.8+i*1.0,.6)));setP('sgz',p(t,ag+3.0));setP('sgs',p(t,ag+4.6));
   const a6=B[6];setP('s6k',p(t,a6+.3));setP('s6h',p(t,a6+.7));setP('s6s',p(t,a6+1.2));setP('ph',p(t,a6+.5,1));
-  CH.forEach((c,i)=>setP('ch'+i,p(t,a6+2+i*.6,.5)));
-  for(let i=0;i<4;i++){const s0=a6+1+i*2.2,o=i===0?cl((s0+2.4-t)/.4):i===3?cl((t-s0)/.4):cl((t-s0)/.4)*cl((s0+2.4-t)/.4);$('i'+i).style.opacity=t<a6+1?(i===0?1:0):o}
+  CH.forEach((c,i)=>setP('ch'+i,p(t,a6+2+i*.7,.5)));
+  for(let i=0;i<5;i++){const s0=a6+1+i*2.1,o=i===0?cl((s0+2.3-t)/.4):i===4?cl((t-s0)/.4):cl((t-s0)/.4)*cl((s0+2.3-t)/.4);$('i'+i).style.opacity=t<a6+1?(i===0?1:0):o}
   // 7
   const a7=B[7];setP('s7h',p(t,a7+.4));setP('s7s',p(t,a7+1));setP('qr',p(t,a7+1.4,.8));setP('logos',p(t,a7+2.2,.8));
   // 8
