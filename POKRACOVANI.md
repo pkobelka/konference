@@ -257,3 +257,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   5. Před ostrým rokem 2027 smazat testovací data 2026 (Nastavení → Vymazat, napsat SMAZAT) – karty se smažou s nimi.
 - **Průvodce 0.15 – oprava:** pruh odborných partnerů stál (animace najetí `stgIn` přebila animaci pruhu `tick`),
   na mobilu bylo vidět jen první 4 loga. Najetí u odborných je teď jen prolnutí, pruh jede (~20 s, projedou všichni).
+- **Průvodce 0.16:** dlaždice „Dnes“ (velké hodiny) zrušena – zabírala moc místa. Dnešní den, čas a svátek jsou
+  malým písmem v plakátu **vedle odpočtu** („Dnes st 14. 10. · 5:25, svátek má …“). Počasí v Seči je jeden řádek
+  přes celou šířku (teplota vlevo, 3 dny vpravo); na PC vedle čísel (přednášky/partneři/body).
