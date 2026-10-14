@@ -335,3 +335,18 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Průvodce 0.26–0.27:** odborní partneři jedou ve **dvou řadách** (každá polovina log, obě stejným směrem – přání uživatele),
   menší okénka (výška 38 px, logo 26 px); průjezd ~11 s, pak se scéna přepne na mediální.
 - **Průvodce 0.28:** sborník v PDF bude ke stažení **už během konference** (ne až po ní) – upraveno v Aktualitách i v Info.
+
+### Aktuality od pořadatele (14. 10. 2026) – admin 1.7, průvodce 0.29
+- Aktuality už nejsou napevno na Domů: píšou se v aplikaci pořadatele, nová záložka **„Průvodce“** (zveřejnit /
+  upravit / smazat; sem přesunuty i **Dotazy** z Nastavení + odkaz na průvodce). Uzel **`konference2027_aktuality`**
+  `{klíč: {h, p, ts, autor}}`.
+- Průvodce: aktuality v **Info** nahoře („📣 Aktuality od pořadatele“, nejnovější nahoře, štítek **Nové**),
+  **červené číslo nepřečtených u záložky Info** a u dlaždice Informace na Domů, upozornění „📣 Nová zpráva: …“
+  když přijde během otevřeného průvodce. Přečteno = otevření Info (`pr_aktseen`). Bez připojení ukázkové 4 zprávy.
+- **Pravidlo do Firebase:**
+  ```
+  "konference2027_aktuality": {
+    ".read": true,
+    ".write": "auth != null && root.child('florian_login_email').child(auth.token.email.toLowerCase().replace('.', ',')).exists()"
+  }
+  ```

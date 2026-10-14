@@ -189,12 +189,13 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.6 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.7 · 14. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
 const PUB="konference2027_verejne";    // veřejné údaje pro formulář (název, noci, menu)
 const PRI="konference2027_prihlasky";  // přihlášky partnerů – každá pod tajným klíčem (odkazem)
+const AKTU="konference2027_aktuality"; // zprávy pořadatele pro průvodce (Info, číslo u záložky)
 const DOT="konference2027_dotazy";     // dotazy k přednáškám z průvodce (q = texty, au = nahrávky, v = +1)
 const KAR="konference2027_karty";      // osobní karty účastníků pro průvodce – každá pod tajným klíčem, bez kontaktů
 const LOGIN_URL=location.origin+location.pathname;
@@ -258,7 +259,7 @@ if(AUTH.isSignInWithEmailLink(location.href)){
 AUTH.onAuthStateChanged(user=>{
   if(!user){USER=null;showLogin();return;}
   FDB.ref("florian_login_email/"+leKey(user.email)).get().then(s=>{
-    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();}
+    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();loadAktuality();}
     else{showLogin("E-mail <b>"+esc(user.email)+"</b> zatím nemá přístup. Ozvi se Petru Kobelkovi (stejný seznam jako Florián).");AUTH.signOut();}
   }).catch(()=>showLogin("Nepodařilo se ověřit přístup, zkus to znovu."));
 });
@@ -415,7 +416,7 @@ function pl(n,a,b,c){return n+" "+(n===1?a:n>=2&&n<=4?b:c);}
 function pocetSlav(){return Object.values(DB.osoby).filter(o=>o.vecere==="slav"&&(o.stav||"nevim")!=="ne").length;}
 
 /* ================== RENDER ================== */
-const TABS=[["prehled","Přehled"],["lide","Lidé"],["firmy","Firmy"],["pokoje","Pokoje"],["vecere","Večeře"],["prihlasky","Přihlášky"],["kontroly","Kontroly"],["nastaveni","Nastavení"]];
+const TABS=[["prehled","Přehled"],["lide","Lidé"],["firmy","Firmy"],["pokoje","Pokoje"],["vecere","Večeře"],["prihlasky","Přihlášky"],["kontroly","Kontroly"],["pruvodce","Průvodce"],["nastaveni","Nastavení"]];
 function render(){
   if(!LOADED)return;
   const n=N();
@@ -429,7 +430,7 @@ function render(){
     $("view").innerHTML=`<div class="nast"><h2 class="sek">Zatím tu nejsou žádná data</h2><p style="font-size:.9rem;color:#555;line-height:1.6">Nahraj výchozí data (soubor <b>konference2027_vychozi_data.json</b> – lidé, firmy a pokoje z Excelu 2025) v záložce <b>Nastavení → Import</b>, nebo začni přidávat ručně.</p><p style="margin-top:10px"><button class="btn" data-tab="nastaveni">Přejít na import</button></p></div>`;
     return;
   }
-  ({prehled:rPrehled,lide:rLide,firmy:rFirmy,pokoje:rPokoje,vecere:rVecere,prihlasky:rPrihlasky,kontroly:rKontroly,nastaveni:rNastaveni}[VIEW]||rPrehled)(pr);
+  ({prehled:rPrehled,lide:rLide,firmy:rFirmy,pokoje:rPokoje,vecere:rVecere,prihlasky:rPrihlasky,kontroly:rKontroly,pruvodce:rPruvodce,nastaveni:rNastaveni}[VIEW]||rPrehled)(pr);
 }
 document.addEventListener("click",e=>{
   const t=e.target.closest("[data-tab]");
@@ -710,10 +711,6 @@ function rNastaveni(){
       `<p style="font-size:.9rem"><b>${Object.keys(KARTY).length}</b> karet · ${esc(KARTY_INFO||"vše aktuální")}</p>`}
     <button class="btn ghost small" id="s_karty_csv">⬇ Odkazy pro hromadný e-mail (CSV)</button>
   </div>
-  <div class="nast"><h2 class="sek">Dotazy k přednáškám z průvodce</h2>
-    <p style="font-size:.84rem;color:#666">Účastníci píší a namlouvají dotazy v průvodci, všichni je vidí živě. Mazat (nevhodný dotaz, vyčištění po zkoušce) můžeš jen ty.</p>
-    <div id="s_dotazy">${htmlDotazy()}</div>
-  </div>
   <div class="nast"><h2 class="sek">Přihláška pro partnery</h2>
     <div class="two">
       <div><label class="l">Uzávěrka přihlášek (po ní jde formulář jen číst)</label><input id="s_uzav" type="date" value="${esc(n.uzaverka||"")}"></div>
@@ -738,7 +735,6 @@ function rNastaveni(){
     FDB.ref(ROOT+"/nastaveni/noci/"+k).remove();
   }));
   $("s_karty_csv").addEventListener("click",exportKarty);
-  if($("s_dot_vse"))$("s_dot_vse").addEventListener("click",smazVse);
   $("s_nocadd").addEventListener("click",()=>{
     const nazev=prompt("Název noci (např. Úterý 13. 4.):");if(!nazev)return;
     const k="n"+Date.now().toString(36);
@@ -806,6 +802,48 @@ function prihStav(p){
 function prihKPrevzeti(){return Object.keys(PRIH).filter(t=>["nova","zmena"].includes(prihStav(PRIH[t])[0]));}
 function verejneData(n){n=n||N();return clean({nazev:n.nazev||"",datum:n.datum||"",misto:n.misto||"",noci:n.noci||{},menu:n.menu||{},uzaverka:n.uzaverka||"",text:n.text_partneri||""});}
 function ulozVerejne(n){return FDB.ref(PUB).set(verejneData(n));}
+
+/* ---------- ZÁLOŽKA PRŮVODCE: aktuality + dotazy ---------- */
+let AKTUALITY={}, AKT_ERR="";
+function loadAktuality(){FDB.ref(AKTU).on("value",s=>{AKTUALITY=s.val()||{};AKT_ERR="";aktBox();},e=>{AKT_ERR=errMsg(e);aktBox();});}
+function htmlAktuality(){
+  if(AKT_ERR)return `<div class="probbox"><div>⛔ Aktuality nejde načíst: <b>${esc(AKT_ERR)}</b>. Chybí pravidlo pro <b>${AKTU}</b> ve Firebase.</div></div>`;
+  const l=Object.entries(AKTUALITY).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
+  return l.length?`<table class="t">${l.map(([k,x])=>`<tr><td class="sub" style="white-space:nowrap">${new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})}</td><td><b>${esc(x.h)}</b>${x.p?`<div class="sub">${esc(x.p)}</div>`:""}</td><td style="white-space:nowrap"><button class="btn ghost small" data-aktedit="${esc(k)}">Upravit</button> <button class="btn red small" data-aktdel="${esc(k)}">Smazat</button></td></tr>`).join("")}</table>`
+    :`<p class="muted" style="font-size:.9rem">Zatím žádná zpráva. Průvodce bez zpráv ukazuje „Zatím žádné zprávy“.</p>`;
+}
+function aktBox(){const b=$("p_akt");if(b)b.innerHTML=htmlAktuality();}
+function rPruvodce(){
+  const rozH=$("a_h")?$("a_h").value:"", rozP=$("a_p")?$("a_p").value:"";   // rozepsaná zpráva přežije překreslení
+  $("view").innerHTML=`
+  <div class="nast"><h2 class="sek">📣 Aktuality pro účastníky</h2>
+    <p style="font-size:.84rem;color:#666">Zpráva se hned objeví všem v průvodci v <b>Info</b>, u záložky Info naskočí červené číslo a kdo má průvodce otevřený, uvidí upozornění „Nová zpráva“.</p>
+    <input id="a_h" placeholder="Nadpis – např. Svoz z Kraskova jede o 10 minut později" maxlength="120">
+    <textarea id="a_p" placeholder="Text zprávy (nepovinné)" maxlength="1000" style="margin-top:6px"></textarea>
+    <div class="lista" style="margin-top:6px"><button class="btn" id="a_send">Zveřejnit zprávu</button><button class="btn ghost small hidden" id="a_cancel">Zrušit úpravu</button><span class="msg" id="a_msg"></span></div>
+    <div id="p_akt" style="margin-top:10px">${htmlAktuality()}</div>
+  </div>
+  <div class="nast"><h2 class="sek">❓ Dotazy k přednáškám</h2>
+    <p style="font-size:.84rem;color:#666">Účastníci píší a namlouvají dotazy v průvodci, všichni je vidí živě. Mazat (nevhodný dotaz, vyčištění po zkoušce) můžeš jen ty.</p>
+    <div id="s_dotazy">${htmlDotazy()}</div>
+  </div>
+  <div class="nast"><h2 class="sek">Odkazy</h2><p style="font-size:.9rem">Průvodce pro účastníky: <a href="${esc(pruvodceBase())}" target="_blank" rel="noopener">${esc(pruvodceBase())}</a></p></div>`;
+  $("a_h").value=rozH;$("a_p").value=rozP;
+  let EDIT=null;
+  const reset=()=>{EDIT=null;$("a_h").value="";$("a_p").value="";$("a_send").textContent="Zveřejnit zprávu";$("a_cancel").classList.add("hidden");};
+  $("a_send").addEventListener("click",()=>{
+    const h=$("a_h").value.trim(), p=$("a_p").value.trim();if(!h){$("a_msg").textContent="Napiš aspoň nadpis.";return;}
+    const k=EDIT||FDB.ref(AKTU).push().key, old=EDIT?AKTUALITY[EDIT]:null;
+    FDB.ref(AKTU+"/"+k).set(clean({h,p,ts:old?old.ts:Date.now(),autor:USER?USER.email:""})).then(()=>{$("a_msg").textContent=EDIT?"✔ Upraveno":"✔ Zveřejněno";reset();setTimeout(()=>{const m=$("a_msg");if(m)m.textContent="";},2500);})
+      .catch(e=>{$("a_msg").textContent="⚠️ "+errMsg(e);});
+  });
+  $("a_cancel").addEventListener("click",reset);
+  $("p_akt").addEventListener("click",e=>{
+    const ed=e.target.closest("[data-aktedit]");if(ed){const x=AKTUALITY[ed.dataset.aktedit];EDIT=ed.dataset.aktedit;$("a_h").value=x.h||"";$("a_p").value=x.p||"";$("a_send").textContent="Uložit úpravu";$("a_cancel").classList.remove("hidden");$("a_h").focus();return;}
+    const d=e.target.closest("[data-aktdel]");if(d&&confirm("Smazat zprávu? Zmizí všem v průvodci."))FDB.ref(AKTU+"/"+d.dataset.aktdel).remove();
+  });
+  if($("s_dot_vse"))$("s_dot_vse").addEventListener("click",smazVse);
+}
 
 /* ---------- DOTAZY Z PRŮVODCE (moderace – mazat smí jen pořadatel) ---------- */
 let DOTAZY={}, DOTAZY_ERR="";
