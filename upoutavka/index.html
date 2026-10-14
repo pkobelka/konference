@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="cs">
+<meta charset="utf-8">
+<title>Konference ČOV Seč 2027 – upoutávka</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Upoutávka k vložení na web (iframe). Široká = banner, úzká = čtverec. Odpočet do zahájení 27. 4. 2027 8:00. -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;700&family=Figtree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f6f4ef;--ink:#1d1b20;--muted:#6b6670;--accent:#5b2d82;--mono:'IBM Plex Mono',ui-monospace,monospace;--body:'Figtree',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:transparent}
+a{color:inherit}
+.box{position:relative;height:100%;min-height:220px;overflow:hidden;border-radius:22px;color:var(--ink);font-family:var(--body);
+  background:radial-gradient(70% 70% at 90% 0%,#fff 0%,transparent 60%),radial-gradient(80% 80% at 0% 100%,#efe9df 0%,transparent 60%),var(--paper);
+  border:1px solid #e6e1d8;container-type:inline-size;display:flex;align-items:center}
+.fl{position:absolute;background:center/contain no-repeat;pointer-events:none;animation:plav 9s ease-in-out infinite}
+@keyframes plav{50%{transform:translate(6px,-8px) rotate(6deg)}}
+@media (prefers-reduced-motion:reduce){.fl{animation:none}}
+.in{position:relative;z-index:2;display:flex;align-items:center;gap:28px;width:100%;padding:22px 30px}
+.n31{height:120px;flex:none}
+.tx{flex:1;min-width:0}
+.k{font:700 13px var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}
+.h{font:700 28px/1.08 var(--mono);letter-spacing:-.02em;margin-top:6px}
+.m{font-size:16px;color:var(--muted);margin-top:8px;font-weight:600}
+.m b{color:var(--ink)}
+.cd{display:flex;gap:10px;margin-top:14px}
+.cd div{background:var(--ink);color:#fff;border-radius:12px;padding:8px 12px;min-width:66px;text-align:center}
+.cd b{display:block;font:700 26px/1 var(--mono)}
+.cd small{display:block;font-size:11px;opacity:.75;margin-top:4px;font-weight:600}
+.cd.done div{background:var(--accent)}
+.act{display:flex;flex-direction:column;gap:8px;flex:none}
+.act a{display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;border-radius:12px;padding:11px 16px;font-weight:700;font-size:15px;white-space:nowrap}
+.act .p{background:var(--accent);color:#fff}
+.act .s{background:#fff;color:var(--accent);border:1.5px solid #e3dcef}
+.org{font-size:12px;color:var(--muted);margin-top:10px}
+/* úzká varianta (sloupec na webu, mobil) */
+@container (max-width:640px){
+ .in{flex-direction:column;align-items:flex-start;gap:14px;padding:22px}
+ .n31{height:84px}
+ .h{font-size:26px}
+ .cd div{min-width:0;flex:1}
+ .act{flex-direction:row;flex-wrap:wrap;width:100%}.act a{flex:1}
+}
+</style>
+<div class="box" id="box">
+ <div class="in">
+  <img class="n31" src="../obrazky/cislo31.webp" alt="31. ročník">
+  <div class="tx">
+   <div class="k">Zveme vás na konferenci</div>
+   <div class="h">Nové metody a postupy při provozování&nbsp;ČOV</div>
+   <div class="m"><b>27. – 28. dubna 2027</b> · Kongres hotel Jezerka, Seč</div>
+   <div class="cd" id="cd" aria-live="polite"></div>
+   <div class="org">Těšíme se na vás! · VHOS, a.s. · CzWA · Energie AG Bohemia s.r.o.</div>
+  </div>
+  <div class="act">
+   <a class="p" href="../promo/video.html" target="_blank" rel="noopener">▶ Video pozvánka</a>
+   <a class="s" href="../pruvodce/" target="_blank" rel="noopener">📱 Průvodce Seč 27</a>
+  </div>
+ </div>
+</div>
+<script>
+// fleky do pozadí (decentně u okrajů)
+[[10,"-40px","-50px",170],[6,"78%","-60px",150],[16,"88%","62%",190],[9,"-30px","70%",130],[3,"55%","82%",110]].forEach(([n,x,y,s],i)=>{
+ const e=document.createElement("div");e.className="fl";e.style.cssText=`left:${x};top:${y};width:${s}px;height:${s}px;opacity:.55;animation-delay:${-i*1.7}s;background-image:url(../obrazky/fleky/flek${String(n).padStart(2,"0")}.webp)`;
+ document.getElementById("box").prepend(e)});
+// odpočet do zahájení (27. 4. 2027 8:00 SELČ = 6:00 UTC), během konference a po ní jiný text
+const START=Date.UTC(2027,3,27,6,0), KONEC=Date.UTC(2027,3,28,15,0);
+const sklon=(n,a,b,c)=>n===1?a:n>=2&&n<=4?b:c;
+function tik(){
+ const el=document.getElementById("cd"), t=Date.now();
+ if(t>=KONEC){el.className="cd done";el.innerHTML="<div><b>Děkujeme</b><small>za účast na 31. ročníku</small></div>";return}
+ if(t>=START){el.className="cd done";el.innerHTML="<div><b>Právě probíhá</b><small>vítejte v Seči</small></div>";return}
+ let s=Math.floor((START-t)/1000);const d=Math.floor(s/86400);s-=d*86400;const h=Math.floor(s/3600);s-=h*3600;const m=Math.floor(s/60);
+ el.className="cd";el.innerHTML=`<div><b>${d}</b><small>${sklon(d,"den","dny","dní")}</small></div><div><b>${h}</b><small>${sklon(h,"hodina","hodiny","hodin")}</small></div><div><b>${m}</b><small>${sklon(m,"minuta","minuty","minut")}</small></div>`;
+}
+tik();setInterval(tik,15000);
+</script>

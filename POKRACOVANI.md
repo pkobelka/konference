@@ -640,3 +640,10 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Nápady na později:** dálkové promítání dotazů (mobil předsedajícího → plátno, přes Firebase + PIN bloku; potřebuje
   nové pravidlo v mojebudky), přehled odkazů `?pr=<blok>` v aplikaci pořadatele, prezentace z LinkedIn článků,
   dál admin (počty lůžek, hromadné e-maily s osobními odkazy, smazat testovací data 2026 před ostrým provozem).
+
+### Upoutávka na web (14. 10. 2026)
+- `upoutavka/index.html` → https://pkobelka.github.io/konference/upoutavka/ – samostatné okno k vložení na web VHOS
+  (iframe): fleky, 31, „Zveme vás na konferenci“, název, datum + místo, **odpočet do zahájení** (dny/hodiny/minuty,
+  27. 4. 2027 8:00; během konference „Právě probíhá“, po ní „Děkujeme“), „Těšíme se na vás!“ + pořadatelé,
+  tlačítka Video pozvánka a Průvodce. Široká = banner (výška 240 px), úzká = sloupec (360×540) – přes container query.
+- Ukázka vložení s kódem: https://pkobelka.github.io/konference/upoutavka/ukazka.html
