@@ -79,6 +79,7 @@ def hit(at,g,big=False,sn=1.0):
     L[a:b]+=x; R[a:b]+=x
 hit(START,.30,True)  # úder při naskočení názvu – s ním nastoupí hudba
 hit(DROP,.30,True)   # úder při odhalení „31“
+hit(B[2]+.8,.30,True) # úder při naskočení „Seč 31“ (scéna 3)
 # jemné „zazvonění“ na začátku každé scény po DROP
 for bb in B[2:-1]:
     a=int(bb*SR); tt=t[a:a+int(1.2*SR)]-bb

@@ -589,3 +589,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Pravidla videa: nezmiňovat přihlášky (budou asi v lednu), pondělí, slavnostní večeři, partnery 2027, termín programu.
   Pořadatelé VHOS, a.s., CzWA, Energie AG Bohemia. „Těšíme se“ jen v závěru.
 - Další možné: prezentace z LinkedIn článků (8–10 slidů), dál organizační aplikace (lůžka, hromadné e-maily, testovací data).
+- Úder i při naskočení „Seč 31“ (B[2]+0,8 = 12,8 s) – Petr: „jsem nadšený“. Údery: název 2,8 s · 31 7,2 s · Seč 31 12,8 s.
