@@ -376,3 +376,14 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Kdo + co, Uložit/Upravit/Smazat, zaškrtnout **vyřízeno**, filtr Nevyřízené/Vyřízené/Vše, hledání;
   oranžové číslo u záložky = nevyřízené. Je i v záloze (JSON) – „Vymazat lidi, firmy a pokoje“ poznámky nemaže.
 - Možné rozšíření: propojit poznámku s člověkem (odkaz na osobu), termín „slíbil jsem do…“, připomenutí.
+
+### ▶ KDE POKRAČOVAT (stav 14. 10. 2026, ~11 h)
+- Nasazeno: **admin 1.9** (https://pkobelka.github.io/konference/), **průvodce 0.30 „Seč 27“** (…/pruvodce/),
+  ukázka v Claude: artifact 8Pd4XvrWtu5nHH1p91T4NH. Všechna Firebase pravidla hotová (vč. _karty, _dotazy, _aktuality).
+- Ověřeno naživo uživatelem: osobní karty (103), dotazy mezi zařízeními, aktuality s číslem u Info.
+- Uživatel po testu smaže testovací aktuality a dotaz (záložka Průvodce v adminu).
+- Čeká na uživatele: **fotka garanta** do Info; rozhodnutí o hodnocení přednášek (a/b) po poradě s kolegy.
+- **Další práce = aplikace pořadatele:** skutečné počty lůžek, import e-přihlášky (list Veřejnost),
+  formuláře přímo do Firebase (veřejnost / hosté / přednášející / vystavující / YWP), hromadné e-maily s osobním odkazem,
+  rozšíření Poznámek (propojení s osobou, termín „slíbil jsem do…“).
+- Sestavení průvodce: `./navrh/sestav-pruvodce.sh`; při každém nasazení zvýšit `VERZE` (admin i průvodce).
