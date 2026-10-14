@@ -576,3 +576,16 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Verze NA VÝŠKU** `promo/sec27-pozvanka-vyska.mp4` (1080×1920, stejná hudba): šablona `sec27.html?v=1` (třída .vert,
   CSS přepisy pozic, fleky přepočítané, kruh u 31 menší), render `node render.js out.mp4 v`. Odkaz ke stažení na video.html.
 - „Kongres hotel Jezerka“ ve scéně Seč 31 větší (52 px, tučně) – obě verze.
+- **Garanti – časování:** Filip +0,6 s, Martin +2,3 s, řádek „pod dohledem J. Wannera… s V. Langerem“ +3,2 s,
+  „Program 31. ročníku právě připravujeme“ až +5,5 s (delší pauza; scéna dál 7,2 s).
+
+### ▶ KDE POKRAČOVAT (14. 10. 2026, večer) – PROMO HOTOVÉ
+- Video pozvánky hotové ve 2 verzích: na šířku `promo/sec27-pozvanka.mp4` (1920×1080) a na výšku
+  `promo/sec27-pozvanka-vyska.mp4` (1080×1920), 60 s, hudba s úderem u názvu i u „31“. Sdílení:
+  https://pkobelka.github.io/konference/promo/video.html (tlačítko i pro verzi na výšku). Petr: „perfektní“.
+- Úpravy: `promo/src/sec27.html` (verze na výšku = `?v=1`, CSS `.vert`), render `node render.js out.mp4 [v]`,
+  hudba `python3 music_sec27.py`, mux ffmpeg (příkaz v navrh/promo-sec27.md). Před renderem vždy mřížka náhledů
+  všech scén a drobnosti rozložení dolaďovat samostatně.
+- Pravidla videa: nezmiňovat přihlášky (budou asi v lednu), pondělí, slavnostní večeři, partnery 2027, termín programu.
+  Pořadatelé VHOS, a.s., CzWA, Energie AG Bohemia. „Těšíme se“ jen v závěru.
+- Další možné: prezentace z LinkedIn článků (8–10 slidů), dál organizační aplikace (lůžka, hromadné e-maily, testovací data).
