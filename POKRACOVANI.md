@@ -501,7 +501,12 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Další nápad uživatele: upoutávka = POZVÁNKA na 31. ročník** (ne video o aplikaci – program ještě není): zveme vás,
   Seč, 27.–28. 4. 2027, krátce „máme pro vás aplikaci“. Scénář v2: `navrh/promo-sec27.md` (7 scén, ~46 s, 16:9 + 9:16);
   postup převzít z `pkobelka/florian/promo/src-hasici/` (render(t) → Playwright snímky → ffmpeg, hudba numpy).
-  Čeká na reakci uživatele ke scénáři a 3 otázkám v souboru → pak stavět.
+  **HOTOVO (14. 10.):** video `promo/sec27-pozvanka.mp4` (57,6 s, 1920×1080, hudba) + stránka pro sdílení
+  `promo/video.html` → https://pkobelka.github.io/konference/promo/video.html. Zdroje v `promo/src/` (viz scénář v3).
+  Podle LinkedIn článků Petra: pořadatelé **VHOS, a.s. a CzWA** (Energie AG = generální partner, ve videu ne);
+  program připravují Filip Wanner + Martin Srb, zakladatelé tradice Jiří Wanner + Vladimír Langer.
+  Případně dál: verze 9:16; prezentace 8–10 slidů z článků (návrh Copilota poslal Petr 14. 10. – historie, lidé,
+  partneři 2026, budoucnost; „Společně netvoříme jen konferenci. Společně vytváříme tradici.“).
 - Uživatel testuje instalaci na iPhonu / Androidu (pomocník `instalace.js` ve všech aplikacích).
 - **Pravidlo (uživatel, 14. 10.):** veřejně (upoutávka, obecné texty průvodce) **nezmiňovat pondělní příjezd ani
   slavnostní večeři VHOS** – jen pro vybrané osoby (~40). Průvodce 0.35: odstraněno z Info (Termín), z kalendáře

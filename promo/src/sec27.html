@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="cs">
+<meta charset="utf-8">
+<title>Seč 27 – pozvánka na 31. ročník</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@font-face{font-family:'Plex';font-weight:500;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:'Plex';font-weight:500;src:url(fonts/ibm-plex-mono-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02AF}
+@font-face{font-family:'Plex';font-weight:700;src:url(fonts/ibm-plex-mono-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:'Plex';font-weight:700;src:url(fonts/ibm-plex-mono-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02AF}
+@font-face{font-family:'Fig';font-weight:500;src:url(fonts/figtree-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:'Fig';font-weight:500;src:url(fonts/figtree-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02AF}
+@font-face{font-family:'Fig';font-weight:700;src:url(fonts/figtree-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:'Fig';font-weight:700;src:url(fonts/figtree-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02AF}
+:root{--paper:#f6f4ef;--ink:#1d1b20;--muted:#6b6670;--accent:#5b2d82;--soft:#efe7f6;--water:#1f7a8c;
+  --mono:'Plex',ui-monospace,monospace;--body:'Fig','Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+#fit{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0}
+.st{position:absolute;inset:0;overflow:hidden;color:var(--ink);font-family:var(--body);
+  background:radial-gradient(70% 60% at 85% 0%,#ffffff 0%,transparent 60%),radial-gradient(80% 70% at 0% 100%,#efe9df 0%,transparent 60%),var(--paper)}
+.fl{position:absolute;width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);background:center/contain no-repeat;will-change:transform,opacity;z-index:1}
+.sc{position:absolute;inset:0;opacity:0;z-index:3}
+.k{font:700 26px var(--mono);letter-spacing:.28em;text-transform:uppercase;color:var(--accent)}
+.h{font:700 112px/1.02 var(--mono);letter-spacing:-.03em}
+.h2{font:700 150px/1 var(--mono);letter-spacing:-.04em}
+.sub{font:500 38px/1.35 var(--body);color:var(--muted)}
+.c{position:absolute;left:0;right:0;text-align:center}
+.r{opacity:var(--p,0);translate:0 calc((1 - var(--p,0))*36px)}
+/* 31 */
+#n31{position:absolute;left:50%;top:44%;width:620px;margin-left:-310px;margin-top:-310px}
+/* Seč – voda */
+.waves{position:absolute;left:0;right:0;bottom:0;height:330px}
+.pin{position:absolute;left:50%;top:250px;width:120px;margin-left:-60px}
+/* kalendář */
+.cal{position:absolute;right:220px;top:220px;width:560px;background:#fff;border-radius:34px;padding:34px 38px;box-shadow:0 40px 90px -40px rgba(60,40,80,.45);border:1.5px solid #e6e1d8}
+.cal .m{font:700 34px var(--mono);margin-bottom:18px;color:var(--accent)}
+.cal .g{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;text-align:center;font:500 28px var(--body)}
+.cal .g b{font:700 20px var(--mono);color:var(--muted)}
+.cal .g span{position:relative;height:56px;display:grid;place-items:center;border-radius:14px}
+.cal .g span.on{color:#fff;font-weight:700}
+.cal .g span.on::before{content:"";position:absolute;inset:2px;border-radius:16px;background:var(--accent);opacity:var(--q,0);scale:calc(.5 + .5*var(--q,0));z-index:-1}
+/* slova */
+.w4{position:absolute;left:180px;top:250px;display:flex;flex-direction:column;gap:28px}
+.w4 div{display:flex;align-items:center;gap:30px;font:700 92px/1 var(--mono);letter-spacing:-.03em}
+.w4 i{width:96px;height:96px;background:center/contain no-repeat;flex:none}
+/* telefon */
+.ph{position:absolute;right:250px;top:84px;width:452px;height:912px;border-radius:66px;padding:16px;background:linear-gradient(160deg,#2b2930,#111014);
+  box-shadow:0 0 0 2px rgba(0,0,0,.5),0 60px 120px -40px rgba(30,20,40,.6),inset 0 2px 0 rgba(255,255,255,.08)}
+.ph .scr{position:relative;width:100%;height:100%;border-radius:52px;overflow:hidden;background:var(--paper)}
+.ph .scr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0}
+.ph::before{content:"";position:absolute;left:50%;top:30px;width:120px;height:32px;margin-left:-60px;border-radius:20px;background:#0b0a0d;z-index:2}
+.chips{display:flex;flex-wrap:wrap;gap:16px;margin-top:40px;max-width:820px}
+.chip{font:700 30px var(--body);padding:16px 26px;border-radius:999px;background:#fff;border:2px solid #e3dcef;color:var(--accent);box-shadow:0 10px 24px -14px rgba(60,40,80,.35)}
+.gar{display:flex;flex-direction:column;gap:30px;margin-top:46px}
+.gar>div{display:flex;align-items:center;gap:34px}
+.gar i{width:110px;height:110px;flex:none;background:center/contain no-repeat}
+.gar b{display:block;font:700 56px/1.1 var(--mono);letter-spacing:-.02em}
+.gar span{display:block;font:500 32px var(--body);color:var(--muted);margin-top:6px}
+/* závěr */
+.logos{position:absolute;left:0;right:0;top:600px;display:flex;justify-content:center;align-items:center;gap:60px}
+.logos img{height:88px}
+.qr{position:absolute;right:180px;top:330px;width:330px;text-align:center}
+.qr img{width:330px;height:330px;border-radius:24px;background:#fff;padding:14px;box-shadow:0 30px 70px -30px rgba(60,40,80,.5)}
+.qr div{font:700 24px var(--body);margin-top:14px;color:var(--muted)}
+.bar{position:absolute;left:0;bottom:0;height:8px;background:linear-gradient(90deg,var(--accent),#c66bd6);z-index:9}
+</style>
+<div id="fit"><div class="st" id="st">
+  <!-- 1 Úvod -->
+  <div class="sc" id="s1"><div class="c" style="top:300px"><div class="k r" id="s1k">Zveme vás na konferenci</div>
+    <div class="h r" id="s1h" style="margin-top:40px">Nové metody a postupy<br>při provozování ČOV</div></div></div>
+  <!-- 2 31. ročník -->
+  <div class="sc" id="s2"><img id="n31" src="../../obrazky/cislo31.webp" alt="">
+    <div class="c" style="top:820px"><div class="h r" id="s2h" style="font-size:84px">31. ročník</div>
+    <div class="sub r" id="s2s" style="margin-top:14px">memoriál Ing. Jakuba S. Čecha, CSc.</div></div></div>
+  <!-- 3 Seč -->
+  <div class="sc" id="s3"><svg class="pin" id="pin" viewBox="0 0 24 24" fill="none" stroke="#5b2d82" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z" fill="#efe7f6"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <div class="c" style="top:420px"><div class="h2 r" id="s3h">Seč</div><div class="sub r" id="s3s" style="margin-top:22px">Kongres hotel Jezerka · Železné hory</div></div>
+    <svg class="waves" viewBox="0 0 1920 330" preserveAspectRatio="none"><path id="w1" fill="#1f7a8c" opacity=".18"/><path id="w2" fill="#1f7a8c" opacity=".28"/><path id="w3" fill="#5b2d82" opacity=".14"/></svg></div>
+  <!-- 4 Termín -->
+  <div class="sc" id="s4"><div style="position:absolute;left:200px;top:330px"><div class="k r" id="s4k">Termín</div>
+    <div class="h2 r" id="s4h" style="margin-top:26px">27.–28.</div><div class="h r" id="s4m" style="font-size:96px;margin-top:10px">dubna 2027</div></div>
+    <div class="cal r" id="cal"><div class="m">Duben 2027</div><div class="g" id="calg"></div></div></div>
+  <!-- 5 Program obecně -->
+  <div class="sc" id="s5"><div class="w4" id="w4"></div></div>
+  <!-- 5b Program připravují -->
+  <div class="sc" id="sg"><div style="position:absolute;left:180px;top:200px;width:1560px">
+    <div class="k r" id="sgk">Odborný program připravují</div>
+    <div class="gar" id="gar"></div>
+    <div class="sub r" id="sgz" style="margin-top:50px;font-size:34px">Navazujeme na tradici, kterou založili<br><b style="color:var(--ink)">prof. Ing. Jiří Wanner, DrSc.</b> a <b style="color:var(--ink)">Ing. Vladimír Langer</b>.</div>
+    <div class="sub r" id="sgs" style="margin-top:34px;color:var(--accent)">Program 31. ročníku zveřejníme během zimy.</div></div></div>
+  <!-- 6 Aplikace -->
+  <div class="sc" id="s6"><div style="position:absolute;left:180px;top:250px;width:900px">
+    <div class="k r" id="s6k">Novinka 31. ročníku</div>
+    <div class="h r" id="s6h" style="font-size:92px;margin-top:30px">Konference<br>v&nbsp;telefonu</div>
+    <div class="sub r" id="s6s" style="margin-top:26px">Průvodce Seč 27 – vše po ruce, bez instalace z obchodu.</div>
+    <div class="chips" id="chips"></div></div>
+    <div class="ph r" id="ph"><div class="scr"><img id="i0" src="shots/a-plakat.png"><img id="i1" src="shots/b-pocasi.png"><img id="i2" src="shots/c-navigace.png"><img id="i3" src="shots/d-aktuality.png"></div></div></div>
+  <!-- 7 Zveme vás -->
+  <div class="sc" id="s7"><div style="position:absolute;left:200px;top:260px;width:1100px">
+    <div class="h r" id="s7h" style="font-size:120px">Zveme vás.</div>
+    <div class="sub r" id="s7s" style="margin-top:28px;font-size:42px">Přihlášky brzy na <b style="color:var(--accent)">www.vhos.cz</b></div></div>
+    <div class="qr r" id="qr"><img src="../../obrazky/qr-pruvodce.svg" alt=""><div>Průvodce Seč 27</div></div>
+    <div class="logos r" id="logos" style="justify-content:flex-start;padding-left:200px;gap:50px;top:640px"><img src="../../obrazky/cislo31.webp" style="height:120px"><img src="../../obrazky/loga/vhos.webp"><img src="../../obrazky/loga/czwa.webp" style="height:110px"></div></div>
+  <!-- 8 Těšíme se -->
+  <div class="sc" id="s8"><div class="c" style="top:380px"><div class="h r" id="s8h" style="font-size:118px">Těšíme se na vás<br>v Seči!</div>
+    <div class="sub r" id="s8s" style="margin-top:34px">27.–28. dubna 2027 · pořádají VHOS, a.s. a CzWA</div></div></div>
+  <div class="bar" id="bar"></div>
+</div></div>
+<script>
+// Délky scén = násobky taktu 2,4 s (hudba music_sec27.py)
+const SC=["s1","s2","s3","s4","s5","sg","s6","s7","s8"];
+const D=[7.2,4.8,4.8,4.8,7.2,7.2,9.6,7.2,4.8], B=[0];D.forEach(d=>B.push(+(B[B.length-1]+d).toFixed(2)));const TOTAL=B[B.length-1];window.TOTAL=TOTAL;window.DURS=D;
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, out=x=>1-Math.pow(1-x,3);
+const p=(t,a,d=.7)=>out(cl((t-a)/d));          // náběh prvku od času a
+function setP(id,v){const e=$(id);if(e)e.style.setProperty('--p',v)}
+// fleky – 10 kusů, každý má domovskou pozici, jemně se vlní
+const FL=[[10,330,260,300],[6,1540,230,280],[16,1700,760,340],[9,260,820,260],[3,980,150,200],[13,1260,880,230],[12,640,930,210],[17,1820,470,190],[1,90,540,180],[5,1180,420,170]];
+const st=$('st');FL.forEach((f,i)=>{const e=document.createElement('div');e.className='fl';e.id='f'+i;e.style.setProperty('--s',f[3]+'px');e.style.backgroundImage=`url(../../obrazky/fleky/flek${String(f[0]).padStart(2,'0')}.webp)`;st.appendChild(e)});
+// kalendář duben 2027 (1. 4. = čtvrtek)
+(function(){const g=$('calg');g.innerHTML=['Po','Út','St','Čt','Pá','So','Ne'].map(d=>`<b>${d}</b>`).join('')+'<span></span>'.repeat(3)+Array.from({length:30},(_,i)=>`<span class="${i+1===27||i+1===28?'on':''}">${i+1}</span>`).join('')})();
+// slova scény 5
+const W=[["Přednášky.",9],["Diskuze.",6],["Setkání.",16],["Večer s přáteli.",3]];
+$('w4').innerHTML=W.map(([w,f],i)=>`<div id="wd${i}" class="r"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i>${w}</div>`).join('');
+const CH=["📅 Program","❓ Dotazy – i hlasem","📣 Aktuality","🌤️ Počasí","🧭 Navigace do hotelu","🪪 Moje registrace"];
+const GAR=[["Ing. Filip Wanner, Ph.D.","ENERGIE AG BOHEMIA s.r.o.",10],["Ing. Martin Srb, Ph.D.","Pražské vodovody a kanalizace, a.s.",16]];
+$('gar').innerHTML=GAR.map(([n,o,f],i)=>`<div class="r" id="gr${i}"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i><div><b>${n}</b><span>${o}</span></div></div>`).join('');
+$('chips').innerHTML=CH.map((c,i)=>`<span class="chip r" id="ch${i}">${c}</span>`).join('');
+function wave(id,t,amp,len,spd,y0){let d=`M0 330 L0 ${y0}`;for(let x=0;x<=1920;x+=40)d+=` L${x} ${y0+amp*Math.sin(x/len+t*spd)}`;$(id).setAttribute('d',d+' L1920 330 Z')}
+function sceneOp(i,t){const a=B[i],b=B[i+1],fi=.45,fo=.45;return cl((t-a)/fi)*cl((b-t)/fo)*(i===0?1:1)}
+function render(t){
+  const L=SC.length-1;for(let i=0;i<=L;i++){const o=(i===0?cl((B[1]-t)/.45):i===L?cl((t-B[L])/.45):sceneOp(i,t));const s=$(SC[i]);s.style.opacity=o;s.style.visibility=o>0?'visible':'hidden'}
+  // fleky: scéna 1 se snáší, 2 se stáhnou do středu za 31, 3–7 decentně u okrajů, 8 se rozletí
+  FL.forEach((f,i)=>{const e=$('f'+i);let x=f[1],y=f[2],sc=1,op=1;
+    const bob=Math.sin(t*.7+i)*14, bob2=Math.cos(t*.55+i*1.7)*12;
+    const inn=out(cl((t-i*.18)/1.6)); sc=.4+.6*inn; op=inn;
+    const g=ease(cl((t-B[1]+.6)/1.4)), back=ease(cl((t-B[2]+.4)/1.2));
+    const cx=960+(f[1]-960)*.25, cy=470+(f[2]-470)*.25;
+    x=x+(cx-x)*g*(1-back); y=y+(cy-y)*g*(1-back); sc*=1-.45*g*(1-back); op*=1-.75*g*(1-back);
+    const quiet=t>B[2]?.55:1; op*=quiet;
+    if(t>B[8]){const k=ease(cl((t-B[8])/3));x+= (f[1]-960)*1.1*k; y+=(f[2]-540)*1.1*k; op*=1-k*.6}
+    e.style.transform=`translate(${x+bob}px,${y+bob2}px) scale(${sc}) rotate(${Math.sin(t*.3+i)*6}deg)`;e.style.opacity=op});
+  // 1
+  setP('s1k',p(t,.6));setP('s1h',p(t,1.4,1));
+  // 2
+  const a2=B[1]; const n=$('n31'), q=out(cl((t-a2-.5)/1.2)); n.style.opacity=q; n.style.transform=`scale(${.55+.45*q}) rotate(${(1-q)*-8}deg)`;
+  setP('s2h',p(t,a2+1.6));setP('s2s',p(t,a2+2.2));
+  // 3
+  const a3=B[2]; const pin=$('pin'), pq=out(cl((t-a3-.3)/.9)); pin.style.transform=`translateY(${(1-pq)*-120}px)`;pin.style.opacity=pq;
+  setP('s3h',p(t,a3+.8));setP('s3s',p(t,a3+1.4));
+  wave('w1',t,22,140,1.1,120);wave('w2',t,16,110,-1.5,170);wave('w3',t,12,90,1.9,220);
+  // 4
+  const a4=B[3];setP('s4k',p(t,a4+.3));setP('s4h',p(t,a4+.7));setP('s4m',p(t,a4+1.1));setP('cal',p(t,a4+.5,.9));
+  $('cal').style.setProperty('--q',out(cl((t-a4-1.8)/.6)));
+  // 5 slova na doby
+  const a5=B[4];W.forEach((w,i)=>setP('wd'+i,p(t,a5+.4+i*1.2,.6)));
+  // 6 aplikace
+  const ag=B[5];setP('sgk',p(t,ag+.3));GAR.forEach((g,i)=>setP('gr'+i,p(t,ag+.8+i*1.0,.6)));setP('sgz',p(t,ag+3.0));setP('sgs',p(t,ag+4.6));
+  const a6=B[6];setP('s6k',p(t,a6+.3));setP('s6h',p(t,a6+.7));setP('s6s',p(t,a6+1.2));setP('ph',p(t,a6+.5,1));
+  CH.forEach((c,i)=>setP('ch'+i,p(t,a6+2+i*.6,.5)));
+  for(let i=0;i<4;i++){const s0=a6+1+i*2.2,o=i===0?cl((s0+2.4-t)/.4):i===3?cl((t-s0)/.4):cl((t-s0)/.4)*cl((s0+2.4-t)/.4);$('i'+i).style.opacity=t<a6+1?(i===0?1:0):o}
+  // 7
+  const a7=B[7];setP('s7h',p(t,a7+.4));setP('s7s',p(t,a7+1));setP('qr',p(t,a7+1.4,.8));setP('logos',p(t,a7+2.2,.8));
+  // 8
+  const a8=B[8];setP('s8h',p(t,a8+.3,.9));setP('s8s',p(t,a8+1.1));
+  $('bar').style.width=(t/TOTAL*100)+'%';
+}
+window.render=render;
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);$('fit').style.transform=`scale(${s}) translate(-50%,-50%)`;$('fit').style.left='50%';$('fit').style.top='50%';$('fit').style.transformOrigin='0 0';$('fit').style.translate=`${-960*s}px ${-540*s}px`;$('fit').style.transform=`scale(${s})`}
+fit();addEventListener('resize',fit);
+if(!/rec=1/.test(location.search)){const t0=performance.now();(function loop(){const t=((performance.now()-t0)/1000)%TOTAL;render(t);requestAnimationFrame(loop)})()}else render(0);
+</script>
