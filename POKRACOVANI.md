@@ -498,8 +498,8 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 
 ### ▶ KDE POKRAČOVAT (konec 14. 10. 2026)
 - Vše nasazeno: admin **1.17 „Pořadatel“**, průvodce **0.34 „Seč 27“**, Florián **1.253**, AquaCtrl **v124** (PR #54).
-- **Další nápad uživatele: upoutávka (promo video) na průvodce Seč 27** „jako jsme už dělali“ (Florián).
-  Návrh scénáře: `navrh/promo-sec27.md` (8 scén, ~62 s, 16:9 + 9:16, jen hudba, skutečné obrazovky, QR na konci);
+- **Další nápad uživatele: upoutávka = POZVÁNKA na 31. ročník** (ne video o aplikaci – program ještě není): zveme vás,
+  Seč, 27.–28. 4. 2027, krátce „máme pro vás aplikaci“. Scénář v2: `navrh/promo-sec27.md` (7 scén, ~46 s, 16:9 + 9:16);
   postup převzít z `pkobelka/florian/promo/src-hasici/` (render(t) → Playwright snímky → ffmpeg, hudba numpy).
   Čeká na reakci uživatele ke scénáři a 3 otázkám v souboru → pak stavět.
 - Uživatel testuje instalaci na iPhonu / Androidu (pomocník `instalace.js` ve všech aplikacích).
