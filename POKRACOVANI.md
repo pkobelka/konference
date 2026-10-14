@@ -442,7 +442,8 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   Stejný člověk dvakrát v jedné dávce (Word i PDF) se založí jen jednou.
 
 ### Ikona pořadatele odlišená (14. 10. 2026) – admin 1.14
-- Uživatel chce na mobilu rozlišit aplikace: **účastníci = „31“ na bílém** (beze změny), **pořadatel = „31“ + vlnka VHOS**
-  (koule s vlnkou vyříznutá z `obrazky/loga/vhos.webp`) v modrém rámečku VHOS #005472 → `ikony/*-org-*.png`.
+- Uživatel chce na mobilu rozlišit aplikace: **účastníci = čistá „31“ na bílém** (beze změny), **pořadatel (admin 1.15) = stejná „31“
+  na bílém + uprostřed malé kolečko VHOS s vlnkou** (vyříznuté z `obrazky/loga/vhos.webp`, bílý lem) → `ikony/*-org-*.png`.
+  (První pokus s modrým rámečkem se mu nelíbil.)
   Manifest pořadatele: name „Seč 27 – pořadatel“, short_name **„Pořadatel“**, theme #005472. Podoba „pak ji změníme“ – prozatímní.
 - YWP: garant **Ing. Filip Wanner je správně** (potvrdil uživatel) – v šabloně YWP ponecháno.
