@@ -547,3 +547,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   „něco malilinko nepasuje“ → čeká se na jeho postřehy, pak jeden render.
 - **Úvod (Petr: „aby to bylo úderné“):** scéna 1 = 9,6 s – velké „Zveme vás / na konferenci“ (124 px) drží do 3,6 s,
   pak se zmenší (scale→.22, nahoru) do malého nadpisu a naskočí název konference. Celkem 62,4 s; hudba DROP=B[1].
+- **Úvod v2:** velké „Zveme vás / na konferenci“ se jen zmenší (scale .4, stejné písmo) a zůstane nad názvem – bez
+  přepnutí na malé verzálky (Petr: „problikne do jiného formátu, není to pěkné“). Scéna garantů vystředěná.
+  „vás“ malé (obecné oslovení), „Vás“ jen v osobních dopisech – na dotaz Petra.

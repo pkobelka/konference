@@ -52,7 +52,8 @@ html,body{height:100%;background:#000;overflow:hidden}
 .ph::before{content:"";position:absolute;left:50%;top:30px;width:120px;height:32px;margin-left:-60px;border-radius:20px;background:#0b0a0d;z-index:2}
 .chips{display:flex;flex-wrap:wrap;gap:16px;margin-top:40px;max-width:820px}
 .chip{font:700 30px var(--body);padding:16px 26px;border-radius:999px;background:#fff;border:2px solid #e3dcef;color:var(--accent);box-shadow:0 10px 24px -14px rgba(60,40,80,.35)}
-.gar{display:flex;flex-direction:column;gap:30px;margin-top:46px}
+.gar{display:flex;flex-direction:column;align-items:center;gap:30px;margin-top:46px}
+.gar>div>div{text-align:left;min-width:820px}
 .gar>div{display:flex;align-items:center;gap:34px}
 .gar i{width:110px;height:110px;flex:none;background:center/contain no-repeat}
 .gar b{display:block;font:700 56px/1.1 var(--mono);letter-spacing:-.02em}
@@ -67,8 +68,7 @@ html,body{height:100%;background:#000;overflow:hidden}
 </style>
 <div id="fit"><div class="st" id="st">
   <!-- 1 Úvod -->
-  <div class="sc" id="s1"><div class="c" id="s1big" style="top:400px;font:700 124px/1.06 var(--mono);letter-spacing:-.03em;transform-origin:50% 50%">Zveme vás<br>na konferenci</div><div class="c" style="top:300px"><div class="k r" id="s1k">Zveme vás na konferenci</div>
-    <div class="h r" id="s1h" style="margin-top:40px">Nové metody a postupy<br>při provozování ČOV</div></div></div>
+  <div class="sc" id="s1"><div class="c" id="s1big" style="top:400px;font:700 124px/1.06 var(--mono);letter-spacing:-.03em;transform-origin:50% 50%">Zveme vás<br>na konferenci</div><div class="c" style="top:300px"><div class="h r" id="s1h" style="margin-top:110px">Nové metody a postupy<br>při provozování ČOV</div></div></div>
   <!-- 2 31. ročník -->
   <div class="sc" id="s2"><img id="n31" src="../../obrazky/cislo31.webp" alt="">
     <div class="c" style="top:820px"><div class="h r" id="s2h" style="font-size:84px">31. ročník</div>
@@ -84,7 +84,7 @@ html,body{height:100%;background:#000;overflow:hidden}
   <!-- 5 Program obecně -->
   <div class="sc" id="s5"><div class="w4" id="w4"></div></div>
   <!-- 5b Program připravují -->
-  <div class="sc" id="sg"><div style="position:absolute;left:180px;top:200px;width:1560px">
+  <div class="sc" id="sg"><div style="position:absolute;left:0;right:0;top:200px;text-align:center">
     <div class="k r" id="sgk">Odborný program připravují</div>
     <div class="gar" id="gar"></div>
     <div class="sub r" id="sgz" style="margin-top:50px;font-size:34px">pod dohledem <b style="color:var(--ink)">prof. Ing. Jiřího Wannera, DrSc.</b>,<br>který tradici konference založil s <b style="color:var(--ink)">Ing. Vladimírem Langerem</b>.</div>
@@ -143,8 +143,8 @@ function render(t){
     e.style.transform=`translate(${x+bob}px,${y+bob2}px) scale(${sc}) rotate(${Math.sin(t*.3+i)*6}deg)`;e.style.opacity=op});
   // 1
   {const bi=out(cl((t-.2)/.8)),sh=ease(cl((t-3.6)/.9)),e=$('s1big');
-   e.style.opacity=bi*(1-cl((t-3.85)/.45));e.style.transform=`translateY(${(1-bi)*40-sh*218}px) scale(${(.92+.08*bi)*(1-sh*.78)})`;
-   setP('s1k',p(t,4.2,.5));setP('s1h',p(t,4.7,1));}
+   e.style.opacity=bi;e.style.transform=`translateY(${(1-bi)*40-sh*232}px) scale(${(.92+.08*bi)*(1-sh*.6)})`;
+   setP('s1h',p(t,4.5,1));}
   // 2
   const a2=B[1]; const n=$('n31'), q=out(cl((t-a2-.5)/1.2)); n.style.opacity=q; n.style.transform=`scale(${.55+.45*q}) rotate(${(1-q)*-8}deg)`;
   setP('s2h',p(t,a2+1.6));setP('s2s',p(t,a2+2.2));
