@@ -260,3 +260,11 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Průvodce 0.16:** dlaždice „Dnes“ (velké hodiny) zrušena – zabírala moc místa. Dnešní den, čas a svátek jsou
   malým písmem v plakátu **vedle odpočtu** („Dnes st 14. 10. · 5:25, svátek má …“). Počasí v Seči je jeden řádek
   přes celou šířku (teplota vlevo, 3 dny vpravo); na PC vedle čísel (přednášky/partneři/body).
+- **Průvodce 0.17 – namluvený dotaz (nápad uživatele):** v okně dotazu tlačítko **🎤 Složitý dotaz? Namluvte ho**
+  (max 1 min, MediaRecorder opus ~24 kb/s ≈ 180 kB/min). Současně **přepis řeči na text** (Web Speech API, cs-CZ –
+  Chrome/Android, Safari/iPhone; zvuk jde rozpoznávací službě prohlížeče) rovnou do pole dotazu → dá se opravit,
+  ostatní si dotaz **přečtou**. Když přepis není k dispozici, uloží se „🎤 Namluvený dotaz (bez přepisu)“.
+  V **Pohledu předsedajícího** u namluvených dotazů velké tlačítko **▶ Přehrát do sálu** (⏸ Zastavit, ▶ Přehrát znovu)
+  – předsedající pustí telefon/notebook do mikrofonu nebo ozvučení.
+  Zatím jen v zařízení (jako ostatní dotazy). **Pro ostrý provoz:** uzel `konference2027_dotazy` + nahrávky do
+  Firebase Storage (nebo base64 do RTDB, ~250 kB na dotaz), mazání jen pořadatel; v Claude ukázce mikrofon nejde, jen na webu.

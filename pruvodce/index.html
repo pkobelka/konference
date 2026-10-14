@@ -238,6 +238,13 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
   #printarea .n p{white-space:pre-wrap;font-size:11pt;margin:0}
 }
 .cact{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.mic{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.micb{border:1px dashed var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:8px 12px;font-weight:700;font-size:14px}
+.micb.on{border-style:solid;background:#b0413e;color:#fff;border-color:#b0413e;animation:glowR 1.4s ease-in-out infinite}
+@keyframes glowR{50%{box-shadow:0 0 0 5px rgba(176,65,62,.25)}}
+#qprev{display:flex;align-items:center;gap:10px;flex-wrap:wrap} #qprev audio,.qau{height:36px;max-width:100%}
+.qau{display:block;margin:6px 0 2px}
+.cq .play,.play{display:block;width:auto;min-width:0;height:auto;margin:8px 0 6px;border:0;border-radius:10px;padding:10px 16px;font-weight:800;font-size:15px;background:var(--water);color:var(--surface)}
 .mreg{position:relative;overflow:hidden;border:2px solid var(--accent);display:flex;flex-direction:column;gap:10px}
 .mreg .hi{font-family:var(--f-display);font-size:20px;font-weight:700;line-height:1.2}
 .mreg .st{align-self:flex-start;border-radius:99px;padding:4px 10px;font-size:12px;font-weight:700;background:var(--accent-soft);color:var(--accent)}
@@ -469,7 +476,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.16 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.17 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -867,29 +874,68 @@ function sheetQ(id){
  const x=ALLT.find(y=>y.id===id), bk=ALLT.find(y=>y.blok&&y.bid===x.bid);
  const draw=()=>{const l=(S.qa[id]||[]).map((q,i)=>({q,i})).sort((a,b)=>votes(id,b.i)-votes(id,a.i));
   $("qlist").innerHTML=l.length?`<div class="label" style="margin-bottom:2px">Dotazy ostatních – než napíšete, podívejte se, jestli tu už váš není</div>`+l.map(({q,i})=>{const on=!!S.voted[id+":"+i],n=votes(id,i);
-   return `<div class="q"><div><p>${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)} · ${n} ${n===1?"člověk":n<5?"lidé":"lidí"}</small></div><button class="plus" data-plus="${i}" aria-pressed="${on}">${on?"✓ Mám taky":"+1 Mám stejný"}</button></div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
+   return `<div class="q"><div><p>${esc(q.t)}</p>${q.au?`<audio class="qau" controls preload="none" src="${q.au}" aria-label="Namluvený dotaz"></audio>`:""}<small>${esc(q.a)} · ${esc(q.c)} · ${n} ${n===1?"člověk":n<5?"lidé":"lidí"}</small></div><button class="plus" data-plus="${i}" aria-pressed="${on}">${on?"✓ Mám taky":"+1 Mám stejný"}</button></div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
  openSheet(`<h2>Dotaz k přednášce</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.h)}</div>
   <div class="bd"><div id="qlist"></div>
   <form class="qform" id="qf"><textarea id="qt" rows="3" placeholder="Napište svůj dotaz na přednášejícího…" aria-label="Dotaz"></textarea>
+   <div class="mic"><button type="button" class="micb" id="qmic">🎤 Složitý dotaz? Namluvte ho</button><span id="qrec" class="muted"></span></div>
+   <div id="qprev" hidden><audio id="qaud" controls></audio><button type="button" class="linkb" id="qadel">Smazat nahrávku</button><small class="muted" style="flex-basis:100%">Přepis je v poli nahoře – zkontrolujte ho, ostatní si dotaz přečtou. Nahrávku pustí předsedající.</small></div>
    ${podpis()?`<div class="signas">Odešle se jako <b>${esc(podpis())}</b></div><label class="chk"><input type="checkbox" id="qanon"> Odeslat anonymně</label>`
      :`<div class="signas">Dotaz se odešle anonymně. <button type="button" class="linkb" data-profil="1">Vyplnit profil</button>, ať se podepíše sám.</div>`}
    <button class="send">Odeslat dotaz</button></form>
-  <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první.</div></div>`);
+  <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první. Namluvený dotaz se přepíše na text, aby si ho ostatní mohli přečíst; předsedající ho může i pustit do sálu (max. 1 minuta).</div></div>`);
  draw();
+ let AU=null;   // namluvený dotaz (data: URL)
+ $("qmic").addEventListener("click",()=>nahravej(u=>{AU=u;$("qaud").src=u;$("qprev").hidden=false}));
+ $("qadel").addEventListener("click",()=>{AU=null;$("qprev").hidden=true;$("qaud").removeAttribute("src")});
  $("qlist").addEventListener("click",e=>{const b=e.target.closest("[data-plus]");if(!b)return;const k=id+":"+b.dataset.plus;if(S.voted[k])delete S.voted[k];else{S.voted[k]=1;toast("Přidali jste se k dotazu")}store.set("voted",S.voted);draw()});
- $("qf").addEventListener("submit",e=>{e.preventDefault();const t=$("qt").value.trim();if(!t)return;
-  const anon=!podpis()||($("qanon")&&$("qanon").checked);(S.qa[id]=S.qa[id]||[]).push({t,a:anon?"anonymně":podpis(),c:now()});store.set("qa",S.qa);$("qt").value="";draw();render();toast("Dotaz odeslán předsedajícímu")});
+ $("qf").addEventListener("submit",e=>{e.preventDefault();if(REC.mr)return toast("Nejdřív ukončete nahrávání");const t=$("qt").value.trim();if(!t&&!AU)return;
+  const anon=!podpis()||($("qanon")&&$("qanon").checked);(S.qa[id]=S.qa[id]||[]).push(Object.assign({t:t||"🎤 Namluvený dotaz (bez přepisu)",a:anon?"anonymně":podpis(),c:now()},AU?{au:AU}:{}));
+  store.set("qa",S.qa);$("qt").value="";AU=null;$("qprev").hidden=true;draw();render();toast("Dotaz odeslán předsedajícímu")});
+}
+/* ===== Namluvený dotaz: nahrání (max 60 s) a přehrání do sálu ===== */
+const REC={mr:null,t:null,start:0,sr:null};
+// Přepis řeči na text (Chrome/Android, Safari/iPhone; posílá zvuk rozpoznávací službě prohlížeče). Když není, zůstane jen nahrávka.
+function prepis(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition, ta=$("qt");if(!SR||!ta)return null;
+ const r=new SR();r.lang="cs-CZ";r.continuous=true;r.interimResults=true;
+ const zaklad=ta.value.trim()?ta.value.trim()+" ":"";let fin="";
+ r.onresult=e=>{let mez="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t+" ";else mez+=t}
+  ta.value=(zaklad+fin+mez).replace(/\s+/g," ").replace(/^./,c=>c.toUpperCase());};
+ r.onerror=()=>{};r.onend=()=>{if(REC.mr&&REC.sr===r){try{r.start()}catch(e){}}};   // Android po pauze končí – pokračovat
+ try{r.start()}catch(e){return null}return r;
+}
+function nahravej(hotovo){
+ const b=$("qmic"), info=$("qrec");
+ if(REC.mr){REC.mr.stop();return}
+ if(!navigator.mediaDevices||!window.MediaRecorder)return toast("Tento prohlížeč neumí nahrávat – napište dotaz textem");
+ navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}).then(st=>{
+  const typ=["audio/webm;codecs=opus","audio/mp4","audio/webm"].find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))||"";
+  const mr=new MediaRecorder(st,Object.assign({audioBitsPerSecond:24000},typ?{mimeType:typ}:{})), ch=[];REC.mr=mr;REC.start=Date.now();
+  mr.ondataavailable=e=>{if(e.data.size)ch.push(e.data)};
+  mr.onstop=()=>{st.getTracks().forEach(t=>t.stop());clearInterval(REC.t);REC.mr=null;const sr=REC.sr;REC.sr=null;if(sr)try{sr.stop()}catch(e){}b.textContent="🎤 Namluvit znovu";b.classList.remove("on");info.textContent="";
+   const bl=new Blob(ch,{type:mr.mimeType||typ||"audio/webm"});const fr=new FileReader();fr.onload=()=>hotovo(fr.result);fr.readAsDataURL(bl)};
+  mr.start();REC.sr=prepis();b.textContent="⏹ Hotovo – ukončit";b.classList.add("on");
+  REC.t=setInterval(()=>{const sec=Math.floor((Date.now()-REC.start)/1000);info.textContent=(REC.sr?"● nahrávám a přepisuji ":"● nahrávám ")+Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0")+" / 1:00";if(sec>=60)mr.stop()},250);
+ }).catch(()=>toast("Bez povolení mikrofonu to nejde – povolte ho v prohlížeči"));
+}
+let HR=null;
+function prehraj(q,btn){
+ if(HR){HR.pause();const was=HR.btn;HR=null;document.querySelectorAll("[data-play]").forEach(x=>x.textContent="▶ Přehrát do sálu");if(was===btn)return}
+ if(!q||!q.au)return;const a=new Audio(q.au);HR=a;a.btn=btn;btn.textContent="⏸ Zastavit";
+ a.onended=()=>{btn.textContent="▶ Přehrát znovu";HR=null};a.play().catch(()=>{btn.textContent="▶ Přehrát do sálu";HR=null;toast("Nahrávku se nepodařilo přehrát")});
 }
 function sheetChair(bid){
  const bk=ALLT.find(y=>y.blok&&y.bid===bid), talks=ALLT.filter(y=>y.id&&y.bid===bid);
  const draw=()=>{$("clist").innerHTML=talks.map(x=>{const l=(S.qa[x.id]||[]).map((q,i)=>({q,i})).sort((a,b)=>(!!S.read[x.id+":"+a.i]-!!S.read[x.id+":"+b.i])||votes(x.id,b.i)-votes(x.id,a.i));
    return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(({q,i})=>{const k=x.id+":"+i,r=!!S.read[k],n=votes(x.id,i);
-    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes">+${n-1} se ptá taky</span>`:""}</div><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
+    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p>${q.au?`<button class="play" data-play="${esc(k)}">▶ Přehrát do sálu</button>`:""}<small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes">+${n-1} se ptá taky</span>`:""}</div><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
  openSheet(`<h2>Pohled předsedajícího</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(bk.blok)} · předsedá ${esc(bk.pr)}</div>
   <div class="bd chair"><div id="clist"></div>
   <div class="note">Dotazy přibývají živě během přednášky. Po přečtení je předsedající odškrtne. V ostré verzi bude tento pohled jen pro předsedající a pořadatele a dá se pustit i na plátno.</div></div>`);
  draw();
- $("clist").addEventListener("click",e=>{const b=e.target.closest("[data-read]");if(!b)return;const k=b.dataset.read;if(S.read[k])delete S.read[k];else S.read[k]=1;store.set("read",S.read);draw();render()});
+ $("clist").addEventListener("click",e=>{const pb=e.target.closest("[data-play]");if(pb){const [tid,i]=pb.dataset.play.split(":");return prehraj((S.qa[tid]||[])[+i],pb)}
+  const b=e.target.closest("[data-read]");if(!b)return;const k=b.dataset.read;if(S.read[k])delete S.read[k];else S.read[k]=1;store.set("read",S.read);draw();render()});
 }
 
 function sheetNote(id){
@@ -992,7 +1038,7 @@ if(window.IMGBASE&&"serviceWorker" in navigator){navigator.serviceWorker.registe
 
 /* ===== Sheet ===== */
 function openSheet(h){const s=$("sheet");s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+h;s.hidden=false;$("bd").hidden=false;$("sclose").focus()}
-function closeSheet(){$("sheet").hidden=true;$("bd").hidden=true}
+function closeSheet(){if(REC.mr)REC.mr.stop();if(HR){HR.pause();HR=null}$("sheet").hidden=true;$("bd").hidden=true}
 $("bd").addEventListener("click",closeSheet);
 $("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
