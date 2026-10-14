@@ -464,3 +464,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   Eva Jančáková (461 357 111, konference@vhos.cz), **Fakturace** Danuše Kaderková (vedoucí ÚTV UCE, 461 357 151,
   danuse.kaderkova@vhos.cz). Data v konstantě `KONTAKTY` v navrh/pruvodce.html. Poplatek doplněn o „Platba“.
   Popisky oblastí („ubytování, večeře…“, „program, přednášky…“) jsou návrh – uživatel může upravit.
+- **Průvodce 0.33:** u Petra Kobelky bez „technický ředitel“ (přání); **prof. Jiří Wanner vypuštěn** z kontaktů i z „O konferenci“ –
+  uvádět jen **Ing. Filipa Wannera** jako odborného garanta.
