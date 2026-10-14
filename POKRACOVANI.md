@@ -558,3 +558,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Závěr (Petr):** „Těšíme se na vás na Seči!“ → pod tím datum zvlášť (58 px, fialová) → řádek log VHOS · CzWA · Energie AG.
 - **Loga (Petr):** bílé karty se zaoblenými rohy (img.lg, radius 22 px, stín); VHOS největší, CzWA menší, Energie AG střední
   – v závěru i ve scéně „Zveme vás“.
+- **Scéna Zveme vás:** „31“ přesunuto z řady log do volného místa vpravo od „Zveme vás.“ (300 px).
