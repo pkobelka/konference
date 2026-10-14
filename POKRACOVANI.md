@@ -293,6 +293,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Admin: Nastavení → **„Dotazy k přednáškám z průvodce“** – živý seznam, Smazat (dotaz + nahrávka + hlasy),
   „Smazat všechny dotazy (po zkoušce)“ (napsat SMAZAT). Obnovuje jen tuto sekci, rozepsané Nastavení nezmizí.
 - Otestováno: falešný Firebase server (REST+SSE) a dva „telefony“ – dotaz, +1, namluvený dotaz, přehrání u předsedajícího.
+- **14. 10.: uživatel pravidlo `konference2027_dotazy` přidal a publikoval** (pozor: při vkládání chyběla `},` za blokem karet – opraveno).
 - **Pravidlo do Firebase** (ORG = stejný výraz jako u ostatních uzlů, `auth != null && root.child('florian_login_email')…exists()`):
   ```
   "konference2027_dotazy": {
