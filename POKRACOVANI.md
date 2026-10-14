@@ -568,3 +568,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   Petr: „tohle přece musíš doladit sám“ → drobnosti v rozložení dolaďovat samostatně (kontrolní mřížka náhledů
   všech scén před renderem).
 - **Hudba:** stejný úder („boom“) jako u „31“ i při naskočení názvu konference (2,85 s) – na přání Petra.
+- Úder u názvu: v mobilu nebyl slyšet (jen hluboký boom) → přidán krátký basový akord E (stab) – teď stejně výrazný jako u „31“.
