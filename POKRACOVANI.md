@@ -317,3 +317,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   27.–28. 4. 2027; nebo .ics pro Apple/Outlook s připomenutím den předem večer, popis: příjezd v pondělí 26. 4.).
   Štítek místa = tlačítko **„➜ navigovat“**: adresa **Ústupky 278, 538 07 Seč** (dle kongresypardubickykraj.cz, firmy.cz),
   GPS, odkazy Google Mapy (navigace autem na souřadnice), Mapy.cz, Waze, Kopírovat adresu. Stejné okno i z Dopravy.
+- **14. 10.: dotazy přes Firebase ověřeny uživatelem naživo** – dotaz z jednoho zařízení se objevil na druhém i s ①.
+- Průvodce 0.23: oprava tvaru „1 dotaz / 2 dotazy / 5 dotazů“ v kartě Právě teď.

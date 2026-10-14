@@ -489,7 +489,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.22 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.23 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -852,7 +852,7 @@ function vNow(){
   h=`<button class="now ${cur.brk?"brk":""}" data-goday="${c.day}"><div class="lbl"><span class="dot"></span>${cur.brk?"Právě teď":"Právě probíhá"} · ${esc(cur.t)}–${esc(cur.e||"")}</div>
    <h2>${esc(cur.h)}</h2>${cur.w&&!cur.brk?`<div class="who">${esc(cur.w)}</div>`:""}${bk?`<div class="who">Blok: ${esc(bk.blok)}</div>`:""}${cur.det?`<ul class="det">${cur.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}
    <div class="bar"><i style="width:${pct}%"></i></div><div class="left">${cur.brk?"Konec":"Do konce"} za ${dur((cur.b??cur.a+1)-c.m)} · v ${hm(cur.b??cur.a+1)}</div>
-   ${next?`<div class="next">Následuje v ${esc(next.t)}: <b>${esc(next.h)}</b></div>`:""}</button>`+(cur.bid?`<button class="qbtn has" data-q="${cur.id}" style="align-self:flex-start;margin-top:0;font-size:13px;padding:7px 12px">? Napsat dotaz k této přednášce${(S.qa[cur.id]||[]).length?" · "+(S.qa[cur.id]||[]).length+" dotazů":""}${badge(novych(cur.id))}</button>`:"")}
+   ${next?`<div class="next">Následuje v ${esc(next.t)}: <b>${esc(next.h)}</b></div>`:""}</button>`+(cur.bid?`<button class="qbtn has" data-q="${cur.id}" style="align-self:flex-start;margin-top:0;font-size:13px;padding:7px 12px">? Napsat dotaz k této přednášce${(()=>{const n=(S.qa[cur.id]||[]).length;return n?" · "+n+" "+(n===1?"dotaz":n<5?"dotazy":"dotazů"):""})()}${badge(novych(cur.id))}</button>`:"")}
  else if(next&&first&&c.m<first.a){h=`<button class="now" data-goday="${c.day}"><div class="lbl">${D.n} ${D.d}</div><h2>Program začne za ${dur(first.a-c.m)}</h2><div class="next">V ${esc(first.t)}: <b>${esc(first.h)}</b></div></button>`}
  else if(next){h=`<button class="now brk" data-goday="${c.day}"><div class="lbl">Volno</div><h2>Další bod programu za ${dur(next.a-c.m)}</h2><div class="next">V ${esc(next.t)}: <b>${esc(next.h)}</b></div></button>`}
  else{h=`<div class="now"><div class="lbl">${D.n} ${D.d}</div><h2>Program dne skončil</h2><div class="who">${c.day==="st"?"Děkujeme za účast a těšíme se příště.":"Zítra pokračujeme – podívejte se do programu."}</div></div>`}
