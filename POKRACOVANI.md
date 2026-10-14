@@ -575,3 +575,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Hudba v1 okně (finál):** kopie zrušena; arpeggio + basa nastoupí už s úderem při naskočení názvu (START=2,8 s), u „31“ druhý úder do hrající hudby – po úderu není ticho.
 - **Verze NA VÝŠKU** `promo/sec27-pozvanka-vyska.mp4` (1080×1920, stejná hudba): šablona `sec27.html?v=1` (třída .vert,
   CSS přepisy pozic, fleky přepočítané, kruh u 31 menší), render `node render.js out.mp4 v`. Odkaz ke stažení na video.html.
+- „Kongres hotel Jezerka“ ve scéně Seč 31 větší (52 px, tučně) – obě verze.
