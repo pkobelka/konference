@@ -553,3 +553,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Úvod zkrácen** (Petr: „zveme vás je tam moc dlouho“): velké Zveme vás ~2 s, scéna 1 = 7,2 s, video 60 s.
 - **Scéna 31:** fleky se seřadí do **kruhu** kolem „31“ (mezera dole pro „31. ročník“) a kruh se rozšíří (elipsa
   rx 430→760, ry 320→390), fleky zmenšené na ~135 px – dřív se stahovaly pod „31“ a nebylo to výrazné.
+- **Štítky v telefonní scéně (Petr):** „Online aktuální informace přímo do mobilu“ · „Dotazy k přednáškám do diskuze“ ·
+  „Průběžně – písemně i hlasem“ · Poznámky · Program · Počasí · Navigace do hotelu · Moje registrace (blok posunut výš, chip 27 px).

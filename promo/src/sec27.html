@@ -50,8 +50,8 @@ html,body{height:100%;background:#000;overflow:hidden}
 .ph .scr{position:relative;width:100%;height:100%;border-radius:52px;overflow:hidden;background:var(--paper)}
 .ph .scr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0}
 .ph::before{content:"";position:absolute;left:50%;top:30px;width:120px;height:32px;margin-left:-60px;border-radius:20px;background:#0b0a0d;z-index:2}
-.chips{display:flex;flex-wrap:wrap;gap:16px;margin-top:40px;max-width:820px}
-.chip{font:700 30px var(--body);padding:16px 26px;border-radius:999px;background:#fff;border:2px solid #e3dcef;color:var(--accent);box-shadow:0 10px 24px -14px rgba(60,40,80,.35)}
+.chips{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px;max-width:900px}
+.chip{font:700 27px var(--body);padding:13px 22px;border-radius:999px;background:#fff;border:2px solid #e3dcef;color:var(--accent);box-shadow:0 10px 24px -14px rgba(60,40,80,.35)}
 .gar{display:flex;flex-direction:column;align-items:center;gap:30px;margin-top:46px}
 .gar>div>div{text-align:left;min-width:820px}
 .gar>div{display:flex;align-items:center;gap:34px}
@@ -90,7 +90,7 @@ html,body{height:100%;background:#000;overflow:hidden}
     <div class="sub r" id="sgz" style="margin-top:50px;font-size:34px">pod dohledem <b style="color:var(--ink)">prof. Ing. Jiřího Wannera, DrSc.</b>,<br>který tradici konference založil s <b style="color:var(--ink)">Ing. Vladimírem Langerem</b>.</div>
     <div class="sub r" id="sgs" style="margin-top:34px;color:var(--accent)">Program 31. ročníku právě připravujeme.</div></div></div>
   <!-- 6 Aplikace -->
-  <div class="sc" id="s6"><div style="position:absolute;left:180px;top:250px;width:900px">
+  <div class="sc" id="s6"><div style="position:absolute;left:180px;top:170px;width:960px">
     <div class="k r" id="s6k">Novinka 31. ročníku</div>
     <div class="h r" id="s6h" style="font-size:92px;margin-top:30px">Konference<br>v&nbsp;telefonu</div>
     <div class="sub r" id="s6s" style="margin-top:26px">Aplikace do mobilu, tabletu i počítače.<br>Vše po ruce – bez instalace z obchodu.</div>
@@ -123,7 +123,7 @@ const st=$('st');FL.forEach((f,i)=>{const e=document.createElement('div');e.clas
 // slova scény 5
 const W=[["Přednášky.",9],["Diskuze.",6],["Setkání.",16],["Večer s přáteli.",3]];
 $('w4').innerHTML=W.map(([w,f],i)=>`<div id="wd${i}" class="r" style="margin-left:${i*140}px"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i>${w}</div>`).join('');
-const CH=["📣 Aktuality z konference","❓ Dotazy k přednáškám – i hlasem","✎ Poznámky","📅 Program","🌤️ Počasí","🧭 Navigace do hotelu","🪪 Moje registrace"];
+const CH=["📣 Online aktuální informace přímo do mobilu","❓ Dotazy k přednáškám do diskuze","🎙️ Průběžně – písemně i hlasem","✎ Poznámky","📅 Program","🌤️ Počasí","🧭 Navigace do hotelu","🪪 Moje registrace"];
 const GAR=[["Ing. Filip Wanner, Ph.D.","ENERGIE AG BOHEMIA s.r.o.",10],["Ing. Martin Srb, Ph.D.","Pražské vodovody a kanalizace, a.s.",16]];
 $('gar').innerHTML=GAR.map(([n,o,f],i)=>`<div class="r" id="gr${i}"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i><div><b>${n}</b><span>${o}</span></div></div>`).join('');
 $('chips').innerHTML=CH.map((c,i)=>`<span class="chip r" id="ch${i}">${c}</span>`).join('');
