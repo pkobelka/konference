@@ -334,3 +334,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   = název pod ikonou), `apple-mobile-web-app-title`. Aplikace pořadatele zůstává „Konference“ (ať se na ploše nepletou).
 - **Průvodce 0.26–0.27:** odborní partneři jedou ve **dvou řadách** (každá polovina log, obě stejným směrem – přání uživatele),
   menší okénka (výška 38 px, logo 26 px); průjezd ~11 s, pak se scéna přepne na mediální.
+- **Průvodce 0.28:** sborník v PDF bude ke stažení **už během konference** (ne až po ní) – upraveno v Aktualitách i v Info.
