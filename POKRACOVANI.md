@@ -516,3 +516,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   `permission_denied at /konference2027`. Oprava se souhlasem uživatele: **PR pkobelka/mojebudky#185** (squash) přidal
   všech 6 bloků `konference2027`, `_prihlasky`, `_verejne`, `_karty`, `_dotazy`, `_aktuality` (znění jako v konzoli).
 - **Pravidlo do budoucna:** nová/změněná pravidla konference psát do `mojebudky/database.rules.json` (PR), ne do konzole.
+- **Průvodce 0.37:** horní menu na počítači bylo „vůbec nevýrazné“ → položky jako dlaždice (rámeček, stín, tučné tmavé
+  písmo, fialové ikony), najetí myší zvýrazní, **aktivní = plná fialová**, čísla (①) v rohu dlaždice. Mobil: ikony a popisky dole tmavší.

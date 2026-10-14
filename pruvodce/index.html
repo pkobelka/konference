@@ -53,7 +53,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .chip{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:var(--water-soft);color:var(--water);flex:none}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
 .tabbar .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
-.tabbar button{background:none;border:0;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--muted)}
+.tabbar button{background:none;border:0;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:color-mix(in srgb,var(--ink) 72%,transparent)}
 .tabbar svg{width:22px;height:22px}
 .tabbar button[aria-current="page"]{color:var(--accent)}
 .sec{display:flex;flex-direction:column;gap:12px;padding-block:4px 18px}
@@ -411,9 +411,13 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .app{padding-block:0 110px}
 @media (min-width: 820px){
   .tabbar{left:0;right:0;top:0;bottom:auto;border-radius:0;border:0;border-bottom:1px solid var(--line);box-shadow:none}
-  .tabbar .in{padding:0 16px}
-  .tabbar button{border-radius:0;padding:15px 14px}
-  .tabbar button[aria-current="page"]{background:none}
+  .tabbar .in{padding:10px 16px;gap:8px;justify-content:center}
+  .tabbar button{border-radius:14px;padding:10px 16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-size:15px;font-weight:700;box-shadow:0 2px 6px -3px rgba(40,30,60,.25);transition:background .15s,border-color .15s,transform .15s}
+  .tabbar button:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);transform:translateY(-1px)}
+  .tabbar button svg{color:var(--accent)}
+  .tabbar button[aria-current="page"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);box-shadow:0 6px 16px -6px color-mix(in srgb,var(--accent) 70%,transparent)}
+  .tabbar button[aria-current="page"] svg{color:var(--accent-ink)}
+  .tabbar .bdg{top:-6px;right:-6px}
   .app{padding-block:60px 32px}
   .poster{min-height:440px;padding:56px 44px 40px;justify-content:center}
   .collage .c5{left:auto}.collage .c6{left:auto}
@@ -511,7 +515,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.36 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.37 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
