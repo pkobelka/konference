@@ -556,3 +556,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Štítky v telefonní scéně (Petr):** „Online aktuální informace přímo do mobilu“ · „Dotazy k přednáškám do diskuze“ ·
   „Průběžně – písemně i hlasem“ · Poznámky · Program · Počasí · Navigace do hotelu · Moje registrace (blok posunut výš, chip 27 px).
 - **Závěr (Petr):** „Těšíme se na vás na Seči!“ → pod tím datum zvlášť (58 px, fialová) → řádek log VHOS · CzWA · Energie AG.
+- **Loga (Petr):** bílé karty se zaoblenými rohy (img.lg, radius 22 px, stín); VHOS největší, CzWA menší, Energie AG střední
+  – v závěru i ve scéně „Zveme vás“.
