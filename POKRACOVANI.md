@@ -329,3 +329,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   Stejné ikony mají aplikace pořadatele, průvodce i partnerská přihláška (`prihlaska/` měla ikonu 🎤 – nahrazena).
 - **Sestavení průvodce teď skriptem:** `./navrh/sestav-pruvodce.sh` (místo dlouhého printf; přidává i favicon-32).
 - Ve 32/16 px jsou bakterie jen barevné tečky – na ploše telefonu (180–512 px) vypadá ikona dobře.
+- **Průvodce 0.25 se jmenuje „Seč 27“** (přání uživatele; nejdřív napsal „Seč 26“, potvrdil 27 podle roku konání).
+  Titulek stránky, vlastní `pruvodce/manifest.webmanifest` (name „Seč 27 – průvodce konferencí“, short_name „Seč 27“
+  = název pod ikonou), `apple-mobile-web-app-title`. Aplikace pořadatele zůstává „Konference“ (ať se na ploše nepletou).

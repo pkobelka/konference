@@ -1,0 +1,16 @@
+{
+  "name": "Seč 27 – průvodce konferencí",
+  "short_name": "Seč 27",
+  "description": "Průvodce 31. ročníkem konference Nové metody a postupy při provozování ČOV, Seč 27.–28. 4. 2027.",
+  "lang": "cs",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f4ef",
+  "theme_color": "#f6f4ef",
+  "icons": [
+    { "src": "../ikony/ikona-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "../ikony/ikona-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "../ikony/ikona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
