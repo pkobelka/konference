@@ -520,7 +520,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.38 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.39 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -548,7 +548,7 @@ const PROG={
   {t:"16:00",e:"16:30",h:"Koncepce energetiky ve skupině Severočeská voda",w:"Ing. Marcel Gómez, Ph.D., Ing. Filip Harciník, Severočeské vodovody a kanalizace, a.s."},
   {t:"16:30",e:"17:00",h:"Možnosti dosažení energetické neutrality na ČOV Havlíčkův Brod",w:"Ing. Zdeněk Zelený, VAK Havlíčkův Brod, a.s."},
   {t:"17:00",e:"17:30",h:"Diskuze, závěr prvního dne",w:"",brk:1},
-  {t:"19:30",e:"02:00",h:"Společenský večer",w:"Kongres hotel Jezerka",brk:1,det:["Večeře formou rautu · doplní pořadatel","Program večera (hudba, překvapení) · doplní pořadatel","Svoz do Kraskova po skončení · viz Doprava"]},
+  {t:"19:30",e:"02:00",h:"Společenský večer",w:"Kongres hotel Jezerka",brk:1,det:["Večeře formou rautu · doplní pořadatel","Program večera (hudba, překvapení) · doplní pořadatel","Svoz: z Kraskova v 19:00, zpět z Jezerky v 1:30 · viz Doprava"]},
  ],
  st:[
   {blok:"Novinky a zkušenosti z provozování a řízení ČOV",pr:"Ing. Martin Pečenka, Ph.D."},
@@ -693,7 +693,7 @@ function sheetNav(kam){
 function sheetDoprava(){
  const P=store.get("doprava",null), d=Object.assign({jm:S.me.jm||"",firma:S.me.firma||"",nast:"kraskov",smer:"oba",n:1,pozn:""},P||{});
  const seg=(id,obj,val)=>`<div class="dseg" id="${id}">${Object.entries(obj).map(([k,t])=>`<button type="button" data-v="${k}" aria-pressed="${k===String(val)}">${t}</button>`).join("")}</div>`;
- openSheet(`<h2>Mám zájem o dopravu</h2><div class="muted" style="font-size:13px;margin-top:2px">Svoz na společenský večer · úterý 27. 4.</div>
+ openSheet(`<h2>Mám zájem o dopravu</h2><div class="muted" style="font-size:13px;margin-top:2px">Svoz na společenský večer · úterý 27. 4. · Kraskov 19:00 · zpět 1:30</div>
   <div class="bd"><form class="dfm" id="dfm">
    <label for="djm">Jméno a příjmení</label><input id="djm" maxlength="80" autocomplete="name" value="${esc(d.jm)}" required>
    <label for="dfi">Firma</label><input id="dfi" maxlength="120" autocomplete="organization" value="${esc(d.firma)}">
@@ -702,7 +702,7 @@ function sheetDoprava(){
    <label>Počet osob</label>${seg("dn",{1:"1",2:"2",3:"3",4:"4",5:"5"},d.n)}
    <label for="dpo">Poznámka (nepovinné)</label><textarea id="dpo" rows="2" maxlength="300">${esc(d.pozn)}</textarea>
    <button class="cbtn" style="border:0;justify-content:center;padding:12px">${P?"Odeslat změnu":"Odeslat zájem"}</button>
-  </form><div class="note">Zájem dostane jen pořadatel. Čas odjezdu a místo zastávky v Seči upřesníme v aktualitách.</div></div>`);
+  </form><div class="note">Zájem dostane jen pořadatel. Odjezd z Kraskova v 19:00, zpět z Jezerky v 1:30. Místo zastávky v Seči upřesníme v aktualitách.</div></div>`);
  $("dfm").addEventListener("click",e=>{const b=e.target.closest(".dseg button");if(!b)return;b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
  const vyb=id=>$(id).querySelector("[aria-pressed=true]").dataset.v;
  $("dfm").addEventListener("submit",e=>{e.preventDefault();
@@ -1062,10 +1062,10 @@ function vDoprava(){
  return `<section class="sec">
   <div class="card"><div class="label" style="margin-bottom:8px">Svoz na společenský večer · úterý 27. 4.</div>
    <div style="overflow-x:auto"><table class="tt"><thead><tr><th>Cesta</th><th>Trasa</th><th>Čas</th></tr></thead><tbody>
-    <tr><td>Tam</td><td>Hotel Kraskov → Seč (zastávka) → Kongres hotel Jezerka</td><td>před večerem · doplníme</td></tr>
-    <tr><td>Zpět</td><td>Kongres hotel Jezerka → Seč → Hotel Kraskov</td><td>po skončení večera · doplníme</td></tr>
+    <tr><td>Tam</td><td>Hotel Kraskov → Seč (zastávka) → Kongres hotel Jezerka</td><td><b>19:00</b> odjezd z Kraskova</td></tr>
+    <tr><td>Zpět</td><td>Kongres hotel Jezerka → Seč → Hotel Kraskov</td><td><b>1:30</b> odjezd z Jezerky</td></tr>
    </tbody></table></div>
-   <p class="muted" style="font-size:13px;margin:8px 0 10px">Autobus jezdí jen na úterní společenský večer. Nastoupit můžete v Kraskově nebo v Seči – místo zastávky v Seči a časy upřesníme v aktualitách.</p>
+   <p class="muted" style="font-size:13px;margin:8px 0 10px">Autobus jezdí jen na úterní společenský večer. Nastoupit můžete v Kraskově nebo v Seči (cestou z Kraskova) – místo zastávky v Seči upřesníme v aktualitách.</p>
    ${P?`<div class="dok"><span>✅</span><div><b>Zájem o dopravu odeslán</b><br>${esc(DNAST[P.nast]||"")} · ${esc(DSMER[P.smer]||"")} · ${P.n} ${P.n===1?"osoba":P.n<5?"osoby":"osob"}</div></div>
      <p style="margin:8px 0 0"><button class="cbtn" data-doprava="1" style="border:0">✎ Změnit zájem o dopravu</button></p>`
     :`<p style="margin:0"><button class="cbtn" data-doprava="1" style="border:0">🚌 Mám zájem o dopravu</button></p>`}
