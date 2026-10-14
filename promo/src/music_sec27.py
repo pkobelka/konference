@@ -76,7 +76,8 @@ def hit(at,g,big=False):
     snap=nz*np.exp(-tt/(0.5 if big else 0.06))*(0.5 if big else 0.8)
     x=g*(1.0*boom+0.35*snap)
     L[a:b]+=x; R[a:b]+=x
-hit(DROP,.30,True)
+hit(2.85,.30,True)   # úder při naskočení názvu konference (scéna 1)
+hit(DROP,.30,True)   # úder při odhalení „31“
 # jemné „zazvonění“ na začátku každé scény po DROP
 for bb in B[2:-1]:
     a=int(bb*SR); tt=t[a:a+int(1.2*SR)]-bb

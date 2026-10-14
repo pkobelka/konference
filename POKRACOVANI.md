@@ -567,3 +567,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Stav 14. 10. večer:** video pozvánky je hotové (Petr: „nádhera“), poslední render s logem VHOS uprostřed a výš.
   Petr: „tohle přece musíš doladit sám“ → drobnosti v rozložení dolaďovat samostatně (kontrolní mřížka náhledů
   všech scén před renderem).
+- **Hudba:** stejný úder („boom“) jako u „31“ i při naskočení názvu konference (2,85 s) – na přání Petra.
