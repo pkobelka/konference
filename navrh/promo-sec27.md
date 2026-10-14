@@ -12,7 +12,7 @@ zveme vás · 31. ročník · Seč · termín · a máme pro vás připravenou a
 | 3 | Klidná hladina / přehrada, špendlík na mapě | „Kongres hotel Jezerka, **Seč**“ | 4,8 s |
 | 4 | Kalendář, zakroužkované dny | „**27.–28. dubna 2027**“ | 4,8 s |
 | 5 | Ikony témat (přednášky, odborníci, partneři, večer) | „Přednášky. Diskuze. Setkání. **Večer s přáteli.**“ | 7,2 s |
-| 5b | Dva medailonky + řádek o zakladatelích | „Odborný program připravují“ **Ing. Filip Wanner, Ph.D.** (ENERGIE AG BOHEMIA) a **Ing. Martin Srb, Ph.D.** (PVK) · „Navazujeme na tradici, kterou založili prof. Ing. Jiří Wanner, DrSc. a Ing. Vladimír Langer.“ · „Program 31. ročníku zveřejníme během zimy.“ | 7,2 s |
+| 5b | Dva medailonky + řádek o zakladatelích | „Odborný program připravují“ **Ing. Filip Wanner, Ph.D.** (ENERGIE AG BOHEMIA) a **Ing. Martin Srb, Ph.D.** (PVK) · „Navazujeme na tradici, kterou založili prof. Ing. Jiří Wanner, DrSc. a Ing. Vladimír Langer.“ · „Program 31. ročníku právě připravujeme.“ | 7,2 s |
 | 6 | Telefon s průvodcem Seč 27 (3 rychlé obrazovky) | „Tentokrát s **vlastní aplikací**: program, dotazy, aktuality, vše v telefonu.“ | 9,6 s |
 | 7 | Logo 31 + VHOS, CzWA | „**Zveme vás.** Přihlášky brzy na vhos.cz“ · QR na průvodce | 7,2 s |
 | 8 | Fleky se rozestoupí, klidné doznění hudby | „**Těšíme se na vás v Seči!**“ · VHOS, a.s. a CzWA | 4,8 s |
@@ -23,8 +23,8 @@ Výstup `promo/` v tomto repu + stránka se sdílením (WhatsApp, Facebook, Kop�
 
 **Pozor (uživatel):** nezmiňovat pondělní příjezd ani slavnostní večeři – jsou jen pro vybrané osoby (~40 lidí).
 
-**Podle článků na LinkedInu (Petr):** pořadatelé = **VHOS, a.s. a CzWA** (ENERGIE AG BOHEMIA je generální partner →
-ve videu ne, partneři 2027 ještě nejsou známi). Program připravují Filip Wanner a Martin Srb; Jiří Wanner + Vladimír Langer
+**Podle článků na LinkedInu (Petr):** pořadatelé = **VHOS, a.s., CzWA a Energie AG Bohemia** (potvrdil Petr 14. 10.; ostatní
+partneři 2027 ještě nejsou známi → ve videu ne). Termín programu nepsat – „Program 31. ročníku právě připravujeme.“. Program připravují Filip Wanner a Martin Srb; Jiří Wanner + Vladimír Langer
 jsou zakladatelé tradice.
 
 **Soubory:** `promo/src/sec27.html` (šablona, `render(t)`), `promo/src/render.js` (snímky → ffmpeg), `promo/src/music_sec27.py`
