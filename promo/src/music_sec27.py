@@ -3,7 +3,7 @@
 import sys
 import numpy as np, wave
 SR=44100
-DUR=[float(x) for x in sys.argv[1:]] or [7.2,4.8,4.8,4.8,7.2,7.2,12,7.2,4.8]
+DUR=[float(x) for x in sys.argv[1:]] or [9.6,4.8,4.8,4.8,7.2,7.2,12,7.2,4.8]
 B=[0.0]
 for d in DUR: B.append(round(B[-1]+d,3))
 TOTAL=B[-1]
@@ -37,7 +37,7 @@ def chord_at(x):
         if B[i]<=x<B[i+1]: return i
     return len(B)-2
 step=0.3; t0=0.09
-DROP=7.2    # úvod jen podkres; arpeggio a basa nastoupí s odhalením „31“
+DROP=B[1]    # úvod jen podkres; arpeggio a basa nastoupí s odhalením „31“
 k=0
 while True:
     ts=t0+k*step

@@ -545,3 +545,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Rozpracováno (nevyrenderováno):** scéna Seč = „Seč“ + obrázek 31 z fleků (cislo31.webp, 190 px, světlá záře);
   modrý plovoucí flek (#5) přesunut na [660,95] – dřív plaval přes „ČOV“ a za „31“. Petr si video ještě pouští,
   „něco malilinko nepasuje“ → čeká se na jeho postřehy, pak jeden render.
+- **Úvod (Petr: „aby to bylo úderné“):** scéna 1 = 9,6 s – velké „Zveme vás / na konferenci“ (124 px) drží do 3,6 s,
+  pak se zmenší (scale→.22, nahoru) do malého nadpisu a naskočí název konference. Celkem 62,4 s; hudba DROP=B[1].

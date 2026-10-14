@@ -67,7 +67,7 @@ html,body{height:100%;background:#000;overflow:hidden}
 </style>
 <div id="fit"><div class="st" id="st">
   <!-- 1 Úvod -->
-  <div class="sc" id="s1"><div class="c" style="top:300px"><div class="k r" id="s1k">Zveme vás na konferenci</div>
+  <div class="sc" id="s1"><div class="c" id="s1big" style="top:400px;font:700 124px/1.06 var(--mono);letter-spacing:-.03em;transform-origin:50% 50%">Zveme vás<br>na konferenci</div><div class="c" style="top:300px"><div class="k r" id="s1k">Zveme vás na konferenci</div>
     <div class="h r" id="s1h" style="margin-top:40px">Nové metody a postupy<br>při provozování ČOV</div></div></div>
   <!-- 2 31. ročník -->
   <div class="sc" id="s2"><img id="n31" src="../../obrazky/cislo31.webp" alt="">
@@ -110,7 +110,7 @@ html,body{height:100%;background:#000;overflow:hidden}
 <script>
 // Délky scén = násobky taktu 2,4 s (hudba music_sec27.py)
 const SC=["s1","s2","s3","s4","s5","sg","s6","s7","s8"];
-const D=[7.2,4.8,4.8,4.8,7.2,7.2,12,7.2,4.8], B=[0];D.forEach(d=>B.push(+(B[B.length-1]+d).toFixed(2)));const TOTAL=B[B.length-1];window.TOTAL=TOTAL;window.DURS=D;
+const D=[9.6,4.8,4.8,4.8,7.2,7.2,12,7.2,4.8], B=[0];D.forEach(d=>B.push(+(B[B.length-1]+d).toFixed(2)));const TOTAL=B[B.length-1];window.TOTAL=TOTAL;window.DURS=D;
 const $=id=>document.getElementById(id);
 const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, out=x=>1-Math.pow(1-x,3);
 const p=(t,a,d=.7)=>out(cl((t-a)/d));          // náběh prvku od času a
@@ -142,7 +142,9 @@ function render(t){
     if(t>B[8]){const k=ease(cl((t-B[8])/3));x+= (f[1]-960)*1.1*k; y+=(f[2]-540)*1.1*k; op*=1-k*.6}
     e.style.transform=`translate(${x+bob}px,${y+bob2}px) scale(${sc}) rotate(${Math.sin(t*.3+i)*6}deg)`;e.style.opacity=op});
   // 1
-  setP('s1k',p(t,.6));setP('s1h',p(t,1.4,1));
+  {const bi=out(cl((t-.2)/.8)),sh=ease(cl((t-3.6)/.9)),e=$('s1big');
+   e.style.opacity=bi*(1-cl((t-3.85)/.45));e.style.transform=`translateY(${(1-bi)*40-sh*218}px) scale(${(.92+.08*bi)*(1-sh*.78)})`;
+   setP('s1k',p(t,4.2,.5));setP('s1h',p(t,4.7,1));}
   // 2
   const a2=B[1]; const n=$('n31'), q=out(cl((t-a2-.5)/1.2)); n.style.opacity=q; n.style.transform=`scale(${.55+.45*q}) rotate(${(1-q)*-8}deg)`;
   setP('s2h',p(t,a2+1.6));setP('s2s',p(t,a2+2.2));
