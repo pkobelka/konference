@@ -14,7 +14,8 @@ zveme vás · 31. ročník · Seč · termín · a máme pro vás připravenou a
 | 5 | Ikony témat (přednášky, odborníci, partneři, večer) | „Přednášky. Diskuze. Setkání. **Večer s přáteli.**“ | 7,2 s |
 | 6 | Telefon s průvodcem Seč 27 (3 rychlé obrazovky) | „Tentokrát s **vlastní aplikací**: program, dotazy, aktuality, vše v telefonu.“ | 9,6 s |
 | 7 | Logo 31 + VHOS, CzWA | „**Zveme vás.** Přihlášky brzy na vhos.cz“ · QR na průvodce | 7,2 s |
+| 8 | Fleky se rozestoupí, klidné doznění hudby | „**Těšíme se na vás v Seči!**“ · VHOS, a.s. a CzWA | 4,8 s |
 
-Celkem ≈ 46 s (násobky taktu 2,4 s). Hudba generovaná, optimistická, ne hlučná.
+Celkem ≈ 51 s (násobky taktu 2,4 s). Hudba generovaná, optimistická, ne hlučná.
 Postup jako u Floriána (`pkobelka/florian/promo/src-hasici/`: render(t) → Playwright → ffmpeg, hudba numpy).
 Výstup `promo/` v tomto repu + stránka se sdílením (WhatsApp, Facebook, Kopírovat, Stáhnout).
