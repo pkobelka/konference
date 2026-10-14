@@ -368,3 +368,11 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   (lidé ho poznají u registrace). Čeká se na fotku (portrét, ideálně čtverec, světlé pozadí); dát do `obrazky/garant.webp`
   zmenšenou (~300 px), kolečko s flekovým rámečkem.
 - Další na řadě: aplikace pořadatele (lůžka, import e-přihlášky, formuláře přímo do Firebase, hromadné e-maily s odkazy).
+
+### Záložka „Poznámky“ v aplikaci pořadatele (14. 10. 2026) – admin 1.9
+- Přání uživatele: místo, kam si zapíše, **co komu slíbil / kdo o co žádá** (lidé ho „bombardují“ kvůli pokojům).
+  Název „Domluveno“ se mu nelíbil → **„Poznámky“**, poslední záložka. Forma se ještě domluví (zatím jednoduché).
+- Data `konference2027/poznamky/{klíč}` = {kdo, co, ts, hotovo, hotovo_ts} – pod stávajícím uzlem, **bez nového pravidla**.
+- Kdo + co, Uložit/Upravit/Smazat, zaškrtnout **vyřízeno**, filtr Nevyřízené/Vyřízené/Vše, hledání;
+  oranžové číslo u záložky = nevyřízené. Je i v záloze (JSON) – „Vymazat lidi, firmy a pokoje“ poznámky nemaže.
+- Možné rozšíření: propojit poznámku s člověkem (odkaz na osobu), termín „slíbil jsem do…“, připomenutí.

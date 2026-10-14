@@ -189,7 +189,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.8 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.9 · 14. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -216,7 +216,7 @@ const POHL={z:"Ž",m:"M"};
 const SEKCE={A:"Sekce A",B:"Sekce B",C:"Sekce C – Superior",D:"Sekce D – Depandance"};
 
 /* ================== STAV APLIKACE ================== */
-let DB={nastaveni:{},firmy:{},osoby:{},pokoje:{}};
+let DB={nastaveni:{},firmy:{},osoby:{},pokoje:{},poznamky:{}};
 let LOADED=false;
 let VIEW=localGet("konf_view")||"prehled";
 const FILTR={q:"",stav:"",kat:"",firma:"",noc:"",pokoj:"",vecere:"",prob:false};
@@ -305,7 +305,7 @@ document.addEventListener("keydown",e=>{if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/
 function loadData(){
   FDB.ref(ROOT).on("value",snap=>{
     const v=snap.val()||{};
-    DB={nastaveni:v.nastaveni||{},firmy:v.firmy||{},osoby:v.osoby||{},pokoje:v.pokoje||{}};
+    DB={nastaveni:v.nastaveni||{},firmy:v.firmy||{},osoby:v.osoby||{},pokoje:v.pokoje||{},poznamky:v.poznamky||{}};
     LOADED=true;$("stavDat").classList.add("hidden");
     render();kartyPlan();
   },err=>{
@@ -419,7 +419,7 @@ function pl(n,a,b,c){return n+" "+(n===1?a:n>=2&&n<=4?b:c);}
 function pocetSlav(){return Object.values(DB.osoby).filter(o=>o.vecere==="slav"&&(o.stav||"nevim")!=="ne").length;}
 
 /* ================== RENDER ================== */
-const TABS=[["prehled","Přehled"],["lide","Lidé"],["firmy","Firmy"],["pokoje","Pokoje"],["vecere","Večeře"],["prihlasky","Přihlášky"],["kontroly","Kontroly"],["pruvodce","Průvodce"],["nastaveni","Nastavení"]];
+const TABS=[["prehled","Přehled"],["lide","Lidé"],["firmy","Firmy"],["pokoje","Pokoje"],["vecere","Večeře"],["prihlasky","Přihlášky"],["kontroly","Kontroly"],["pruvodce","Průvodce"],["nastaveni","Nastavení"],["poznamky","Poznámky"]];
 function render(){
   if(!LOADED)return;
   const n=N();
@@ -427,13 +427,13 @@ function render(){
   $("podnazev").textContent=[n.datum,n.misto].filter(Boolean).join(" · ");
   document.title=n.nazev||"Konference VHOS";
   const pr=vsechnyProblemy(), ne=pr.filter(p=>p.lvl==="e").length;
-  $("tabs").innerHTML=TABS.map(([k,t])=>`<button class="tab${VIEW===k?" on":""}" data-tab="${k}">${t}${k==="kontroly"&&pr.length?`<span class="n" style="${ne?"":"background:var(--oranzova)"}">${pr.length}</span>`:""}${k==="prihlasky"&&prihKPrevzeti().length?`<span class="n">${prihKPrevzeti().length}</span>`:""}</button>`).join("");
+  $("tabs").innerHTML=TABS.map(([k,t])=>`<button class="tab${VIEW===k?" on":""}" data-tab="${k}">${t}${k==="kontroly"&&pr.length?`<span class="n" style="${ne?"":"background:var(--oranzova)"}">${pr.length}</span>`:""}${k==="prihlasky"&&prihKPrevzeti().length?`<span class="n">${prihKPrevzeti().length}</span>`:""}${k==="poznamky"&&poznOtevrene()?`<span class="n" style="background:var(--oranzova)">${poznOtevrene()}</span>`:""}</button>`).join("");
   const empty=!Object.keys(DB.osoby).length&&!Object.keys(DB.pokoje).length;
   if(empty&&VIEW!=="nastaveni"){
     $("view").innerHTML=`<div class="nast"><h2 class="sek">Zatím tu nejsou žádná data</h2><p style="font-size:.9rem;color:#555;line-height:1.6">Nahraj výchozí data (soubor <b>konference2027_vychozi_data.json</b> – lidé, firmy a pokoje z Excelu 2025) v záložce <b>Nastavení → Import</b>, nebo začni přidávat ručně.</p><p style="margin-top:10px"><button class="btn" data-tab="nastaveni">Přejít na import</button></p></div>`;
     return;
   }
-  ({prehled:rPrehled,lide:rLide,firmy:rFirmy,pokoje:rPokoje,vecere:rVecere,prihlasky:rPrihlasky,kontroly:rKontroly,pruvodce:rPruvodce,nastaveni:rNastaveni}[VIEW]||rPrehled)(pr);
+  ({prehled:rPrehled,lide:rLide,firmy:rFirmy,pokoje:rPokoje,vecere:rVecere,prihlasky:rPrihlasky,kontroly:rKontroly,pruvodce:rPruvodce,nastaveni:rNastaveni,poznamky:rPoznamky}[VIEW]||rPrehled)(pr);
 }
 document.addEventListener("click",e=>{
   const t=e.target.closest("[data-tab]");
@@ -808,6 +808,50 @@ function prihStav(p){
 function prihKPrevzeti(){return Object.keys(PRIH).filter(t=>["nova","zmena"].includes(prihStav(PRIH[t])[0]));}
 function verejneData(n){n=n||N();return clean({nazev:n.nazev||"",datum:n.datum||"",misto:n.misto||"",noci:n.noci||{},menu:n.menu||{},uzaverka:n.uzaverka||"",text:n.text_partneri||""});}
 function ulozVerejne(n){return FDB.ref(PUB).set(verejneData(n));}
+
+/* ---------- POZNÁMKY: co jsem komu slíbil, kdo o co žádá (jen pro mě) ---------- */
+// konference2027/poznamky/{klíč} = {kdo, co, ts, hotovo?, hotovo_ts?}. Číslo u záložky = nevyřízené.
+let POZN_FILTR="otevrene";
+function poznOtevrene(){return Object.values(DB.poznamky||{}).filter(x=>!x.hotovo).length;}
+function rPoznamky(){
+  const roz={kdo:$("pz_kdo")?$("pz_kdo").value:"",co:$("pz_co")?$("pz_co").value:""};   // rozepsané přežije překreslení
+  const vse=Object.entries(DB.poznamky||{}).sort((a,b)=>(!!a[1].hotovo-!!b[1].hotovo)||(b[1].ts||0)-(a[1].ts||0));
+  const l=vse.filter(([,x])=>POZN_FILTR==="vse"||(POZN_FILTR==="hotove"?x.hotovo:!x.hotovo));
+  const q=norm(FILTR.q||"");
+  $("view").innerHTML=`
+  <div class="nast"><h2 class="sek">📝 Poznámky</h2>
+    <p style="font-size:.84rem;color:#666">Co jsem komu slíbil, kdo o co žádá (pokoj, večeře, spolubydlící…). Vidíš je jen ty. Vyřízené odškrtni.</p>
+    <div class="two"><div><label class="l">Kdo</label><input id="pz_kdo" placeholder="např. Novák, VaK Jablonné" maxlength="120"></div></div>
+    <label class="l">Co jsem slíbil / o co žádá</label>
+    <textarea id="pz_co" placeholder="např. chce pokoj s kolegou Svobodou, 2 noci, slíbil jsem do pátku potvrdit" maxlength="2000"></textarea>
+    <div class="lista" style="margin-top:6px"><button class="btn" id="pz_add">Uložit poznámku</button><span class="msg" id="pz_msg"></span></div>
+  </div>
+  <div class="nast">
+    <div class="lista"><div class="seg" id="pz_f">${[["otevrene","Nevyřízené ("+vse.filter(([,x])=>!x.hotovo).length+")"],["hotove","Vyřízené ("+vse.filter(([,x])=>x.hotovo).length+")"],["vse","Vše"]].map(([k,t])=>`<button data-pf="${k}" class="${POZN_FILTR===k?"on":""}" style="${POZN_FILTR===k?"background:var(--zelena);border-color:var(--zelena)":""}">${t}</button>`).join("")}</div>
+      <input id="pz_q" placeholder="Hledat v poznámkách…" style="max-width:260px"></div>
+    <div id="pz_list">${l.length?`<table class="t">${l.map(([k,x])=>`<tr class="pzr" data-txt="${esc(norm((x.kdo||"")+" "+(x.co||"")))}" style="${x.hotovo?"opacity:.55":""}">
+      <td style="width:28px"><input type="checkbox" data-pzdone="${esc(k)}" ${x.hotovo?"checked":""} title="vyřízeno"></td>
+      <td><b>${esc(x.kdo||"—")}</b><div style="white-space:pre-wrap">${esc(x.co||"")}</div><div class="sub" style="font-size:.74rem;color:#999">${new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"})}${x.hotovo&&x.hotovo_ts?" · vyřízeno "+new Date(x.hotovo_ts).toLocaleDateString("cs"):""}</div></td>
+      <td style="white-space:nowrap"><button class="btn ghost small" data-pzedit="${esc(k)}">Upravit</button> <button class="btn red small" data-pzdel="${esc(k)}">Smazat</button></td></tr>`).join("")}</table>`
+      :`<p class="muted" style="font-size:.9rem">${POZN_FILTR==="hotove"?"Zatím nic vyřízeného.":"Žádné nevyřízené poznámky. 👍"}</p>`}</div>
+  </div>`;
+  $("pz_kdo").value=roz.kdo;$("pz_co").value=roz.co;
+  let EDIT=null;
+  const reset=()=>{EDIT=null;$("pz_kdo").value="";$("pz_co").value="";$("pz_add").textContent="Uložit poznámku";};
+  $("pz_add").addEventListener("click",()=>{
+    const kdo=$("pz_kdo").value.trim(), co=$("pz_co").value.trim();if(!co&&!kdo){$("pz_msg").textContent="Napiš aspoň něco.";return;}
+    const k=EDIT||FDB.ref(ROOT+"/poznamky").push().key, old=EDIT?DB.poznamky[EDIT]:{};
+    const ed=!!EDIT;reset();
+    save("poznamky/"+k,Object.assign({},old,{kdo,co,ts:old.ts||Date.now()})).then(()=>{const m=$("pz_msg");if(m){m.textContent=ed?"✔ Upraveno":"✔ Uloženo";setTimeout(()=>{if($("pz_msg"))$("pz_msg").textContent="";},2000);}}).catch(e=>alert("⚠️ "+errMsg(e)));
+  });
+  $("pz_f").addEventListener("click",e=>{const b=e.target.closest("[data-pf]");if(b){POZN_FILTR=b.dataset.pf;rPoznamky();}});
+  $("pz_q").addEventListener("input",()=>{const t=norm($("pz_q").value).split(/\s+/).filter(Boolean);document.querySelectorAll(".pzr").forEach(r=>r.style.display=t.every(x=>r.dataset.txt.includes(x))?"":"none");});
+  $("pz_list").addEventListener("click",e=>{
+    const d=e.target.closest("[data-pzdone]");if(d){const k=d.dataset.pzdone,x=DB.poznamky[k];save("poznamky/"+k,Object.assign({},x,{hotovo:d.checked,hotovo_ts:d.checked?Date.now():null}));return;}
+    const ed=e.target.closest("[data-pzedit]");if(ed){const x=DB.poznamky[ed.dataset.pzedit];EDIT=ed.dataset.pzedit;$("pz_kdo").value=x.kdo||"";$("pz_co").value=x.co||"";$("pz_add").textContent="Uložit úpravu";$("pz_co").focus();window.scrollTo(0,0);return;}
+    const dl=e.target.closest("[data-pzdel]");if(dl&&confirm("Smazat poznámku?"))save("poznamky/"+dl.dataset.pzdel,null);
+  });
+}
 
 /* ---------- ZÁLOŽKA PRŮVODCE: aktuality + dotazy ---------- */
 let AKTUALITY={}, AKT_ERR="";
