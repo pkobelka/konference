@@ -320,3 +320,12 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   GPS, odkazy Google Mapy (navigace autem na souřadnice), Mapy.cz, Waze, Kopírovat adresu. Stejné okno i z Dopravy.
 - **14. 10.: dotazy přes Firebase ověřeny uživatelem naživo** – dotaz z jednoho zařízení se objevil na druhém i s ①.
 - Průvodce 0.23: oprava tvaru „1 dotaz / 2 dotazy / 5 dotazů“ v kartě Právě teď.
+
+### Nová ikona „31“ (14. 10. 2026) – admin 1.6, průvodce 0.24
+- Uživatel vybral **variantu A**: dnešní „31“ z fleků, ale v jedničce **malá mezera mezi praporkem a dříkem** (jako mezery
+  mezi díly trojky). Trojka zbavena bílého podkladu (průhledná).
+- Nové soubory: `obrazky/cislo31.webp` (plakát průvodce i logo v záhlaví), `ikony/favicon-32.png`, `favicon-64.png`,
+  `apple-touch-icon.png` (180, bílý čtverec), `ikona-192/512.png` (zaoblený bílý čtverec), `ikona-maskable-512.png`.
+  Stejné ikony mají aplikace pořadatele, průvodce i partnerská přihláška (`prihlaska/` měla ikonu 🎤 – nahrazena).
+- **Sestavení průvodce teď skriptem:** `./navrh/sestav-pruvodce.sh` (místo dlouhého printf; přidává i favicon-32).
+- Ve 32/16 px jsou bakterie jen barevné tečky – na ploše telefonu (180–512 px) vypadá ikona dobře.
