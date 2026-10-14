@@ -508,3 +508,11 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   (popis události i poznámka). **Průvodce 0.36:** pondělí odstraněno i z veřejného Programu (DAYS/PROG/DATES) a ze svozu
   v Dopravě; číslování přednášek začíná od 2 (`let n=2`), aby klíče ut7… i dotazy ve Firebase zůstaly stejné.
   Pondělí (noc, večeře) vidí jen vybraní hosté na své osobní kartě; pořadatel ho má v aplikaci pořadatele.
+
+### ⚠️ Pravidla Firebase jsou teď v repu mojebudky (14. 10. 2026)
+- Celá databáze **moje-budky** má JEDNA pravidla, nasazovaná z `pkobelka/mojebudky/database.rules.json` (workflow
+  `firebase-deploy.yml` při každé změně souboru v main) – **přepíše všechno, co je jen v konzoli**.
+- 14. 10. 12:41 nasazení #184 (AquaCtrl `aquactrl_osoby`) smazalo ručně vložená pravidla konference → admin hlásil
+  `permission_denied at /konference2027`. Oprava se souhlasem uživatele: **PR pkobelka/mojebudky#185** (squash) přidal
+  všech 6 bloků `konference2027`, `_prihlasky`, `_verejne`, `_karty`, `_dotazy`, `_aktuality` (znění jako v konzoli).
+- **Pravidlo do budoucna:** nová/změněná pravidla konference psát do `mojebudky/database.rules.json` (PR), ne do konzole.
