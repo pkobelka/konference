@@ -470,7 +470,6 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .stage .tk-hlavni .lg{width:132px;height:50px;border:2px solid #b6bec9}
 .stage .tk-hlavni .lg img{max-height:36px;height:auto}
 .stg-mq2{display:flex;flex-direction:column;gap:6px;width:100%;overflow:hidden}
-.stg-mq.rev{animation-direction:reverse}
 .stage .tk-odborny .lg{width:auto;height:38px;padding:4px 9px}
 .stage .tk-odborny .lg img{height:26px;max-height:26px;max-width:none}
 .stage .tk-medialni .lg{width:120px;height:44px}
@@ -496,7 +495,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.26 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.27 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -797,8 +796,8 @@ function stgDraw(anim){
  const it=nm=>`<button class="tk tk-${k}" data-p="${esc(nm)}" aria-label="${esc(nm)} – ${KATN[k]}">${lm(nm)}${LOGA[nm]?"":`<span class="tkn">${esc(nm)}</span>`}</button>`;
  const body=$("stgb");
  body.className="stg-body b-"+k+(anim?" in":"");
- if(STG.i===2){const h=Math.ceil(l.length/2), r=a=>{const one=a.map(it).join("");return one+one};   // dvě řady, druhá jede opačně
-  body.innerHTML=`<div class="stg-mq2"><div class="stg-mq" style="--d:${stgDur(2)}ms">${r(l.slice(0,h))}</div><div class="stg-mq rev" style="--d:${stgDur(2)}ms">${r(l.slice(h))}</div></div>`}
+ if(STG.i===2){const h=Math.ceil(l.length/2), r=a=>{const one=a.map(it).join("");return one+one};   // dvě řady, obě stejným směrem
+  body.innerHTML=`<div class="stg-mq2"><div class="stg-mq" style="--d:${stgDur(2)}ms">${r(l.slice(0,h))}</div><div class="stg-mq" style="--d:${stgDur(2)}ms">${r(l.slice(h))}</div></div>`}
  else body.innerHTML=`<div class="stg-row">${l.map(it).join("")}</div>`;
 }
 function stgGo(i,manual){STG.i=(i+PART.length)%PART.length;STG.since=Date.now();if(manual)STG.hold=Date.now()+20000;stgDraw(true)}
