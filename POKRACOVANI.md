@@ -440,3 +440,9 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Import čte nové řádky: ano/ne → noci (1. a 2. noc podle pořadí v Nastavení), obě „ne“ → nespí, večeře „ne“ → vecere ne,
   „ano“ → poznámka „Chce večeři 26. 4. – vybrat menu“; strava a „bydlet s“ → poznámka z přihlášky. Šedé nápovědy se odstraní.
   Stejný člověk dvakrát v jedné dávce (Word i PDF) se založí jen jednou.
+
+### Ikona pořadatele odlišená (14. 10. 2026) – admin 1.14
+- Uživatel chce na mobilu rozlišit aplikace: **účastníci = „31“ na bílém** (beze změny), **pořadatel = „31“ + vlnka VHOS**
+  (koule s vlnkou vyříznutá z `obrazky/loga/vhos.webp`) v modrém rámečku VHOS #005472 → `ikony/*-org-*.png`.
+  Manifest pořadatele: name „Seč 27 – pořadatel“, short_name **„Pořadatel“**, theme #005472. Podoba „pak ji změníme“ – prozatímní.
+- YWP: garant **Ing. Filip Wanner je správně** (potvrdil uživatel) – v šabloně YWP ponecháno.
