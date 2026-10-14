@@ -542,3 +542,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   (historie, lidé, partneři, budoucnost; „Společně netvoříme jen konferenci. Společně vytváříme tradici.“) – nabídnuto, čeká.
 - Petr zkouší instalaci průvodce na iPhonu (Safari → Sdílet → Přidat na plochu; osobní odkaz ?k= přidat až otevřený).
 - Možné další: verze videa 9:16; prezentace; dál admin (počty lůžek, hromadné e-maily s osobními odkazy, smazat testovací data).
+- **Rozpracováno (nevyrenderováno):** scéna Seč = „Seč“ + obrázek 31 z fleků (cislo31.webp, 190 px, světlá záře);
+  modrý plovoucí flek (#5) přesunut na [660,95] – dřív plaval přes „ČOV“ a za „31“. Petr si video ještě pouští,
+  „něco malilinko nepasuje“ → čeká se na jeho postřehy, pak jeden render.

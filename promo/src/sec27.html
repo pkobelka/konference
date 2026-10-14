@@ -75,7 +75,7 @@ html,body{height:100%;background:#000;overflow:hidden}
     <div class="sub r" id="s2s" style="margin-top:14px">memoriál Ing. Jakuba S. Čecha, CSc.</div></div></div>
   <!-- 3 Seč -->
   <div class="sc" id="s3"><svg class="pin" id="pin" viewBox="0 0 24 24" fill="none" stroke="#5b2d82" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z" fill="#efe7f6"/><circle cx="12" cy="10" r="2.6"/></svg>
-    <div class="c" style="top:420px"><div class="h2 r" id="s3h">Seč</div><div class="sub r" id="s3s" style="margin-top:22px">Kongres hotel Jezerka</div></div>
+    <div class="c" style="top:400px"><div class="h2 r" id="s3h" style="display:flex;align-items:center;justify-content:center;gap:44px">Seč<img src="../../obrazky/cislo31.webp" style="height:190px;filter:drop-shadow(0 0 18px #f6f4ef) drop-shadow(0 0 8px #f6f4ef)"></div><div class="sub r" id="s3s" style="margin-top:22px">Kongres hotel Jezerka</div></div>
     <svg class="waves" viewBox="0 0 1920 330" preserveAspectRatio="none"><path id="w1" fill="#1f7a8c" opacity=".18"/><path id="w2" fill="#1f7a8c" opacity=".28"/><path id="w3" fill="#5b2d82" opacity=".14"/></svg></div>
   <!-- 4 Termín -->
   <div class="sc" id="s4"><div style="position:absolute;left:200px;top:330px"><div class="k r" id="s4k">Termín</div>
@@ -116,7 +116,7 @@ const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)), ease=x=>x<.5?4*x*x*x:1-Math.pow
 const p=(t,a,d=.7)=>out(cl((t-a)/d));          // náběh prvku od času a
 function setP(id,v){const e=$(id);if(e)e.style.setProperty('--p',v)}
 // fleky – 10 kusů, každý má domovskou pozici, jemně se vlní
-const FL=[[10,330,260,300],[6,1540,230,280],[16,1700,760,340],[9,260,820,260],[3,980,150,200],[13,1260,880,230],[12,640,930,210],[17,1820,470,190],[1,90,540,180],[5,1180,420,170]];
+const FL=[[10,330,260,300],[6,1540,230,280],[16,1700,760,340],[9,260,820,260],[3,980,150,200],[13,1260,880,230],[12,640,930,210],[17,1820,470,190],[1,90,540,180],[5,660,95,150]];
 const st=$('st');FL.forEach((f,i)=>{const e=document.createElement('div');e.className='fl';e.id='f'+i;e.style.setProperty('--s',f[3]+'px');e.style.backgroundImage=`url(../../obrazky/fleky/flek${String(f[0]).padStart(2,'0')}.webp)`;st.appendChild(e)});
 // kalendář duben 2027 (1. 4. = čtvrtek)
 (function(){const g=$('calg');g.innerHTML=['Po','Út','St','Čt','Pá','So','Ne'].map(d=>`<b>${d}</b>`).join('')+'<span></span>'.repeat(3)+Array.from({length:30},(_,i)=>`<span class="${i+1===27||i+1===28?'on':''}">${i+1}</span>`).join('')})();
