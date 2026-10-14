@@ -481,3 +481,12 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - QR kódy (ověřeno čtečkou jsQR): `obrazky/qr-pruvodce.svg/.png` (průvodce); QR aplikace pořadatele poslán uživateli.
   Admin → Průvodce: QR + stažení PNG/SVG pro pozvánku, plakát, plátno.
 - **Uživatel teď vše zkontroluje (počítač, telefon) a pak řekne, co dál.** První fáze podle něj hotová („možná i víc“).
+- **Univerzální pomocník `instalace.js`** (kořen repa, samostatný, bez závislostí) – pro VŠECHNY aplikace uživatele
+  (přání: „musíme to dát do všech“ – Konference, Florián, Aquakontrol…). Vložení jedním řádkem:
+  `<script src="instalace.js" data-nazev="…" data-barva="#…" data-qr="…png" defer></script>`; lišta dole „📲 … na plochu“
+  (zavřít = 14 dní klid), návod podle zařízení (iPhone Safari 3 kroky / vnitřní prohlížeč → Zkopírovat odkaz /
+  Android Nainstalovat jedním klepnutím / počítač QR), `window.instalaceNavod()` pro tlačítko v menu.
+  **Admin 1.17** ho používá (QR `obrazky/qr-poradatel.png`). Průvodce má vlastní verzi v designu (0.34).
+- Repozitáře uživatele: pkobelka/**florian** (poslední push 30. 9.), pkobelka/**aquactrl** (push 14. 10. 10:35 – možná
+  právě rozpracované jinou relací), AquaControll (private, starší), volby, mojebudky, vhos… → vložení do nich
+  domluvit s uživatelem (nasazení do jejich main mění živé aplikace).
