@@ -334,6 +334,11 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .pills{display:flex;flex-wrap:wrap;gap:8px}
 .pills span{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 85%,transparent);backdrop-filter:blur(6px);border-radius:99px;padding:7px 12px;font-size:13px;font-weight:600}
 .pills svg{width:15px;height:15px;color:var(--accent)}
+.pills .pb{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 85%,transparent);backdrop-filter:blur(6px);border-radius:99px;padding:7px 8px 7px 12px;font:inherit;font-size:13px;font-weight:600;color:var(--ink)}
+.pills .pb i{font-style:normal;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:800}
+.big-acts{display:flex;flex-direction:column;gap:8px}
+.big-acts a,.big-acts button{display:flex;align-items:center;gap:10px;text-decoration:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:12px;padding:12px 14px;font:inherit;font-weight:700;font-size:15px;text-align:left}
+.big-acts small{display:block;font-weight:500;color:var(--muted);font-size:12px}
 .cdrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 @media (max-width:420px){.cdrow .cd{padding:8px 12px;font-size:13px}.cdrow .cd b{font-size:18px}}
 .dnes{display:flex;flex-direction:column;font-size:13px;line-height:1.35;color:var(--muted);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid var(--accent);border-radius:14px;padding:6px 12px;box-shadow:0 6px 18px -10px rgba(40,30,60,.35)}
@@ -484,7 +489,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.21 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.22 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -568,6 +573,37 @@ const WIC=c=>c===0?"☀️":c<=2?"🌤️":c===3?"☁️":c<=48?"🌫️":c<=67?
 // Počasí: jen tlačítko vedle místa konání, podrobnosti v okně
 function vToday(){
  return `<button class="wxb" id="todaybox" data-wx="1">${WX.st==="ok"?WIC(WX.cur.c)+" "+WX.cur.t+"° · ":"🌤️ "}Počasí<em class="wxl">v Seči</em></button>`;
+}
+/* ===== Termín do kalendáře, navigace do hotelu ===== */
+const MISTO={nazev:"Kongres hotel Jezerka",adr:"Ústupky 278, 538 07 Seč",lat:49.821586,lon:15.659936};
+const KONF_NAZEV="Konference Nové metody a postupy při provozování ČOV – 31. ročník";
+function sheetKal(){
+ const det="31. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Příjezd a ubytování v pondělí 26. 4. Program: https://pkobelka.github.io/konference/pruvodce/";
+ const g="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(KONF_NAZEV)+"&dates=20270427/20270429&location="+encodeURIComponent(MISTO.nazev+", "+MISTO.adr)+"&details="+encodeURIComponent(det);
+ openSheet(`<h2>Přidat do kalendáře</h2><div class="muted" style="font-size:13px;margin-top:2px">27.–28. dubna 2027 · ${esc(MISTO.nazev)}, Seč</div>
+  <div class="bd"><div class="big-acts">
+   <a href="${g}" target="_blank" rel="noopener">📅<span>Google Kalendář<small>Android, Gmail – otevře se předvyplněná událost</small></span></a>
+   <button type="button" id="kics">🗓️<span>Apple / Outlook / jiný kalendář<small>stáhne soubor .ics s připomenutím den předem</small></span></button>
+  </div><div class="note">Příjezd a ubytování je už v pondělí 26. 4. Na jednotlivé přednášky si můžete nastavit upozornění v Programu (🔔 Upozornit).</div></div>`);
+ $("kics").addEventListener("click",()=>{
+  const e=v=>v.replace(/[,;]/g,"\\$&"), f=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+  const t=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//VHOS//Konference CZ//CS","BEGIN:VEVENT","UID:konference-2027@konference-vhos","DTSTAMP:"+f(new Date()),
+   "DTSTART;VALUE=DATE:20270427","DTEND;VALUE=DATE:20270429","SUMMARY:"+e(KONF_NAZEV),"LOCATION:"+e(MISTO.nazev+", "+MISTO.adr),"DESCRIPTION:"+e(det),
+   "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:Zítra začíná konference v Seči","TRIGGER:-PT15H","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/calendar;charset=utf-8"}));a.download="konference-sec-2027.ics";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+  toast("Otevřete stažený soubor – přidá se do kalendáře")});
+}
+function sheetNav(){
+ const ll=MISTO.lat+","+MISTO.lon, q=encodeURIComponent(MISTO.nazev+", "+MISTO.adr);
+ openSheet(`<h2>Navigovat do hotelu</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(MISTO.nazev)}</div>
+  <div class="bd"><dl class="kv"><dt>Adresa</dt><dd>${esc(MISTO.adr)}</dd><dt>GPS</dt><dd>49°49’17.71“N, 15°39’35.77“E</dd></dl>
+  <div class="big-acts">
+   <a href="https://www.google.com/maps/dir/?api=1&destination=${ll}&travelmode=driving" target="_blank" rel="noopener">🧭<span>Google Mapy<small>spustí navigaci autem</small></span></a>
+   <a href="https://mapy.cz/zakladni?q=${q}&x=${MISTO.lon}&y=${MISTO.lat}&z=16" target="_blank" rel="noopener">🗺️<span>Mapy.cz<small>mapa a plánování trasy</small></span></a>
+   <a href="https://waze.com/ul?ll=${ll}&navigate=yes" target="_blank" rel="noopener">🚗<span>Waze<small>spustí navigaci</small></span></a>
+   <button type="button" id="nkop">📋<span>Kopírovat adresu<small>${esc(MISTO.nazev+", "+MISTO.adr)}</small></span></button>
+  </div><div class="note">Bydlíte v Kraskově? Na Jezerku jezdí svoz – časy najdete v Dopravě.</div></div>`);
+ $("nkop").addEventListener("click",()=>{const t=MISTO.nazev+", "+MISTO.adr;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Adresa zkopírována"),()=>prompt("Adresa:",t))});
 }
 function sheetWx(){
  loadWx();
@@ -785,7 +821,7 @@ function vDomu(){
     <div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
     <h1>Nové metody a postupy při provozování ČOV</h1>
     <p class="mem">memoriál Ing. Jakuba S. Čecha, CSc.</p>
-    <div class="pills"><span>${IC.cal}27.–28. dubna 2027</span><span class="plc">${IC.pin}Kongres hotel Jezerka, Seč</span>${vToday()}</div>
+    <div class="pills"><button class="pb" data-kal="1" aria-label="27.–28. dubna 2027 – přidat do kalendáře">${IC.cal}27.–28. dubna 2027<i>+</i></button><button class="pb plc" data-nav="1" aria-label="Kongres hotel Jezerka, Seč – navigovat">${IC.pin}Kongres hotel Jezerka, Seč<i>➜</i></button>${vToday()}</div>
     <div class="cdrow"><div class="cd">${odpocet()}</div>${dnesTxt()}</div>
    </div>
   </div>
@@ -904,7 +940,7 @@ function vDoprava(){
   </div>
   <div class="card"><div class="label" style="margin-bottom:8px">Cesta na místo</div>
    <dl class="kv"><dt>Adresa</dt><dd>Kongres hotel Jezerka, Seč – Ústupky 278</dd><dt>GPS</dt><dd>49°49’17.71“N, 15°39’35.77“E</dd><dt>Parkování</dt><dd>u hotelu (upřesníme)</dd></dl>
-   <p style="margin:10px 0 0"><a href="https://mapy.cz/zakladni?q=Kongres%20hotel%20Jezerka%20Se%C4%8D" target="_blank" rel="noopener">Otevřít v mapách</a></p>
+   <p style="margin:10px 0 0"><button class="cbtn" data-nav="1" style="border:0">🧭 Navigovat do hotelu</button></p>
   </div>
  </section>`;
 }
@@ -1133,6 +1169,8 @@ $("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if
 $("view").addEventListener("click",e=>{
  const sg=e.target.closest("[data-stg]");if(sg)return stgGo(+sg.dataset.stg,true);
  if(e.target.closest("[data-wx]"))return sheetWx();
+ if(e.target.closest("[data-kal]"))return sheetKal();
+ if(e.target.closest("[data-nav]"))return sheetNav();
  const t=e.target.closest("[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,#npr,#ntxt,#nmail");if(!t)return;
  if(t.dataset.alarm)return sheetAlarm(t.dataset.alarm);
  if(t.dataset.ph){const [a,i]=t.dataset.ph.split(":");return openLb(a,+i)}

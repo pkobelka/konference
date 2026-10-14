@@ -313,3 +313,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
     }}}}
   }
   ```
+- **Průvodce 0.22:** štítek termínu = tlačítko **„+ do kalendáře“** (Google Kalendář – předvyplněná celodenní událost
+  27.–28. 4. 2027; nebo .ics pro Apple/Outlook s připomenutím den předem večer, popis: příjezd v pondělí 26. 4.).
+  Štítek místa = tlačítko **„➜ navigovat“**: adresa **Ústupky 278, 538 07 Seč** (dle kongresypardubickykraj.cz, firmy.cz),
+  GPS, odkazy Google Mapy (navigace autem na souřadnice), Mapy.cz, Waze, Kopírovat adresu. Stejné okno i z Dopravy.
