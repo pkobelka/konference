@@ -503,3 +503,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   postup převzít z `pkobelka/florian/promo/src-hasici/` (render(t) → Playwright snímky → ffmpeg, hudba numpy).
   Čeká na reakci uživatele ke scénáři a 3 otázkám v souboru → pak stavět.
 - Uživatel testuje instalaci na iPhonu / Androidu (pomocník `instalace.js` ve všech aplikacích).
+- **Pravidlo (uživatel, 14. 10.):** veřejně (upoutávka, obecné texty průvodce) **nezmiňovat pondělní příjezd ani
+  slavnostní večeři VHOS** – jen pro vybrané osoby (~40). Průvodce 0.35: odstraněno z Info (Termín), z kalendáře
+  (popis události i poznámka). Pondělí zůstává jen v Programu (záložka dne) a na osobních kartách hostů.

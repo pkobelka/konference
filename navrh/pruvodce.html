@@ -494,7 +494,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.34 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.35 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -635,13 +635,13 @@ const KONTAKTY=[
 const MISTO={nazev:"Kongres hotel Jezerka",adr:"Ústupky 278, 538 07 Seč",lat:49.821586,lon:15.659936};
 const KONF_NAZEV="Konference Nové metody a postupy při provozování ČOV – 31. ročník";
 function sheetKal(){
- const det="31. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Příjezd a ubytování v pondělí 26. 4. Program: https://pkobelka.github.io/konference/pruvodce/";
+ const det="31. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Program: https://pkobelka.github.io/konference/pruvodce/";
  const g="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(KONF_NAZEV)+"&dates=20270427/20270429&location="+encodeURIComponent(MISTO.nazev+", "+MISTO.adr)+"&details="+encodeURIComponent(det);
  openSheet(`<h2>Přidat do kalendáře</h2><div class="muted" style="font-size:13px;margin-top:2px">27.–28. dubna 2027 · ${esc(MISTO.nazev)}, Seč</div>
   <div class="bd"><div class="big-acts">
    <a href="${g}" target="_blank" rel="noopener">📅<span>Google Kalendář<small>Android, Gmail – otevře se předvyplněná událost</small></span></a>
    <button type="button" id="kics">🗓️<span>Apple / Outlook / jiný kalendář<small>stáhne soubor .ics s připomenutím den předem</small></span></button>
-  </div><div class="note">Příjezd a ubytování je už v pondělí 26. 4. Na jednotlivé přednášky si můžete nastavit upozornění v Programu (🔔 Upozornit).</div></div>`);
+  </div><div class="note">Na jednotlivé přednášky si můžete nastavit upozornění v Programu (🔔 Upozornit).</div></div>`);
  $("kics").addEventListener("click",()=>{
   const e=v=>v.replace(/[,;]/g,"\\$&"), f=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
   const t=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//VHOS//Konference CZ//CS","BEGIN:VEVENT","UID:konference-2027@konference-vhos","DTSTAMP:"+f(new Date()),
@@ -1035,7 +1035,7 @@ function vInfo(){
     <input id="pfirma" placeholder="Firma / instituce" value="${esc(S.me.firma)}" autocomplete="organization" aria-label="Firma">
     <div style="display:flex;gap:8px"><button class="send" style="flex:1">Uložit</button>${podpis()?'<button type="button" class="btn" id="pdel">Smazat</button>':""}</div></form></div>
   <div class="card"><div class="label" style="margin-bottom:8px">O konferenci</div>
-   <dl class="kv"><dt>Termín</dt><dd>${TERMIN} (příjezd v pondělí 26. 4.)</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborný garant</dt><dd>Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA (kontakt níže)</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
+   <dl class="kv"><dt>Termín</dt><dd>${TERMIN}</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborný garant</dt><dd>Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA (kontakt níže)</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
    <dl class="kv"><dt>Základní</dt><dd>4 900 Kč bez DPH (5 929 Kč s DPH)</dd><dt>Členové CzWA</dt><dd>4 600 Kč bez DPH (5 566 Kč s DPH)</dd><dt>V ceně</dt><dd>organizace, sborník v PDF, občerstvení, oběd, večerní pohoštění</dd><dt>Platba</dt><dd>pokyny k platbě přijdou e-mailem v potvrzení e-přihlášky; daňový doklad zašleme na uvedený e-mail</dd><dt>Storno</dt><dd>poplatek se nevrací, zašleme sborník, lze vyslat náhradníka</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Sborník <span style="color:var(--warn)">· připravujeme</span></div>
