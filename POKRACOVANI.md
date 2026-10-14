@@ -403,3 +403,15 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   ubytování přes link hotelu). Kontrola „není vyplněno, jestli spí“ se u „hotel sám“ nehlásí (noci nezná pořadatel).
 - Osoba má nově pole **Titul před / Titul za** a u importovaných rámeček „🧾 E-přihláška z webu č. … · člen/nečlen“.
 - Testováno na obou PDF uživatele (převodník i v /tmp/claude-0/t/pdfp/parse.js).
+
+### Upřesnění uživatele ke kategoriím (14. 10. 2026) – admin 1.11, průvodce 0.31
+- **Letos budou všechny přihlášky/tiskopisy editovatelné** (vyplní se v počítači) → import bude spolehlivý.
+  **Čeká se na prázdné šablony** (YWP, hosté, přednášející…) – pokud to budou vyplnitelná PDF, číst i pole formuláře
+  (pdf.js `getAnnotations()` → fieldName/fieldValue), ne jen text.
+- **Dvě skupiny:**
+  1. **Veřejnost** – přihlásí se přes link zveřejněný na stránkách hotelu Jezerka (přihlašovací formulář), VHOS jim
+     **nic nezajišťuje** (ubytování si řeší sami); chceme, aby si stáhli průvodce s běžnými informacemi.
+  2. **Přednášející, hosté, YWP (+ další)** – zajišťuje pořadatel; v průvodci vidí vše **včetně čísla pokoje**,
+     spolubydlících a **pondělní večeře**, pokud přijedou už v pondělí.
+- Úpravy: „hotel sám“ se odvodí i z **kategorie Veřejnost** (ne jen ze zdroje web); na kartě „hotel sám“ bez vybrané
+  večeře se řádek Večeře neukazuje (veřejnosti večeři nezajišťujeme).

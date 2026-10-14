@@ -500,7 +500,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.30 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.31 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -688,7 +688,7 @@ function kartaRadky(d){
   else R.push(["🛏",d.pokoj?"Pokoj "+d.pokoj:"Pokoj",d.pokoj?[d.sekce,d.sam?"sám/sama":""].filter(Boolean).join(" · ")||"Kongres hotel Jezerka":"číslo pokoje doplníme"]);
   if((d.spolu||[]).length)R.push(["👥","Spolubydlící",d.spolu.join(", ")]);
  }
- R.push(["🍽","Večeře"+(d.vecere_noc?" · "+d.vecere_noc:""),d.vecere||"zatím nevybráno"]);
+ if(!(d.hotel&&!d.vecere))R.push(["🍽","Večeře"+(d.vecere_noc?" · "+d.vecere_noc:""),d.vecere||"zatím nevybráno"]);   // veřejnosti večeři nezajišťujeme
  return R;
 }
 function vKarta(mini){

@@ -191,7 +191,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.10 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.11 · 14. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -338,7 +338,7 @@ function badgesKat(o){return Object.keys(o.kat||{}).filter(k=>KAT[k]).map(k=>`<s
 
 /* obsazenost pokojů: {pokojId:{nocId:[osobaId]}} – kdo má pokoj bez nocí, počítá se do všech nocí */
 // Ubytování si rezervuje sám přes link hotelu Jezerka → pokoj nezná pořadatel. o.ubyt: "ja" | "hotel" | (prázdné = podle zdroje)
-function hotelSam(o){return o.ubyt==="hotel"||(!o.ubyt&&o.zdroj==="web"&&!o.pokoj&&!o.nespi);}
+function hotelSam(o){return o.ubyt==="hotel"||(!o.ubyt&&(o.zdroj==="web"||(o.kat||{}).verejnost)&&!o.pokoj&&!o.nespi);}   // veřejnost si ubytování řeší sama
 function nociPokoje(o){const s=spi(o);return s.length?s:noci().map(([k])=>k);}   // bez zaškrtnutých nocí = všechny
 function nocKratce(k){return String(nocNazev(k)).split(/\s+/)[0].slice(0,2);}
 // kdo sdílí pokoj s osobou aspoň jednu stejnou noc (pondělí ≠ úterý – ti spolu nespí)
