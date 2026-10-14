@@ -363,7 +363,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 
 ### Stav k 14. 10. 2026 (dopoledne) – vše uloženo a nasazeno
 - Admin **1.8** (https://pkobelka.github.io/konference/), průvodce **0.30 „Seč 27“** (…/pruvodce/), ukázka artifact 8Pd4XvrWtu5nHH1p91T4NH.
-- Firebase pravidla hotová: konference2027, _prihlasky, _verejne, _karty, _dotazy. **Čeká: `konference2027_aktuality`** (uživatel má poslané).
+- Firebase pravidla hotová: konference2027, _prihlasky, _verejne, _karty, _dotazy, _aktuality. **Aktuality ověřeny naživo** (zpráva z adminu → ② u Info, štítek Nové) 14. 10. 10:25.
 - **Nápad uživatele: fotka organizačního garanta** (Petr Kobelka) do karty „Organizační garant“ v Info – doporučeno ano
   (lidé ho poznají u registrace). Čeká se na fotku (portrét, ideálně čtverec, světlé pozadí); dát do `obrazky/garant.webp`
   zmenšenou (~300 px), kolečko s flekovým rámečkem.
