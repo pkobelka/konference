@@ -162,7 +162,7 @@ function render(t){
   // 5 slova na doby
   const a5=B[4];W.forEach((w,i)=>setP('wd'+i,p(t,a5+.4+i*1.2,.6)));
   // 6 aplikace
-  const ag=B[5];setP('sgk',p(t,ag+.3));GAR.forEach((g,i)=>setP('gr'+i,p(t,ag+.8+i*1.0,.6)));setP('sgz',p(t,ag+3.0));setP('sgs',p(t,ag+4.6));
+  const ag=B[5];setP('sgk',p(t,ag+.3));GAR.forEach((g,i)=>setP('gr'+i,p(t,ag+.7+i*1.8,.6)));setP('sgz',p(t,ag+3.7));setP('sgs',p(t,ag+5.0));
   const a6=B[6];setP('s6k',p(t,a6+.3));setP('s6h',p(t,a6+.7));setP('s6s',p(t,a6+1.2));setP('ph',p(t,a6+.5,1));
   CH.forEach((c,i)=>setP('ch'+i,p(t,a6+2+i*.7,.5)));
   for(let i=0;i<5;i++){const s0=a6+1+i*2.1,o=i===0?cl((s0+2.3-t)/.4):i===4?cl((t-s0)/.4):cl((t-s0)/.4)*cl((s0+2.3-t)/.4);$('i'+i).style.opacity=t<a6+1?(i===0?1:0):o}
