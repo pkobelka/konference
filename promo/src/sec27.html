@@ -122,7 +122,7 @@ const st=$('st');FL.forEach((f,i)=>{const e=document.createElement('div');e.clas
 (function(){const g=$('calg');g.innerHTML=['Po','Út','St','Čt','Pá','So','Ne'].map(d=>`<b>${d}</b>`).join('')+'<span></span>'.repeat(3)+Array.from({length:30},(_,i)=>`<span class="${i+1===27||i+1===28?'on':''}">${i+1}</span>`).join('')})();
 // slova scény 5
 const W=[["Přednášky.",9],["Diskuze.",6],["Setkání.",16],["Večer s přáteli.",3]];
-$('w4').innerHTML=W.map(([w,f],i)=>`<div id="wd${i}" class="r"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i>${w}</div>`).join('');
+$('w4').innerHTML=W.map(([w,f],i)=>`<div id="wd${i}" class="r" style="margin-left:${i*140}px"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i>${w}</div>`).join('');
 const CH=["📣 Aktuality z konference","❓ Dotazy k přednáškám – i hlasem","✎ Poznámky","📅 Program","🌤️ Počasí","🧭 Navigace do hotelu","🪪 Moje registrace"];
 const GAR=[["Ing. Filip Wanner, Ph.D.","ENERGIE AG BOHEMIA s.r.o.",10],["Ing. Martin Srb, Ph.D.","Pražské vodovody a kanalizace, a.s.",16]];
 $('gar').innerHTML=GAR.map(([n,o,f],i)=>`<div class="r" id="gr${i}"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i><div><b>${n}</b><span>${o}</span></div></div>`).join('');

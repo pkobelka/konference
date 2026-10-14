@@ -523,3 +523,22 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Pravidlo do budoucna:** nová/změněná pravidla konference psát do `mojebudky/database.rules.json` (PR), ne do konzole.
 - **Průvodce 0.37:** horní menu na počítači bylo „vůbec nevýrazné“ → položky jako dlaždice (rámeček, stín, tučné tmavé
   písmo, fialové ikony), najetí myší zvýrazní, **aktivní = plná fialová**, čísla (①) v rohu dlaždice. Mobil: ikony a popisky dole tmavší.
+
+### ▶ KDE POKRAČOVAT (14. 10. 2026, odpoledne) – PROMO VIDEO HOTOVÉ
+- **Video pozvánky v4** (60 s, 1920×1080, hudba): `promo/sec27-pozvanka.mp4`, náhled `.jpg`, sdílení
+  https://pkobelka.github.io/konference/promo/video.html (Sdílet soubor / WhatsApp / Facebook / Kopírovat / Stáhnout).
+  Petr: „perfekt“. Poslední úprava: řádky „Přednášky. Diskuze. Setkání. Večer s přáteli.“ schodovitě (margin-left i*140px).
+- Scény: Zveme vás → 31. ročník → Seč (Kongres hotel Jezerka, **bez „Železné hory“**) → 27.–28. dubna 2027 →
+  Přednášky/Diskuze/Setkání/Večer → Odborný program připravují Filip Wanner + Martin Srb **pod dohledem prof. Jiřího
+  Wannera**, který tradici založil s Ing. Vladimírem Langerem; „Program 31. ročníku právě připravujeme.“ (termín nepsat) →
+  Konference v telefonu („Aplikace do mobilu, tabletu i počítače. Vše po ruce…“; telefon: Domů s dlaždicemi, neutrální
+  Program se šedými pruhy, Aktuality, Počasí, Navigace) → Zveme vás + QR + loga 31 · VHOS · CzWA · Energie AG Bohemia →
+  „Těšíme se na vás **na Seči**!“
+- **Pořadatelé (potvrdil Petr): VHOS, a.s., CzWA a Energie AG Bohemia s.r.o.** Ostatní partneři 2027 neznámí → nezobrazovat.
+- Postup úprav: `promo/src/sec27.html` → náhled → `node render.js` + ffmpeg mux (příkaz v `navrh/promo-sec27.md`);
+  hudba `python3 music_sec27.py` (WAV se necommituje). Snímky průvodce se mockují Playwrightem (skripty ve scratchpadu,
+  vzor `/tmp/claude-0/t/shots2.mjs` – po restartu kontejneru pryč; postup popsán v promo-sec27.md v4).
+- LinkedIn články Petra (3): 21. století / lidé za konferencí / partneři. Copilot navrhl prezentaci 8–10 slidů
+  (historie, lidé, partneři, budoucnost; „Společně netvoříme jen konferenci. Společně vytváříme tradici.“) – nabídnuto, čeká.
+- Petr zkouší instalaci průvodce na iPhonu (Safari → Sdílet → Přidat na plochu; osobní odkaz ?k= přidat až otevřený).
+- Možné další: verze videa 9:16; prezentace; dál admin (počty lůžek, hromadné e-maily s osobními odkazy, smazat testovací data).
