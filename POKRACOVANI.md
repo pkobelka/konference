@@ -572,3 +572,4 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Úder u názvu (Petr: „teď jako výstřel, předtím hluboký“): šum (snap) ztlumen na 25 %, akord jen basy (E1/E2/H2), měkký nástup 45 ms → hluboký dunivý úder.
 - **Úder u názvu zrušen** (Petr: „předtím, jen u 31, to bylo lepší“) – zůstává jen původní hluboký úder u „31“.
 - **Zvuk v prvním okně:** přesná kopie zvuku z odhalení „31“ (úder + nástup basy a melodie, 1,9 s, dozvuk) vložena na 2,83 s (naskočení názvu) – ne samotný úder (ten zněl jako výstřel).
+- **Hudba v1 okně (finál):** kopie zrušena; arpeggio + basa nastoupí už s úderem při naskočení názvu (START=2,8 s), u „31“ druhý úder do hrající hudby – po úderu není ticho.

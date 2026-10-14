@@ -38,11 +38,12 @@ def chord_at(x):
     return len(B)-2
 step=0.3; t0=0.09
 DROP=B[1]    # úvod jen podkres; arpeggio a basa nastoupí s odhalením „31“
+START=2.8   # arpeggio a basa nastoupí už s úderem při naskočení názvu (scéna 1), u „31“ druhý úder
 k=0
 while True:
     ts=t0+k*step
     if ts>TOTAL-2.2: break
-    if ts<DROP: k+=1; continue
+    if ts<START-0.02: k+=1; continue
     i=chord_at(ts); ch=CH[i]
     mm=ch[PAT[k%8]]+12
     if i==len(CH)-1 and ts>B[-2]+4.8: break   # v závěru arpeggio doznívá
@@ -58,7 +59,7 @@ k=0
 while True:
     ts=t0+k*1.2
     if ts>TOTAL-2.5: break
-    if ts<DROP: k+=1; continue
+    if ts<START-0.02: k+=1; continue
     i=chord_at(ts); f=n(CH[i][0]-12 if CH[i][0]>45 else CH[i][0])
     a=int(ts*SR); b=min(len(t),a+int(1.4*SR)); tt=t[a:b]-ts
     env=(1-np.exp(-tt/0.01))*np.exp(-tt/0.55)
@@ -76,6 +77,7 @@ def hit(at,g,big=False,sn=1.0):
     snap=nz*np.exp(-tt/(0.5 if big else 0.06))*(0.5 if big else 0.8)
     x=g*(1.0*boom+0.35*sn*snap)
     L[a:b]+=x; R[a:b]+=x
+hit(START,.30,True)  # úder při naskočení názvu – s ním nastoupí hudba
 hit(DROP,.30,True)   # úder při odhalení „31“
 # jemné „zazvonění“ na začátku každé scény po DROP
 for bb in B[2:-1]:
@@ -93,11 +95,6 @@ def rev(x):
         s=int(d*SR); y[s:]+=g*x[:-s]
     return y
 L,R=rev(L),rev(R[::1])
-# přesná kopie zvuku z odhalení „31“ (úder + nástup basy a melodie) i v prvním okně – při naskočení názvu
-CP_AT=2.83; CP_LEN=1.9
-ca=int((DROP-0.03)*SR); cn=int(CP_LEN*SR); fo=np.clip((CP_LEN-np.arange(cn)/SR)/0.7,0,1)**2
-da=int(CP_AT*SR)
-L[da:da+cn]+=L[ca:ca+cn]*fo; R[da:da+cn]+=R[ca:ca+cn]*fo
 # celková obálka: náběh 0,8 s, dozvuk 3 s
 g=np.clip(t/0.8,0,1)*np.clip((TOTAL-t)/3.0,0,1)
 L*=g; R*=g
