@@ -245,6 +245,16 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .akt article.nova{background:linear-gradient(90deg,var(--accent-soft),transparent);margin:0 -14px;padding:10px 14px;border-radius:10px}
 .chipn{display:inline-block;margin-bottom:4px;border-radius:99px;padding:2px 8px;font-size:11px;font-weight:800;background:#d6342c;color:#fff;letter-spacing:.03em}
 .qk button{position:relative}.qk .bdg{position:absolute;top:8px;right:8px}
+.inst{display:flex;align-items:center;gap:10px;border:2px dashed var(--accent);background:var(--accent-soft)}
+.inst .ic{font-size:26px}.inst .t{flex:1;min-width:0;display:flex;flex-direction:column}.inst .t small{color:var(--muted);font-size:12.5px}
+.inst .send{padding:9px 12px;white-space:nowrap}.inst .x{border:0;background:none;font-size:22px;color:var(--muted);padding:0 2px}
+.kroky{list-style:none;padding:0;margin:0 0 10px;display:flex;flex-direction:column;gap:10px}
+.kroky li{display:flex;align-items:center;gap:12px;background:var(--surface-2);border-radius:12px;padding:12px}
+.kroky .kn{flex:none;width:28px;height:28px;border-radius:99px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800}
+.kroky .kt{flex:1;font-size:15px}.kroky .ki{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--surface)}
+.note.warn{border-color:var(--warn);color:var(--ink)}
+.qrw{display:flex;gap:14px;align-items:center}.qrw img{width:120px;height:120px;flex:none;border-radius:10px;border:1px solid var(--line);background:#fff}
+@media (max-width:360px){.qrw{flex-direction:column;align-items:flex-start}}
 .mreg{position:relative;overflow:hidden;border:2px solid var(--accent);display:flex;flex-direction:column;gap:10px}
 .mreg .hi{font-family:var(--f-display);font-size:20px;font-weight:700;line-height:1.2}
 .mreg .st{align-self:flex-start;border-radius:99px;padding:4px 10px;font-size:12px;font-weight:700;background:var(--accent-soft);color:var(--accent)}
@@ -484,7 +494,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.33 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.34 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -569,6 +579,51 @@ const WIC=c=>c===0?"☀️":c<=2?"🌤️":c===3?"☁️":c<=48?"🌫️":c<=67?
 function vToday(){
  return `<button class="wxb" id="todaybox" data-wx="1">${WX.st==="ok"?WIC(WX.cur.c)+" "+WX.cur.t+"° · ":"🌤️ "}Počasí<em class="wxl">v Seči</em></button>`;
 }
+/* ===== Do telefonu: návod k instalaci (hlavně iPhone), Android jedním klepnutím, QR ===== */
+const UA=navigator.userAgent;
+const PL={ios:/iPad|iPhone|iPod/.test(UA)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),android:/Android/i.test(UA),
+ inapp:/FBAN|FBAV|FB_IAB|Instagram|Messenger|WhatsApp|GSA\/|LinkedInApp|Line\/|Twitter|MicroMessenger|Snapchat|SznProhlizec/i.test(UA),
+ jinyIos:/CriOS|FxiOS|EdgiOS|OPiOS/.test(UA),
+ nainst:(()=>{try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}})()};
+let INSTAL=null;   // Android/Chrome: uložená výzva k instalaci
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();INSTAL=e;if(S.tab==="domu"||S.tab==="info")render()});
+window.addEventListener("appinstalled",()=>{INSTAL=null;PL.nainst=true;toast("Průvodce je na ploše 👍");render()});
+const URLP="https://pkobelka.github.io/konference/pruvodce/";
+const ICS_SHARE='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+const ICS_PLUS='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+function instalBanner(){
+ if(PL.nainst||store.get("instalpryc",0))return "";
+ const txt=INSTAL?"Jedním klepnutím si ho nainstalujete na plochu.":PL.ios?"Na iPhonu stačí 3 klepnutí v Safari – ukážeme vám kde.":"Otevře se jako aplikace, bez hledání odkazu.";
+ return `<div class="card inst"><span class="ic">📲</span><div class="t"><b>Průvodce do telefonu</b><small>${txt}</small></div>
+  <button class="send" data-instal="1">${INSTAL?"Nainstalovat":"Jak na to"}</button><button class="x" data-instalpryc="1" aria-label="Skrýt">×</button></div>`;
+}
+function sheetInstal(){
+ if(INSTAL){INSTAL.prompt();INSTAL.userChoice.finally(()=>{INSTAL=null;render()});return}
+ let h;
+ if(PL.ios){
+  const krok=(n,t,ico)=>`<li><span class="kn">${n}</span><span class="kt">${t}</span>${ico?`<span class="ki">${ico}</span>`:""}</li>`;
+  h=`${PL.inapp||PL.jinyIos?`<div class="note warn">Teď máte průvodce otevřeného ${PL.inapp?"uvnitř jiné aplikace (e-mail, Messenger, Facebook…)":"v jiném prohlížeči než Safari"}. Na plochu ho jde přidat <b>jen ze Safari</b>.</div>
+    <div class="cact" style="margin:0 0 6px"><button class="cbtn" id="ikop">📋 Zkopírovat odkaz</button></div>
+    <p class="muted" style="font-size:13px;margin:0 0 6px">…pak otevřete Safari, vložte odkaz do adresy a pokračujte podle kroků níže. Nebo naskenujte QR kód fotoaparátem.</p>`:""}
+   <ol class="kroky">
+    ${krok(1,`Dole klepněte na <b>Sdílet</b>${PL.ios&&/iPad/.test(UA)?" (na iPadu nahoře vpravo)":""}`,ICS_SHARE)}
+    ${krok(2,`Sjeďte níž a vyberte <b>Přidat na plochu</b>`,ICS_PLUS)}
+    ${krok(3,`Vpravo nahoře klepněte na <b>Přidat</b>`,"")}
+   </ol>
+   <p class="muted" style="font-size:13px;margin:0">Nevidíte dole lištu? Klepněte doprostřed stránky nahoře, nebo na ikonu <b>kompasu / „Otevřít v Safari“</b>.${S.karta?" Vaše osobní registrace se na plochu přenese.":""}</p>`;
+ }else if(PL.android){
+  h=`<ol class="kroky"><li><span class="kn">1</span><span class="kt">V Chromu klepněte vpravo nahoře na <b>⋮</b></span></li><li><span class="kn">2</span><span class="kt">Vyberte <b>Nainstalovat aplikaci</b> nebo <b>Přidat na plochu</b></span></li><li><span class="kn">3</span><span class="kt">Potvrďte <b>Nainstalovat</b></span></li></ol>
+   <p class="muted" style="font-size:13px;margin:0">Otevřeli jste odkaz v jiné aplikaci (Gmail, Messenger)? Klepněte na ⋮ a zvolte <b>Otevřít v Chromu</b>.</p>`;
+ }else{
+  h=`<p style="margin:0 0 8px;font-size:14px">Naskenujte QR kód fotoaparátem telefonu – průvodce se otevře v prohlížeči a pak si ho přidáte na plochu.</p>
+   <img src="${IMG}qr-pruvodce.svg" alt="QR kód průvodce" style="width:220px;max-width:70%;display:block;margin:0 auto;border-radius:12px;border:1px solid var(--line)">`;
+ }
+ openSheet(`<h2>Průvodce do telefonu</h2><div class="muted" style="font-size:13px;margin-top:2px">${PL.ios?"iPhone / iPad – Safari":PL.android?"Android – Chrome":"Počítač"}</div><div class="bd">${h}</div>`);
+ const b=$("ikop");if(b)b.addEventListener("click",()=>{const u=URLP+(S.karta&&S.karta.k!=="ukazka"?"?k="+S.karta.k:"");(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>toast("Odkaz zkopírován – vložte ho v Safari"),()=>prompt("Zkopírujte odkaz:",u))});
+}
+function sdilet(){const d={title:"Seč 27 – průvodce konferencí",text:"Průvodce konferencí Nové metody a postupy při provozování ČOV",url:URLP};
+ if(navigator.share)navigator.share(d).catch(()=>{});else (navigator.clipboard?navigator.clipboard.writeText(URLP):Promise.reject()).then(()=>toast("Odkaz zkopírován"),()=>prompt("Odkaz:",URLP));}
+
 /* ===== Kontakty (podle pozvánky a přihlášek; pro 2027 upravit tady) ===== */
 const KONTAKTY=[
  {role:"Organizační garant",jm:"Petr Kobelka",org:"VHOS, a.s.",pozn:"ubytování, večeře, organizace na místě",tel:"602 356 496",mail:"petr.kobelka@vhos.cz",sms:true,hl:true},
@@ -849,6 +904,7 @@ function vDomu(){
     <div class="cdrow"><div class="cd">${odpocet()}</div>${dnesTxt()}</div>
    </div>
   </div>
+  ${instalBanner()}
   ${S.karta?vKarta(true):""}
   ${ticker()}
   <div class="bento">
@@ -863,7 +919,6 @@ function vDomu(){
   </div>
   <div class="blockh"><h2>Generální partneři</h2><button class="lnk" data-go="partneri">Všichni partneři →</button></div>
   <div class="gen">${PART[0][3].map(nm=>`<button class="genp" data-p="${esc(nm)}" aria-label="${esc(nm)}">${lm(nm)}</button>`).join("")}</div>
-  <div class="note"><b>Do mobilu:</b> na iPhonu v Safari Sdílet → Přidat na plochu, na Androidu Nainstalovat aplikaci. Přihlášení není potřeba.</div>
  </section>`;
 }
 
@@ -990,6 +1045,9 @@ function vInfo(){
    <b style="font-size:16px">${esc(k.jm)}</b>${k.org?`<div class="muted" style="font-size:13px">${esc(k.org)}</div>`:""}${k.pozn?`<div style="font-size:13px;margin-top:4px">${esc(k.pozn)}</div>`:""}
    ${k.tel||k.mail?`<dl class="kv" style="margin-top:8px">${k.tel?`<dt>Telefon</dt><dd>${esc(k.tel)}</dd>`:""}${k.mail?`<dt>E-mail</dt><dd>${esc(k.mail)}</dd>`:""}</dl>
    <div class="cact">${k.tel?`<a class="cbtn" href="tel:+420${k.tel.replace(/\D/g,"")}">📞 Zavolat</a>`:""}${k.sms?`<a class="cbtn" href="sms:+420${k.tel.replace(/\D/g,"")}">💬 SMS</a>`:""}${k.mail?`<a class="cbtn" href="mailto:${k.mail}?subject=${encodeURIComponent("Konference ČOV 2027")}">✉ E-mail</a>`:""}</div>`:""}</div>`).join("")}
+  <div class="card qrc"><div class="label" style="margin-bottom:8px">Průvodce do telefonu · pro kolegy</div>
+   <div class="qrw"><img src="${IMG}qr-pruvodce.svg" alt="QR kód průvodce"><div><p style="margin:0 0 8px;font-size:14px">Kolega si průvodce otevře naskenováním QR kódu fotoaparátem. Přihlášení není potřeba.</p>
+   <div class="cact" style="margin:0">${PL.nainst?"":`<button class="cbtn" data-instal="1">📲 Přidat na plochu</button>`}<button class="cbtn" id="sdil">↗ Sdílet odkaz</button></div></div></div></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Web</div>
    <p style="margin:0;font-size:14px">Program a přihlášky: <a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></p></div>
   <div class="note">Údaje podle pozvánky 2026. Pro rok 2027 je pořadatel aktualizuje na jednom místě a všem se změní hned.</div>
@@ -1195,6 +1253,9 @@ $("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if
 $("view").addEventListener("click",e=>{
  const sg=e.target.closest("[data-stg]");if(sg)return stgGo(+sg.dataset.stg,true);
  if(e.target.closest("[data-wx]"))return sheetWx();
+ if(e.target.closest("[data-instal]"))return sheetInstal();
+ if(e.target.closest("[data-instalpryc]")){store.set("instalpryc",1);return render()}
+ if(e.target.id==="sdil")return sdilet();
  if(e.target.closest("[data-kal]"))return sheetKal();
  if(e.target.closest("[data-nav]"))return sheetNav();
  const t=e.target.closest("[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,#npr,#ntxt,#nmail");if(!t)return;
@@ -1223,7 +1284,10 @@ $("view").addEventListener("click",e=>{if(e.target.id==="pdel"){S.me={jm:"",firm
 $("view").addEventListener("input",e=>{
  if(e.target.id==="simm"){S.sim.m=+e.target.value;$("nowbox").outerHTML=vNow();$("simm").focus();return}if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
 (function(){try{const k=new URLSearchParams(location.search).get("k");
- if(k){history.replaceState(null,"",location.pathname+location.hash);kartaNacti(kartaKlic(k))}else if(S.karta)kartaNacti(null,true)}catch(e){}})();
+ if(k){if(!PL.ios)history.replaceState(null,"",location.pathname+location.hash);kartaNacti(kartaKlic(k))}else if(S.karta)kartaNacti(null,true)
+ // iPhone: ikona na ploše má vlastní úložiště – klíč karty proto necháme v adrese, aby se přenesl při „Přidat na plochu“
+ if(PL.ios&&!PL.nainst&&S.karta&&S.karta.k&&S.karta.k!=="ukazka"&&!/[?&]k=/.test(location.search))history.replaceState(null,"",location.pathname+"?k="+encodeURIComponent(S.karta.k)+location.hash);
+}catch(e){}})();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.karta&&S.karta.k!=="ukazka"&&Date.now()-S.karta.ts>120000)kartaNacti(null,true)});
 liveStart();aktStart();
 document.getElementById("markimg").src=IMG+"cislo31.webp";

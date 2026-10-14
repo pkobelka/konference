@@ -466,3 +466,18 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   Popisky oblastí („ubytování, večeře…“, „program, přednášky…“) jsou návrh – uživatel může upravit.
 - **Průvodce 0.33:** u Petra Kobelky bez „technický ředitel“ (přání); **prof. Jiří Wanner vypuštěn** z kontaktů i z „O konferenci“ –
   uvádět jen **Ing. Filipa Wannera** jako odborného garanta.
+
+### iPhone / instalace do telefonu + QR (14. 10. 2026) – průvodce 0.34, admin 1.16
+- Problém uživatele: **instalace na iPhone** (i u jeho jiných aplikací Aquakontrol, Florián) – iOS nemá tlačítko
+  Instalovat, jde to jen ze **Safari → Sdílet → Přidat na plochu**; z Gmailu/Messengeru/FB (vnitřní prohlížeč) vůbec.
+- Řešení v průvodci: banner **„📲 Průvodce do telefonu“** na Domů (dá se skrýt) + okno s návodem podle zařízení:
+  iPhone = 3 kroky s ikonou Sdílet a Přidat na plochu; ve vnitřním prohlížeči (FBAN/Messenger/Instagram/WhatsApp/GSA…)
+  nebo Chrome/Firefox na iOS varování + **Zkopírovat odkaz** (s osobním klíčem); Android = **tlačítko Nainstalovat**
+  (beforeinstallprompt, jedno klepnutí), jinak kroky ⋮ → Nainstalovat; počítač = QR kód.
+  Info: karta **„Průvodce do telefonu · pro kolegy“** s QR, Přidat na plochu, **Sdílet odkaz** (navigator.share).
+- **iPhone a osobní karta:** ikona na ploše má na iOS vlastní úložiště → pro iOS se **nenačítá manifest** (vkládá se JS
+  jen mimo iOS, v `sestav-pruvodce.sh`) a **klíč `?k=` zůstává v adrese** (při uložené kartě se doplní) → „Přidat na plochu“
+  vezme adresu i s klíčem a karta se v ikoně načte.
+- QR kódy (ověřeno čtečkou jsQR): `obrazky/qr-pruvodce.svg/.png` (průvodce); QR aplikace pořadatele poslán uživateli.
+  Admin → Průvodce: QR + stažení PNG/SVG pro pozvánku, plakát, plátno.
+- **Uživatel teď vše zkontroluje (počítač, telefon) a pak řekne, co dál.** První fáze podle něj hotová („možná i víc“).

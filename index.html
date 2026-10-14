@@ -191,7 +191,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.15 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.16 · 14. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -1045,7 +1045,11 @@ function rPruvodce(){
     <p style="font-size:.84rem;color:#666">Účastníci píší a namlouvají dotazy v průvodci, všichni je vidí živě. Mazat (nevhodný dotaz, vyčištění po zkoušce) můžeš jen ty.</p>
     <div id="s_dotazy">${htmlDotazy()}</div>
   </div>
-  <div class="nast"><h2 class="sek">Odkazy</h2><p style="font-size:.9rem">Průvodce pro účastníky: <a href="${esc(pruvodceBase())}" target="_blank" rel="noopener">${esc(pruvodceBase())}</a></p></div>`;
+  <div class="nast"><h2 class="sek">Odkaz a QR kód pro účastníky</h2>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><img src="obrazky/qr-pruvodce.png" alt="QR kód průvodce" style="width:170px;border:1px solid #ddd;border-radius:8px">
+    <div><p style="font-size:.9rem;margin:0 0 6px">Průvodce: <a href="${esc(pruvodceBase())}" target="_blank" rel="noopener">${esc(pruvodceBase())}</a></p>
+    <p style="font-size:.84rem;color:#666;margin:0 0 8px">QR kód dej do pozvánky, na plakát u registrace a na plátno. Fotoaparát iPhonu ho otevře rovnou v Safari – odtud jde průvodce přidat na plochu (průvodce sám ukáže jak).</p>
+    <a class="btn ghost small" href="obrazky/qr-pruvodce.png" download="QR-Sec27-pruvodce.png">⬇ QR obrázek (PNG)</a> <a class="btn ghost small" href="obrazky/qr-pruvodce.svg" download="QR-Sec27-pruvodce.svg">⬇ QR pro tisk (SVG)</a></div></div></div>`;
   $("a_h").value=rozH;$("a_p").value=rozP;
   let EDIT=null;
   const reset=()=>{EDIT=null;$("a_h").value="";$("a_p").value="";$("a_send").textContent="Zveřejnit zprávu";$("a_cancel").classList.add("hidden");};
