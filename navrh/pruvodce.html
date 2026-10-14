@@ -483,7 +483,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.29 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.30 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"po",n:"Pondělí",d:"26. 4. příjezd"},{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -660,7 +660,11 @@ const KSTAV={ano:["Účast potvrzena","ok"],pozvan:["Pozvánka odeslána – če
 function kartaRadky(d){
  const R=[];
  if(d.stav==="ne")return R;
- if(d.nespi||!(d.noci||[]).length&&!d.pokoj)R.push(["🏨","Ubytování",d.nespi?"bez ubytování":"zatím nepřiděleno"]);
+ if(d.hotel){   // ubytování si rezervoval sám přes link hotelu – pořadatel pokoj nezná
+  if((d.noci||[]).length)R.push(["🌙",d.noci.length===1?"Noc":"Noci",d.noci.join(" · ")]);
+  R.push(["🏨","Ubytování v hotelu Jezerka","rezervovali jste si ho přímo u hotelu – číslo pokoje a klíč dostanete na recepci"]);
+ }
+ else if(d.nespi||!(d.noci||[]).length&&!d.pokoj)R.push(["🏨","Ubytování",d.nespi?"bez ubytování":"zatím nepřiděleno"]);
  else{
   R.push(["🌙",(d.noci||[]).length===1?"Noc":"Noci",(d.noci||[]).join(" · ")||"—"]);
   if(d.kraskov)R.push(["🚌","Kraskov – svoz","bydlíte v Kraskově, na Jezerku jezdí svoz (časy v Dopravě)"]);

@@ -350,3 +350,13 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
     ".write": "auth != null && root.child('florian_login_email').child(auth.token.email.toLowerCase().replace('.', ',')).exists()"
   }
   ```
+
+### Ubytování „sám v hotelu“ (14. 10. 2026) – admin 1.8, průvodce 0.30
+- Upřesnění uživatele: kdo se registruje **sám přes ubytovací link hotelu Jezerka** (veřejnost, ~70 %), má pokoj
+  domluvený s hotelem – **pořadatel číslo pokoje nezná**. Pořadatel zná jen ty, které sám ubytoval (svoje žluté pokoje).
+- Admin: u osoby nová volba **Ubytování: „zajišťuji já (přidělím pokoj)“ / „rezervuje si sám v hotelu (link Jezerka)“**
+  (`o.ubyt` = "ja" | "hotel"; bez volby se odvodí: zdroj „Ubytovací link hotelu Jezerka“ a bez pokoje = sám v hotelu).
+  Kontrola „spí, ale nemá pokoj“ je pro ně vypnutá; nová kontrola „rezervuje si sám, ale má můj pokoj“.
+  Seznam lidí: štítek **hotel sám**; Přehled: dlaždice „rezervují si sami v hotelu (pokoj neznám)“ s filtrem; CSV/hledání.
+- Karta v průvodci: místo pokoje/spolubydlících řádek **„🏨 Ubytování v hotelu Jezerka – rezervovali jste si ho přímo
+  u hotelu, číslo pokoje a klíč dostanete na recepci“**; noci (pokud je pořadatel zná), večeře a stav normálně.
