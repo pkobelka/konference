@@ -655,3 +655,11 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   předat kód iframe správci webu vhos.cz.
 - Nápady: dálkové promítání dotazů (PIN + pravidlo mojebudky), odkazy `?pr=<blok>` v aplikaci pořadatele,
   prezentace z LinkedIn článků, admin (lůžka, hromadné e-maily, smazat testovací data 2026).
+
+### Připomínky k videu (15. 10. 2026) – A. z VHOS
+- **Ochranná zóna log** (manuál VHOS: volná plocha kolem loga = průměr „koule“): loga už nejsou v těsných bílých
+  rámečcích, ale v bílé ploše s okrajem ≈ výšce loga (`.lgbox`, `--z`): scéna Zveme vás VHOS 108 px + zóna 100 px,
+  závěr všechna 3 loga v jedné bílé ploše (zóna 80 px; na výšku pod sebou). QR na výšku posunut níž (top 1330).
+- **Odrážky v telefonní scéně** (rychlé, malé v mobilu): písmo 27 → 42 px (na výšku 40 px), pod sebou, ve 2 skupinách
+  po 4 (1. skupina zmizí, na její místo 2.), odstup 1,4 s. Scéna 6 prodloužena 12 → 16,8 s, celé video **64,8 s**
+  (hudba `music_sec27.py` má nové délky; mux: `afade st=62.8`). Snímky telefonu po 3,1 s.
