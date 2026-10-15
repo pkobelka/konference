@@ -678,3 +678,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Partneři bez názvů pod logy** (Petr: „zatím všechna loga bez názvů“) – název jen u partnera bez loga; název zůstává
   v `aria-label` a v detailu po klepnutí. Odkaz pro grafičku (kolegyně Petra): https://claude.ai/artifact/VbZHt1CSzXxT6m9rEV8qN4
   (kopie průvodce 0.42, `scratchpad/navrh-loga/` – soubor jen v kontejneru, zdroj = navrh/pruvodce.html s titulkem „Seč 27 – návrh log“).
+- **Loga v3 (Petr: menší, doprava nahoru, ať je 31 dominantní):** jedna bílá karta `.porg` vpravo nahoře v hlavním panelu –
+  VHOS (22 px mobil / 34 px PC) a pod ním drobně „ve spolupráci s“ CzWA + znak MOV bez textu. „31“ zvětšeno (84 / 120 px).
+  Karta pod panelem (`.org`) i VHOS vedle 31 zrušeny.

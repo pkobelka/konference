@@ -369,7 +369,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .collage .c7{display:none}.collage .c8{display:none}
 .pc{position:relative;display:flex;flex-direction:column;gap:12px}
 .yr{display:flex;align-items:center;gap:10px}
-.yr img{height:62px;width:auto}
+.yr img{height:84px;width:auto}
 .yr span{font-family:var(--f-display);font-size:12px;line-height:1.25;color:var(--muted);font-weight:500}
 .poster h1{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1.08;letter-spacing:-.02em;margin:0;text-wrap:balance}
 .mem{margin:-4px 0 0;color:var(--muted);font-size:14px}
@@ -387,18 +387,15 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .big-acts a,.big-acts button{display:flex;align-items:center;gap:10px;text-decoration:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:12px;padding:12px 14px;font:inherit;font-weight:700;font-size:15px;text-align:left}
 .big-acts small{display:block;font-weight:500;color:var(--muted);font-size:12px}
 .cdrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-/* Pořadatel – VHOS vedle „31“ v hlavním panelu; kolem loga volná bílá plocha (ochranná zóna podle manuálu VHOS ≈ průměr „koule“) */
-.yrr{display:flex;align-items:center;flex-wrap:wrap;gap:12px 28px}
-.pvh{display:block;background:#fff;padding:22px 24px;border-radius:16px;box-shadow:0 10px 28px -16px rgba(60,40,80,.35);position:relative}
-.pvh img{display:block;height:28px;width:auto}
-@media (min-width:820px){.pvh{padding:38px 44px;border-radius:20px}.pvh img{height:46px}}
-.org{position:relative;margin-top:16px;background:#fff;border-radius:18px;box-shadow:0 10px 28px -16px rgba(60,40,80,.35);padding:14px 18px 16px;display:flex;justify-content:center;color:#1d1b20}
-.org .osw{display:flex;flex-direction:column;align-items:center}
-.org .ok{font-family:var(--f-display);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6b6670;text-align:center}
-.org .os{display:flex;align-items:center;justify-content:center;gap:36px;padding:16px 6px 2px}
-.org .os img{display:block;width:auto}
-.org .omov{display:flex;align-items:center;gap:10px}.org .omov small{font-size:12px;line-height:1.25;font-weight:600;color:#6b6670}
-@media (min-width:820px){.org{position:absolute;right:32px;bottom:40px;margin:0;padding:14px 20px 16px}.org .os{gap:26px}}
+/* Pořadatel – karta vpravo nahoře v hlavním panelu: VHOS (kolem loga volná bílá plocha – ochranná zóna podle manuálu), pod ním drobně spolupořadatelé */
+.porg{position:absolute;top:14px;right:14px;z-index:2;background:#fff;border-radius:16px;box-shadow:0 10px 28px -14px rgba(60,40,80,.4);padding:16px 18px 12px;display:flex;flex-direction:column;align-items:center;color:#6b6670}
+.porg .pv{display:block;padding:4px 4px 16px}
+.porg .pv img{display:block;height:22px;width:auto}
+.porg .ps{display:flex;flex-direction:column;align-items:center;gap:5px}
+.porg .ps small{font-family:var(--f-display);font-size:8.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.porg .ps span{display:flex;align-items:center;gap:14px}
+.porg .pcz{display:block;height:15px;width:auto}.porg .pmv{display:block;height:20px;width:auto}
+@media (min-width:820px){.porg{top:28px;right:28px;padding:24px 28px 16px;border-radius:20px}.porg .pv{padding:6px 6px 24px}.porg .pv img{height:34px}.porg .ps small{font-size:10px}.porg .pcz{height:22px}.porg .pmv{height:28px}.porg .ps span{gap:20px}}
 .top .vh{height:20px;width:auto;flex:none;margin-left:auto}.top .vh+.chip{margin-left:0}.top small{white-space:nowrap}
 @media (max-width:440px){.top .vh+.chip{display:none}}
 @media (max-width:420px){.cdrow .cd{padding:8px 12px;font-size:13px}.cdrow .cd b{font-size:18px}}
@@ -463,7 +460,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
   .collage .c5{left:auto}.collage .c6{left:auto}
   .poster .pc{max-width:560px}
   .poster h1{font-size:46px}
-  .yr img{height:84px}
+  .yr img{height:120px}
   .collage .c1{width:260px;right:30px;top:-40px}
   .collage .c2{width:150px;right:300px;top:30px}
   .collage .c3{width:210px;right:60px;top:200px}
@@ -985,13 +982,13 @@ function vDomu(){
    <span class="pchip" title="Obsah podle programu 2026">Ukázka · v${VERZE.split(" ")[0]}</span>
    <div class="collage" aria-hidden="true">${FL.map(([n,c])=>`<img class="${c}" src="${IMG}fleky/flek${String(n).padStart(2,"0")}.webp" alt="">`).join("")}</div>
    <div class="pc">
-    <div class="yrr"><div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div><a class="pvh" href="https://www.vhos.cz" target="_blank" rel="noopener" aria-label="Pořádá VHOS, a.s. – www.vhos.cz"><img src="${IMG}loga/vhos.webp" alt="VHOS, a.s."></a></div>
+    <div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
     <h1>Nové metody a postupy při provozování ČOV</h1>
     <p class="mem">memoriál Ing. Jakuba S. Čecha, CSc.</p>
     <div class="pills"><button class="pb" data-kal="1" aria-label="27.–28. dubna 2027 – přidat do kalendáře">${IC.cal}27.–28. dubna 2027<i>+</i></button><button class="pb plc" data-nav="1" aria-label="Kongres hotel Jezerka, Seč – navigovat">${IC.pin}Kongres hotel Jezerka, Seč<i>➜</i></button>${vToday()}</div>
     <div class="cdrow"><div class="cd">${odpocet()}</div>${dnesTxt()}</div>
    </div>
-   <div class="org"><div class="osw"><div class="ok">ve spolupráci s</div><div class="os"><a href="https://www.czwa.cz" target="_blank" rel="noopener"><img src="${IMG}loga/czwa.webp" alt="CzWA" style="height:34px"></a><span class="omov"><img src="${IMG}loga/mov.webp" alt="" style="height:44px"><small>odborná skupina<br>ČR MOV</small></span></div></div></div>
+   <div class="porg"><a class="pv" href="https://www.vhos.cz" target="_blank" rel="noopener" aria-label="Pořádá VHOS, a.s. – www.vhos.cz"><img src="${IMG}loga/vhos.webp" alt="VHOS, a.s."></a><div class="ps"><small>ve spolupráci s</small><span><a href="https://www.czwa.cz" target="_blank" rel="noopener"><img src="${IMG}loga/czwa.webp" alt="CzWA" class="pcz"></a><img src="${IMG}loga/mov.webp" alt="odborná skupina ČR MOV" title="odborná skupina ČR MOV" class="pmv"></span></div></div>
   </div>
   ${instalBanner()}
   ${S.karta?vKarta(true):""}
