@@ -370,6 +370,17 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .big-acts a,.big-acts button{display:flex;align-items:center;gap:10px;text-decoration:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:12px;padding:12px 14px;font:inherit;font-weight:700;font-size:15px;text-align:left}
 .big-acts small{display:block;font-weight:500;color:var(--muted);font-size:12px}
 .cdrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+/* Pořadatel – VHOS velké v hlavním panelu; kolem loga volná bílá plocha (ochranná zóna podle manuálu VHOS ≈ průměr „koule“) */
+.pvh{align-self:flex-start;display:block;background:#fff;padding:36px 40px;border-radius:20px;box-shadow:0 10px 28px -16px rgba(60,40,80,.35);margin-bottom:6px;position:relative}
+.pvh img{display:block;height:40px;width:auto}
+@media (min-width:820px){.pvh{padding:44px 50px}.pvh img{height:50px}}
+.org{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:26px;padding:16px 20px 20px;display:flex;justify-content:center;color:#1d1b20}
+.org .osw{display:flex;flex-direction:column;align-items:center}
+.org .ok{font-family:var(--f-display);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6b6670;text-align:center}
+.org .os{display:flex;align-items:center;justify-content:center;gap:48px;padding:22px 10px 6px}
+.org .os img{display:block;width:auto}
+.top .vh{height:20px;width:auto;flex:none;margin-left:auto}.top .vh+.chip{margin-left:0}.top small{white-space:nowrap}
+@media (max-width:440px){.top .vh+.chip{display:none}}
 @media (max-width:420px){.cdrow .cd{padding:8px 12px;font-size:13px}.cdrow .cd b{font-size:18px}}
 .dnes{display:flex;flex-direction:column;font-size:13px;line-height:1.35;color:var(--muted);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid var(--accent);border-radius:14px;padding:6px 12px;box-shadow:0 6px 18px -10px rgba(40,30,60,.35)}
 .dnes b{color:var(--ink);font-weight:700}.dnes .clk{font-variant-numeric:tabular-nums}
@@ -512,6 +523,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
   <header class="top">
     <img class="mark" id="markimg" alt="31. ročník" width="40" height="40">
     <div class="ttl" style="min-width:0"><b id="pgt"></b><small id="pgs"></small></div>
+    <img class="vh" id="vhimg" alt="VHOS, a.s.">
     <span class="chip" title="Obsah podle programu 2026" id="vchip">Ukázka</span>
   </header>
   <main id="view"></main>
@@ -524,7 +536,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.41 · 14. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.42 · 15. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -953,6 +965,7 @@ function vDomu(){
    <span class="pchip" title="Obsah podle programu 2026">Ukázka · v${VERZE.split(" ")[0]}</span>
    <div class="collage" aria-hidden="true">${FL.map(([n,c])=>`<img class="${c}" src="${IMG}fleky/flek${String(n).padStart(2,"0")}.webp" alt="">`).join("")}</div>
    <div class="pc">
+    <a class="pvh" href="https://www.vhos.cz" target="_blank" rel="noopener" aria-label="Pořádá VHOS, a.s. – www.vhos.cz"><img src="${IMG}loga/vhos.webp" alt="VHOS, a.s."></a>
     <div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
     <h1>Nové metody a postupy při provozování ČOV</h1>
     <p class="mem">memoriál Ing. Jakuba S. Čecha, CSc.</p>
@@ -960,6 +973,7 @@ function vDomu(){
     <div class="cdrow"><div class="cd">${odpocet()}</div>${dnesTxt()}</div>
    </div>
   </div>
+  <div class="org"><div class="osw"><div class="ok">Pořádá VHOS, a.s. ve spolupráci s</div><div class="os"><a href="https://www.czwa.cz" target="_blank" rel="noopener"><img src="${IMG}loga/czwa.webp" alt="CzWA" style="height:34px"></a><a href="https://www.energie-ag.cz" target="_blank" rel="noopener"><img src="${IMG}loga/energie-ag-bohemia.webp" alt="ENERGIE AG BOHEMIA" style="height:38px"></a></div></div></div>
   ${instalBanner()}
   ${S.karta?vKarta(true):""}
   ${ticker()}
@@ -1400,7 +1414,7 @@ $("view").addEventListener("input",e=>{
 }catch(e){}})();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.karta&&S.karta.k!=="ukazka"&&Date.now()-S.karta.ts>120000)kartaNacti(null,true)});
 liveStart();aktStart();
-document.getElementById("markimg").src=IMG+"cislo31.webp";
+document.getElementById("markimg").src=IMG+"cislo31.webp";document.getElementById("vhimg").src=IMG+"loga/vhos.webp";
 document.getElementById("vchip").textContent="Ukázka · v"+VERZE.split(" ")[0];
 render();
 </script>

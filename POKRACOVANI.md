@@ -663,3 +663,10 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Odrážky v telefonní scéně** (rychlé, malé v mobilu): písmo 27 → 42 px (na výšku 40 px), pod sebou, ve 2 skupinách
   po 4 (1. skupina zmizí, na její místo 2.), odstup 1,4 s. Scéna 6 prodloužena 12 → 16,8 s, celé video **64,8 s**
   (hudba `music_sec27.py` má nové délky; mux: `afade st=62.8`). Snímky telefonu po 3,1 s.
+
+### Průvodce 0.42 (15. 10. 2026) – VHOS jako hlavní pořadatel
+- Petr: „Já jsem VHOS, ať je to vidět.“ → v hlavním panelu Domů nahoře **velké logo VHOS** v bílé ochranné zóně
+  (`.pvh`, odkaz www.vhos.cz), pod panelem karta „Pořádá VHOS, a.s. ve spolupráci s“ + loga CzWA a ENERGIE AG BOHEMIA (`.org`).
+  Malé logo VHOS i v záhlaví ostatních stránek (`#vhimg`; v mobilu pod 440 px se tam schová štítek „Ukázka“).
+- Petr možná pošle „vlnku“ nebo „kouli“ z grafiky VHOS → použít jako dekor (záhlaví, karty).
+- Info → Pořadatelé má stále text „VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV“ (z pozvánky 2026) – ověřit s Petrem.
