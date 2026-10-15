@@ -671,5 +671,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Upraveno (Petr):** VHOS z hlavního panelu zase pryč („takhle se mi to nelíbí“) – Petr pošle, kam VHOS chce (CSS `.pvh`
   zatím ponecháno). Karta pod panelem: „Pořádá VHOS, a.s. ve spolupráci s“ **CzWA + znak odborné skupiny ČR MOV**
   (Energie AG je generální partner, ne spolupořadatel). Malé VHOS v záhlaví ostatních stránek zatím zůstává.
+- **Finální umístění (Petr poslal nákres):** VHOS v bílém poli **vedle „31 ročník konference“** (v mobilu zalomí pod něj),
+  „ve spolupráci s CzWA + ČR MOV“ **v hlavním panelu vpravo dole** (na počítači absolutně, v mobilu na konci panelu).
 - Petr možná pošle „vlnku“ nebo „kouli“ z grafiky VHOS → použít jako dekor (záhlaví, karty).
 - Info → Pořadatelé má stále text „VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV“ (z pozvánky 2026) – ověřit s Petrem.
