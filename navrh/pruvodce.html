@@ -105,7 +105,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .cat h2{font-size:17px;margin-bottom:8px}
 .logos{display:grid;gap:8px}
 .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
-.logo{border:0;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;animation:pop .45s cubic-bezier(.2,.9,.3,1.3) both;animation-delay:calc(var(--i)*35ms)}
+.logo{border:0;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:center;min-width:0;animation:pop .45s cubic-bezier(.2,.9,.3,1.3) both;animation-delay:calc(var(--i)*35ms)}
 .logo .lm{width:48px;height:48px;font-size:16px}
 .g2 .logo .lm{width:60px;height:60px;font-size:20px}
 .logo span{font-size:12px;font-weight:700;text-align:center;overflow-wrap:anywhere;line-height:1.25}
@@ -1040,7 +1040,7 @@ function vProgram(){
 
 function vPartneri(){
  let i=0;
- return `<section class="sec">${PART.map(([k,t,g,l])=>`<div class="cat cat-${k}"><h2><span class="tcat tc-${k}" style="margin:0">${t.replace(" partneři","")}<small>partneři</small></span></h2><div class="logos ${g}">${l.map(nm=>`<button class="logo" data-p="${esc(nm)}" style="--i:${i++}">${lm(nm)}<span>${esc(nm)}</span></button>`).join("")}</div></div>`).join("")}
+ return `<section class="sec">${PART.map(([k,t,g,l])=>`<div class="cat cat-${k}"><h2><span class="tcat tc-${k}" style="margin:0">${t.replace(" partneři","")}<small>partneři</small></span></h2><div class="logos ${g}">${l.map(nm=>`<button class="logo" data-p="${esc(nm)}" aria-label="${esc(nm)}" style="--i:${i++}">${lm(nm)}${LOGA[nm]?"":`<span>${esc(nm)}</span>`}</button>`).join("")}</div></div>`).join("")}
   <div class="note">Seznam podle pozvánky 2026. Místo iniciál budou skutečná loga, profil, video a nabídka, které dodají partneři.</div></section>`;
 }
 function sheetP(nm){

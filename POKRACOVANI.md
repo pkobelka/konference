@@ -675,3 +675,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   „ve spolupráci s CzWA + ČR MOV“ **v hlavním panelu vpravo dole** (na počítači absolutně, v mobilu na konci panelu).
 - Petr možná pošle „vlnku“ nebo „kouli“ z grafiky VHOS → použít jako dekor (záhlaví, karty).
 - Info → Pořadatelé má stále text „VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV“ (z pozvánky 2026) – ověřit s Petrem.
+- **Partneři bez názvů pod logy** (Petr: „zatím všechna loga bez názvů“) – název jen u partnera bez loga; název zůstává
+  v `aria-label` a v detailu po klepnutí. Odkaz pro grafičku (kolegyně Petra): https://claude.ai/artifact/VbZHt1CSzXxT6m9rEV8qN4
+  (kopie průvodce 0.42, `scratchpad/navrh-loga/` – soubor jen v kontejneru, zdroj = navrh/pruvodce.html s titulkem „Seč 27 – návrh log“).
