@@ -289,6 +289,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .kroky{list-style:none;padding:0;margin:0 0 10px;display:flex;flex-direction:column;gap:10px}
 .kroky li{display:flex;align-items:center;gap:12px;background:var(--surface-2);border-radius:12px;padding:12px}
 .kroky .kn{flex:none;width:28px;height:28px;border-radius:99px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800}
+.kroky .kt small{display:block;margin-top:3px;font-size:12.5px;color:var(--muted)}
 .kroky .kt{flex:1;font-size:15px}.kroky .ki{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--surface)}
 .note.warn{border-color:var(--warn);color:var(--ink)}
 .qrw{display:flex;gap:14px;align-items:center}.qrw img{width:120px;height:120px;flex:none;border-radius:10px;border:1px solid var(--line);background:#fff}
@@ -553,7 +554,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.42 · 15. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.43 · 15. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -647,11 +648,11 @@ window.addEventListener("appinstalled",()=>{INSTAL=null;PL.nainst=true;toast("Pr
 const URLP="https://pkobelka.github.io/konference/pruvodce/";
 const ICS_SHARE='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
 const ICS_PLUS='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
-function instalBanner(){
- if(PL.nainst||store.get("instalpryc",0))return "";
+function instalBanner(info){
+ if(PL.nainst||(!info&&store.get("instalpryc",0)))return "";
  const txt=INSTAL?"Jedním klepnutím si ho nainstalujete na plochu.":PL.ios?"Na iPhonu stačí 3 klepnutí v Safari – ukážeme vám kde.":"Otevře se jako aplikace, bez hledání odkazu.";
  return `<div class="card inst"><span class="ic">📲</span><div class="t"><b>Průvodce do telefonu</b><small>${txt}</small></div>
-  <button class="send" data-instal="1">${INSTAL?"Nainstalovat":"Jak na to"}</button><button class="x" data-instalpryc="1" aria-label="Skrýt">×</button></div>`;
+  <button class="send" data-instal="1">${INSTAL?"Nainstalovat":"Jak na to"}</button>${info?"":`<button class="x" data-instalpryc="1" aria-label="Skrýt">×</button>`}</div>`;
 }
 function sheetInstal(){
  if(INSTAL){INSTAL.prompt();INSTAL.userChoice.finally(()=>{INSTAL=null;render()});return}
@@ -662,9 +663,9 @@ function sheetInstal(){
     <div class="cact" style="margin:0 0 6px"><button class="cbtn" id="ikop">📋 Zkopírovat odkaz</button></div>
     <p class="muted" style="font-size:13px;margin:0 0 6px">…pak otevřete Safari, vložte odkaz do adresy a pokračujte podle kroků níže. Nebo naskenujte QR kód fotoaparátem.</p>`:""}
    <ol class="kroky">
-    ${krok(1,`Dole klepněte na <b>Sdílet</b>${PL.ios&&/iPad/.test(UA)?" (na iPadu nahoře vpravo)":""}`,ICS_SHARE)}
-    ${krok(2,`Sjeďte níž a vyberte <b>Přidat na plochu</b>`,ICS_PLUS)}
-    ${krok(3,`Vpravo nahoře klepněte na <b>Přidat</b>`,"")}
+    ${krok(1,`Klepněte na <b>Sdílet</b>${/iPad/.test(UA)?" (na iPadu nahoře vpravo)":" dole"}. <small>V novém iOS je schované pod <b>⋯</b> vpravo dole → <b>Sdílet</b>.</small>`,ICS_SHARE)}
+    ${krok(2,`Sjeďte níž (případně <b>Více</b>) a vyberte <b>Přidat na plochu</b>`,ICS_PLUS)}
+    ${krok(3,`Nechte zapnuté <b>Otevřít jako webovou aplikaci</b> (je-li tam) a klepněte na <b>Přidat</b>`,"")}
    </ol>
    <p class="muted" style="font-size:13px;margin:0">Nevidíte dole lištu? Klepněte doprostřed stránky nahoře, nebo na ikonu <b>kompasu / „Otevřít v Safari“</b>.${S.karta?" Vaše osobní registrace se na plochu přenese.":""}</p>`;
  }else if(PL.android){
@@ -1114,6 +1115,7 @@ function vDoprava(){
 function vInfo(){
  const nove=S.aktNoveTed||{};
  return `<section class="sec">
+  ${instalBanner(true)}
   <div class="card akt"><div class="label" style="margin-bottom:4px">📣 Aktuality od pořadatele</div>
    ${AKT.list.length?AKT.list.map(x=>`<article class="${nove[x.k]?"nova":""}">${nove[x.k]?'<span class="chipn">Nové</span>':""}<h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}<small>${x.d?esc(x.d):x.ts>1e9?new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}):""}</small></article>`).join(""):'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Jakmile pořadatel něco napíše, uvidíte to tady a u záložky Info naskočí číslo.</p>'}
   </div>

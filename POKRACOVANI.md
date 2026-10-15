@@ -681,3 +681,6 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **NASAZENO 15. 10. (průvodce 0.42).** **Loga v3 (Petr: menší, doprava nahoru, ať je 31 dominantní):** jedna bílá karta `.porg` vpravo nahoře v hlavním panelu –
   VHOS (22 px mobil / 34 px PC) a pod ním drobně „ve spolupráci s“ CzWA + znak MOV bez textu. „31“ zvětšeno (84 / 120 px).
   Karta pod panelem (`.org`) i VHOS vedle 31 zrušeny.
+- **Průvodce 0.43 (nasazeno 15. 10.):** návod „Průvodce do telefonu“ je teď i **nahoře v Info** (nejde skrýt; na Domů jde
+  křížkem skrýt jako dřív). iPhone kroky doplněny pro nový Safari (iOS 26: Sdílet pod ⋯; „Otevřít jako webovou aplikaci“).
+  Kolegyně Petra (grafička, iPhone) to zkouší.
