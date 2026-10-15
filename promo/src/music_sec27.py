@@ -3,7 +3,7 @@
 import sys
 import numpy as np, wave
 SR=44100
-DUR=[float(x) for x in sys.argv[1:]] or [7.2,4.8,4.8,4.8,7.2,7.2,12,7.2,4.8]
+DUR=[float(x) for x in sys.argv[1:]] or [7.2,4.8,4.8,4.8,7.2,7.2,16.8,7.2,4.8]
 B=[0.0]
 for d in DUR: B.append(round(B[-1]+d,3))
 TOTAL=B[-1]

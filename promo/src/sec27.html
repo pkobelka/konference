@@ -50,8 +50,9 @@ html,body{height:100%;background:#000;overflow:hidden}
 .ph .scr{position:relative;width:100%;height:100%;border-radius:52px;overflow:hidden;background:var(--paper)}
 .ph .scr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0}
 .ph::before{content:"";position:absolute;left:50%;top:30px;width:120px;height:32px;margin-left:-60px;border-radius:20px;background:#0b0a0d;z-index:2}
-.chips{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px;max-width:900px}
-.chip{font:700 27px var(--body);padding:13px 22px;border-radius:999px;background:#fff;border:2px solid #e3dcef;color:var(--accent);box-shadow:0 10px 24px -14px rgba(60,40,80,.35)}
+.chips{position:relative;margin-top:34px;height:360px}
+.chips>div{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.chip{font:700 42px var(--body);white-space:nowrap;padding:12px 26px;border-radius:999px;background:#fff;border:2px solid #e3dcef;color:var(--accent);box-shadow:0 10px 24px -14px rgba(60,40,80,.35)}
 .gar{display:flex;flex-direction:column;align-items:center;gap:30px;margin-top:46px}
 .gar>div>div{text-align:left;min-width:820px}
 .gar>div{display:flex;align-items:center;gap:34px}
@@ -61,7 +62,9 @@ html,body{height:100%;background:#000;overflow:hidden}
 /* závěr */
 .logos{position:absolute;left:0;right:0;top:600px;display:flex;justify-content:center;align-items:center;gap:60px}
 .logos img{height:88px}
-img.lg{background:#fff;padding:14px 22px;border-radius:22px;box-shadow:0 10px 26px -16px rgba(60,40,80,.35);box-sizing:content-box}
+/* ochranná zóna podle manuálu VHOS: kolem loga volná bílá plocha o šířce „koule“ (≈ výška loga) */
+.lgbox{display:inline-flex;align-items:center;background:#fff;padding:var(--z);gap:var(--z);border-radius:30px;box-shadow:0 14px 34px -18px rgba(60,40,80,.4)}
+.lgbox img{display:block}
 .qr{position:absolute;right:180px;top:330px;width:330px;text-align:center}
 .qr img{width:330px;height:330px;border-radius:24px;background:#fff;padding:14px;box-shadow:0 30px 70px -30px rgba(60,40,80,.5)}
 .qr div{font:700 24px var(--body);margin-top:14px;color:var(--muted)}
@@ -87,15 +90,15 @@ img.lg{background:#fff;padding:14px 22px;border-radius:22px;box-shadow:0 10px 26
 .vert #sgz{font-size:30px!important;padding:0 50px}
 .vert #s6>div:first-child{left:70px!important;top:110px!important;width:940px!important}
 .vert #s6h{font-size:84px!important}
-.vert .chips{max-width:940px}
+.vert .chip{font-size:40px}
 .vert .ph{right:auto;left:50%;margin-left:-226px;top:930px;transform:scale(.9);transform-origin:50% 0}
 .vert #s7>div:first-child{left:0!important;right:0;width:auto!important;top:400px!important;text-align:center}
 .vert #n31b{left:50%!important;margin-left:-150px;top:600px!important;height:260px!important}
 .vert #logos{top:930px!important}
-.vert .qr{right:auto;left:50%;margin-left:-165px;top:1200px}
+.vert .qr{right:auto;left:50%;margin-left:-165px;top:1330px}
 .vert #s8 .c{top:640px!important}
 .vert #s8h{font-size:96px!important}
-.vert #s8l{flex-direction:column;gap:30px!important}
+.vert #s8l .lgbox{flex-direction:column}
 </style>
 <div id="fit"><div class="st" id="st">
   <!-- 1 Úvod -->
@@ -131,17 +134,17 @@ img.lg{background:#fff;padding:14px 22px;border-radius:22px;box-shadow:0 10px 26
   <div class="sc" id="s7"><div style="position:absolute;left:200px;top:300px;width:1100px">
     <div class="h r" id="s7h" style="font-size:120px">Zveme vás...</div></div>
     <img class="r" id="n31b" src="../../obrazky/cislo31.webp" style="position:absolute;left:1085px;top:215px;height:300px" alt=""><div class="qr r" id="qr"><img src="../../obrazky/qr-pruvodce.svg" alt=""><div>Průvodce Seč 27</div></div>
-    <div class="logos r" id="logos" style="justify-content:center;gap:36px;top:560px"><img class="lg" src="../../obrazky/loga/vhos.webp" style="height:130px"></div></div>
+    <div class="logos r" id="logos" style="top:560px"><div class="lgbox" style="--z:100px"><img src="../../obrazky/loga/vhos.webp" style="height:108px"></div></div></div>
   <!-- 8 Těšíme se -->
-  <div class="sc" id="s8"><div class="c" style="top:250px"><div class="h r" id="s8h" style="font-size:118px">Těšíme se na vás<br>na Seči!</div>
+  <div class="sc" id="s8"><div class="c" style="top:190px"><div class="h r" id="s8h" style="font-size:118px">Těšíme se na vás<br>na Seči!</div>
     <div class="r" id="s8s" style="margin-top:44px;font:700 58px var(--mono);letter-spacing:-.02em;color:var(--accent)">27.<span style="margin:0 -.12em">&nbsp;–&nbsp;</span>28. dubna 2027</div>
-    <div class="r" id="s8l" style="margin-top:56px;display:flex;justify-content:center;align-items:center;gap:56px"><img class="lg" src="../../obrazky/loga/vhos.webp" style="height:104px"><img class="lg" src="../../obrazky/loga/czwa.webp" style="height:76px"><img class="lg" src="../../obrazky/loga/energie-ag-bohemia.webp" style="height:84px"></div></div></div>
+    <div class="r" id="s8l" style="margin-top:50px"><div class="lgbox" style="--z:80px"><img src="../../obrazky/loga/vhos.webp" style="height:86px"><img src="../../obrazky/loga/czwa.webp" style="height:72px"><img src="../../obrazky/loga/energie-ag-bohemia.webp" style="height:80px"></div></div></div></div>
   <div class="bar" id="bar"></div>
 </div></div>
 <script>
 // Délky scén = násobky taktu 2,4 s (hudba music_sec27.py)
 const SC=["s1","s2","s3","s4","s5","sg","s6","s7","s8"];
-const D=[7.2,4.8,4.8,4.8,7.2,7.2,12,7.2,4.8], B=[0];D.forEach(d=>B.push(+(B[B.length-1]+d).toFixed(2)));const TOTAL=B[B.length-1];window.TOTAL=TOTAL;window.DURS=D;
+const D=[7.2,4.8,4.8,4.8,7.2,7.2,16.8,7.2,4.8], B=[0];D.forEach(d=>B.push(+(B[B.length-1]+d).toFixed(2)));const TOTAL=B[B.length-1];window.TOTAL=TOTAL;window.DURS=D;
 const $=id=>document.getElementById(id);
 const V=/[?&]v=1/.test(location.search), SW=V?1080:1920, SH=V?1920:1080;   // V = verze na výšku
 if(V){document.documentElement.classList.add('vert');document.getElementById('s1h').innerHTML='Nové metody<br>a postupy při<br>provozování ČOV'}
@@ -160,7 +163,7 @@ $('w4').innerHTML=W.map(([w,f],i)=>`<div id="wd${i}" class="r" style="margin-lef
 const CH=["📣 Online aktuální informace přímo do mobilu","❓ Dotazy k přednáškám do diskuze","🎙️ Průběžně – písemně i hlasem","✎ Poznámky","📅 Program","🌤️ Počasí","🧭 Navigace do hotelu","🪪 Moje registrace"];
 const GAR=[["Ing. Filip Wanner, Ph.D.","ENERGIE AG BOHEMIA s.r.o.",10],["Ing. Martin Srb, Ph.D.","Pražské vodovody a kanalizace, a.s.",16]];
 $('gar').innerHTML=GAR.map(([n,o,f],i)=>`<div class="r" id="gr${i}"><i style="background-image:url(../../obrazky/fleky/flek${String(f).padStart(2,'0')}.webp)"></i><div><b>${n}</b><span>${o}</span></div></div>`).join('');
-$('chips').innerHTML=CH.map((c,i)=>`<span class="chip r" id="ch${i}">${c}</span>`).join('');
+$('chips').innerHTML=[0,4].map(g=>`<div id="chg${g/4}">`+CH.slice(g,g+4).map((c,i)=>`<span class="chip r" id="ch${g+i}">${c}</span>`).join('')+'</div>').join('');
 function wave(id,t,amp,len,spd,y0){let d=`M0 330 L0 ${y0}`;for(let x=0;x<=1920;x+=40)d+=` L${x} ${y0+amp*Math.sin(x/len+t*spd)}`;$(id).setAttribute('d',d+' L1920 330 Z')}
 function sceneOp(i,t){const a=B[i],b=B[i+1],fi=.45,fo=.45;return cl((t-a)/fi)*cl((b-t)/fo)*(i===0?1:1)}
 function render(t){
@@ -196,8 +199,9 @@ function render(t){
   // 6 aplikace
   const ag=B[5];setP('sgk',p(t,ag+.3));GAR.forEach((g,i)=>setP('gr'+i,p(t,ag+.6+i*1.7,.6)));setP('sgz',p(t,ag+3.2));setP('sgs',p(t,ag+5.5));
   const a6=B[6];setP('s6k',p(t,a6+.3));setP('s6h',p(t,a6+1.1));setP('s6s',p(t,a6+2.0));setP('s6t',p(t,a6+2.9));setP('ph',p(t,a6+.5,1));   // vše postupně
-  CH.forEach((c,i)=>setP('ch'+i,p(t,a6+3.9+i*.9,.5)));   // štítky s odstupem 1,1 s – ať se dají přečíst
-  for(let i=0;i<5;i++){const s0=a6+1+i*2.1,o=i===0?cl((s0+2.3-t)/.4):i===4?cl((t-s0)/.4):cl((t-s0)/.4)*cl((s0+2.3-t)/.4);$('i'+i).style.opacity=t<a6+1?(i===0?1:0):o}
+  // štítky ve 2 skupinách po 4, odstup 1,4 s – ať se dají v mobilu přečíst; 1. skupina zmizí, na její místo 2.
+  CH.forEach((c,i)=>setP('ch'+i,p(t,a6+3.9+(i<4?i:i+1)*1.4,.6)));$('chg0').style.opacity=cl((a6+10.6-t)/.4);
+  for(let i=0;i<5;i++){const s0=a6+1+i*3.1,o=i===0?cl((s0+3.3-t)/.4):i===4?cl((t-s0)/.4):cl((t-s0)/.4)*cl((s0+3.3-t)/.4);$('i'+i).style.opacity=t<a6+1?(i===0?1:0):o}
   // 7
   const a7=B[7];setP('s7h',p(t,a7+.4));setP('s7s',p(t,a7+1));setP('qr',p(t,a7+1.4,.8));setP('n31b',p(t,a7+.8,.9));setP('logos',p(t,a7+2.6,.9));
   // 8
