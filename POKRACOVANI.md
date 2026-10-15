@@ -668,5 +668,8 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - Petr: „Já jsem VHOS, ať je to vidět.“ → v hlavním panelu Domů nahoře **velké logo VHOS** v bílé ochranné zóně
   (`.pvh`, odkaz www.vhos.cz), pod panelem karta „Pořádá VHOS, a.s. ve spolupráci s“ + loga CzWA a ENERGIE AG BOHEMIA (`.org`).
   Malé logo VHOS i v záhlaví ostatních stránek (`#vhimg`; v mobilu pod 440 px se tam schová štítek „Ukázka“).
+- **Upraveno (Petr):** VHOS z hlavního panelu zase pryč („takhle se mi to nelíbí“) – Petr pošle, kam VHOS chce (CSS `.pvh`
+  zatím ponecháno). Karta pod panelem: „Pořádá VHOS, a.s. ve spolupráci s“ **CzWA + znak odborné skupiny ČR MOV**
+  (Energie AG je generální partner, ne spolupořadatel). Malé VHOS v záhlaví ostatních stránek zatím zůstává.
 - Petr možná pošle „vlnku“ nebo „kouli“ z grafiky VHOS → použít jako dekor (záhlaví, karty).
 - Info → Pořadatelé má stále text „VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV“ (z pozvánky 2026) – ověřit s Petrem.

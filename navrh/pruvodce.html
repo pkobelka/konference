@@ -379,6 +379,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .org .ok{font-family:var(--f-display);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6b6670;text-align:center}
 .org .os{display:flex;align-items:center;justify-content:center;gap:48px;padding:22px 10px 6px}
 .org .os img{display:block;width:auto}
+.org .omov{display:flex;align-items:center;gap:10px}.org .omov small{font-size:12px;line-height:1.25;font-weight:600;color:#6b6670}
 .top .vh{height:20px;width:auto;flex:none;margin-left:auto}.top .vh+.chip{margin-left:0}.top small{white-space:nowrap}
 @media (max-width:440px){.top .vh+.chip{display:none}}
 @media (max-width:420px){.cdrow .cd{padding:8px 12px;font-size:13px}.cdrow .cd b{font-size:18px}}
@@ -965,7 +966,6 @@ function vDomu(){
    <span class="pchip" title="Obsah podle programu 2026">Ukázka · v${VERZE.split(" ")[0]}</span>
    <div class="collage" aria-hidden="true">${FL.map(([n,c])=>`<img class="${c}" src="${IMG}fleky/flek${String(n).padStart(2,"0")}.webp" alt="">`).join("")}</div>
    <div class="pc">
-    <a class="pvh" href="https://www.vhos.cz" target="_blank" rel="noopener" aria-label="Pořádá VHOS, a.s. – www.vhos.cz"><img src="${IMG}loga/vhos.webp" alt="VHOS, a.s."></a>
     <div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
     <h1>Nové metody a postupy při provozování ČOV</h1>
     <p class="mem">memoriál Ing. Jakuba S. Čecha, CSc.</p>
@@ -973,7 +973,7 @@ function vDomu(){
     <div class="cdrow"><div class="cd">${odpocet()}</div>${dnesTxt()}</div>
    </div>
   </div>
-  <div class="org"><div class="osw"><div class="ok">Pořádá VHOS, a.s. ve spolupráci s</div><div class="os"><a href="https://www.czwa.cz" target="_blank" rel="noopener"><img src="${IMG}loga/czwa.webp" alt="CzWA" style="height:34px"></a><a href="https://www.energie-ag.cz" target="_blank" rel="noopener"><img src="${IMG}loga/energie-ag-bohemia.webp" alt="ENERGIE AG BOHEMIA" style="height:38px"></a></div></div></div>
+  <div class="org"><div class="osw"><div class="ok">Pořádá VHOS, a.s. ve spolupráci s</div><div class="os"><a href="https://www.czwa.cz" target="_blank" rel="noopener"><img src="${IMG}loga/czwa.webp" alt="CzWA" style="height:34px"></a><span class="omov"><img src="${IMG}loga/mov.webp" alt="" style="height:44px"><small>odborná skupina<br>ČR MOV</small></span></div></div></div>
   ${instalBanner()}
   ${S.karta?vKarta(true):""}
   ${ticker()}
