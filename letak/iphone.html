@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="cs">
+<meta charset="utf-8">
+<title>Seč 27 – průvodce do telefonu (leták)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* Leták A5 na výšku: QR kód + návod pro iPhone (a krátce Android). Tisk / PDF: node letak/pdf.js */
+@font-face{font-family:'Plex';font-weight:700;src:url(../promo/src/fonts/ibm-plex-mono-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:'Plex';font-weight:700;src:url(../promo/src/fonts/ibm-plex-mono-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02AF}
+@font-face{font-family:'Fig';font-weight:500;src:url(../promo/src/fonts/figtree-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:'Fig';font-weight:500;src:url(../promo/src/fonts/figtree-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02AF}
+@font-face{font-family:'Fig';font-weight:700;src:url(../promo/src/fonts/figtree-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:'Fig';font-weight:700;src:url(../promo/src/fonts/figtree-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02AF}
+@page{size:148mm 210mm;margin:0}
+:root{--paper:#f6f4ef;--ink:#1d1b20;--muted:#6b6670;--accent:#5b2d82;--soft:#efe7f6;--line:#e6e1d8}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#ddd}
+body{font-family:'Fig',system-ui,sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{position:relative;width:148mm;height:210mm;margin:0 auto;overflow:hidden;background:var(--paper);padding:9mm 9mm 8mm}
+@media screen{.page{margin:16px auto;box-shadow:0 10px 40px rgba(0,0,0,.2)}}
+.fl{position:absolute;pointer-events:none}
+/* záhlaví */
+.hd{position:relative;display:flex;justify-content:space-between;align-items:flex-start}
+.yr{display:flex;align-items:center;gap:3mm}
+.yr img{height:20mm}
+.yr span{font:700 9pt/1.25 'Plex',monospace;color:var(--muted)}
+.org{background:#fff;border-radius:3.5mm;padding:4mm 4.6mm 2.6mm;display:flex;flex-direction:column;align-items:center;box-shadow:0 2mm 6mm -3mm rgba(60,40,80,.35)}
+.org .v{height:6.2mm;margin:0.6mm 0.6mm 4.2mm}
+.org small{font:700 5pt 'Plex',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.org .s{display:flex;align-items:center;gap:3.2mm;margin-top:1.3mm}
+.org .s img:first-child{height:3.6mm}.org .s img:last-child{height:4.6mm}
+h1{position:relative;font:700 21pt/1.05 'Plex',monospace;letter-spacing:-.03em;margin-top:5mm}
+.lead{position:relative;font:500 9.6pt/1.35 'Fig';color:var(--muted);margin-top:2mm;max-width:86mm}
+/* QR */
+.qrw{position:relative;display:flex;align-items:center;gap:6mm;margin-top:5mm;background:#fff;border-radius:5mm;padding:4mm 4.5mm;box-shadow:0 2mm 8mm -4mm rgba(60,40,80,.35)}
+.qrw img{width:35mm;height:35mm;flex:none}
+.qrw b{display:block;font:700 12.5pt/1.2 'Fig'}
+.qrw p{font:500 9pt/1.4 'Fig';color:var(--muted);margin-top:1.5mm}
+.qrw .url{display:inline-block;margin-top:2.5mm;font:700 7.6pt 'Plex',monospace;color:var(--accent);background:var(--soft);padding:1.2mm 2mm;border-radius:1.5mm;word-break:break-all}
+/* kroky */
+.k{position:relative;margin-top:4.5mm}
+.k h2{display:flex;align-items:center;gap:2.5mm;font:700 11.5pt 'Plex',monospace;letter-spacing:-.01em}
+.k h2 .tag{font:700 6.5pt 'Plex',monospace;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--ink);padding:1mm 2mm;border-radius:1.5mm}
+ol{list-style:none;margin-top:2.4mm;display:grid;gap:1.8mm}
+li{display:flex;align-items:center;gap:3mm;background:#fff;border-radius:3mm;padding:2.6mm 3mm;border:.3mm solid var(--line)}
+li .n{flex:none;width:6.4mm;height:6.4mm;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 9.5pt 'Fig'}
+li .t{flex:1;font:500 9.6pt/1.3 'Fig'}
+li .t small{display:block;font-size:7.6pt;color:var(--muted);margin-top:.6mm}
+li .i{flex:none;width:8mm;height:8mm;border-radius:2mm;background:#f2f2f7;display:grid;place-items:center}
+li .i svg{width:5mm;height:5mm}
+.and{position:relative;margin-top:3mm;font:500 8.6pt/1.4 'Fig';color:var(--muted)}
+.and b{color:var(--ink)}
+/* pata */
+.ft{position:absolute;left:9mm;right:9mm;bottom:6mm;display:flex;justify-content:space-between;align-items:center;font:700 8pt 'Plex',monospace;color:var(--accent);border-top:.3mm solid var(--line);padding-top:2.6mm}
+.ft span{color:var(--muted);font-weight:700}
+</style>
+<body>
+<div class="page">
+  <img class="fl" src="../obrazky/fleky/flek06.webp" style="width:44mm;right:-15mm;top:38mm;transform:rotate(12deg);opacity:.9" alt="">
+  <img class="fl" src="../obrazky/fleky/flek16.webp" style="width:17mm;right:24mm;top:60mm;opacity:.85" alt="">
+  <img class="fl" src="../obrazky/fleky/flek09.webp" style="width:22mm;left:-7mm;bottom:20mm;opacity:.8" alt="">
+  <img class="fl" src="../obrazky/fleky/flek03.webp" style="width:16mm;right:-4mm;bottom:40mm;opacity:.8" alt="">
+
+  <div class="hd">
+    <div class="yr"><img src="../obrazky/cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
+    <div class="org"><img class="v" src="../obrazky/loga/vhos.webp" alt="VHOS, a.s."><small>ve spolupráci s</small><div class="s"><img src="../obrazky/loga/czwa.webp" alt="CzWA"><img src="../obrazky/loga/mov.webp" alt="ČR MOV"></div></div>
+  </div>
+
+  <h1>Konference<br>v telefonu</h1>
+  <p class="lead">Program, dotazy k přednáškám, aktuality, svoz i navigace – průvodce Seč&nbsp;27 máte stále po ruce. Bez instalace z obchodu, bez přihlašování.</p>
+
+  <div class="qrw">
+    <img src="../obrazky/qr-pruvodce.svg" alt="QR kód průvodce">
+    <div><b>Namiřte fotoaparát na QR kód</b><p>a klepněte na odkaz, který se objeví. Průvodce se otevře v prohlížeči.</p>
+      <span class="url">pkobelka.github.io/konference/pruvodce</span></div>
+  </div>
+
+  <div class="k">
+    <h2><span class="tag">iPhone</span>Na plochu za 3 klepnutí v Safari</h2>
+    <ol>
+      <li><span class="n">1</span><span class="t">Klepněte na <b>Sdílet</b><small>dole na liště · v novém iOS nejdřív <b>⋯</b> vpravo dole → Sdílet</small></span>
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span></li>
+      <li><span class="n">2</span><span class="t">Sjeďte níž a vyberte <b>Přidat na plochu</b></span>
+        <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="#1d1b20" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span></li>
+      <li><span class="n">3</span><span class="t">Klepněte na <b>Přidat</b><small>na ploše přibude ikona <b>Seč 27</b></small></span>
+        <span class="i"><img src="../ikony/apple-touch-icon.png" alt="" style="width:7mm;height:7mm;border-radius:1.6mm"></span></li>
+    </ol>
+    <p class="and">Otevřelo se vám to v e-mailu, WhatsAppu či Messengeru? Průvodce poradí – na plochu jde přidat <b>jen ze Safari</b>.<br>
+      <b>Android:</b> v Chromu klepněte na <b>⋮</b> → <b>Nainstalovat aplikaci</b> (nebo Přidat na plochu).</p>
+  </div>
+
+  <div class="ft">27.–28. dubna 2027 · Seč<span>Kongres hotel Jezerka</span></div>
+</div>
+</body>
+</html>

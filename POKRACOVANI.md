@@ -940,3 +940,7 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   funkce **`konferenceOnline`** v mojebudky (každou minutu) spočítá aktivní za 2,5 min, maže záznamy > 10 min a píše
   `konference2027_online/n = {n, ts, max, maxTs, den}`; telefony čtou jen `n`. **mojebudky PR #191 – sloučeno 21. 10.**
   (emulátor 11/11). Firebase má tarif **Blaze** (naplánované funkce) → 400+ spojení OK; 4. plánovač ≈ 0,10 USD/měsíc.
+
+### Leták
+- **Leták „Konference v telefonu“ (15. 10.):** `letak/iphone.html` (A5, QR průvodce, 3 kroky pro iPhone + řádek Android,
+  VHOS + CzWA/MOV vpravo nahoře), PDF a PNG: `node letak/pdf.js` → `letak/sec27-letak-iphone.pdf/.png`. **Na webu (21. 10.):** https://pkobelka.github.io/konference/letak/sec27-letak-iphone.pdf
