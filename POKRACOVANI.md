@@ -684,3 +684,5 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Průvodce 0.43 (nasazeno 15. 10.):** návod „Průvodce do telefonu“ je teď i **nahoře v Info** (nejde skrýt; na Domů jde
   křížkem skrýt jako dřív). iPhone kroky doplněny pro nový Safari (iOS 26: Sdílet pod ⋯; „Otevřít jako webovou aplikaci“).
   Kolegyně Petra (grafička, iPhone) to zkouší.
+- **Leták „Konference v telefonu“ (15. 10.):** `letak/iphone.html` (A5, QR průvodce, 3 kroky pro iPhone + řádek Android,
+  VHOS + CzWA/MOV vpravo nahoře), PDF a PNG: `node letak/pdf.js` → `letak/seč27-letak-iphone.pdf/.png`. Nenasazeno na web.
