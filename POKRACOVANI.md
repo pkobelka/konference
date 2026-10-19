@@ -785,3 +785,7 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
   (i pro upoutávku). Doporučeno spojit s hodnocením konference (nápad 2). Potřebuje uzel `konference2027_ohlasy` (veřejnost
   jen zápis, čte pořadatel) + pravidlo v repu mojebudky se svolením Petra.
 - **0.60:** v Programu klik na **číslo u dne** (Úterý · 6) – nebo na už vybraný den s novými dotazy – otevře okno „Nové dotazy · Úterý“ se seznamem přednášek; klik = posun na přednášku (Petrovi v PC „nic nedělalo“).
+- **Nápad Petra – proklik do sborníku (Petr ještě probere, NESTAVĚT):** sborník (PDF se slajdy přednášek) bude ke stažení
+  už v den konference. Návrh: u přednášky (Program i Poznámky) „📖 Sborník“ → PDF otevřené na stránce přednášky (`#page=N`;
+  na iOS může začít od začátku → ukázat i „strana N“), v Info „📖 Celý sborník“; čísla stran dohledat automaticky podle názvů
+  v PDF a dát Petrovi ke kontrole; PDF na webu VHOS nebo u průvodce; do offline jen na tlačítko „Uložit sborník do tabletu“.
