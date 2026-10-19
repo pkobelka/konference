@@ -54,7 +54,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
 .tabbar .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
 .tabbar button{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;background:none;border:0;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:color-mix(in srgb,var(--ink) 72%,transparent)}
-.tabbar svg{width:22px;height:22px}
+.tabbar svg{width:22px;height:22px}.tabbar button span{line-height:1.15;text-align:center}
 .tabbar button[aria-current="page"]{color:var(--accent)}
 .sec{display:flex;flex-direction:column;gap:12px;padding-block:4px 18px}
 .label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -1080,7 +1080,7 @@ IC.cal='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=
 IC.pen='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>';
 IC.pozn='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
 IC.dotaz='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.6 9.5a2.5 2.5 0 0 1 4.8.8c0 1.7-2.4 2.2-2.4 3.4"/><path d="M12 16.6h.01"/></svg>';
-const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["dotazy","Dotazy",IC.dotaz],["poznamky","Poznámky",IC.pozn],["partneri","Partneři",IC.part],["info","Info",IC.info]];
+const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["dotazy","Dotazy",IC.dotaz],["poznamky","Moje poznámky",IC.pozn],["partneri","Partneři",IC.part],["info","Info",IC.info]];
 /* Fotky – zatím zástupná místa, skutečné fotky nahraje pořadatel / fotograf */
 const ALBA=[
  {id:"a27",h:"2027 – 31. ročník",sub:"27.–28. dubna 2027 · fotky přibývají během konference",n:6,hue:150,cap:["Prezence","Zahájení","Legislativní blok","Výstava partnerů","Oběd","Společenský večer"]},
