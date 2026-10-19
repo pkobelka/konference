@@ -876,3 +876,4 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
 - **Průvodce**: posun živě (EventSource) + uložený v zařízení (`pr_posun`); v Programu červeně nové časy, přeškrtnutý původní,
   štítky „⏱ Posunuto o +10 min · původně …“, „⏱ Protahuje se do … (původně do …)“, „⏱ Začíná až v …“; „Právě teď“, odpočet,
   Upozornit i budíky jedou podle nových časů; upozornění „⏱ Pořadatel posunul program“.
+- **Pořadatel 1.21:** posun po minutách – u položky **[ − ] číslo [ + ] min** (jde i napsat) a **Uložit** (teprve pak zápis + aktualita), ✕ zruší. **Otevřené:** Petr chce samostatnou aplikaci **Předsedající** (bez ubytování): „▶ Začalo teď“ / „Skončilo teď“, posun ±1 min, dotazy s Přečteno; čeká na volbu přihlášení (A e-mail odkaz – doporučeno / B PIN) + pravidlo v mojebudky.
