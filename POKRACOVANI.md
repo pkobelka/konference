@@ -684,3 +684,16 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
 - **Průvodce 0.43 (nasazeno 15. 10.):** návod „Průvodce do telefonu“ je teď i **nahoře v Info** (nejde skrýt; na Domů jde
   křížkem skrýt jako dřív). iPhone kroky doplněny pro nový Safari (iOS 26: Sdílet pod ⋯; „Otevřít jako webovou aplikaci“).
   Kolegyně Petra (grafička, iPhone) to zkouší.
+
+### Průvodce 0.44 (19. 10. 2026) – NASAZENO
+Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main` na tuto větev (GitHub Pages).
+- **Logo VHOS v záhlaví** stránek (Program, Partneři, …) v bílé ochranné zóně podle manuálu (`.top .vh`: okraj ≈ výška loga).
+- **Doprava → Cesta na místo:** adresa + telefon recepce (klikací `tel:`) – Jezerka Ústupky 278, 538 07 Seč, 469 676 327
+  (druhé číslo 469 676 354, recepce@jezerka.cz); Kraskov Starý Dvůr 47, 538 43 Třemošnice, 464 600 411 (obecné číslo hotelu,
+  kraskov@eahotels.cz). Zdroj: kongresypardubickykraj.cz – **Petr má ověřit**. Navigace do Kraskova teď podle adresy.
+- **Program:** běžící přednáška výrazněji (podbarvení, tlustý pruh, plný štítek „Teď · do“, obarvený čas); čas od – do pod
+  sebou (`15:30 / – / 16:00`), konec větší (13/14 px).
+- **Hledání v programu** zvýrazní nalezený text (`hl()`, `<mark>`, bez ohledu na diakritiku).
+- **Palce 👍 u dotazů** místo „+1 Mám stejný“: tlačítko s počtem (palce od ostatních = votes−1), u vlastního dotazu počet bez
+  kliknutí, řazení podle palců; v Programu „? Dotaz · 2 · 👍 6“; u předsedajícího štítek 👍 N; na plátně „👍 N palců“.
+  Data Firebase beze změny (`v/{přednáška}/{klíč}/{zařízení}`).
