@@ -779,3 +779,8 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
   tlačítka Upravit / Namluvit / Vyfotit / ↗ V programu. Tlačítko „Moje poznámky“ v Programu i dlaždice na Domů vedou sem.
 - Petr se ptal, jak poslat všem zprávu: **aplikace pořadatele → Aktuality** (už funguje). Role: pořadatel (přihlášení), předsedající
   bez profilu (otevřená otázka A/B), účastníci bez přihlášení.
+- **Nápad Petra – „chvalte nás“ / ohlasy (zapsáno, NESTAVĚT, až řekne „uděláme ohlasy“):** návrh: karta „💬 Jak se vám líbí
+  průvodce?“ v Info + jednou na Domů ve středu odpoledne / po konferenci; 😍 🙂 😐 🙁, „Co se líbí“, „Co chybí“, nepovinný
+  podpis, „☐ Pořadatel může ohlas zveřejnit“. V aplikaci pořadatele přehled + výběr ohlasů do karty „Řekli o průvodci“ na Domů
+  (i pro upoutávku). Doporučeno spojit s hodnocením konference (nápad 2). Potřebuje uzel `konference2027_ohlasy` (veřejnost
+  jen zápis, čte pořadatel) + pravidlo v repu mojebudky se svolením Petra.
