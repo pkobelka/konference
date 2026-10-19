@@ -767,3 +767,4 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
   i soubory (když to telefon umí); stažený text uvádí „📷 fotka / 🎤 nahrávka + přepis“.
 - **Podpis v Info dole:** „© Petr Kobelka, VHOS, a.s. 2026“ (Petr: bez slova „aplikace“).
 - **0.56 – upozornění na soukromí a uložení:** po první poznámce (text, hlas i foto) jednou okno „Poznámky máte jen vy“ (jen v zařízení, nezálohované, po konferenci uložit; Rozumím / Ukázat moje poznámky); hlášky po uložení fotky a nahrávky „je jen v tomto zařízení“; použití Sdílet/Stáhnout/E-mail/PDF se počítá jako uloženo; od konce konference se při zavírání stránky s neuloženými poznámkami prohlížeč zeptá (`beforeunload` – jen počítač, vlastní text prohlížeče neukáže, mobil to obvykle ignoruje).
+- **0.56:** logo VHOS v záhlaví stránek je odkaz na www.vhos.cz (`.vhl`; na Domů už odkaz byl). **0.55 + 0.56 nasazeno 19. 10. večer.**
