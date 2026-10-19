@@ -220,7 +220,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .next{font-size:13px;border-top:1px solid var(--line);padding-top:8px}
 .next b{font-weight:700}
 .sim{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line);border-radius:12px;padding:8px 10px}
-.sim .r{display:flex;gap:8px;align-items:center}
+.sim .r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sim .r input[type=range]{flex:1;min-width:120px}
 .sim input[type=range]{flex:1;min-width:0;accent-color:var(--water)}
 .sim select{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:3px 4px}
 .sim b{color:var(--ink);font-variant-numeric:tabular-nums}
@@ -636,7 +636,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.65 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.66 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -688,15 +688,25 @@ ALLT.forEach(x=>{if(x.blok)return;x.a=mm(x.t);x.b=mm(x.e);if(x.a!=null&&x.b!=nul
 function clock(){ // skutečný čas během konference, jinak simulace
  const d=new Date(),iso=d.toISOString().slice(0,10),day=Object.keys(DATES).find(k=>DATES[k]===iso);
  if(day)return {day,m:d.getHours()*60+d.getMinutes(),real:1};
- return {day:S.sim.day,m:S.sim.m,real:0};
+ let m=S.sim.m+Math.floor((Date.now()-(S.sim.t0||Date.now()))/60000*(S.sim.x||1)),den=S.sim.day;   // ukázka: nastavený čas dál běží
+ if(m>=1440&&den==="ut"){den="st";m-=1440}if(m>1439)m=1439;
+ return {day:den,m,real:0};
 }
+function simNastav(day,m){S.sim.day=day;S.sim.m=m;S.sim.t0=Date.now()}
 const hm=m=>{m=((m%1440)+1440)%1440;return Math.floor(m/60)+":"+String(m%60).padStart(2,"0")};
 const mss=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
-const dur=m=>m>=60?Math.floor(m/60)+" h "+(m%60?m%60+" min":""):m+" min";
-function naAktualni(){   // Program → skok na právě běžící (nebo nejbližší další) bod
- const st=nowState(), x=st.cur||st.next||st.last;S.day=st.c.day;S.q="";S.mine=false;render();
- if(!st.cur)toast(st.next?"Teď nic neběží – další v "+st.next.t+": "+st.next.h:"Program dne skončil");
- if(x)ukazBod(x.id)}
+const dur=m=>m>=60?Math.floor(m/60)+" h"+(m%60?" "+m%60+" min":""):m+" min";
+function naAktualni(){   // „Právě teď“: běží-li něco, skok na to; jinak srozumitelné okno (ráno, volno, konec dne, konec konference)
+ const st=nowState(),c=st.c,D=DAYS.find(d=>d.k===c.day),di=DAYS.indexOf(D),dalsi=DAYS[di+1];
+ const ukaz=(den,x)=>{closeSheet();S.day=den;S.q="";S.mine=false;if(S.tab!=="program")S.tab="program";render();if(x)setTimeout(()=>ukazBod(x.id),60)};
+ if(st.cur)return ukaz(c.day,st.cur);
+ const okno=(h,t,tl)=>{openSheet(`<h2>${h}</h2><div class="bd"><p style="margin:0 0 12px">${t}</p><div class="cact">${tl}</div></div>`,true)};
+ const bod=x=>`<b>${esc(x.t)}</b> – ${esc(x.h)}`;
+ if(st.next&&st.first&&c.m<st.first.a){okno("Zatím nic neběží",`${D.n} ${D.d} začíná program v ${bod(st.first)}.<br><span class="muted">Zbývá ${dur(st.first.a-c.m)}.</span>`,`<button class="cbtn" data-nowuk="${c.day}|${st.first.id}" style="border:0">Ukázat v programu</button>`);return}
+ if(st.next){okno("Teď je volno",`Další bod programu v ${bod(st.next)}.<br><span class="muted">Za ${dur(st.next.a-c.m)}.</span>`,`<button class="cbtn" data-nowuk="${c.day}|${st.next.id}" style="border:0">Ukázat v programu</button>`);return}
+ if(dalsi){const f=PROG[dalsi.k].find(x=>!x.blok&&x.a!=null);okno("Dnešní program skončil",`Děkujeme za dnešek! Zítra (${dalsi.n.toLowerCase()} ${dalsi.d}) začínáme v ${bod(f)}.`,`<button class="cbtn" data-nowuk="${dalsi.k}|${f.id}" style="border:0">Ukázat zítřejší program</button>`);return}
+ okno("Konference skončila",`Děkujeme za účast na 31. ročníku a těšíme se na shledanou <b>4.–5. dubna 2028</b> v Seči.<br><span class="muted">Nezapomeňte si uložit poznámky – a budeme rádi za váš ohlas.</span>`,
+  `<button class="cbtn" data-ohl="0" style="border:0">💬 Napsat ohlas</button><button class="cbtn" data-go="poznamky" style="border:0">📝 Moje poznámky</button><button class="cbtn" data-kal="2028" style="border:0">📅 Termín 2028</button>`)}
 function ukazBod(id){const el=$("t-"+id);if(!el)return;el.scrollIntoView({block:"center",behavior:"smooth"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1700)}
 function naPrednasku(id,dotazy){   // přepne den, zruší filtry a posune na přednášku (a případně otevře její dotazy)
  const d=Object.keys(PROG).find(k=>PROG[k].some(y=>y.id===id));if(!d)return;closeSheet();S.day=d;S.q="";S.mine=false;if(S.tab!=="program")S.tab="program";render();setTimeout(()=>{ukazBod(id);if(dotazy)setTimeout(()=>sheetQ(id),450)},60)}
@@ -892,7 +902,7 @@ const NEWS=[
 
 /* ===== Stav (jen v tomto telefonu) ===== */
 const store={get(k,d){try{const v=localStorage.getItem("pr_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pr_"+k,JSON.stringify(v))}catch(e){}}};
-const S={sim:{day:"ut",m:10*60+2},tab:"domu",day:"ut",q:"",mine:false,notes:store.get("notes",{}),alarms:store.get("alarms",{}),fired:store.get("fired",{}),
+const S={sim:{day:"ut",m:10*60+2,t0:Date.now(),x:1},tab:"domu",day:"ut",q:"",mine:false,notes:store.get("notes",{}),alarms:store.get("alarms",{}),fired:store.get("fired",{}),
  qa:store.get("qa",null)||{ut5:[{t:"Kdy můžeme čekat transpozici nové směrnice do české legislativy?",a:"Jan, VaK",c:"9:31",v:6}],ut6:[{t:"Týká se nový reporting i ČOV pod 2 000 EO?",a:"anonymně",c:"9:58",v:3},{t:"Budou data z reportingu veřejně dostupná?",a:"Lenka, PVK",c:"10:04"}],ut9:[{t:"Jak řešíte odpovědnost za rozhodnutí, která navrhne AI?",a:"Petra",c:"11:21",v:4}]},
  read:store.get("read",{}),seen:store.get("seen",{}),voted:store.get("voted",{}),me:store.get("me",{jm:"",firma:""})};
 /* ===== Moje registrace (osobní karta z aplikace pořadatele) ===== */
@@ -1174,9 +1184,10 @@ function vNow(){
  else if(next&&first&&c.m<first.a){h=`<button class="now" data-goday="${c.day}"><div class="lbl">${D.n} ${D.d}</div><h2>Program začne za ${dur(first.a-c.m)}</h2><div class="next">V ${esc(first.t)}: <b>${esc(first.h)}</b></div></button>`}
  else if(next){h=`<button class="now brk" data-goday="${c.day}"><div class="lbl">Volno</div><h2>Další bod programu za ${dur(next.a-c.m)}</h2><div class="next">V ${esc(next.t)}: <b>${esc(next.h)}</b></div></button>`}
  else{h=`<div class="now"><div class="lbl">${D.n} ${D.d}</div><h2>Program dne skončil</h2><div class="who">${c.day==="st"?"Děkujeme za účast a těšíme se příště.":"Zítra pokračujeme – podívejte se do programu."}</div></div>`}
- if(!c.real)h+=`<div class="sim"><div>Ukázka: konference teď neprobíhá, posuňte si čas. V ostré verzi to jde podle hodin.</div>
-  <div class="r"><select id="simday" aria-label="Den">${DAYS.map(d=>`<option value="${d.k}" ${S.sim.day===d.k?"selected":""}>${d.n}</option>`).join("")}</select>
-  <input type="range" id="simm" min="420" max="1440" step="5" value="${S.sim.m}" aria-label="Čas"><b id="simt">${hm(S.sim.m)}</b></div></div>`;
+ if(!c.real)h+=`<div class="sim"><div>Ukázka: konference teď neprobíhá – nastavte si den a čas, dál poběží sám (jde i zrychlit). V ostré verzi jde podle hodin.</div>
+  <div class="r"><select id="simday" aria-label="Den">${DAYS.map(d=>`<option value="${d.k}" ${c.day===d.k?"selected":""}>${d.n}</option>`).join("")}</select>
+  <input type="range" id="simm" min="420" max="1439" step="5" value="${c.m}" aria-label="Čas"><b id="simt">${hm(c.m)}</b>
+  <select id="simx" aria-label="Rychlost času" title="Rychlost času">${[[1,"čas běží"],[10,"10× rychleji"],[60,"60× rychleji"]].map(([v,t])=>`<option value="${v}" ${(S.sim.x||1)===v?"selected":""}>${t}</option>`).join("")}</select></div></div>`;
  return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px">${h}</div>`;
 }
 function match(x){if(!S.q)return true;return norm(x.h+" "+x.w).includes(norm(S.q))}
@@ -1772,7 +1783,11 @@ if(window.IMGBASE&&"serviceWorker" in navigator){navigator.serviceWorker.registe
 function openSheet(h,stred){const s=$("sheet");s.classList.toggle("stred",!!stred);s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+h;s.hidden=false;$("bd").hidden=false;$("sclose").focus()}
 function closeSheet(){SHEET_DRAW=null;if(REC.mr)REC.mr.stop();if(HR){HR.pause();HR=null}$("sheet").hidden=true;$("bd").hidden=true}
 $("bd").addEventListener("click",closeSheet);
-$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();{const op=e.target.closest("[data-ohlp]");if(op){closeSheet();return sheetOhlas(+op.dataset.ohlp)}}{const nx=e.target.closest("[data-nx]");if(nx){const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[nx.dataset.nx];if(f){store.set("poznUlozeno",pocetVeci());closeSheet();render();f()}return}}{const nq=e.target.closest("[data-naq]");if(nq)return naPrednasku(nq.dataset.naq)}if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();
+ {const nu=e.target.closest("[data-nowuk]");if(nu){const [d,id]=nu.dataset.nowuk.split("|");closeSheet();S.day=d;S.q="";S.mine=false;S.tab="program";render();return setTimeout(()=>ukazBod(id),60)}}
+ {const o=e.target.closest("[data-ohl]");if(o){closeSheet();return sheetOhlas(+o.dataset.ohl)}}
+ {const g2=e.target.closest("[data-go]");if(g2){closeSheet();return go(g2.dataset.go)}}
+ {const k2=e.target.closest("[data-kal]");if(k2){closeSheet();return sheetKal(k2.dataset.kal)}}{const op=e.target.closest("[data-ohlp]");if(op){closeSheet();return sheetOhlas(+op.dataset.ohlp)}}{const nx=e.target.closest("[data-nx]");if(nx){const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[nx.dataset.nx];if(f){store.set("poznUlozeno",pocetVeci());closeSheet();render();f()}return}}{const nq=e.target.closest("[data-naq]");if(nq)return naPrednasku(nq.dataset.naq)}if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
 
 /* ===== Události ===== */
@@ -1817,8 +1832,8 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.nx){const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[t.dataset.nx];if(f){f();store.set("poznUlozeno",pocetVeci())}return}
  if(t.dataset.nxok!==undefined){store.set("poznUlozeno",pocetVeci());return render()}
 });
-$("view").addEventListener("change",e=>{if(e.target.id==="simday"){S.sim.day=e.target.value;$("nowbox").outerHTML=vNow()}});
-$("view").addEventListener("click",e=>{const g=e.target.closest(".now[data-goday]");if(g){S.day=g.dataset.goday;S.q="";S.mine=false;go("program");const l=document.querySelector(".talk.live");if(l)l.scrollIntoView({block:"center"})}});
+$("view").addEventListener("change",e=>{if(e.target.id==="simday"){simNastav(e.target.value,clock().m);$("nowbox").outerHTML=vNow()}if(e.target.id==="simx"){const c=clock();simNastav(c.day,c.m);S.sim.x=+e.target.value;$("nowbox").outerHTML=vNow()}});
+$("view").addEventListener("click",e=>{const g=e.target.closest(".now[data-goday]");if(g)naAktualni()});
 setInterval(()=>{if(clock().real)render()},30000);
 $("view").addEventListener("submit",e=>{if(e.target.id!=="pf")return;e.preventDefault();S.me={jm:$("pjm").value.trim(),firma:$("pfirma").value.trim()};store.set("me",S.me);render();toast(podpis()?"Profil uložen":"Profil je prázdný")});
 $("view").addEventListener("click",e=>{
@@ -1827,7 +1842,7 @@ $("view").addEventListener("click",e=>{
 $("view").addEventListener("submit",e=>{if(e.target.id!=="kf")return;e.preventDefault();const k=kartaKlic($("kin").value);if(!k)return toast("To nevypadá jako odkaz z e-mailu");kartaNacti(k)});
 $("view").addEventListener("click",e=>{if(e.target.id==="pdel"){S.me={jm:"",firma:""};store.set("me",S.me);render();toast("Profil smazán")}});
 $("view").addEventListener("input",e=>{
- if(e.target.id==="simm"){S.sim.m=+e.target.value;$("nowbox").outerHTML=vNow();$("simm").focus();return}if(e.target.id==="dqq"){S.dqq=e.target.value;const pos=e.target.selectionStart;render();const q=$("dqq");q.focus();q.setSelectionRange(pos,pos);return}if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
+ if(e.target.id==="simm"){simNastav(clock().day,+e.target.value);$("nowbox").outerHTML=vNow();$("simm").focus();return}if(e.target.id==="dqq"){S.dqq=e.target.value;const pos=e.target.selectionStart;render();const q=$("dqq");q.focus();q.setSelectionRange(pos,pos);return}if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
 (function(){try{const pr=new URLSearchParams(location.search).get("pr");if(pr&&ALLT.some(y=>y.blok&&y.bid===pr))setTimeout(()=>sheetChair(pr),300)}catch(e){}})();   // počítač v sále: …/pruvodce/?pr=utb4
 // „Moje registrace“ (osobní karta přes ?k=) zrušena 19. 10. 2026 – kód karty zůstává nepoužitý
 try{if(new URLSearchParams(location.search).has("k"))history.replaceState(null,"",location.pathname+location.hash)}catch(e){}
@@ -1837,8 +1852,10 @@ liveStart();aktStart();offlUkaz();outFlush();medNacti();ohlNacti();ohlCekajici()
 // Program a Dotazy se s během času samy obnoví (běžící přednáška, Upozornit) – ne při psaní ani s otevřeným oknem
 let TIK=(c=>c.day+c.m)(clock());setTimeout(ohlProsba,4000);PRED=(s=>s.cur&&s.cur.id||null)(nowState());
 setInterval(()=>{const c=clock(),k=c.day+c.m;if(k===TIK)return;TIK=k;poznPoPrednasce();ohlProsba();
- if(!(S.tab==="program"||S.tab==="dotazy"||S.tab==="domu")||!$("sheet").hidden)return;const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;
- const y=scrollY;render();scrollTo(0,y)},15000);
+ if(!(S.tab==="program"||S.tab==="dotazy"||S.tab==="domu")||!$("sheet").hidden)return;const a=document.activeElement;
+ if(S.tab==="domu"){if($("nowbox")&&!(a&&a.closest&&a.closest("#nowbox")))$("nowbox").outerHTML=vNow();return}
+ if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;
+ const y=scrollY;render();scrollTo(0,y)},1000);
 // na konci konference: při zavírání stránky s neuloženými poznámkami se prohlížeč zeptá (na počítači; mobil to obvykle ignoruje)
 // Neuložené poznámky při odchodu: prohlížeč nedovolí vlastní okno při zavírání, proto tři pojistky:
 // 1) počítač – obecný dotaz prohlížeče „Opustit stránku?“; 2) mobil – upozornění v telefonu, když aplikaci schová

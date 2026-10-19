@@ -853,3 +853,9 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
     uprostřed** „Budeme rádi za váš názor“ s tvářemi → formulář; „Napsat to můžete i kdykoli: Info → Ohlasy“.
   - Okna uprostřed obrazovky: `openSheet(html, true)` (`.sheet.stred`).
   - Info → Web: jen www.vhos.cz (czwa.cz pryč; Petr pak dodá přesný odkaz, nejspíš vhos.cz/konference).
+- **0.66 – ukázkový čas běží:** na Domů (karta Právě teď) nastavený den a čas dál plyne (`S.sim.t0`, `simNastav()`), volba
+  rychlosti **čas běží / 10× / 60× rychleji** (`S.sim.x`); po půlnoci úterý → středa. Tik každou 1 s: Domů obnoví jen kartu
+  Právě teď, Program/Dotazy celé (Upozornit mizí, přednáška se posouvá, okno „Přednáška skončila“).
+- **„Právě teď“ mimo program** (tlačítko v Programu i karta na Domů, `naAktualni()`) – okno uprostřed: ráno „Zatím nic neběží –
+  začíná v 8:00 …, zbývá …“; mezera „Teď je volno – další bod v …“; úterý večer po programu „Dnešní program skončil – zítra začínáme
+  v 9:00 …“; středa po konci „Konference skončila – děkujeme, 4.–5. dubna 2028“ + Napsat ohlas / Moje poznámky / Termín 2028.
