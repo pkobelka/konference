@@ -221,7 +221,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .sim b{color:var(--ink);font-variant-numeric:tabular-nums}
 .talk.live{background:var(--water-soft);border-left:6px solid var(--water);box-shadow:0 0 0 2px var(--water),0 12px 28px -14px rgba(31,122,140,.55)}
 .talk.live h3{font-size:17px}
-.livechip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--surface);background:var(--water);border-radius:99px;padding:3px 10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.livechip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:#fff;background:#d32f2f;animation:liveR 1.2s ease-in-out infinite;border-radius:99px;padding:3px 10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 @media (prefers-reduced-motion: reduce){.dot{animation:none}}
 .det{margin:8px 0 0;padding:8px 10px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px;display:flex;flex-direction:column;gap:3px}
 .det li::before{content:"·";margin-right:6px;color:var(--warn);font-weight:800}
@@ -281,6 +281,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .micb{border:1px dashed var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:8px 12px;font-weight:700;font-size:14px}
 .micb.on{border-style:solid;background:#b0413e;color:#fff;border-color:#b0413e;animation:glowR 1.4s ease-in-out infinite}
 @keyframes glowR{50%{box-shadow:0 0 0 5px rgba(176,65,62,.25)}}
+@keyframes liveR{50%{background:#a31515;box-shadow:0 0 0 5px rgba(211,47,47,.28)}}
+@media (prefers-reduced-motion: reduce){.livechip{animation:none}}
 #qprev{display:flex;align-items:center;gap:10px;flex-wrap:wrap} #qprev audio,.qau{height:36px;max-width:100%}
 .qau{display:block;margin:6px 0 2px}
 .cq .play,.play{display:block;width:auto;min-width:0;height:auto;margin:8px 0 6px;border:0;border-radius:10px;padding:10px 16px;font-weight:800;font-size:15px;background:var(--water);color:var(--surface)}
@@ -562,7 +564,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.44 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.45 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
