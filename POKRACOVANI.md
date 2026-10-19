@@ -723,3 +723,16 @@ Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main
   5. plánek areálu Jezerky se stánky vystavovatelů (u partnera „stánek č. X“);
   6. push upozornění při nové aktualitě (změna programu);
   7. dálkové promítání dotazů (PIN bloku + pravidlo mojebudky).
+
+### ▶ PŘÍŠTĚ ZAČÍT TADY (19. 10. 2026, konec) – Petr: „je toho moc, dořešíme v klidu“
+Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo možností najednou** (1–2, s doporučením).
+1. **První krok příště: průvodce bez signálu (offline)** – service worker `pruvodce/sw.js` teď nic necachuje. Uložit do
+   mezipaměti stránku, obrázky (loga, fleky, 31) a poslední stav dat; dotazy/palce poslat po obnovení spojení; bez zásahu
+   do Firebase pravidel. Doporučeno Petrovi, souhlasil, že se do toho pustíme příště.
+2. **Předsedající – otevřená otázka (Petr rozhodne později):** dnes nemá zvláštní profil; „Pohled předsedajícího“ vidí každý,
+   „Přečteno“ jen v jeho telefonu, mazat dotazy umí jen pořadatel (aplikace pořadatele).
+   - **A (doporučeno první):** tlačítko schovat před účastníky, každý předsedající dostane svůj odkaz/QR `?pr=<blok>`,
+     v aplikaci pořadatele seznam odkazů pro všechny bloky. Bez změny pravidel.
+   - **B (později):** tajný odkaz/PIN bloku → „✓ Zodpovězeno“ viditelné všem, skrytí nevhodného dotazu, Přečteno na všech
+     zařízeních, dálkové promítání. Potřebuje nová pravidla v repu mojebudky (se svolením Petra).
+3. Ostatní nápady (hodnocení, prezentace PDF, Wi-Fi, plánek, push upozornění) – viz oddíl výše, až po bodech 1–2.
