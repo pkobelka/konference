@@ -860,3 +860,4 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
   začíná v 8:00 …, zbývá …“; mezera „Teď je volno – další bod v …“; úterý večer po programu „Dnešní program skončil – zítra začínáme
   v 9:00 …“; středa po konci „Konference skončila – děkujeme, 4.–5. dubna 2028“ + Napsat ohlas / Moje poznámky / Termín 2028.
 - **0.66:** záložka v menu se jmenuje **„Moje poznámky“** (v úzkém mobilu na 2 řádky).
+- **0.67:** v záložce Dotazy je **👍 u každého dotazu klikací** (dát / vzít zpět palec rovnou v seznamu, `hlasuj()`; u vlastního dotazu jen počet); klik na text dotazu otevře okno dotazů.
