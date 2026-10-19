@@ -1447,7 +1447,7 @@ function sheetHlas(tid){
   <div class="note">Nahrávat můžete až 5 minut. Nahrávky najdete u přednášky a v ✎ Poznámkách, kde si je můžete i sdílet.</div></div>`);
  $("hmic").addEventListener("click",()=>nahravej((u,b,sek)=>{if(!$("haud"))return;BL=b;SEK=sek;$("haud").src=u;$("hprev").hidden=false;$("hsave").disabled=false},{b:"hmic",info:"hrec",ta:"ht",max:300,znovu:"🎤 Nahrát znovu"}));
  $("hsave").addEventListener("click",()=>{if(REC.mr)return toast("Nejdřív ukončete nahrávání");if(!BL)return;
-  medPridej(tid,"hlas",BL,{prepis:$("ht").value.trim(),sek:SEK}).then(()=>{closeSheet();toast("🎤 Nahrávka uložena k přednášce")}).catch(()=>toast("Nahrávku se nepodařilo uložit"))})}
+  medPridej(tid,"hlas",BL,{prepis:$("ht").value.trim(),sek:SEK}).then(()=>{closeSheet();toast("🎤 Nahrávka uložena – je jen v tomto zařízení")}).catch(()=>toast("Nahrávku se nepodařilo uložit"))})}
 function sheetMed(mid){
  const m=medNajdi(mid);if(!m)return;const x=ALLT.find(y=>y.id===m.tid),kdy=new Date(m.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"});
  const jm="konference-2027-"+(x?x.t.replace(":","")+"-":"")+m.id+(m.typ==="foto"?".jpg":m.blob.type.includes("mp4")?".m4a":".webm");
@@ -1457,8 +1457,16 @@ function sheetMed(mid){
  $("mdel").addEventListener("click",()=>{if(!confirm(m.typ==="foto"?"Smazat fotku?":"Smazat nahrávku?"))return;medSmaz(m).then(()=>{closeSheet();toast("Smazáno")})})}
 
 /* ===== Export poznámek ===== */
+function prvniPozn(){   // po první poznámce (text, hlas, foto) jednou vysvětlit, kde poznámky jsou a jak si je uložit
+ if(store.get("poznInfo",0))return;store.set("poznInfo",1);
+ setTimeout(()=>{openSheet(`<h2>Poznámky máte jen vy</h2><div class="bd">
+  <div class="nsoukr">🔒 Poznámky, nahrávky i fotky jsou uložené <b>jen v tomto zařízení</b>. Na server se neposílají a nikdo jiný je neuvidí.</div>
+  <p style="margin:0 0 6px">Nejsou ale nikde zálohované. Když vymažete data prohlížeče nebo změníte telefon, zmizí.</p>
+  <p style="margin:0 0 12px"><b>Po konferenci si je proto uložte</b> – tlačítkem ✎ Poznámky v Programu je můžete sdílet, stáhnout, poslat e-mailem nebo vytisknout do PDF. Na konci konference vám to průvodce připomene.</p>
+  <div class="cact"><button class="cbtn" id="pzok" style="border:0">Rozumím</button><button class="cbtn" id="pzted" style="border:0">Ukázat moje poznámky</button></div></div>`);
+  $("pzok").addEventListener("click",closeSheet);$("pzted").addEventListener("click",()=>{closeSheet();S.mine=true;go("program")})},700)}
 function drzData(){   // požádá prohlížeč, ať poznámky nemaže (uživatel nic nevidí)
- try{const st=navigator.storage;if(st&&st.persist)st.persisted().then(p=>p||st.persist()).catch(()=>{})}catch(e){}}
+ prvniPozn();try{const st=navigator.storage;if(st&&st.persist)st.persisted().then(p=>p||st.persist()).catch(()=>{})}catch(e){}}
 const pocetPoznamek=()=>ALLT.filter(x=>x.id&&maPozn(x.id)).length;
 const umiSdilet=()=>!!(navigator.share&&matchMedia("(pointer:coarse)").matches);
 function nexpBtns(){return `<div class="nexp">${umiSdilet()?'<button data-nx="share">📤 Sdílet</button>':""}<button data-nx="txt">⬇ Stáhnout text</button><button data-nx="mail">✉ Poslat e-mailem</button><button data-nx="pr">🖨 Vytisknout / PDF</button></div>`}
@@ -1603,7 +1611,7 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.note)return sheetNote(t.dataset.note);
  if(t.dataset.p)return sheetP(t.dataset.p);
  if(t.id==="mine"){S.mine=!S.mine;return render()}
- if(t.dataset.nx){const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[t.dataset.nx];if(f)f();return}
+ if(t.dataset.nx){const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[t.dataset.nx];if(f){f();store.set("poznUlozeno",pocetPoznamek())}return}
  if(t.dataset.nxok!==undefined){store.set("poznUlozeno",pocetPoznamek());return render()}
 });
 $("view").addEventListener("change",e=>{if(e.target.id==="simday"){S.sim.day=e.target.value;$("nowbox").outerHTML=vNow()}});
@@ -1627,8 +1635,10 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.karta&&
 {const sq=store.get("snapQ",null);if(sq&&sq.q){LIVE.q=sq.q;LIVE.v=sq.v||{};OUT.l.forEach(o=>liveApply(o.path,o.val));LIVE.on=true;S.voted={};liveRebuild()}
  const sa=store.get("snapA",null);if(sa&&typeof sa==="object"){AKT.raw=sa;aktSeznam();render()}}   // bez signálu poslední uložený stav
 liveStart();aktStart();offlUkaz();outFlush();medNacti();
+// na konci konference: při zavírání stránky s neuloženými poznámkami se prohlížeč zeptá (na počítači; mobil to obvykle ignoruje)
+addEventListener("beforeunload",e=>{if(poznUlozit()){e.preventDefault();e.returnValue=""}});
 $("fotoin").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0],tid=e.target.dataset.tid;if(!f||!tid)return;
- zmensi(f).catch(()=>f).then(b=>medPridej(tid,"foto",b)).then(()=>toast("📷 Fotka uložena k přednášce – vidíte ji jen vy")).catch(()=>toast("Fotku se nepodařilo uložit"))});
+ zmensi(f).catch(()=>f).then(b=>medPridej(tid,"foto",b)).then(()=>toast("📷 Fotka uložena k přednášce – je jen v tomto zařízení")).catch(()=>toast("Fotku se nepodařilo uložit"))});
 if(FS.umi){document.addEventListener("fullscreenchange",fsKresli);document.addEventListener("webkitfullscreenchange",fsKresli);fsKresli()}
 document.addEventListener("click",e=>{if(e.target.closest("[data-fs]"))fsToggle()});
 $("toast").addEventListener("click",()=>{const f=toast.klik;if(!f)return;$("toast").hidden=true;toast.klik=null;f()});
