@@ -685,7 +685,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   křížkem skrýt jako dřív). iPhone kroky doplněny pro nový Safari (iOS 26: Sdílet pod ⋯; „Otevřít jako webovou aplikaci“).
   Kolegyně Petra (grafička, iPhone) to zkouší.
 
-### Průvodce 0.44–0.46 (19. 10. 2026) – NASAZENO
+### Průvodce 0.44–0.47 (19. 10. 2026) – NASAZENO
 Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main` na tuto větev (GitHub Pages).
 - **Logo VHOS v záhlaví** stránek (Program, Partneři, …) v bílé ochranné zóně podle manuálu (`.top .vh`: okraj ≈ výška loga).
 - **Doprava → Cesta na místo:** adresa + telefon recepce (klikací `tel:`) – Jezerka Ústupky 278, 538 07 Seč, 469 676 327
@@ -702,3 +702,7 @@ Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main
 - Petr se ptal na **soukromé poznámky**: už fungují (jen v zařízení, localStorage `pr_notes`; tisk/PDF, stažení .txt, e-mail
   vč. názvu přednášky). Nabídnuto (zatím neuděláno): `navigator.storage.persist()`, připomínka „uložte si poznámky“ na konci
   konference, sdílení přes Web Share API, věta „vidíte jen vy“ přímo u psaní poznámky.
+- **0.47 (Petr chtěl všechny 4):** `drzData()` = `navigator.storage.persist()` při uložení poznámky; `poznUlozit()` – karta
+  „Máte N poznámek – uložte si je“ na Domů i v Programu od středy 11:40 (začátek Závěrečného souhrnu) a po konferenci,
+  zavírá „Hotovo, mám uloženo“ (`pr_poznUlozeno` = počet, při nové poznámce se ukáže znovu); `nexpBtns()` s 📤 Sdílet
+  (Web Share, jen dotyková zařízení) / Stáhnout / E-mail / PDF (`data-nx`); u psaní poznámky nahoře `.nsoukr` „🔒 Poznámku vidíte jen vy…“.
