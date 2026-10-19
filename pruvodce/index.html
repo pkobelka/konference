@@ -105,9 +105,11 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .block{background:var(--water);color:var(--surface);border-radius:15px 15px 10px 10px;padding:11px 12px;margin:0 -8px}
 .block .chairbtn{background:color-mix(in srgb,var(--surface) 20%,transparent);color:inherit;border:1px solid color-mix(in srgb,var(--surface) 55%,transparent)}
 .block h2{font-size:16px} .block p{margin:2px 0 0;font-size:13px}
-.slot{display:grid;grid-template-columns:52px 1fr;gap:10px}
+.slot{display:grid;grid-template-columns:60px 1fr;gap:10px}
 .slot .t{font-family:var(--f-display);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;padding-top:11px;line-height:1.1}
-.slot .t small{display:block;font-family:var(--f-body);font-weight:500;font-size:11px;color:var(--muted)}
+.slot .t small{display:block;font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--muted);margin-top:2px}
+.slot .t i{display:block;font-style:normal;font-weight:500;color:var(--muted);line-height:.8}
+.slot.live .t,.slot.live .t small,.slot.live .t i{color:var(--water)}
 .talk{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:11px 12px;min-width:0;display:flex;gap:8px;align-items:flex-start;border-left:4px solid transparent}
 .talk.mine{border-left-color:var(--accent)}
 .mynote{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--accent-soft);font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
@@ -215,8 +217,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .sim input[type=range]{flex:1;min-width:0;accent-color:var(--water)}
 .sim select{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:3px 4px}
 .sim b{color:var(--ink);font-variant-numeric:tabular-nums}
-.talk.live{box-shadow:0 0 0 2px var(--water),var(--shadow)}
-.livechip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--water);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.talk.live{background:var(--water-soft);border-left:6px solid var(--water);box-shadow:0 0 0 2px var(--water),0 12px 28px -14px rgba(31,122,140,.55)}
+.talk.live h3{font-size:17px}
+.livechip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--surface);background:var(--water);border-radius:99px;padding:3px 10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 @media (prefers-reduced-motion: reduce){.dot{animation:none}}
 .det{margin:8px 0 0;padding:8px 10px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px;display:flex;flex-direction:column;gap:3px}
 .det li::before{content:"·";margin-right:6px;color:var(--warn);font-weight:800}
@@ -339,7 +342,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
   .quick,.gen{grid-template-columns:repeat(4,1fr)}
   .g2{grid-template-columns:repeat(4,1fr)}
   .g3{grid-template-columns:repeat(6,1fr)}
-  .slot{grid-template-columns:72px 1fr}
+  .slot{grid-template-columns:84px 1fr}
+  .slot .t small{font-size:14px}
+  .talk.live h3{font-size:18px}
   .talk h3{font-size:16px}
   .sheet{top:6vh;bottom:auto;max-height:88vh;border-radius:20px;max-width:680px}
   .sheet .grab{display:none}
@@ -1044,7 +1049,7 @@ function vProgram(){
    if(x.blok){open=x.bid;const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter(q=>!S.read[y.id+":"+q.k]).length,0);
     return pre+`<div class="bgrp"><div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
    const f=!!S.notes[x.id], st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
-   let h=pre+`<div class="slot"><div class="t">${esc(x.t)}${x.e?`<small>–${esc(x.e)}</small>`:""}</div>
+   let h=pre+`<div class="slot${live?" live":""}"><div class="t">${esc(x.t)}${x.e?`<i>–</i><small>${esc(x.e)}</small>`:""}</div>
     <div class="talk ${x.brk?"brk":""} ${f?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)}</div>`:""}<h3>${esc(x.h)}</h3>${x.w?`<div class="who">${esc(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${f?`<div class="mynote"><b>Moje poznámka</b>${esc(S.notes[x.id])}</div>`:""}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${badge(novych(x.id))}</button><button class="nbtn" data-note="${x.id}">✎ ${f?"Upravit poznámku":"Poznámka"}</button><button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?"Upozorním "+S.alarms[x.id].m+" min předem":"Upozornit"}</button>`:""}</div>
 </div></div>`;
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
