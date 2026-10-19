@@ -317,7 +317,16 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .mreg.mini{cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
 .kform{display:flex;gap:8px;margin-top:8px}.kform input{flex:1;min-width:0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);font:inherit}
 .cbtn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:10px;padding:9px 13px;font-weight:700;font-size:14px;background:var(--accent);color:var(--accent-ink)}
-.cbtn+.cbtn{background:var(--accent-soft);color:var(--accent)}
+.cbtn+.cbtn,.cbtn.alt{background:var(--accent-soft);color:var(--accent)}
+.hotely{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.hotel{display:flex;flex-direction:column;gap:3px;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);min-width:0}
+.hotel.hl{border:2px solid var(--accent);background:var(--accent-soft)}
+.hotel .hk{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.hotel.hl .hk{color:var(--accent)}
+.hotel b{font-size:16px;line-height:1.25;margin-bottom:2px}.hotel.hl b{font-size:18px}
+.hotel .ha{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.hotel .hb{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px}.hotel .hb>*{flex:1 1 auto;justify-content:center;text-align:center}
+@media (max-width:560px){.hotel .rc{display:none}.hotel .hb>*{flex-basis:100%}}.hotel .hb .tel{margin-top:0}.hotel .hb .cbtn{padding:6px 11px;font-size:13px}
+.hotel .tel{display:inline-block;padding:5px 11px;border-radius:99px;background:var(--water-soft);color:var(--water);font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap}
 .nbtn.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .how{display:flex;flex-direction:column;gap:8px}
 .amv{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;color:var(--muted)}
@@ -567,7 +576,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.48 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.49 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -1129,8 +1138,12 @@ function vDoprava(){
     :`<p style="margin:0"><button class="cbtn" data-doprava="1" style="border:0">🚌 Mám zájem o dopravu</button></p>`}
   </div>
   <div class="card"><div class="label" style="margin-bottom:8px">Cesta na místo</div>
-   <dl class="kv"><dt>Konference</dt><dd>${MISTO.nazev}<span class="hadr">${MISTO.adr}</span><a class="tel" href="${telUrl(MISTO.tel)}">📞 Recepce ${MISTO.tel}</a></dd><dt>GPS</dt><dd>${MISTO.gps}</dd><dt>Parkování</dt><dd>u hotelu (upřesníme)</dd><dt>Ubytování</dt><dd>${KRASKOV.nazev}<span class="hadr">část hostů · asi 9 km od Jezerky<br>${KRASKOV.adr}</span><a class="tel" href="${telUrl(KRASKOV.tel)}">📞 Recepce ${KRASKOV.tel}</a></dd></dl>
-   <div class="cact" style="margin-top:10px"><button class="cbtn" data-nav="1" style="border:0">🧭 Navigovat na Jezerku</button><button class="cbtn" data-nav="kraskov" style="border:0">🧭 Navigovat do Kraskova</button></div>
+   <div class="hotely">
+    <div class="hotel hl"><span class="hk">Konference + ubytování</span><b>${MISTO.nazev}</b><span class="ha">${MISTO.adr}</span><span class="ha">GPS ${MISTO.gps}</span><span class="ha">Parkování u hotelu (upřesníme)</span>
+     <div class="hb"><a class="tel" href="${telUrl(MISTO.tel)}" aria-label="Zavolat na recepci ${MISTO.tel}">📞 <span class="rc">Recepce </span>${MISTO.tel}</a><button class="cbtn" data-nav="1" style="border:0">🧭 Navigovat</button></div></div>
+    <div class="hotel"><span class="hk">Ubytování · část hostů</span><b>${KRASKOV.nazev}</b><span class="ha">${KRASKOV.adr}</span><span class="ha">asi 9 km od Jezerky · na večer jezdí svoz</span>
+     <div class="hb"><a class="tel" href="${telUrl(KRASKOV.tel)}" aria-label="Zavolat na recepci ${KRASKOV.tel}">📞 <span class="rc">Recepce </span>${KRASKOV.tel}</a><button class="cbtn alt" data-nav="kraskov" style="border:0">🧭 Navigovat</button></div></div>
+   </div>
   </div>
  </section>`;
 }
