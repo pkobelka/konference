@@ -283,6 +283,13 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .pfvid{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}.pfvid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .pfnab{background:#fff4c7;color:#3b2a00;border-radius:12px;padding:10px 12px}.pfnab b{display:block;margin-bottom:2px}
 .pfst{font-weight:700;color:var(--accent)}.pfkont b{display:block;margin-bottom:4px}
+.ohnab{border:2px solid var(--accent)}
+.ohtv{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ohtv button{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:8px 2px 6px;font-size:28px;line-height:1.1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.ohtv button small{font-size:11px;font-weight:700;color:var(--muted)}
+.ohtv button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent)}
+.ohzv blockquote{margin:0;padding:8px 0;border-top:1px solid var(--line);font-size:15px;font-style:italic}.ohzv blockquote:first-of-type{border-top:0}
+.ohzv cite{display:block;font-style:normal;font-size:12.5px;color:var(--muted);margin-top:3px}
 .offl{background:#3a3340;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;margin:0 0 10px;line-height:1.35}
 .nexp{display:flex;gap:6px;flex-wrap:wrap}
 .nsoukr{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:13px;font-weight:600;margin-bottom:10px}
@@ -371,7 +378,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .alarm img{width:64px;height:64px;object-fit:contain;margin:0 auto;animation:wob 1s ease-in-out infinite}
 @keyframes wob{50%{transform:rotate(12deg) scale(1.08)}}
 @media (prefers-reduced-motion: reduce){.alarm img{animation:none}}
-.toast.klik{cursor:pointer;text-decoration:none}.toast.klik:hover{opacity:.92}
+.toast.klik{cursor:pointer;top:50%;bottom:auto;transform:translate(-50%,-50%);width:min(440px,calc(100% - 32px));padding:18px 20px;border-radius:18px;font-size:16px;line-height:1.4;text-align:center;box-shadow:0 24px 60px -12px rgba(0,0,0,.55);animation:popc .25s ease-out}@keyframes popc{from{opacity:0;transform:translate(-50%,-50%) scale(.85)}to{opacity:1;transform:translate(-50%,-50%)}}.toast.klik:hover{opacity:.95}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
 /* tablet a počítač: menu nahoře, širší obsah */
 @media (min-width: 820px){
@@ -614,7 +621,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.62 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.63 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -676,8 +683,8 @@ function naAktualni(){   // Program → skok na právě běžící (nebo nejbli�
  if(!st.cur)toast(st.next?"Teď nic neběží – další v "+st.next.t+": "+st.next.h:"Program dne skončil");
  if(x)ukazBod(x.id)}
 function ukazBod(id){const el=$("t-"+id);if(!el)return;el.scrollIntoView({block:"center",behavior:"smooth"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1700)}
-function naPrednasku(id){   // přepne den, zruší filtry a posune na přednášku
- const d=Object.keys(PROG).find(k=>PROG[k].some(y=>y.id===id));if(!d)return;closeSheet();S.day=d;S.q="";S.mine=false;if(S.tab!=="program")S.tab="program";render();setTimeout(()=>ukazBod(id),60)}
+function naPrednasku(id,dotazy){   // přepne den, zruší filtry a posune na přednášku (a případně otevře její dotazy)
+ const d=Object.keys(PROG).find(k=>PROG[k].some(y=>y.id===id));if(!d)return;closeSheet();S.day=d;S.q="";S.mine=false;if(S.tab!=="program")S.tab="program";render();setTimeout(()=>{ukazBod(id);if(dotazy)setTimeout(()=>sheetQ(id),450)},60)}
 function noveSeznam(den){   // přednášky s nepřečtenými dotazy (volitelně jen jeden den)
  return (den?PROG[den]:ALLT).filter(x=>x.id&&novych(x.id)).map(x=>({x,n:novych(x.id),d:DAYS.find(z=>PROG[z.k].includes(x))}))}
 function noveRadky(den){return noveSeznam(den).map(({x,n,d})=>`<button class="nvr" data-naq="${x.id}"><span class="nvt">${esc(d?d.n.slice(0,2):"")} ${esc(x.t)}</span><span class="nvh">${esc(x.h)}</span><span class="nvn">${n} ${n===1?"nový":n<5?"nové":"nových"}</span></button>`).join("")}
@@ -878,7 +885,7 @@ const S={sim:{day:"ut",m:10*60+2},tab:"domu",day:"ut",q:"",mine:false,notes:stor
 // (uzel konference2027_karty/KLIC – čte jen ten, kdo zná klíč) a drží se i offline.
 const KDB="https://moje-budky-default-rtdb.firebaseio.com/konference2027_karty/";
 const KDEMO={jmeno:"Jana Ukázková",firma:"Vodárny Ukázkov, a.s.",kat:"Veřejnost",stav:"ano",noci:["Po 26. 4.","Út 27. 4."],pokoj:"A-214",sekce:"Sekce A",spolu:["Eva Příkladná"],vecere:"Menu 2 – kuřecí steak",vecere_noc:"Út 27. 4.",konf:{nazev:"Nové metody a postupy při provozování ČOV"}};
-S.karta=store.get("karta",null);   // {k, d, ts}
+S.karta=null;try{localStorage.removeItem("pr_karta")}catch(e){}   // osobní karta zrušena (dříve {k, d, ts})
 function kartaKlic(v){v=String(v||"").trim();const m=/[?&]k=([a-z0-9]+)/i.exec(v);return m?m[1]:(/^[a-z0-9]{6,40}$/i.test(v)?v:"")}
 function kartaNacti(k,tiche){
  k=k||(S.karta&&S.karta.k);if(!k)return;
@@ -936,7 +943,7 @@ function novychVse(){return Object.keys(PROG).reduce((a,d)=>a+novychDen(d),0)}
 function badge(n){return n?`<span class="bdg" aria-label="${n} ${n===1?"nový dotaz":n<5?"nové dotazy":"nových dotazů"}">${n>9?"9+":n}</span>`:""}
 function videno(id){S.seen[id]=(S.qa[id]||[]).length;store.set("seen",S.seen)}
 function noveDotazy(stare){for(const id in S.qa){const st=new Set((stare[id]||[]).map(q=>q.k));const cizi=(S.qa[id]||[]).filter(q=>!st.has(q.k)&&q.dev!==DEV);
-  if(cizi.length){const x=ALLT.find(y=>y.id===id),q=cizi[cizi.length-1];if(x)toast("💬 Nový dotaz – "+x.h+": „"+String(q.t).slice(0,90)+(String(q.t).length>90?"…":"")+"“ · zobrazit ›",()=>naPrednasku(id))}}liveRefresh()}
+  if(cizi.length){const x=ALLT.find(y=>y.id===id),q=cizi[cizi.length-1];if(x)toast("💬 Nový dotaz – "+x.h+": „"+String(q.t).slice(0,90)+(String(q.t).length>90?"…":"")+"“ · zobrazit ›",()=>naPrednasku(id,true))}}liveRefresh()}
 Object.keys(S.qa).forEach(id=>S.qa[id].forEach((q,i)=>{if(!q.k)q.k="d"+i}));   // ukázková data: klíč = pořadí
 /* ===== Aktuality od pořadatele (konference2027_aktuality) – píše se v aplikaci pořadatele ===== */
 // {klíč: {h, p, ts}}. Nepřečtené = číslo u záložky Info. Bez připojení ukázkové NEWS.
@@ -1118,9 +1125,9 @@ function vDomu(){
    <div class="porg"><a class="pv" href="https://www.vhos.cz" target="_blank" rel="noopener" aria-label="Pořádá VHOS, a.s. – www.vhos.cz"><img src="${IMG}loga/vhos.webp" alt="VHOS, a.s."></a><div class="ps"><small>ve spolupráci s</small><span><a href="https://www.czwa.cz" target="_blank" rel="noopener"><img src="${IMG}loga/czwa.webp" alt="CzWA" class="pcz"></a><img src="${IMG}loga/mov.webp" alt="odborná skupina ČR MOV" title="odborná skupina ČR MOV" class="pmv"></span></div></div>
   </div>
   ${aktDomu()}
+  ${ohlNabidka()}
   ${instalBanner()}
   ${poznUlozit()}
-  ${S.karta?vKarta(true):""}
   ${ticker()}
   <div class="bento">
    <div class="tile t-now">${vNow()}</div>
@@ -1132,6 +1139,7 @@ function vDomu(){
    <button data-go="doprava">${qi(1)}<span class="qt"><b>Svoz a cesta</b><small>svoz na večer · navigace</small></span></button>
    <button data-go="info">${qi(15)}<span class="qt"><b>Informace</b><small>${aktNove()?aktNove()+" "+(aktNove()===1?"nová zpráva":aktNove()<5?"nové zprávy":"nových zpráv"):"aktuality · kontakty"}</small></span>${badge(aktNove())}</button>
   </div>
+  ${vOhlasZv()}
   <div class="blockh"><h2>Generální partneři</h2><button class="lnk" data-go="partneri">Všichni partneři →</button></div>
   <div class="gen">${PART[0][3].map(nm=>`<button class="genp" data-p="${esc(nm)}" aria-label="${esc(nm)}">${lm(nm)}</button>`).join("")}</div>
  </section>`;
@@ -1295,7 +1303,7 @@ function vInfo(){
    ${AKT.list.length?AKT.list.map(x=>`<article class="${nove[x.k]?"nova":""}">${nove[x.k]?'<span class="chipn">Nové</span>':""}<h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}<small>${x.d?esc(x.d):x.ts>1e9?new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}):""}</small></article>`).join(""):'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Jakmile pořadatel něco napíše, uvidíte to tady a u záložky Info naskočí číslo.</p>'}
   </div>
   ${instalBanner(true)}
-  ${S.karta?vKarta(false):vKartaVstup()}
+  ${vOhlasInfo()}
   <div class="card"><div class="label" style="margin-bottom:8px">O konferenci</div>
    <dl class="kv"><dt>Termín</dt><dd>${TERMIN}</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborný garant</dt><dd>Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA (kontakt níže)</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
@@ -1516,6 +1524,57 @@ function sheetMed(mid){
   <div class="cact"><a class="cbtn" href="${medUrl(m)}" download="${jm}">⬇ Uložit do zařízení</a><button class="cbtn" id="mdel" style="border:0">🗑 Smazat</button></div></div>`);
  $("mdel").addEventListener("click",()=>{if(!confirm(m.typ==="foto"?"Smazat fotku?":"Smazat nahrávku?"))return;medSmaz(m).then(()=>{closeSheet();toast("Smazáno")})})}
 
+/* ===== Ohlasy na průvodce a konferenci (konference2027_ohlasy) ===== */
+// o/{id} = {k?:1–4 konference, p?:1–4 průvodce (aspoň jedno), lib?, chybi?, a?, zv?:bool, ts, dev} – zapsat může kdokoli jen nový, čte pořadatel
+// zv/{id} = {t, a} – ohlasy, které pořadatel zveřejnil (čte každý) → karta „Řekli o průvodci“ na Domů
+const OHLDB="https://moje-budky-default-rtdb.firebaseio.com/konference2027_ohlasy/";
+const TVARE=[[4,"😍","Skvělý"],[3,"🙂","Dobrý"],[2,"😐","Ujde"],[1,"🙁","Slabý"]];
+const OHL={zv:store.get("ohlZv",{})};   // k = konference, p = průvodce (obojí 1–4, aspoň jedno)
+function ohlNacti(){if(!window.fetch)return;fetch(OHLDB+"zv.json").then(r=>r.ok?r.json():null).then(d=>{OHL.zv=d||{};store.set("ohlZv",OHL.zv);if(S.tab==="domu")render()}).catch(()=>{})}
+function ohlPoslat(o){const id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+ return fetch(OHLDB+"o/"+id+".json",{method:"PUT",body:JSON.stringify(o)}).then(r=>{if(!r.ok)throw new Error(r.status)})}
+function ohlCekajici(){const l=store.get("ohlCeka",[]);if(!l.length)return;   // ohlas napsaný bez signálu / před spuštěním
+ ohlPoslat(l[0]).then(()=>{l.shift();store.set("ohlCeka",l);ohlCekajici()}).catch(()=>{})}
+function vOhlasZv(){const l=Object.values(OHL.zv||{}).filter(x=>x&&x.t);if(!l.length)return "";
+ const v=l.sort(()=>Math.random()-.5).slice(0,3);
+ return `<div class="card ohzv"><div class="label" style="margin-bottom:6px">💬 Řekli o konferenci a průvodci</div>${v.map(x=>`<blockquote>„${esc(x.t)}“${x.a?`<cite>– ${esc(x.a)}</cite>`:""}</blockquote>`).join("")}</div>`}
+function ohlNabidka(){   // ve středu odpoledne a po konferenci jednou na Domů
+ if(store.get("ohlOdeslan",0)||store.get("ohlSkryt",0))return "";const c=clock(),po=new Date()>new Date("2027-04-28T12:00:00+02:00");
+ if(!po&&!(c.day==="st"&&c.m>=10*60))return "";
+ return `<div class="card ohnab"><div class="label" style="margin-bottom:4px">💬 Pomozte nám</div><b>Jak se vám líbí konference?</b>
+  <p class="muted" style="margin:4px 0 10px;font-size:13px">Ťukněte na tvář – v dalším kroku můžete ohodnotit i průvodce. Zabere to půl minuty.</p>
+  <div class="ohtv">${TVARE.map(([v,e,t])=>`<button data-ohl="${v}" aria-label="${t}">${e}<small>${t}</small></button>`).join("")}</div>
+  <button class="linkb" data-ohlne style="margin-top:8px">Teď ne</button></div>`}
+function vOhlasInfo(){return `<div class="card ohnab"><div class="label" style="margin-bottom:4px">💬 Ohlasy</div><b>Jak se vám líbí konference a průvodce?</b>
+  <p class="muted" style="margin:4px 0 10px;font-size:13px">${store.get("ohlOdeslan",0)?"Děkujeme za váš ohlas! Můžete poslat i další.":"Napište nám, co se vám líbí a co chybí – konferenci i průvodce tím zlepšíte."}</p>
+  <button class="cbtn" data-ohl="0" style="border:0">💬 Napsat ohlas</button></div>`}
+function sheetOhlas(kv){
+ const tv=(id,sel)=>`<div class="ohtv" id="${id}">${TVARE.map(([v,e,t])=>`<button type="button" data-v="${v}" aria-pressed="${sel===v}" aria-label="${t}">${e}<small>${t}</small></button>`).join("")}</div>`;
+ openSheet(`<h2>Váš ohlas</h2><div class="muted" style="font-size:13px;margin-top:2px">Děkujeme, že nám pomáháte</div>
+  <div class="bd"><form class="qform" id="of">
+   <div class="label">Jak se vám líbí konference?</div>${tv("ohk",kv)}
+   <div class="label" style="margin-top:6px">A průvodce v mobilu?</div>${tv("ohp",0)}
+   <textarea id="olib" rows="3" maxlength="1000" placeholder="Co se vám líbí? (nepovinné)" aria-label="Co se vám líbí"></textarea>
+   <textarea id="ochi" rows="3" maxlength="1000" placeholder="Co vám chybí, co zlepšit? (nepovinné)" aria-label="Co vám chybí"></textarea>
+   <label class="chk"><input type="checkbox" id="opod" ${S.me.pod?"checked":""}> Podepsat ohlas <span class="muted">(nepovinné)</span></label>
+   <div class="qpodf" id="opodf" ${S.me.pod?"":"hidden"}><input id="ojm" placeholder="Jméno a příjmení" value="${esc(S.me.jm||"")}" autocomplete="name"><input id="ofi" placeholder="Firma (nepovinné)" value="${esc(S.me.firma||"")}" autocomplete="organization"></div>
+   <label class="chk"><input type="checkbox" id="ozv"> Pořadatel může můj ohlas zveřejnit</label>
+   <button class="send">Odeslat ohlas</button></form>
+  <div class="note">Ohlas čte jen pořadatel. Zveřejní ho (v průvodci v kartě „Řekli o průvodci“) jen tehdy, když to výše povolíte.</div></div>`);
+ let K=kv||0,P=0;
+ const vyber=(id,set)=>$(id).addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;set(+b.dataset.v);$(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+ vyber("ohk",v=>K=v);vyber("ohp",v=>P=v);
+ $("opod").addEventListener("change",e=>{$("opodf").hidden=!e.target.checked;if(e.target.checked&&!$("ojm").value)$("ojm").focus()});
+ $("of").addEventListener("submit",e=>{e.preventDefault();if(!P&&!K)return toast("Ťukněte prosím aspoň na jednu tvář");
+  const jm=$("ojm").value.trim(),fi=$("ofi").value.trim(),pod=$("opod").checked&&!!jm;
+  if($("opod").checked&&!jm){$("ojm").focus();return toast("Napište jméno, nebo zrušte podpis")}
+  S.me={jm,firma:fi,pod};store.set("me",S.me);
+  const o={ts:Date.now(),dev:DEV};if(K)o.k=K;if(P)o.p=P;const lib=$("olib").value.trim(),chi=$("ochi").value.trim();
+  if(lib)o.lib=lib.slice(0,1000);if(chi)o.chybi=chi.slice(0,1000);if(pod)o.a=[jm,fi].filter(Boolean).join(", ").slice(0,120);if($("ozv").checked)o.zv=true;
+  const btn=e.target.querySelector(".send");btn.disabled=true;btn.textContent="Odesílám…";
+  const hotovo=t=>{store.set("ohlOdeslan",1);closeSheet();render();toast(t)};
+  ohlPoslat(o).then(()=>hotovo("💬 Děkujeme za ohlas!")).catch(()=>{const l=store.get("ohlCeka",[]);l.push(o);store.set("ohlCeka",l);hotovo("💬 Děkujeme! Ohlas se odešle, až to půjde.")})})}
+
 /* ===== Export poznámek ===== */
 function prvniPozn(){   // po první poznámce (text, hlas, foto) jednou vysvětlit, kde poznámky jsou a jak si je uložit
  if(store.get("poznInfo",0))return;store.set("poznInfo",1);
@@ -1659,6 +1718,8 @@ $("view").addEventListener("click",e=>{
  {const nv=e.target.closest("[data-nav]");if(nv)return sheetNav(nv.dataset.nav)}
  if(e.target.closest("[data-doprava]"))return sheetDoprava();
  if(e.target.closest("#dnow"))return naAktualni();
+ {const oh=e.target.closest("[data-ohl]");if(oh)return sheetOhlas(+oh.dataset.ohl)}
+ if(e.target.closest("[data-ohlne]")){store.set("ohlSkryt",1);return render()}
  {const md=e.target.closest("[data-med]");if(md)return sheetMed(md.dataset.med)}
  {const fb=e.target.closest("[data-foto]");if(fb)return foto(fb.dataset.foto)}
  {const hb=e.target.closest("[data-hlas]");if(hb)return sheetHlas(hb.dataset.hlas)}
@@ -1690,15 +1751,11 @@ $("view").addEventListener("click",e=>{if(e.target.id==="pdel"){S.me={jm:"",firm
 $("view").addEventListener("input",e=>{
  if(e.target.id==="simm"){S.sim.m=+e.target.value;$("nowbox").outerHTML=vNow();$("simm").focus();return}if(e.target.id==="q"){S.q=e.target.value;const pos=e.target.selectionStart;render();const q=$("q");q.focus();q.setSelectionRange(pos,pos)}});
 (function(){try{const pr=new URLSearchParams(location.search).get("pr");if(pr&&ALLT.some(y=>y.blok&&y.bid===pr))setTimeout(()=>sheetChair(pr),300)}catch(e){}})();   // počítač v sále: …/pruvodce/?pr=utb4
-(function(){try{const k=new URLSearchParams(location.search).get("k");
- if(k){if(!PL.ios)history.replaceState(null,"",location.pathname+location.hash);kartaNacti(kartaKlic(k))}else if(S.karta)kartaNacti(null,true)
- // iPhone: ikona na ploše má vlastní úložiště – klíč karty proto necháme v adrese, aby se přenesl při „Přidat na plochu“
- if(PL.ios&&!PL.nainst&&S.karta&&S.karta.k&&S.karta.k!=="ukazka"&&!/[?&]k=/.test(location.search))history.replaceState(null,"",location.pathname+"?k="+encodeURIComponent(S.karta.k)+location.hash);
-}catch(e){}})();
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.karta&&S.karta.k!=="ukazka"&&Date.now()-S.karta.ts>120000)kartaNacti(null,true)});
+// „Moje registrace“ (osobní karta přes ?k=) zrušena 19. 10. 2026 – kód karty zůstává nepoužitý
+try{if(new URLSearchParams(location.search).has("k"))history.replaceState(null,"",location.pathname+location.hash)}catch(e){}
 {const sq=store.get("snapQ",null);if(sq&&sq.q){LIVE.q=sq.q;LIVE.v=sq.v||{};OUT.l.forEach(o=>liveApply(o.path,o.val));LIVE.on=true;S.voted={};liveRebuild()}
  const sa=store.get("snapA",null);if(sa&&typeof sa==="object"){AKT.raw=sa;aktSeznam();render()}}   // bez signálu poslední uložený stav
-liveStart();aktStart();offlUkaz();outFlush();medNacti();
+liveStart();aktStart();offlUkaz();outFlush();medNacti();ohlNacti();ohlCekajici();
 // na konci konference: při zavírání stránky s neuloženými poznámkami se prohlížeč zeptá (na počítači; mobil to obvykle ignoruje)
 addEventListener("beforeunload",e=>{if(poznUlozit()){e.preventDefault();e.returnValue=""}});
 $("fotoin").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0],tid=e.target.dataset.tid;if(!f||!tid)return;

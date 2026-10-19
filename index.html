@@ -191,13 +191,14 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.18 · 14. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.19 · 19. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
 const PUB="konference2027_verejne";    // veřejné údaje pro formulář (název, noci, menu)
 const PRI="konference2027_prihlasky";  // přihlášky partnerů – každá pod tajným klíčem (odkazem)
 const AKTU="konference2027_aktuality"; // zprávy pořadatele pro průvodce (Info, číslo u záložky)
+const OHL="konference2027_ohlasy";   // ohlasy z průvodce: o/{id} píše kdokoli (jen nový), čte pořadatel; zv/{id} = zveřejněné (čte každý)
 const DOPR="konference2027_doprava"; // zájem o svoz na úterní společenský večer (z průvodce, zapisuje kdokoli, čte jen pořadatel)
 const DOT="konference2027_dotazy";     // dotazy k přednáškám z průvodce (q = texty, au = nahrávky, v = +1)
 const KAR="konference2027_karty";      // osobní karty účastníků pro průvodce – každá pod tajným klíčem, bez kontaktů
@@ -262,7 +263,7 @@ if(AUTH.isSignInWithEmailLink(location.href)){
 AUTH.onAuthStateChanged(user=>{
   if(!user){USER=null;showLogin();return;}
   FDB.ref("florian_login_email/"+leKey(user.email)).get().then(s=>{
-    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();loadAktuality();loadDoprava();}
+    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();loadAktuality();loadDoprava();loadOhlasy();}
     else{showLogin("E-mail <b>"+esc(user.email)+"</b> zatím nemá přístup. Ozvi se Petru Kobelkovi (stejný seznam jako Florián).");AUTH.signOut();}
   }).catch(()=>showLogin("Nepodařilo se ověřit přístup, zkus to znovu."));
 });
@@ -1042,6 +1043,10 @@ function rPruvodce(){
     <div class="lista" style="margin-top:6px"><button class="btn" id="a_send">Zveřejnit zprávu</button><button class="btn ghost small hidden" id="a_cancel">Zrušit úpravu</button><span class="msg" id="a_msg"></span></div>
     <div id="p_akt" style="margin-top:10px">${htmlAktuality()}</div>
   </div>
+  <div class="nast"><h2 class="sek">💬 Ohlasy na konferenci a průvodce</h2>
+    <p style="font-size:.84rem;color:#666">Účastníci je píší v průvodci (Info, a ve středu odpoledne nabídka na Domů). Ohlas, u kterého pisatel povolil zveřejnění, můžeš tlačítkem <b>Zveřejnit</b> dát do karty „Řekli o konferenci a průvodci“ na Domů.</p>
+    <div id="s_ohlasy">${htmlOhlasy()}</div>
+  </div>
   <div class="nast"><h2 class="sek">🚌 Zájem o svoz na společenský večer (úterý)</h2>
     <p style="font-size:.84rem;color:#666">Účastníci se hlásí v průvodci v záložce Doprava (nástup Kraskov nebo Seč, tam/zpět, počet osob). Změna od stejného člověka nahradí jeho předchozí záznam.</p>
     <div id="s_doprava">${htmlDoprava()}</div>
@@ -1092,6 +1097,31 @@ function htmlDoprava(){
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-dopdel]");if(!b)return;
   if(confirm("Smazat tento zájem o dopravu?"))FDB.ref(DOPR+"/z/"+b.dataset.dopdel).remove().catch(er=>alert("⚠️ "+errMsg(er)));});
+
+/* ---------- OHLASY Z PRŮVODCE ---------- */
+let OHLASY={}, OHLZV={}, OHL_ERR="";
+const TVARE={4:"😍",3:"🙂",2:"😐",1:"🙁"};
+function loadOhlasy(){FDB.ref(OHL+"/o").on("value",s=>{OHLASY=s.val()||{};OHL_ERR="";ohlasyBox();},e=>{OHL_ERR=errMsg(e);ohlasyBox();});
+  FDB.ref(OHL+"/zv").on("value",s=>{OHLZV=s.val()||{};ohlasyBox();},()=>{});}
+function ohlasyBox(){const b=$("s_ohlasy");if(b)b.innerHTML=htmlOhlasy();}
+function htmlOhlasy(){
+  if(OHL_ERR)return `<div class="probbox"><div>⛔ Ohlasy nejde načíst: <b>${esc(OHL_ERR)}</b>. Chybí pravidlo pro <b>${OHL}</b> ve Firebase.</div></div>`;
+  const l=Object.entries(OHLASY).map(([k,x])=>Object.assign({k},x)).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  if(!l.length)return `<p class="muted" style="font-size:.9rem">Zatím žádný ohlas.</p>`;
+  const sum=f=>[4,3,2,1].map(v=>`${TVARE[v]} <b>${l.filter(x=>x[f]===v).length}</b>`).join(" &nbsp; ");
+  const pr=f=>{const z=l.filter(x=>x[f]);return z.length?(z.reduce((a,x)=>a+x[f],0)/z.length).toFixed(1).replace(".",","):"–"};
+  return `<table class="t" style="margin-bottom:8px"><tr><td><b>Konference</b></td><td>${sum("k")}</td><td class="sub">průměr ${pr("k")} / 4</td></tr>
+    <tr><td><b>Průvodce</b></td><td>${sum("p")}</td><td class="sub">průměr ${pr("p")} / 4</td></tr></table>
+    <table class="t">${l.map(x=>`<tr><td class="sub" style="white-space:nowrap">${new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})}<div style="font-size:.95rem">${x.k?"konf. "+TVARE[x.k]:""}${x.p?"<br>prův. "+TVARE[x.p]:""}</div></td>
+      <td>${x.lib?`<div>👍 ${esc(x.lib)}</div>`:""}${x.chybi?`<div>💡 ${esc(x.chybi)}</div>`:""}<div class="sub">${esc(x.a||"anonymně")}${x.zv?" · smí se zveřejnit":" · nezveřejňovat"}</div></td>
+      <td style="white-space:nowrap">${x.zv&&x.lib?(OHLZV[x.k]?`<button class="btn ghost small" data-ohlzv="${x.k}" data-v="0">Skrýt z Domů</button>`:`<button class="btn small" data-ohlzv="${x.k}" data-v="1">Zveřejnit</button>`):""}
+      <button class="btn ghost small" data-ohldel="${x.k}">Smazat</button></td></tr>`).join("")}</table>`;
+}
+document.addEventListener("click",e=>{
+  const z=e.target.closest("[data-ohlzv]");if(z){const k=z.dataset.ohlzv,x=OHLASY[k];if(!x)return;
+    FDB.ref(OHL+"/zv/"+k).set(z.dataset.v==="1"?{t:x.lib,a:x.a||"",ts:x.ts}:null).catch(er=>alert("⚠️ "+errMsg(er)));return}
+  const d=e.target.closest("[data-ohldel]");if(d&&confirm("Smazat tento ohlas?")){const k=d.dataset.ohldel;
+    FDB.ref(OHL+"/zv/"+k).remove().then(()=>FDB.ref(OHL+"/o/"+k).remove()).catch(er=>alert("⚠️ "+errMsg(er)));}});
 
 /* ---------- DOTAZY Z PRŮVODCE (moderace – mazat smí jen pořadatel) ---------- */
 let DOTAZY={}, DOTAZY_ERR="";

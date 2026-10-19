@@ -792,11 +792,11 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
 
 ## 📋 ZÁSOBNÍK NÁPADŮ – co jsme vymysleli a ještě neudělali (průběžně doplňovat, hotové škrtnout)
 Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, mrknem se na to“.
-1. **Ohlasy / „chvalte nás“** – 😍🙂😐🙁 + co se líbí / co chybí, zveřejnitelné ohlasy „Řekli o průvodci“ (spojit s hodnocením konference).
+1. ~~Ohlasy – hotovo v 0.63~~ (doladit podle zkušeností) – 😍🙂😐🙁 + co se líbí / co chybí, zveřejnitelné ohlasy „Řekli o průvodci“ (spojit s hodnocením konference).
 2. **Proklik do sborníku** – „📖 Sborník“ u přednášky, PDF na správné stránce; celý sborník v Info.
 3. **Předsedající** – A: vlastní odkaz/QR `?pr=<blok>`, tlačítko schovat před účastníky; B: PIN, „✓ Zodpovězeno“, skrývání dotazů.
 4. **Upozornění při zavřené aplikaci (Web Push)** – zprávy pořadatele dorazí i se zavřeným průvodcem (potřebuje odesílací službu).
-5. **„Moje registrace“** – nechat jen pro „svoje“ lidi (hosté, přednášející, vystavující), nebo zrušit; Petr rozhodne.
+5. ~~„Moje registrace“ – z průvodce zrušena (0.63)~~; pro ubytované později export z aplikace pořadatele.
 6. **Dálkové promítání dotazů** – předsedající vybere dotaz v mobilu, ukáže se na plátně (PIN + pravidlo mojebudky).
 7. **Wi-Fi v Info** – název sítě a heslo s tlačítkem Kopírovat.
 8. **Plánek areálu Jezerky** – sál, stánky vystavovatelů s čísly, u partnera „najdete nás u stánku č. X“.
@@ -812,3 +812,22 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
   (6 položek) a tlačítko **„✉ Poslat podklady“** – předvyplněný e-mail na petr.kobelka@vhos.cz se seznamem. Návrh e-mailu
   partnerům: `navrh/email-partnerum.md` (doplnit datum).
 - **0.62:** **WhatsApp** u mobilních čísel (garant v Info; u kontaktu partnera, pokud je číslo mobilní) – `https://wa.me/420…`.
+
+### Průvodce 0.63 + pořadatel 1.19 (19. 10. 2026 večer) – OHLASY
+- **Ohlasy na konferenci a průvodce** (Petr: rovnocenně, „ať to nezavání, že se ptáme jen na průvodce“): okno „Váš ohlas“ –
+  „Jak se vám líbí konference?“ a „A průvodce v mobilu?“ (😍 Skvělý · 🙂 Dobrý · 😐 Ujde · 🙁 Slabý, aspoň jedno), „Co se vám
+  líbí?“, „Co vám chybí?“, nepovinný podpis, „☐ Pořadatel může můj ohlas zveřejnit“. Vstup: karta v **Info** (vždy) a jednou
+  na **Domů** od středy 10:00 / po konferenci („Teď ne“ ji schová). Bez signálu se ohlas uloží a pošle později (`pr_ohlCeka`).
+- Firebase `konference2027_ohlasy`: `o/{id}` = {k?, p?, lib?, chybi?, a?, zv?, ts, dev} – veřejnost jen nový zápis (kontrola polí),
+  čte/maže pořadatel; `zv/{id}` = {t, a, ts} zveřejněné – čte každý. Pravidlo v **mojebudky** (větev `claude/konference-ohlasy`,
+  Petr pověřil přidat; otestováno v emulátoru: platný zápis OK, přepis/mazání/cizí pole/bez hodnocení/čtení veřejností zamítnuto).
+- **Aplikace pořadatele 1.19** → Průvodce: sekce „💬 Ohlasy na konferenci a průvodce“ – počty tváří a průměry (konference /
+  průvodce), seznam (👍 líbí se, 💡 chybí, podpis, zda smí zveřejnit), **Zveřejnit / Skrýt z Domů**, Smazat.
+- Průvodce Domů: karta **„💬 Řekli o konferenci a průvodci“** – až 3 náhodné zveřejněné ohlasy.
+- **„Moje registrace“ z průvodce zrušena** (Petr: osobní údaje o ubytování/večeři do veřejného průvodce nedávat, ubytovává jen
+  ~20 % lidí; informace pro ně později exportem z aplikace pořadatele). Odkaz `?k=` se ignoruje, uložená karta se smaže;
+  kód karty v průvodci zůstal nepoužitý, synchronizace karet v aplikaci pořadatele beze změny.
+- Upozornění na nový dotaz / zprávu (klikací) je teď **uprostřed obrazovky**; „zobrazit ›“ u nového dotazu posune program na
+  přednášku a **otevře její dotazy**.
+- Zjištění: v mojebudky existují `functions/`, `firebase-messaging-sw.js`, `send_push.py` → infrastruktura pro **Web Push** už je
+  (využít u nápadu 4).
