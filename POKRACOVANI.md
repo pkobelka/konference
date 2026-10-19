@@ -737,3 +737,8 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
      zařízeních, dálkové promítání. Potřebuje nová pravidla v repu mojebudky (se svolením Petra).
 3. Ostatní nápady (hodnocení, prezentace PDF, Wi-Fi, plánek, push upozornění) – viz oddíl výše, až po bodech 1–2.
 - **0.53 (19. 10., na konec dne):** v Programu vedle Úterý / Středa tlačítko **„● Právě teď – aktuální přednáška“** (`#dnow`, `naAktualni()`): přepne na dnešní den, zruší hledání, posune na běžící bod a krátce ho rozbliká; když nic neběží, posune na další a ukáže, co a kdy začíná.
+- **Otevřená otázka – „Moje registrace“ (Petr si to promyslí, času dost):** Petr nevěděl, k čemu karta je. Vysvětleno: tajný
+  odkaz `?k=` (16 náhodných znaků), na kartě jméno, firma, kategorie, stav, noci, pokoj + spolubydlící, večeře, svoz; bez
+  e-mailu/telefonu; nic se zatím neposílá samo (jen ručně z aplikace pořadatele / CSV). Smysl hlavně pro lidi, které
+  ubytovává pořadatel (hosté, přednášející, vystavující); pro veřejnost (~70 %) skoro žádný. Navrženo: blok v Info schovat
+  všem bez karty a odkazy posílat jen „svým“ lidem – **nedělat, dokud Petr nerozhodne** (možná celé zrušit).
