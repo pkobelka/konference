@@ -806,3 +806,4 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
 12. **Info → Pořadatelé** – text z pozvánky 2026 („VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV“) ověřit.
 13. **Aplikace pořadatele** – počty lůžek, hromadné e-maily, před ostrým provozem smazat testovací data 2026.
 14. **Prezentace partnerů v detailu loga** – Petr osloví partnery; každý může dodat (nepovinně): web, 2–3 věty o firmě, video (YouTube/Vimeo, přehrát v průvodci), nabídku/akci pro účastníky, PDF leták, kontaktní osobu na konferenci, číslo stánku. Místo už je připravené (`sheetP` – text „Tady bude prezentace partnera…“).
+- **0.61:** „🔔 Upozornit“ se neukazuje u přednášky, která právě běží, ani u těch, které už skončily (`probehlo()`).
