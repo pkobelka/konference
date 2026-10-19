@@ -119,6 +119,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .talk .body{flex:1;min-width:0}
 .talk h3{font-size:15px;font-family:var(--f-body);font-weight:700;line-height:1.3}
 .talk .who{font-size:13px;color:var(--muted);margin-top:3px}
+.talk mark{background:#ffe27a;color:#1d1b20;border-radius:3px;padding:0 1px;box-shadow:0 0 0 1px #f3c53a}
 .empty{text-align:center;padding:24px 12px}
 
 /* partneři */
@@ -1032,6 +1033,12 @@ function vNow(){
  return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px">${h}</div>`;
 }
 function match(x){if(!S.q)return true;return norm(x.h+" "+x.w).includes(norm(S.q))}
+function hl(t){ // zvýrazní hledaný text (bez ohledu na diakritiku a velikost písmen)
+ t=String(t);const q=norm(S.q.trim());if(!q)return esc(t);
+ let n="",ix=[];for(let i=0;i<t.length;i++){const c=norm(t[i]);n+=c;for(let k=0;k<c.length;k++)ix.push(i)}
+ let o="",p=0,j=n.indexOf(q);
+ while(j>=0){const z=ix[j],k=ix[j+q.length-1]+1;if(z>=p){o+=esc(t.slice(p,z))+"<mark>"+esc(t.slice(z,k))+"</mark>";p=k}j=n.indexOf(q,j+q.length)}
+ return o+esc(t.slice(p))}
 function vProgram(){
  let list=PROG[S.day];
  const filt=x=>x.blok?true:(S.mine?!!S.notes[x.id]:true)&&match(x);
@@ -1050,7 +1057,7 @@ function vProgram(){
     return pre+`<div class="bgrp"><div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
    const f=!!S.notes[x.id], st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
    let h=pre+`<div class="slot${live?" live":""}"><div class="t">${esc(x.t)}${x.e?`<i>–</i><small>${esc(x.e)}</small>`:""}</div>
-    <div class="talk ${x.brk?"brk":""} ${f?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)}</div>`:""}<h3>${esc(x.h)}</h3>${x.w?`<div class="who">${esc(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${f?`<div class="mynote"><b>Moje poznámka</b>${esc(S.notes[x.id])}</div>`:""}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${badge(novych(x.id))}</button><button class="nbtn" data-note="${x.id}">✎ ${f?"Upravit poznámku":"Poznámka"}</button><button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?"Upozorním "+S.alarms[x.id].m+" min předem":"Upozornit"}</button>`:""}</div>
+    <div class="talk ${x.brk?"brk":""} ${f?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)}</div>`:""}<h3>${hl(x.h)}</h3>${x.w?`<div class="who">${hl(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${f?`<div class="mynote"><b>Moje poznámka</b>${esc(S.notes[x.id])}</div>`:""}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${badge(novych(x.id))}</button><button class="nbtn" data-note="${x.id}">✎ ${f?"Upravit poznámku":"Poznámka"}</button><button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?"Upozorním "+S.alarms[x.id].m+" min předem":"Upozornit"}</button>`:""}</div>
 </div></div>`;
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
    return h});return out.join("")+(open?"</div>":"")})()
