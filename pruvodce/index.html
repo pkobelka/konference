@@ -274,6 +274,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .fsb{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--accent);border-radius:12px;height:40px;min-width:40px;padding:0 10px;font-size:20px;font-weight:700;line-height:1;cursor:pointer}
 .fsb.fsp{position:absolute;z-index:3;top:14px;left:calc(14px + 130px);height:30px;min-width:30px;font-size:16px;border-radius:99px;padding:0 9px}.fsb.fsp.on{font-size:12px}
 .fsb.on{font-size:13px;background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.mmed{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mth{width:64px;height:64px;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface-2)}.mth img{width:100%;height:100%;object-fit:cover;display:block}
+.mhl{height:34px;align-self:center;border:1px solid var(--line);background:var(--accent-soft);color:var(--accent);border-radius:99px;padding:0 12px;font-weight:700;font-size:13px}
 .offl{background:#3a3340;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;margin:0 0 10px;line-height:1.35}
 .nexp{display:flex;gap:6px;flex-wrap:wrap}
 .nsoukr{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:13px;font-weight:600;margin-bottom:10px}
@@ -583,6 +586,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
     <span id="fsh" style="display:contents"></span>
   </header>
   <div id="offl" class="offl" role="status" hidden></div>
+  <input type="file" id="fotoin" accept="image/*" capture="environment" hidden>
   <main id="view"></main>
 </div>
 <nav class="tabbar" aria-label="Hlavní menu"><div class="in" id="tabs"></div></nav>
@@ -593,7 +597,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.55 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.56 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -648,6 +652,7 @@ function clock(){ // skutečný čas během konference, jinak simulace
  return {day:S.sim.day,m:S.sim.m,real:0};
 }
 const hm=m=>{m=((m%1440)+1440)%1440;return Math.floor(m/60)+":"+String(m%60).padStart(2,"0")};
+const mss=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
 const dur=m=>m>=60?Math.floor(m/60)+" h "+(m%60?m%60+" min":""):m+" min";
 function naAktualni(){   // Program → skok na právě běžící (nebo nejbližší další) bod
  const st=nowState(), x=st.cur||st.next||st.last;S.day=st.c.day;S.q="";S.mine=false;render();
@@ -1070,7 +1075,7 @@ function odpocet(){const st=Date.UTC(2027,3,27,6,0),en=Date.UTC(2027,3,28,10,0),
  if(n<en)return "<b>Právě probíhá</b>";return "Děkujeme za účast";}
 function vDomu(){
  loadWx();
- const nn=Object.values(S.notes).filter(Boolean).length, nb=Object.keys(S.alarms).length;
+ const nn=pocetPoznamek(), nb=Object.keys(S.alarms).length;
  const pr=Object.values(PROG).flat().filter(x=>!x.brk&&!x.blok&&!x.ad&&x.w).length;
  const FL=[[10,"c1"],[6,"c2"],[16,"c3"],[9,"c4"],[3,"c5"],[13,"c6"],[12,"c7"],[17,"c8"]];
  const qi=(n)=>`<span class="qi" style="background-image:url(${flek(n)})"></span>`;
@@ -1132,7 +1137,7 @@ function hl(t){ // zvýrazní hledaný text (bez ohledu na diakritiku a velikost
  return o+esc(t.slice(p))}
 function vProgram(){
  let list=PROG[S.day];
- const filt=x=>x.blok?true:(S.mine?!!S.notes[x.id]:true)&&match(x);
+ const filt=x=>x.blok?true:(S.mine?maPozn(x.id):true)&&match(x);
  let rows=list.filter(filt);
  // bloky bez přednášek po filtru schovat
  rows=rows.filter((x,i)=>!x.blok||rows.slice(i+1).some(y=>!y.blok)&&!(rows[i+1]&&rows[i+1].blok));
@@ -1142,19 +1147,19 @@ function vProgram(){
   ${vNove()}
   <div class="note" style="margin-bottom:-2px">Program je zatím ukázka podle 30. ročníku (2026). Program 31. ročníku doplníme.</div>
   <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small>${badge(novychDen(d.k))}</button>`).join("")}<button class="dnow" id="dnow" aria-label="Přejít na aktuální přednášku"><span class="dot"></span>Právě teď<small>aktuální přednáška</small></button></div>
-  ${S.mine&&Object.keys(S.notes).length?nexpBtns():""}
+  ${S.mine&&pocetPoznamek()?nexpBtns():""}
   <div class="tools"><input id="q" placeholder="Hledat přednášku, jméno, firmu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog" id="mine" aria-pressed="${S.mine}">✎ Poznámky</button></div>
   ${rows.some(x=>!x.blok)?(()=>{let open=null;const out=rows.map(x=>{
    let pre="";if(open&&(x.blok||x.bid!==open)){pre="</div>";open=null}   // konec rámečku bloku
    if(x.blok){open=x.bid;const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter(q=>!S.read[y.id+":"+q.k]).length,0);
     return pre+`<div class="bgrp"><div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
-   const f=!!S.notes[x.id], st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
+   const f=!!S.notes[x.id], fm=maPozn(x.id), st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
    let h=pre+`<div class="slot${live?" live":""}" id="t-${x.id}"><div class="t">${esc(x.t)}${x.e?`<i>–</i><small>${esc(x.e)}</small>`:""}</div>
-    <div class="talk ${x.brk?"brk":""} ${f?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)}</div>`:""}<h3>${hl(x.h)}</h3>${x.w?`<div class="who">${hl(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${f?`<div class="mynote"><b>Moje poznámka</b>${esc(S.notes[x.id])}</div>`:""}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${(()=>{const p=(S.qa[x.id]||[]).reduce((a,q)=>a+votes(x.id,q.k)-1,0);return p?" · 👍 "+p:""})()}${badge(novych(x.id))}</button><button class="nbtn" data-note="${x.id}">✎ ${f?"Upravit poznámku":"Poznámka"}</button><button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?"Upozorním "+S.alarms[x.id].m+" min předem":"Upozornit"}</button>`:""}</div>
+    <div class="talk ${x.brk?"brk":""} ${fm?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)}</div>`:""}<h3>${hl(x.h)}</h3>${x.w?`<div class="who">${hl(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${f?`<div class="mynote"><b>Moje poznámka</b>${esc(S.notes[x.id])}</div>`:""}${medPas(x.id)}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${(()=>{const p=(S.qa[x.id]||[]).reduce((a,q)=>a+votes(x.id,q.k)-1,0);return p?" · 👍 "+p:""})()}${badge(novych(x.id))}</button><button class="nbtn" data-note="${x.id}">✎ ${f?"Upravit poznámku":"Poznámka"}</button><button class="nbtn" data-hlas="${x.id}">🎤 Namluvit</button><button class="nbtn" data-foto="${x.id}">📷 Vyfotit</button><button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?"Upozorním "+S.alarms[x.id].m+" min předem":"Upozornit"}</button>`:""}</div>
 </div></div>`;
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
    return h});return out.join("")+(open?"</div>":"")})()
-  :`<div class="card empty"><b>${S.mine?"Zatím nemáte žádné poznámky":"Nic jsme nenašli"}</b><p class="muted" style="margin:6px 0 0;font-size:14px">${S.mine?"U přednášky klepněte na ✎ Poznámka a napište si, co vás zaujalo.":"Zkuste jiné slovo."}</p></div>`}
+  :`<div class="card empty"><b>${S.mine?"Zatím nemáte žádné poznámky":"Nic jsme nenašli"}</b><p class="muted" style="margin:6px 0 0;font-size:14px">${S.mine?"U přednášky klepněte na ✎ Poznámka, 🎤 Namluvit nebo 📷 Vyfotit.":"Zkuste jiné slovo."}</p></div>`}
   <div class="note">Poznámky k přednáškám jsou soukromé a zůstávají jen ve vašem zařízení. Tlačítkem ✎ Poznámky zobrazíte jen přednášky s poznámkou – tam je můžete i vytisknout, uložit jako PDF, stáhnout nebo poslat e-mailem.</div>
  </section>`;
 }
@@ -1256,7 +1261,7 @@ function vInfo(){
    <button class="cbtn" data-kal="2028" style="border:0">📅 Uložit do kalendáře</button></div>
   <div class="note">Údaje podle pozvánky 2026. Pro rok 2027 je pořadatel aktualizuje na jednom místě a všem se změní hned.</div>
   <p class="muted" style="text-align:center;font-size:12px;margin:4px 0 0;font-family:var(--f-display)">Průvodce konferencí · verze ${VERZE}</p>
-  <p class="muted" style="text-align:center;font-size:12px;margin:2px 0 0">Aplikaci vytvořil <b>Petr Kobelka</b> · © 2026</p>
+  <p class="muted" style="text-align:center;font-size:12px;margin:2px 0 0">© Petr Kobelka, VHOS, a.s. 2026</p>
  </section>`;
 }
 
@@ -1280,7 +1285,7 @@ function sheetQ(id){
   <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první. Namluvený dotaz se přepíše na text, aby si ho ostatní mohli přečíst; předsedající ho může i pustit do sálu (max. 1 minuta).</div></div>`);
  draw();
  let AU=null;   // namluvený dotaz (data: URL)
- $("qmic").addEventListener("click",()=>nahravej(u=>{AU=u;$("qaud").src=u;$("qprev").hidden=false}));
+ $("qmic").addEventListener("click",()=>nahravej(u=>{if(!$("qaud"))return;AU=u;$("qaud").src=u;$("qprev").hidden=false}));
  $("qadel").addEventListener("click",()=>{AU=null;$("qprev").hidden=true;$("qaud").removeAttribute("src")});
  $("qlist").addEventListener("click",e=>{
   const pl=e.target.closest("[data-qplay]");if(pl)return prehraj(qk(id,pl.dataset.qplay),pl,"🔊 Poslechnout nahrávku");
@@ -1303,8 +1308,8 @@ function sheetQ(id){
 /* ===== Namluvený dotaz: nahrání (max 60 s) a přehrání do sálu ===== */
 const REC={mr:null,t:null,start:0,sr:null};
 // Přepis řeči na text (Chrome/Android, Safari/iPhone; posílá zvuk rozpoznávací službě prohlížeče). Když není, zůstane jen nahrávka.
-function prepis(){
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition, ta=$("qt");if(!SR||!ta)return null;
+function prepis(taId){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition, ta=$(taId||"qt");if(!SR||!ta)return null;
  const r=new SR();r.lang="cs-CZ";r.continuous=true;r.interimResults=true;
  const zaklad=ta.value.trim()?ta.value.trim()+" ":"";let fin="";
  r.onresult=e=>{let mez="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t+" ";else mez+=t}
@@ -1312,18 +1317,20 @@ function prepis(){
  r.onerror=()=>{};r.onend=()=>{if(REC.mr&&REC.sr===r){try{r.start()}catch(e){}}};   // Android po pauze končí – pokračovat
  try{r.start()}catch(e){return null}return r;
 }
-function nahravej(hotovo){
- const b=$("qmic"), info=$("qrec");
+function nahravej(hotovo,o){   // o: tlačítko, info, pole přepisu, max. délka (s)
+ o=Object.assign({b:"qmic",info:"qrec",ta:"qt",max:60,znovu:"🎤 Namluvit znovu"},o||{});
+ const b=$(o.b), info=$(o.info);
  if(REC.mr){REC.mr.stop();return}
  if(!navigator.mediaDevices||!window.MediaRecorder)return toast("Tento prohlížeč neumí nahrávat – napište dotaz textem");
  navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}).then(st=>{
   const typ=["audio/webm;codecs=opus","audio/mp4","audio/webm"].find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))||"";
   const mr=new MediaRecorder(st,Object.assign({audioBitsPerSecond:24000},typ?{mimeType:typ}:{})), ch=[];REC.mr=mr;REC.start=Date.now();
   mr.ondataavailable=e=>{if(e.data.size)ch.push(e.data)};
-  mr.onstop=()=>{st.getTracks().forEach(t=>t.stop());clearInterval(REC.t);REC.mr=null;const sr=REC.sr;REC.sr=null;if(sr)try{sr.stop()}catch(e){}b.textContent="🎤 Namluvit znovu";b.classList.remove("on");info.textContent="";
-   const bl=new Blob(ch,{type:mr.mimeType||typ||"audio/webm"});const fr=new FileReader();fr.onload=()=>hotovo(fr.result);fr.readAsDataURL(bl)};
-  mr.start();REC.sr=prepis();b.textContent="⏹ Hotovo – ukončit";b.classList.add("on");
-  REC.t=setInterval(()=>{const sec=Math.floor((Date.now()-REC.start)/1000);info.textContent=(REC.sr?"● nahrávám a přepisuji ":"● nahrávám ")+Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0")+" / 1:00";if(sec>=60)mr.stop()},250);
+  mr.onstop=()=>{st.getTracks().forEach(t=>t.stop());clearInterval(REC.t);REC.mr=null;const sr=REC.sr;REC.sr=null;if(sr)try{sr.stop()}catch(e){}b.textContent=o.znovu;b.classList.remove("on");info.textContent="";
+   const sek=Math.round((Date.now()-REC.start)/1000);
+   const bl=new Blob(ch,{type:mr.mimeType||typ||"audio/webm"});const fr=new FileReader();fr.onload=()=>hotovo(fr.result,bl,sek);fr.readAsDataURL(bl)};
+  mr.start();REC.sr=prepis(o.ta);b.textContent="⏹ Hotovo – ukončit";b.classList.add("on");
+  REC.t=setInterval(()=>{const sec=Math.floor((Date.now()-REC.start)/1000);info.textContent=(REC.sr?"● nahrávám a přepisuji ":"● nahrávám ")+mss(sec)+" / "+mss(o.max);if(sec>=o.max)mr.stop()},250);
  }).catch(()=>toast("Bez povolení mikrofonu to nejde – povolte ho v prohlížeči"));
 }
 let HR=null;
@@ -1408,14 +1415,58 @@ function sheetNote(id){
  const d=$("ndel");if(d)d.addEventListener("click",()=>{delete S.notes[id];store.set("notes",S.notes);closeSheet();render();toast("Poznámka smazána")});
 }
 
+/* ===== Fotky a namluvené poznámky k přednášce – jen v tomto zařízení (IndexedDB) ===== */
+const MED={db:null,l:{},url:{}};   // l[přednáška] = [{id,tid,typ:"foto"|"hlas",ts,blob,prepis?,sek?}]
+function medDb(){return MED.db||(MED.db=new Promise((ok,ko)=>{try{const q=indexedDB.open("pruvodce",1);q.onupgradeneeded=()=>q.result.createObjectStore("media",{keyPath:"id"});q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error)}catch(e){ko(e)}}))}
+function medTx(mode,fn){return medDb().then(db=>new Promise((ok,ko)=>{const t=db.transaction("media",mode),q=fn(t.objectStore("media"));t.oncomplete=()=>ok(q&&q.result);t.onerror=()=>ko(t.error)}))}
+function medNacti(){return medTx("readonly",st=>st.getAll()).then(a=>{MED.l={};(a||[]).forEach(m=>(MED.l[m.tid]=MED.l[m.tid]||[]).push(m));for(const k in MED.l)MED.l[k].sort((x,y)=>x.ts-y.ts);render()}).catch(()=>{})}
+function medPridej(tid,typ,blob,extra){
+ const m=Object.assign({id:"m"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),tid,typ,ts:Date.now(),blob},extra||{});
+ return medTx("readwrite",st=>st.put(m)).then(()=>{(MED.l[tid]=MED.l[tid]||[]).push(m);drzData();render();return m})}
+function medSmaz(m){return medTx("readwrite",st=>st.delete(m.id)).then(()=>{MED.l[m.tid]=(MED.l[m.tid]||[]).filter(y=>y.id!==m.id);if(MED.url[m.id]){URL.revokeObjectURL(MED.url[m.id]);delete MED.url[m.id]}render()})}
+const medUrl=m=>MED.url[m.id]||(MED.url[m.id]=URL.createObjectURL(m.blob));
+const medTid=tid=>MED.l[tid]||[];
+const medNajdi=mid=>{for(const k in MED.l){const m=MED.l[k].find(y=>y.id===mid);if(m)return m}return null};
+const maPozn=id=>!!S.notes[id]||medTid(id).length>0;
+const medPopis=l=>{const f=l.filter(m=>m.typ==="foto").length,h=l.length-f;return [f?f+" "+(f===1?"fotka":f<5?"fotky":"fotek"):"",h?h+" "+(h===1?"nahrávka":h<5?"nahrávky":"nahrávek"):""].filter(Boolean).join(" · ")};
+function medPas(id){const l=medTid(id);if(!l.length)return "";
+ return `<div class="mmed">${l.map(m=>m.typ==="foto"?`<button class="mth" data-med="${m.id}" aria-label="Moje fotka"><img src="${medUrl(m)}" alt=""></button>`:`<button class="mhl" data-med="${m.id}" aria-label="Moje nahrávka">🎤 ${mss(m.sek||0)}</button>`).join("")}</div>`}
+function zmensi(file){return new Promise((ok,ko)=>{const img=new Image(),u=URL.createObjectURL(file);
+ img.onload=()=>{const k=Math.min(1,1600/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+  c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):ko(),"image/jpeg",.82)};
+ img.onerror=()=>{URL.revokeObjectURL(u);ko()};img.src=u})}
+function foto(tid){const i=$("fotoin");i.value="";i.dataset.tid=tid;i.click()}
+function sheetHlas(tid){
+ const x=ALLT.find(y=>y.id===tid);let BL=null,SEK=0;
+ openSheet(`<h2>Namluvená poznámka</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.t)} · ${esc(x.h)}</div>
+  <div class="bd"><div class="nsoukr">🔒 Nahrávku slyšíte jen vy, je uložená v tomto zařízení.</div>
+  <div class="qform"><div class="mic"><button type="button" class="micb" id="hmic">🎤 Začít nahrávat</button><span id="hrec" class="muted"></span></div>
+   <textarea id="ht" rows="4" placeholder="Sem se během nahrávání píše přepis (pokud to prohlížeč umí) – můžete ho opravit" aria-label="Přepis"></textarea>
+   <div id="hprev" hidden><audio id="haud" controls style="width:100%"></audio></div>
+   <button type="button" class="send" id="hsave" disabled>Uložit nahrávku</button></div>
+  <div class="note">Nahrávat můžete až 5 minut. Nahrávky najdete u přednášky a v ✎ Poznámkách, kde si je můžete i sdílet.</div></div>`);
+ $("hmic").addEventListener("click",()=>nahravej((u,b,sek)=>{if(!$("haud"))return;BL=b;SEK=sek;$("haud").src=u;$("hprev").hidden=false;$("hsave").disabled=false},{b:"hmic",info:"hrec",ta:"ht",max:300,znovu:"🎤 Nahrát znovu"}));
+ $("hsave").addEventListener("click",()=>{if(REC.mr)return toast("Nejdřív ukončete nahrávání");if(!BL)return;
+  medPridej(tid,"hlas",BL,{prepis:$("ht").value.trim(),sek:SEK}).then(()=>{closeSheet();toast("🎤 Nahrávka uložena k přednášce")}).catch(()=>toast("Nahrávku se nepodařilo uložit"))})}
+function sheetMed(mid){
+ const m=medNajdi(mid);if(!m)return;const x=ALLT.find(y=>y.id===m.tid),kdy=new Date(m.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"});
+ const jm="konference-2027-"+(x?x.t.replace(":","")+"-":"")+m.id+(m.typ==="foto"?".jpg":m.blob.type.includes("mp4")?".m4a":".webm");
+ openSheet(`<h2>${m.typ==="foto"?"Moje fotka":"Moje nahrávka"}</h2><div class="muted" style="font-size:13px;margin-top:2px">${x?esc(x.t)+" · "+esc(x.h):""} · ${kdy}</div>
+  <div class="bd">${m.typ==="foto"?`<img src="${medUrl(m)}" alt="Moje fotka" style="display:block;width:100%;border-radius:12px">`:`<audio src="${medUrl(m)}" controls style="width:100%"></audio>${m.prepis?`<p style="margin:10px 0 0">${esc(m.prepis)}</p>`:""}`}
+  <div class="cact"><a class="cbtn" href="${medUrl(m)}" download="${jm}">⬇ Uložit do zařízení</a><button class="cbtn" id="mdel" style="border:0">🗑 Smazat</button></div></div>`);
+ $("mdel").addEventListener("click",()=>{if(!confirm(m.typ==="foto"?"Smazat fotku?":"Smazat nahrávku?"))return;medSmaz(m).then(()=>{closeSheet();toast("Smazáno")})})}
+
 /* ===== Export poznámek ===== */
 function drzData(){   // požádá prohlížeč, ať poznámky nemaže (uživatel nic nevidí)
  try{const st=navigator.storage;if(st&&st.persist)st.persisted().then(p=>p||st.persist()).catch(()=>{})}catch(e){}}
-const pocetPoznamek=()=>Object.values(S.notes).filter(Boolean).length;
+const pocetPoznamek=()=>ALLT.filter(x=>x.id&&maPozn(x.id)).length;
 const umiSdilet=()=>!!(navigator.share&&matchMedia("(pointer:coarse)").matches);
 function nexpBtns(){return `<div class="nexp">${umiSdilet()?'<button data-nx="share">📤 Sdílet</button>':""}<button data-nx="txt">⬇ Stáhnout text</button><button data-nx="mail">✉ Poslat e-mailem</button><button data-nx="pr">🖨 Vytisknout / PDF</button></div>`}
 function sdilejPoznamky(){
- navigator.share({title:"Moje poznámky – konference ČOV 2027",text:poznamkyText()}).catch(e=>{if(e&&e.name!=="AbortError")stahniPoznamky()})}
+ const d={title:"Moje poznámky – konference ČOV 2027",text:poznamkyText()};
+ const fs=[];ALLT.forEach(x=>{if(x.id)medTid(x.id).forEach((m,i)=>{try{fs.push(new File([m.blob],"konference-2027-"+x.t.replace(":","")+"-"+(i+1)+(m.typ==="foto"?".jpg":m.blob.type.includes("mp4")?".m4a":".webm"),{type:m.blob.type||(m.typ==="foto"?"image/jpeg":"audio/webm")}))}catch(e){}})});
+ if(fs.length&&navigator.canShare&&navigator.canShare({files:fs}))d.files=fs;
+ navigator.share(d).catch(e=>{if(e&&e.name!=="AbortError")stahniPoznamky()})}
 function poznUlozit(){   // připomínka na konci konference: poznámky jsou jen v zařízení
  const n=pocetPoznamek();if(!n||store.get("poznUlozeno",0)>=n)return "";
  const c=clock(), konec=new Date()>new Date("2027-04-28T11:40:00+02:00"), naKonci=c.day==="st"&&c.m>=11*60+40;
@@ -1424,16 +1475,18 @@ function poznUlozit(){   // připomínka na konci konference: poznámky jsou jen
   <b>Máte ${n} ${n===1?"poznámku":n<5?"poznámky":"poznámek"} – uložte si ${n===1?"ji":"je"}</b>
   <p class="muted" style="margin:4px 0 10px;font-size:13px">Poznámky jsou jen v tomto zařízení. Uložte si je, ať o ně nepřijdete – i s názvy přednášek.</p>
   ${nexpBtns()}<button class="linkb" data-nxok style="margin-top:8px">Hotovo, mám uloženo</button></div>`}
-function mojePoznamky(){return ALLT.filter(x=>x.id&&S.notes[x.id]).map(x=>{const d=Object.keys(PROG).find(k=>PROG[k].includes(x));return {x,den:DAYS.find(z=>z.k===d)}})}
+function mojePoznamky(){return ALLT.filter(x=>x.id&&maPozn(x.id)).map(x=>{const d=Object.keys(PROG).find(k=>PROG[k].includes(x));return {x,den:DAYS.find(z=>z.k===d)}})}
+function medTxt(id){const l=medTid(id);if(!l.length)return "";
+ return "\n"+l.map(m=>m.typ==="foto"?"📷 fotka (přiložená)":"🎤 nahrávka "+mss(m.sek||0)+(m.prepis?" – přepis: "+m.prepis:"")).join("\n")}
 function poznamkyText(){
  const l=mojePoznamky();
  return "Moje poznámky – Nové metody a postupy při provozování ČOV, 31. ročník ("+TERMIN+")\n"+(podpis()?podpis()+"\n":"")+"\n"+
-  l.map(({x,den})=>`${den.n} ${den.d} · ${x.t}${x.e?"–"+x.e:""}\n${x.h}\n${x.w}\n\n${S.notes[x.id]}\n`).join("\n----------------------------------------\n\n");
+  l.map(({x,den})=>`${den.n} ${den.d} · ${x.t}${x.e?"–"+x.e:""}\n${x.h}\n${x.w}\n\n${S.notes[x.id]||""}${medTxt(x.id)}\n`).join("\n----------------------------------------\n\n");
 }
 function tiskPoznamek(){
  const l=mojePoznamky(), pa=$("printarea");
  pa.innerHTML=`<h1>Moje poznámky</h1><div class="m">Nové metody a postupy při provozování ČOV · 31. ročník · ${esc(TERMIN)}${podpis()?" · "+esc(podpis()):""}</div>`+
-  l.map(({x,den})=>`<div class="n"><b>${esc(x.h)}</b><div class="w">${esc(den.n)} ${esc(den.d)} · ${esc(x.t)}${x.e?"–"+esc(x.e):""} · ${esc(x.w)}</div><p>${esc(S.notes[x.id])}</p></div>`).join("");
+  l.map(({x,den})=>`<div class="n"><b>${esc(x.h)}</b><div class="w">${esc(den.n)} ${esc(den.d)} · ${esc(x.t)}${x.e?"–"+esc(x.e):""} · ${esc(x.w)}</div>${S.notes[x.id]?`<p>${esc(S.notes[x.id])}</p>`:""}${medTid(x.id).map(m=>m.typ==="foto"?`<img src="${medUrl(m)}" alt="" style="max-width:100%;max-height:9cm;display:block;margin:6px 0;border-radius:6px">`:`<p>🎤 Nahrávka ${mss(m.sek||0)}${m.prepis?" – "+esc(m.prepis):""}</p>`).join("")}</div>`).join("");
  document.body.classList.add("tisk");
  const done=()=>{document.body.classList.remove("tisk");window.removeEventListener("afterprint",done)};
  window.addEventListener("afterprint",done);
@@ -1534,6 +1587,9 @@ $("view").addEventListener("click",e=>{
  {const nv=e.target.closest("[data-nav]");if(nv)return sheetNav(nv.dataset.nav)}
  if(e.target.closest("[data-doprava]"))return sheetDoprava();
  if(e.target.closest("#dnow"))return naAktualni();
+ {const md=e.target.closest("[data-med]");if(md)return sheetMed(md.dataset.med)}
+ {const fb=e.target.closest("[data-foto]");if(fb)return foto(fb.dataset.foto)}
+ {const hb=e.target.closest("[data-hlas]");if(hb)return sheetHlas(hb.dataset.hlas)}
  {const nq=e.target.closest("[data-naq]");if(nq)return naPrednasku(nq.dataset.naq)}
  if(e.target.closest("[data-navse]")){ALLT.forEach(x=>{if(x.id&&novych(x.id))S.seen[x.id]=(S.qa[x.id]||[]).length});store.set("seen",S.seen);return render()}
  if(e.target.closest("[data-aktok]")){const x=AKT.list.find(y=>!S.aktSeen[y.k]);if(x){S.aktSeen[x.k]=1;store.set("aktseen",S.aktSeen)}return render()}
@@ -1570,7 +1626,9 @@ $("view").addEventListener("input",e=>{
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.karta&&S.karta.k!=="ukazka"&&Date.now()-S.karta.ts>120000)kartaNacti(null,true)});
 {const sq=store.get("snapQ",null);if(sq&&sq.q){LIVE.q=sq.q;LIVE.v=sq.v||{};OUT.l.forEach(o=>liveApply(o.path,o.val));LIVE.on=true;S.voted={};liveRebuild()}
  const sa=store.get("snapA",null);if(sa&&typeof sa==="object"){AKT.raw=sa;aktSeznam();render()}}   // bez signálu poslední uložený stav
-liveStart();aktStart();offlUkaz();outFlush();
+liveStart();aktStart();offlUkaz();outFlush();medNacti();
+$("fotoin").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0],tid=e.target.dataset.tid;if(!f||!tid)return;
+ zmensi(f).catch(()=>f).then(b=>medPridej(tid,"foto",b)).then(()=>toast("📷 Fotka uložena k přednášce – vidíte ji jen vy")).catch(()=>toast("Fotku se nepodařilo uložit"))});
 if(FS.umi){document.addEventListener("fullscreenchange",fsKresli);document.addEventListener("webkitfullscreenchange",fsKresli);fsKresli()}
 document.addEventListener("click",e=>{if(e.target.closest("[data-fs]"))fsToggle()});
 $("toast").addEventListener("click",()=>{const f=toast.klik;if(!f)return;$("toast").hidden=true;toast.klik=null;f()});

@@ -757,3 +757,12 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
   přečtené“); **podržení prstu na záložce Program** = stejný přehled v okně.
 - **Celá obrazovka** (tablet v prohlížeči): tlačítko ⛶ v záhlaví a na Domů vedle „Ukázka“, v režimu „✕ Zmenšit“;
   v nainstalované aplikaci a na iPhonu (Safari to neumí) se neukazuje.
+
+### Průvodce 0.56 (19. 10. 2026 večer)
+- **Tři druhy poznámek u přednášky:** ✎ Poznámka (text), **🎤 Namluvit** (okno s nahráváním až 5 min, živý přepis do pole,
+  jde opravit; `nahravej()` a `prepis()` zobecněné) a **📷 Vyfotit** (`<input capture=environment>` → foťák v mobilu, na PC výběr
+  souboru; zmenšení na 1600 px JPEG). Fotky a nahrávky jen v zařízení v **IndexedDB** `pruvodce/media` (`MED`, `medPridej`,
+  `medSmaz`); u přednášky náhledy a „🎤 0:42“, klik = okno s fotkou / přehrávačem, ⬇ Uložit do zařízení, 🗑 Smazat.
+  Filtr ✎ Poznámky, počty a připomínka „uložte si je“ počítají i fotky/nahrávky; tisk/PDF obsahuje fotky; 📤 Sdílet posílá
+  i soubory (když to telefon umí); stažený text uvádí „📷 fotka / 🎤 nahrávka + přepis“.
+- **Podpis v Info dole:** „© Petr Kobelka, VHOS, a.s. 2026“ (Petr: bez slova „aplikace“).
