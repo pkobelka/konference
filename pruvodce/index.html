@@ -579,7 +579,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.51 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.52 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -722,7 +722,7 @@ const DNAST={kraskov:"Hotel Kraskov",sec:"Seč – zastávka"}, DSMER={oba:"tam 
 const KONF_NAZEV="Konference Nové metody a postupy při provozování ČOV – 31. ročník";
 const KAL={
  2027:{n:KONF_NAZEV,od:"20270427",do:"20270429",txt:"27.–28. dubna 2027",mis:MISTO.nazev+", "+MISTO.adr,kde:MISTO.nazev+", Seč",det:"31. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Program: https://pkobelka.github.io/konference/pruvodce/"},
- 2028:{n:"Konference Nové metody a postupy při provozování ČOV – 32. ročník",od:"20280404",do:"20280406",txt:"4.–5. dubna 2028",mis:"Seč",kde:"Seč",det:"32. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Pořádá VHOS, a.s. Podrobnosti: https://www.vhos.cz"}};
+ 2028:{n:"Konference Nové metody a postupy při provozování ČOV – 32. ročník",od:"20280404",do:"20280406",txt:"4.–5. dubna 2028",mis:MISTO.nazev+", "+MISTO.adr,kde:MISTO.nazev+", Seč",det:"32. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Pořádá VHOS, a.s. Podrobnosti: https://www.vhos.cz"}};
 function sheetKal(rok){
  const K=KAL[rok]||KAL[2027];
  const g="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(K.n)+"&dates="+K.od+"/"+K.do+"&location="+encodeURIComponent(K.mis)+"&details="+encodeURIComponent(K.det);
@@ -1184,7 +1184,7 @@ function vInfo(){
   <div class="card"><div class="label" style="margin-bottom:8px">Web</div>
    <p style="margin:0;font-size:14px">Program a přihlášky: <a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></p></div>
   <div class="card r2028"><div class="label" style="margin-bottom:6px">Příští ročník</div>
-   <b>32. ročník konference · 4.–5. dubna 2028</b><p class="muted" style="margin:4px 0 10px;font-size:13px">Seč · pořádá VHOS, a.s. Uložte si termín už teď.</p>
+   <b>32. ročník konference · 4.–5. dubna 2028</b><p class="muted" style="margin:4px 0 10px;font-size:13px">Kongres hotel Jezerka, Seč · pořádá VHOS, a.s. Uložte si termín už teď.</p>
    <button class="cbtn" data-kal="2028" style="border:0">📅 Uložit do kalendáře</button></div>
   <div class="note">Údaje podle pozvánky 2026. Pro rok 2027 je pořadatel aktualizuje na jednom místě a všem se změní hned.</div>
   <p class="muted" style="text-align:center;font-size:12px;margin:4px 0 0;font-family:var(--f-display)">Průvodce konferencí · verze ${VERZE}</p>

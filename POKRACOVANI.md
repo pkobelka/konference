@@ -710,4 +710,4 @@ Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main
 - **0.49:** Doprava → Cesta na místo = dvě karty vedle sebe (`.hotely`/`.hotel`): Jezerka výrazně (`.hl`, „Konference + ubytování“, adresa, GPS, parkování), Kraskov „Ubytování · část hostů“; v každé 📞 Recepce + 🧭 Navigovat (v mobilu pod 560 px jen číslo, tlačítka pod sebou).
 - **0.50:** horní menu na počítači (od 820 px) v orámovaném fialovém obdélníku přes šířku obsahu; „Parkování u hotelu“ bez „(upřesníme)“.
 - **0.51:** Info → na konci karta **Příští ročník: 32. ročník · 4.–5. dubna 2028** (Seč, pořádá VHOS) + „📅 Uložit do kalendáře“
-  (`sheetKal(rok)`, data v `KAL`; Google Kalendář i .ics). Místo 2028 jen „Seč“ – **ověřit s Petrem**, jestli zase Jezerka.
+  (`sheetKal(rok)`, data v `KAL`; Google Kalendář i .ics). **0.52:** místo 2028 = Kongres hotel Jezerka (Petr potvrdil).
