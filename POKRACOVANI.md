@@ -784,3 +784,4 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
   podpis, „☐ Pořadatel může ohlas zveřejnit“. V aplikaci pořadatele přehled + výběr ohlasů do karty „Řekli o průvodci“ na Domů
   (i pro upoutávku). Doporučeno spojit s hodnocením konference (nápad 2). Potřebuje uzel `konference2027_ohlasy` (veřejnost
   jen zápis, čte pořadatel) + pravidlo v repu mojebudky se svolením Petra.
+- **0.60:** v Programu klik na **číslo u dne** (Úterý · 6) – nebo na už vybraný den s novými dotazy – otevře okno „Nové dotazy · Úterý“ se seznamem přednášek; klik = posun na přednášku (Petrovi v PC „nic nedělalo“).

@@ -608,7 +608,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.59 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.60 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -672,14 +672,14 @@ function naAktualni(){   // Program → skok na právě běžící (nebo nejbli�
 function ukazBod(id){const el=$("t-"+id);if(!el)return;el.scrollIntoView({block:"center",behavior:"smooth"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1700)}
 function naPrednasku(id){   // přepne den, zruší filtry a posune na přednášku
  const d=Object.keys(PROG).find(k=>PROG[k].some(y=>y.id===id));if(!d)return;closeSheet();S.day=d;S.q="";S.mine=false;if(S.tab!=="program")S.tab="program";render();setTimeout(()=>ukazBod(id),60)}
-function noveSeznam(){   // přednášky s nepřečtenými dotazy
- return ALLT.filter(x=>x.id&&novych(x.id)).map(x=>({x,n:novych(x.id),d:DAYS.find(z=>PROG[z.k].includes(x))}))}
-function noveRadky(){return noveSeznam().map(({x,n,d})=>`<button class="nvr" data-naq="${x.id}"><span class="nvt">${esc(d?d.n.slice(0,2):"")} ${esc(x.t)}</span><span class="nvh">${esc(x.h)}</span><span class="nvn">${n} ${n===1?"nový":n<5?"nové":"nových"}</span></button>`).join("")}
+function noveSeznam(den){   // přednášky s nepřečtenými dotazy (volitelně jen jeden den)
+ return (den?PROG[den]:ALLT).filter(x=>x.id&&novych(x.id)).map(x=>({x,n:novych(x.id),d:DAYS.find(z=>PROG[z.k].includes(x))}))}
+function noveRadky(den){return noveSeznam(den).map(({x,n,d})=>`<button class="nvr" data-naq="${x.id}"><span class="nvt">${esc(d?d.n.slice(0,2):"")} ${esc(x.t)}</span><span class="nvh">${esc(x.h)}</span><span class="nvn">${n} ${n===1?"nový":n<5?"nové":"nových"}</span></button>`).join("")}
 function vNove(){const n=novychVse();if(!n)return "";
  return `<div class="card nvbox"><div class="label" style="margin-bottom:6px">💬 Nové dotazy · ${n}</div>${noveRadky()}<button class="linkb" data-navse style="margin-top:8px">Označit vše jako přečtené</button></div>`}
-function sheetNove(){
- if(!novychVse())return toast("Žádné nové dotazy");
- openSheet(`<h2>Nové dotazy</h2><div class="muted" style="font-size:13px;margin-top:2px">Ťukněte na přednášku – program se na ni posune</div><div class="bd">${noveRadky()}</div>`)}
+function sheetNove(den){
+ if(den?!novychDen(den):!novychVse())return toast("Žádné nové dotazy");const dn=den&&DAYS.find(z=>z.k===den);
+ openSheet(`<h2>Nové dotazy${dn?" · "+dn.n:""}</h2><div class="muted" style="font-size:13px;margin-top:2px">Ťukněte na přednášku – program se na ni posune</div><div class="bd">${noveRadky(den)}</div>`)}
 function nowState(){
  const c=clock(),l=PROG[c.day].filter(x=>!x.blok&&x.a!=null);
  const cur=l.find(x=>x.a<=c.m&&c.m<(x.b??x.a+1)), next=l.find(x=>x.a>c.m);
@@ -1638,7 +1638,7 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.q)return sheetQ(t.dataset.q);
  if(t.dataset.chair)return sheetChair(t.dataset.chair);
  if(t.dataset.go){if(t.dataset.mine)S.mine=true;return go(t.dataset.go)}
- if(t.dataset.day){S.day=t.dataset.day;return render()}
+ if(t.dataset.day){const d=t.dataset.day;if(e.target.closest(".bdg")||(S.day===d&&novychDen(d))){S.day=d;render();return sheetNove(d)}S.day=d;return render()}
  if(t.dataset.note)return sheetNote(t.dataset.note);
  if(t.dataset.p)return sheetP(t.dataset.p);
  if(t.id==="mine")return go("poznamky");
