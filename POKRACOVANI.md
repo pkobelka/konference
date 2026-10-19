@@ -831,3 +831,10 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
   přednášku a **otevře její dotazy**.
 - Zjištění: v mojebudky existují `functions/`, `firebase-messaging-sw.js`, `send_push.py` → infrastruktura pro **Web Push** už je
   (využít u nápadu 4).
+- **0.64 – nové menu: Domů · Program · Dotazy · Poznámky · Partneři · Info** (Doprava přesunuta do Info).
+  - **Záložka Dotazy** (`vDotazy`): nahoře „Běží teď“ (dotazy k právě běžící přednášce + „? Zeptat se teď“), přepínač
+    **Nové · Top 👍 · Všechny · Moje** (`S.dqf`), hledání v dotazech, seskupení podle přednášek (↗ v programu, ? Zeptat se / dát 👍).
+    Červené číslo nových dotazů je teď na záložce Dotazy; karta „Nové dotazy“ v Programu zrušena (číslo u dne v Programu zůstává).
+  - **Info**: rozcestník 📣 Aktuality · 🚌 Cesta a svoz · 📞 Kontakty · ℹ️ O konferenci; pod aktualitami celá **Cesta a svoz**
+    (`vDoprava` vložená do Info); `go("doprava")` vede do Info na sekci (dlaždice „Svoz a cesta“ na Domů).
+  - Program, Dotazy a Domů se samy překreslí, když se změní minuta (běžící přednáška, mizí Upozornit) – ne při psaní / s okny.
