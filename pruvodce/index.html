@@ -318,6 +318,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .kform{display:flex;gap:8px;margin-top:8px}.kform input{flex:1;min-width:0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);font:inherit}
 .cbtn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:10px;padding:9px 13px;font-weight:700;font-size:14px;background:var(--accent);color:var(--accent-ink)}
 .cbtn+.cbtn,.cbtn.alt{background:var(--accent-soft);color:var(--accent)}
+.r2028{border:2px dashed color-mix(in srgb,var(--accent) 45%,transparent)}.r2028 b{font-size:16px}
 .hotely{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .hotel{display:flex;flex-direction:column;gap:3px;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);min-width:0}
 .hotel.hl{border:2px solid var(--accent);background:var(--accent-soft)}
@@ -578,7 +579,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.50 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.51 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -719,20 +720,23 @@ const KRASKOV={nazev:"EA Hotel Kraskov",adr:"Starý Dvůr 47, 538 43 Třemošnic
 const DDB="https://moje-budky-default-rtdb.firebaseio.com/konference2027_doprava/z";
 const DNAST={kraskov:"Hotel Kraskov",sec:"Seč – zastávka"}, DSMER={oba:"tam i zpět",tam:"jen tam",zpet:"jen zpět"};
 const KONF_NAZEV="Konference Nové metody a postupy při provozování ČOV – 31. ročník";
-function sheetKal(){
- const det="31. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Program: https://pkobelka.github.io/konference/pruvodce/";
- const g="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(KONF_NAZEV)+"&dates=20270427/20270429&location="+encodeURIComponent(MISTO.nazev+", "+MISTO.adr)+"&details="+encodeURIComponent(det);
- openSheet(`<h2>Přidat do kalendáře</h2><div class="muted" style="font-size:13px;margin-top:2px">27.–28. dubna 2027 · ${esc(MISTO.nazev)}, Seč</div>
+const KAL={
+ 2027:{n:KONF_NAZEV,od:"20270427",do:"20270429",txt:"27.–28. dubna 2027",mis:MISTO.nazev+", "+MISTO.adr,kde:MISTO.nazev+", Seč",det:"31. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Program: https://pkobelka.github.io/konference/pruvodce/"},
+ 2028:{n:"Konference Nové metody a postupy při provozování ČOV – 32. ročník",od:"20280404",do:"20280406",txt:"4.–5. dubna 2028",mis:"Seč",kde:"Seč",det:"32. ročník konference, memoriál Ing. Jakuba S. Čecha, CSc. Pořádá VHOS, a.s. Podrobnosti: https://www.vhos.cz"}};
+function sheetKal(rok){
+ const K=KAL[rok]||KAL[2027];
+ const g="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(K.n)+"&dates="+K.od+"/"+K.do+"&location="+encodeURIComponent(K.mis)+"&details="+encodeURIComponent(K.det);
+ openSheet(`<h2>Přidat do kalendáře</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(K.n.replace(/^Konference /,""))}<br>${K.txt} · ${esc(K.kde)}</div>
   <div class="bd"><div class="big-acts">
    <a href="${g}" target="_blank" rel="noopener">📅<span>Google Kalendář<small>Android, Gmail – otevře se předvyplněná událost</small></span></a>
    <button type="button" id="kics">🗓️<span>Apple / Outlook / jiný kalendář<small>stáhne soubor .ics s připomenutím den předem</small></span></button>
-  </div><div class="note">Na jednotlivé přednášky si můžete nastavit upozornění v Programu (🔔 Upozornit).</div></div>`);
+  </div><div class="note">${rok==2028?"Přesný program a přihlášky zveřejní pořadatel na www.vhos.cz.":"Na jednotlivé přednášky si můžete nastavit upozornění v Programu (🔔 Upozornit)."}</div></div>`);
  $("kics").addEventListener("click",()=>{
   const e=v=>v.replace(/[,;]/g,"\\$&"), f=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
-  const t=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//VHOS//Konference CZ//CS","BEGIN:VEVENT","UID:konference-2027@konference-vhos","DTSTAMP:"+f(new Date()),
-   "DTSTART;VALUE=DATE:20270427","DTEND;VALUE=DATE:20270429","SUMMARY:"+e(KONF_NAZEV),"LOCATION:"+e(MISTO.nazev+", "+MISTO.adr),"DESCRIPTION:"+e(det),
+  const t=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//VHOS//Konference CZ//CS","BEGIN:VEVENT","UID:konference-"+K.od.slice(0,4)+"@konference-vhos","DTSTAMP:"+f(new Date()),
+   "DTSTART;VALUE=DATE:"+K.od,"DTEND;VALUE=DATE:"+K.do,"SUMMARY:"+e(K.n),"LOCATION:"+e(K.mis),"DESCRIPTION:"+e(K.det),
    "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:Zítra začíná konference v Seči","TRIGGER:-PT15H","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/calendar;charset=utf-8"}));a.download="konference-sec-2027.ics";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/calendar;charset=utf-8"}));a.download="konference-sec-"+K.od.slice(0,4)+".ics";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
   toast("Otevřete stažený soubor – přidá se do kalendáře")});
 }
 const telUrl=t=>"tel:+420"+String(t).replace(/\s/g,"");
@@ -1179,6 +1183,9 @@ function vInfo(){
    <div class="cact" style="margin:0">${PL.nainst?"":`<button class="cbtn" data-instal="1">📲 Přidat na plochu</button>`}<button class="cbtn" id="sdil">↗ Sdílet odkaz</button></div></div></div></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Web</div>
    <p style="margin:0;font-size:14px">Program a přihlášky: <a href="https://www.vhos.cz" target="_blank" rel="noopener">www.vhos.cz</a> · <a href="https://www.czwa.cz" target="_blank" rel="noopener">www.czwa.cz</a></p></div>
+  <div class="card r2028"><div class="label" style="margin-bottom:6px">Příští ročník</div>
+   <b>32. ročník konference · 4.–5. dubna 2028</b><p class="muted" style="margin:4px 0 10px;font-size:13px">Seč · pořádá VHOS, a.s. Uložte si termín už teď.</p>
+   <button class="cbtn" data-kal="2028" style="border:0">📅 Uložit do kalendáře</button></div>
   <div class="note">Údaje podle pozvánky 2026. Pro rok 2027 je pořadatel aktualizuje na jednom místě a všem se změní hned.</div>
   <p class="muted" style="text-align:center;font-size:12px;margin:4px 0 0;font-family:var(--f-display)">Průvodce konferencí · verze ${VERZE}</p>
  </section>`;
@@ -1449,7 +1456,7 @@ $("view").addEventListener("click",e=>{
  if(e.target.closest("[data-instal]"))return sheetInstal();
  if(e.target.closest("[data-instalpryc]")){store.set("instalpryc",1);return render()}
  if(e.target.id==="sdil")return sdilet();
- if(e.target.closest("[data-kal]"))return sheetKal();
+ {const kl=e.target.closest("[data-kal]");if(kl)return sheetKal(kl.dataset.kal)}
  {const nv=e.target.closest("[data-nav]");if(nv)return sheetNav(nv.dataset.nav)}
  if(e.target.closest("[data-doprava]"))return sheetDoprava();
  const t=e.target.closest("[data-nxok],[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,[data-nx]");if(!t)return;

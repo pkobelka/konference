@@ -685,7 +685,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   křížkem skrýt jako dřív). iPhone kroky doplněny pro nový Safari (iOS 26: Sdílet pod ⋯; „Otevřít jako webovou aplikaci“).
   Kolegyně Petra (grafička, iPhone) to zkouší.
 
-### Průvodce 0.44–0.49 (19. 10. 2026) – NASAZENO
+### Průvodce 0.44–0.51 (19. 10. 2026) – NASAZENO
 Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main` na tuto větev (GitHub Pages).
 - **Logo VHOS v záhlaví** stránek (Program, Partneři, …) v bílé ochranné zóně podle manuálu (`.top .vh`: okraj ≈ výška loga).
 - **Doprava → Cesta na místo:** adresa + telefon recepce (klikací `tel:`) – Jezerka Ústupky 278, 538 07 Seč, 469 676 327
@@ -708,3 +708,6 @@ Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main
   (Web Share, jen dotyková zařízení) / Stáhnout / E-mail / PDF (`data-nx`); u psaní poznámky nahoře `.nsoukr` „🔒 Poznámku vidíte jen vy…“.
 - **0.48:** Doprava – u obou hotelů název, adresa a tlačítko „📞 Recepce …“ (`a.tel`, `telUrl()`); okno navigace má Hotel / Adresa / Recepce a „📞 Zavolat na recepci“. Kraskov přejmenován na **EA Hotel Kraskov** (Petr může chtít jen „Hotel Kraskov“).
 - **0.49:** Doprava → Cesta na místo = dvě karty vedle sebe (`.hotely`/`.hotel`): Jezerka výrazně (`.hl`, „Konference + ubytování“, adresa, GPS, parkování), Kraskov „Ubytování · část hostů“; v každé 📞 Recepce + 🧭 Navigovat (v mobilu pod 560 px jen číslo, tlačítka pod sebou).
+- **0.50:** horní menu na počítači (od 820 px) v orámovaném fialovém obdélníku přes šířku obsahu; „Parkování u hotelu“ bez „(upřesníme)“.
+- **0.51:** Info → na konci karta **Příští ročník: 32. ročník · 4.–5. dubna 2028** (Seč, pořádá VHOS) + „📅 Uložit do kalendáře“
+  (`sheetKal(rok)`, data v `KAL`; Google Kalendář i .ics). Místo 2028 jen „Seč“ – **ověřit s Petrem**, jestli zase Jezerka.
