@@ -789,3 +789,19 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
   už v den konference. Návrh: u přednášky (Program i Poznámky) „📖 Sborník“ → PDF otevřené na stránce přednášky (`#page=N`;
   na iOS může začít od začátku → ukázat i „strana N“), v Info „📖 Celý sborník“; čísla stran dohledat automaticky podle názvů
   v PDF a dát Petrovi ke kontrole; PDF na webu VHOS nebo u průvodce; do offline jen na tlačítko „Uložit sborník do tabletu“.
+
+## 📋 ZÁSOBNÍK NÁPADŮ – co jsme vymysleli a ještě neudělali (průběžně doplňovat, hotové škrtnout)
+Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, mrknem se na to“.
+1. **Ohlasy / „chvalte nás“** – 😍🙂😐🙁 + co se líbí / co chybí, zveřejnitelné ohlasy „Řekli o průvodci“ (spojit s hodnocením konference).
+2. **Proklik do sborníku** – „📖 Sborník“ u přednášky, PDF na správné stránce; celý sborník v Info.
+3. **Předsedající** – A: vlastní odkaz/QR `?pr=<blok>`, tlačítko schovat před účastníky; B: PIN, „✓ Zodpovězeno“, skrývání dotazů.
+4. **Upozornění při zavřené aplikaci (Web Push)** – zprávy pořadatele dorazí i se zavřeným průvodcem (potřebuje odesílací službu).
+5. **„Moje registrace“** – nechat jen pro „svoje“ lidi (hosté, přednášející, vystavující), nebo zrušit; Petr rozhodne.
+6. **Dálkové promítání dotazů** – předsedající vybere dotaz v mobilu, ukáže se na plátně (PIN + pravidlo mojebudky).
+7. **Wi-Fi v Info** – název sítě a heslo s tlačítkem Kopírovat.
+8. **Plánek areálu Jezerky** – sál, stánky vystavovatelů s čísly, u partnera „najdete nás u stánku č. X“.
+9. **Odkazy na prezentace po konferenci** – pokud nebude stačit sborník.
+10. **Zastávka svozu v Seči** – čeká na místo od Petra (adresa / mapa).
+11. **Ověřit telefony recepcí** (Kraskov = obecné číslo hotelu) a název „EA Hotel Kraskov“ vs. „Hotel Kraskov“.
+12. **Info → Pořadatelé** – text z pozvánky 2026 („VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV“) ověřit.
+13. **Aplikace pořadatele** – počty lůžek, hromadné e-maily, před ostrým provozem smazat testovací data 2026.
