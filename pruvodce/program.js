@@ -47,17 +47,3 @@ const ALLT=Object.values(PROG).flat();
 const DATES={ut:"2027-04-27",st:"2027-04-28"};
 const mm=t=>{const m=/^(\d\d):(\d\d)$/.exec(t||"");return m?+m[1]*60+ +m[2]:null};
 ALLT.forEach(x=>{if(x.blok)return;x.a=mm(x.t);x.b=mm(x.e);if(x.a!=null&&x.b!=null&&x.b<=x.a)x.b+=1440});
-
-// Posun programu (zadává pořadatel, Firebase konference2027_verejne/posun = {klíč přednášky: minut}):
-// posun platí od dané přednášky do konce bloku – nejbližší přestávka nebo nový blok ho ukončí (pokud nemá svůj).
-ALLT.forEach(x=>{if(x.blok)return;x.a0=x.a;x.b0=x.b;x.t0=x.t;x.e0=x.e;x.posun=0;x.prot=0;x.zkr=0});
-const hhmm=m=>{m=((m%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")};
-function posunPouzij(P){P=P||{};
- for(const d in PROG){let off=0;PROG[d].forEach(x=>{if(x.blok){off=0;return}x.prot=0;x.zkr=0;if(x.brk)off=0;if(P[x.id]!=null)off=+P[x.id]||0;
-  x.posun=x.a0==null?0:off;x.a=x.a0==null?null:x.a0+x.posun;x.b=x.b0==null?null:x.b0+x.posun;
-  x.t=x.a0==null?x.t0:hhmm(x.a);x.e=x.b0==null?x.e0:hhmm(x.b)});
-  // návaznost: předchozí bod se protáhne (zpoždění vzniklo v něm), přestávka po posunutém bloku se zkrátí
-  const l=PROG[d].filter(x=>!x.blok&&x.a0!=null);
-  for(let i=1;i<l.length;i++){const p=l[i-1],x=l[i];
-   if(p.b0===x.a0&&x.posun!==p.posun&&!x.brk){p.b=x.a;p.e=hhmm(p.b);p.prot=x.posun-p.posun}else p.prot=p.prot||0;
-   if(x.brk&&p.b!=null&&p.b>x.a&&x.b!=null){x.a=Math.min(p.b,x.b-5);x.t=hhmm(x.a);x.zkr=x.a-x.a0}}}}

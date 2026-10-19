@@ -883,10 +883,15 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
 **Plán Petra – tři verze aplikace:**
 1. **Organizátor (Petr)** = aplikace pořadatele `index.html` – ubytování, večeře, přihlášky, aktuality, ohlasy, svoz, posun
    programu. Jen Petrův seznam e-mailů (`florian_login_email`).
-2. **Předsedající** – NOVÁ samostatná aplikace (bez ubytování): svůj blok, **▶ „Začalo teď“** (posun od skutečného začátku),
+2. ~~**Předsedající** – odloženo 19. 10. (posun zrušen)~~ NOVÁ samostatná aplikace (bez ubytování): svůj blok, **▶ „Začalo teď“** (posun od skutečného začátku),
    **„Skončilo teď“**, posun **− / + po minutě** + Uložit (jako v pořadateli), dotazy podle 👍 s „Přečteno“ na všech jeho
    zařízeních, čtení velkým písmem; později promítání na plátno a skrytí nevhodného dotazu.
    **Čeká na Petra: přihlášení A (e-mailový odkaz, seznam předsedajících spravuje Petr – doporučeno) / B (jeden PIN).**
    Potřebuje nové pravidlo v mojebudky: posun (`konference2027_verejne/posun`) zapisuje pořadatel NEBO předsedající ze seznamu.
    „Pohled předsedajícího“ v průvodci pak pro veřejnost schovat.
 3. **Uživatel (účastník)** = veřejný průvodce `pruvodce/` – to, co jsme ladili (verze „1.0“ až bude doladěno).
+- **Průvodce 0.70 + pořadatel 1.22 – POSUN PROGRAMU ZRUŠEN (Petr: „zbytečně složité“, varianta 1):** program jede jen podle
+  plánovaných časů. Zůstává „TEĎ · do … · zbývá …“, „Právě teď“, mizení Upozornit, připomínka uložit poznámky – vše podle plánu.
+  Pryč: sekce Posun programu v aplikaci pořadatele, čtení `konference2027_verejne/posun` v průvodci, štítky posunu,
+  `posunPouzij` v program.js; `ulozVerejne` zase `set`. **Aplikace pro předsedající se zatím nedělá** (bez posunu nemá
+  hlavní smysl; případně později jen dotazy). `pruvodce/program.js` zůstává jako jediné místo s programem.

@@ -305,8 +305,6 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .dql{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;border:0;background:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer}.dqr .dqt{font-size:12px;color:var(--muted);font-weight:700}.dqr .dqx{font-size:15px}.dqr .dqm{font-size:12px;color:var(--muted)}
 .dqr .dqv{flex:none;font-weight:800;font-size:14px;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:99px;padding:6px 12px;white-space:nowrap;cursor:pointer}.dqr .dqv[aria-pressed="true"]{background:var(--water);color:var(--surface);border-color:var(--water)}.dqr .dqv.mine{cursor:default;color:var(--muted);background:var(--surface-2)}
 .dqnow{border:2px solid #d32f2f}.dqnow>b{display:block;font-size:16px;margin:2px 0 4px}
-.psl{display:inline-block;font-size:12px;font-weight:800;color:#b0413e;background:#fde8e6;border-radius:99px;padding:2px 9px;margin-bottom:4px}
-.slot .t.ps{color:#b0413e}.slot .t s{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-top:2px}
 .offl{background:#3a3340;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;margin:0 0 10px;line-height:1.35}
 .nexp{display:flex;gap:6px;flex-wrap:wrap}
 .nsoukr{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:13px;font-weight:600;margin-bottom:10px}
@@ -639,8 +637,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.69 · 19. 10. 2026";
-let POSUN=(()=>{try{return JSON.parse(localStorage.getItem("pr_posun")||"{}")||{}}catch(e){return {}}})();posunPouzij(POSUN);   // posun programu od pořadatele (viz posunStart)   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.70 · 19. 10. 2026";
+try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
  const d=new Date(),iso=d.toISOString().slice(0,10),day=Object.keys(DATES).find(k=>DATES[k]===iso);
@@ -940,12 +938,6 @@ function aktDomu(){   // nepřečtená zpráva od pořadatele rovnou na Domů
  return `<div class="card aktd"><div class="label" style="margin-bottom:4px">📣 ${l.length>1?l.length+" nové zprávy":"Nová zpráva"} od pořadatele</div>
   <h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}
   <div class="cact" style="margin-top:8px"><button class="cbtn" data-aktok style="border:0">✓ Přečteno</button>${l.length>1?'<button class="cbtn" data-go="info" style="border:0">Všechny zprávy</button>':""}</div></div>`}
-function posunStart(){   // konference2027_verejne/posun – pořadatel posouvá začátky přednášek
- if(!window.EventSource)return;let es;try{es=new EventSource("https://moje-budky-default-rtdb.firebaseio.com/konference2027_verejne/posun.json")}catch(e){return}
- let prvni=true;const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;const st=JSON.stringify(POSUN);
-  POSUN=treeSet(POSUN,d.path,d.data,ev.type==="patch")||{};store.set("posun",POSUN);posunPouzij(POSUN);
-  if(!prvni&&JSON.stringify(POSUN)!==st)toast("⏱ Pořadatel posunul program – časy jsou aktualizované");prvni=false;render()};
- es.addEventListener("put",on);es.addEventListener("patch",on);es.addEventListener("cancel",()=>es.close())}
 function aktSeznam(){AKT.list=Object.keys(AKT.raw).map(k=>Object.assign({k},AKT.raw[k])).filter(x=>x&&x.h).sort((a,b)=>(b.ts||0)-(a.ts||0));AKT.on=true}
 function aktStart(){
  if(!window.EventSource)return;let es;try{es=new EventSource(ADB)}catch(e){return}
@@ -1178,8 +1170,8 @@ function vProgram(){
    if(x.blok){open=x.bid;const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter(q=>!S.read[y.id+":"+q.k]).length,0);
     return pre+`<div class="bgrp"><div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
    const f=txt(x.id).length, fm=maPozn(x.id), st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
-   let h=pre+`<div class="slot${live?" live":""}" id="t-${x.id}"><div class="t${x.posun||x.prot||x.zkr?" ps":""}">${esc(x.t)}${x.e?`<i>–</i><small>${esc(x.e)}</small>`:""}${x.posun||x.zkr?`<s>${esc(x.t0)}</s>`:""}</div>
-    <div class="talk ${x.brk?"brk":""} ${fm?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)} · zbývá ${dur(Math.max(1,(x.b??x.a+1)-st.c.m))}</div>`:""}${x.posun?`<div class="psl">⏱ Posunuto o ${x.posun>0?"+":"−"}${Math.abs(x.posun)} min · původně ${esc(x.t0)}${x.e0?"–"+esc(x.e0):""}</div>`:x.prot?`<div class="psl">⏱ Protahuje se do ${esc(x.e)} (původně do ${esc(x.e0)})</div>`:x.zkr?`<div class="psl">⏱ Začíná až v ${esc(x.t)} (původně ${esc(x.t0)})</div>`:""}<h3>${hl(x.h)}</h3>${x.w?`<div class="who">${hl(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${medPas(x.id)}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${(()=>{const p=(S.qa[x.id]||[]).reduce((a,q)=>a+votes(x.id,q.k)-1,0);return p?" · 👍 "+p:""})()}${badge(novych(x.id))}</button>${(()=>{const l=medTid(x.id),nh=l.filter(m=>m.typ==="hlas").length,nf=l.length-nh;return `<button class="nbtn" data-note="${x.id}">✎ Napsat</button><button class="nbtn" data-hlas="${x.id}">🎤 Namluvit</button><button class="nbtn" data-foto="${x.id}">📷 Vyfotit</button>`})()}${live||probehlo(x,st.c)?"":`<button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?"Upozorním "+S.alarms[x.id].m+" min předem":"Upozornit"}</button>`}`:""}</div>
+   let h=pre+`<div class="slot${live?" live":""}" id="t-${x.id}"><div class="t">${esc(x.t)}${x.e?`<i>–</i><small>${esc(x.e)}</small>`:""}</div>
+    <div class="talk ${x.brk?"brk":""} ${fm?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)} · zbývá ${dur(Math.max(1,(x.b??x.a+1)-st.c.m))}</div>`:""}<h3>${hl(x.h)}</h3>${x.w?`<div class="who">${hl(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${medPas(x.id)}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${(()=>{const p=(S.qa[x.id]||[]).reduce((a,q)=>a+votes(x.id,q.k)-1,0);return p?" · 👍 "+p:""})()}${badge(novych(x.id))}</button>${(()=>{const l=medTid(x.id),nh=l.filter(m=>m.typ==="hlas").length,nf=l.length-nh;return `<button class="nbtn" data-note="${x.id}">✎ Napsat</button><button class="nbtn" data-hlas="${x.id}">🎤 Namluvit</button><button class="nbtn" data-foto="${x.id}">📷 Vyfotit</button>`})()}${live||probehlo(x,st.c)?"":`<button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?"Upozorním "+S.alarms[x.id].m+" min předem":"Upozornit"}</button>`}`:""}</div>
 </div></div>`;
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
    return h});return out.join("")+(open?"</div>":"")})()
@@ -1814,7 +1806,7 @@ $("view").addEventListener("input",e=>{
 try{if(new URLSearchParams(location.search).has("k"))history.replaceState(null,"",location.pathname+location.hash)}catch(e){}
 {const sq=store.get("snapQ",null);if(sq&&sq.q){LIVE.q=sq.q;LIVE.v=sq.v||{};OUT.l.forEach(o=>liveApply(o.path,o.val));LIVE.on=true;S.voted={};liveRebuild()}
  const sa=store.get("snapA",null);if(sa&&typeof sa==="object"){AKT.raw=sa;aktSeznam();render()}}   // bez signálu poslední uložený stav
-liveStart();aktStart();posunStart();offlUkaz();outFlush();medNacti();ohlNacti();ohlCekajici();
+liveStart();aktStart();offlUkaz();outFlush();medNacti();ohlNacti();ohlCekajici();
 // Program a Dotazy se s během času samy obnoví (běžící přednáška, Upozornit) – ne při psaní ani s otevřeným oknem
 let TIK=(c=>c.day+c.m)(clock());setTimeout(ohlProsba,4000);PRED=(s=>s.cur&&s.cur.id||null)(nowState());
 setInterval(()=>{const c=clock(),k=c.day+c.m;if(k===TIK)return;TIK=k;poznPoPrednasce();ohlProsba();
