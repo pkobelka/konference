@@ -685,7 +685,7 @@ Hotovo a otestováno s testovacími daty (bez Firebase):
   křížkem skrýt jako dřív). iPhone kroky doplněny pro nový Safari (iOS 26: Sdílet pod ⋯; „Otevřít jako webovou aplikaci“).
   Kolegyně Petra (grafička, iPhone) to zkouší.
 
-### Průvodce 0.44–0.45 (19. 10. 2026) – NASAZENO
+### Průvodce 0.44–0.46 (19. 10. 2026) – NASAZENO
 Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main` na tuto větev (GitHub Pages).
 - **Logo VHOS v záhlaví** stránek (Program, Partneři, …) v bílé ochranné zóně podle manuálu (`.top .vh`: okraj ≈ výška loga).
 - **Doprava → Cesta na místo:** adresa + telefon recepce (klikací `tel:`) – Jezerka Ústupky 278, 538 07 Seč, 469 676 327
@@ -698,3 +698,7 @@ Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main
   kliknutí, řazení podle palců; v Programu „? Dotaz · 2 · 👍 6“; u předsedajícího štítek 👍 N; na plátně „👍 N palců“.
   Data Firebase beze změny (`v/{přednáška}/{klíč}/{zařízení}`).
 - **0.45:** štítek „Teď · do“ u běžící přednášky červený a pulzuje (`@keyframes liveR`, bez animace při omezeném pohybu).
+- **0.46:** pomlčka mezi časy od – do vodorovně uprostřed (`.slot .t` šířka podle obsahu, `i` na střed).
+- Petr se ptal na **soukromé poznámky**: už fungují (jen v zařízení, localStorage `pr_notes`; tisk/PDF, stažení .txt, e-mail
+  vč. názvu přednášky). Nabídnuto (zatím neuděláno): `navigator.storage.persist()`, připomínka „uložte si poznámky“ na konci
+  konference, sdílení přes Web Share API, věta „vidíte jen vy“ přímo u psaní poznámky.
