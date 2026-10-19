@@ -108,7 +108,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .slot{display:grid;grid-template-columns:60px 1fr;gap:10px}
 .slot .t{font-family:var(--f-display);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;padding-top:11px;line-height:1.1}
 .slot .t small{display:block;font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--muted);margin-top:2px}
-.slot .t i{display:block;font-style:normal;font-weight:500;color:var(--muted);line-height:.8}
+.slot .t{justify-self:start;width:max-content}
+.slot .t i{display:block;text-align:center;font-style:normal;font-weight:500;color:var(--muted);line-height:.8}
 .slot.live .t,.slot.live .t small,.slot.live .t i{color:var(--water)}
 .talk{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:11px 12px;min-width:0;display:flex;gap:8px;align-items:flex-start;border-left:4px solid transparent}
 .talk.mine{border-left-color:var(--accent)}
@@ -564,7 +565,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.45 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.46 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
