@@ -736,3 +736,4 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
    - **B (později):** tajný odkaz/PIN bloku → „✓ Zodpovězeno“ viditelné všem, skrytí nevhodného dotazu, Přečteno na všech
      zařízeních, dálkové promítání. Potřebuje nová pravidla v repu mojebudky (se svolením Petra).
 3. Ostatní nápady (hodnocení, prezentace PDF, Wi-Fi, plánek, push upozornění) – viz oddíl výše, až po bodech 1–2.
+- **0.53 (19. 10., na konec dne):** v Programu vedle Úterý / Středa tlačítko **„● Právě teď – aktuální přednáška“** (`#dnow`, `naAktualni()`): přepne na dnešní den, zruší hledání, posune na běžící bod a krátce ho rozbliká; když nic neběží, posune na další a ukáže, co a kdy začíná.

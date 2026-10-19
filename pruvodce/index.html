@@ -97,6 +97,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .days button{border:0;background:none;border-radius:9px;padding:7px 4px;font-weight:700;font-size:14px;color:var(--muted)}
 .days small{display:block;font-weight:500;font-size:11px}
 .days button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.days .dnow{color:#d32f2f;background:color-mix(in srgb,#d32f2f 10%,transparent);display:flex;flex-direction:column;align-items:center}.days .dnow .dot{position:absolute;top:9px;left:9px}
+.slot.flash .talk{animation:flashT 1.6s ease-out}@keyframes flashT{0%,40%{box-shadow:0 0 0 4px #d32f2f}}
 .tools{display:flex;gap:8px;align-items:center}
 .tools input{flex:1;min-width:0;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit}
 .tog{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-weight:700;font-size:13px;white-space:nowrap}
@@ -579,7 +581,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.52 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.53 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -635,6 +637,10 @@ function clock(){ // skutečný čas během konference, jinak simulace
 }
 const hm=m=>{m=((m%1440)+1440)%1440;return Math.floor(m/60)+":"+String(m%60).padStart(2,"0")};
 const dur=m=>m>=60?Math.floor(m/60)+" h "+(m%60?m%60+" min":""):m+" min";
+function naAktualni(){   // Program → skok na právě běžící (nebo nejbližší další) bod
+ const st=nowState(), x=st.cur||st.next||st.last;S.day=st.c.day;S.q="";S.mine=false;render();
+ if(!st.cur)toast(st.next?"Teď nic neběží – další v "+st.next.t+": "+st.next.h:"Program dne skončil");
+ const el=x&&$("t-"+x.id);if(!el)return;el.scrollIntoView({block:"center",behavior:"smooth"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1700)}
 function nowState(){
  const c=clock(),l=PROG[c.day].filter(x=>!x.blok&&x.a!=null);
  const cur=l.find(x=>x.a<=c.m&&c.m<(x.b??x.a+1)), next=l.find(x=>x.a>c.m);
@@ -1073,7 +1079,7 @@ function vProgram(){
  return `<section class="sec">
   ${poznUlozit()}
   <div class="note" style="margin-bottom:-2px">Program je zatím ukázka podle 30. ročníku (2026). Program 31. ročníku doplníme.</div>
-  <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small>${badge(novychDen(d.k))}</button>`).join("")}</div>
+  <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small>${badge(novychDen(d.k))}</button>`).join("")}<button class="dnow" id="dnow" aria-label="Přejít na aktuální přednášku"><span class="dot"></span>Právě teď<small>aktuální přednáška</small></button></div>
   ${S.mine&&Object.keys(S.notes).length?nexpBtns():""}
   <div class="tools"><input id="q" placeholder="Hledat přednášku, jméno, firmu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog" id="mine" aria-pressed="${S.mine}">✎ Poznámky</button></div>
   ${rows.some(x=>!x.blok)?(()=>{let open=null;const out=rows.map(x=>{
@@ -1081,7 +1087,7 @@ function vProgram(){
    if(x.blok){open=x.bid;const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter(q=>!S.read[y.id+":"+q.k]).length,0);
     return pre+`<div class="bgrp"><div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p><button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button></div>`}
    const f=!!S.notes[x.id], st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
-   let h=pre+`<div class="slot${live?" live":""}"><div class="t">${esc(x.t)}${x.e?`<i>–</i><small>${esc(x.e)}</small>`:""}</div>
+   let h=pre+`<div class="slot${live?" live":""}" id="t-${x.id}"><div class="t">${esc(x.t)}${x.e?`<i>–</i><small>${esc(x.e)}</small>`:""}</div>
     <div class="talk ${x.brk?"brk":""} ${f?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)}</div>`:""}<h3>${hl(x.h)}</h3>${x.w?`<div class="who">${hl(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${f?`<div class="mynote"><b>Moje poznámka</b>${esc(S.notes[x.id])}</div>`:""}${x.bid?`<button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${(()=>{const p=(S.qa[x.id]||[]).reduce((a,q)=>a+votes(x.id,q.k)-1,0);return p?" · 👍 "+p:""})()}${badge(novych(x.id))}</button><button class="nbtn" data-note="${x.id}">✎ ${f?"Upravit poznámku":"Poznámka"}</button><button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?"Upozorním "+S.alarms[x.id].m+" min předem":"Upozornit"}</button>`:""}</div>
 </div></div>`;
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
@@ -1459,6 +1465,7 @@ $("view").addEventListener("click",e=>{
  {const kl=e.target.closest("[data-kal]");if(kl)return sheetKal(kl.dataset.kal)}
  {const nv=e.target.closest("[data-nav]");if(nv)return sheetNav(nv.dataset.nav)}
  if(e.target.closest("[data-doprava]"))return sheetDoprava();
+ if(e.target.closest("#dnow"))return naAktualni();
  const t=e.target.closest("[data-nxok],[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,[data-nx]");if(!t)return;
  if(t.dataset.alarm)return sheetAlarm(t.dataset.alarm);
  if(t.dataset.ph){const [a,i]=t.dataset.ph.split(":");return openLb(a,+i)}
