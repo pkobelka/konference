@@ -742,3 +742,4 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
   e-mailu/telefonu; nic se zatím neposílá samo (jen ručně z aplikace pořadatele / CSV). Smysl hlavně pro lidi, které
   ubytovává pořadatel (hosté, přednášející, vystavující); pro veřejnost (~70 %) skoro žádný. Navrženo: blok v Info schovat
   všem bez karty a odkazy posílat jen „svým“ lidem – **nedělat, dokud Petr nerozhodne** (možná celé zrušit).
+- **0.54:** Info úplně dole pod verzí: „Aplikaci vytvořil **Petr Kobelka** · © 2026“ (znění může Petr upravit – např. zkratka, „pro VHOS, a.s.“).
