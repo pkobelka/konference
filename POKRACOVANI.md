@@ -711,3 +711,15 @@ Pracuje se ve větvi `claude/fervent-wozniak-5kktk4`, nasazení = posunout `main
 - **0.50:** horní menu na počítači (od 820 px) v orámovaném fialovém obdélníku přes šířku obsahu; „Parkování u hotelu“ bez „(upřesníme)“.
 - **0.51:** Info → na konci karta **Příští ročník: 32. ročník · 4.–5. dubna 2028** (Seč, pořádá VHOS) + „📅 Uložit do kalendáře“
   (`sheetKal(rok)`, data v `KAL`; Google Kalendář i .ics). **0.52:** místo 2028 = Kongres hotel Jezerka (Petr potvrdil).
+
+### ▶ KDE POKRAČOVAT (19. 10. 2026, odpoledne) – průvodce 0.52 nasazen, Petr „velice spokojený“
+- **Čeká na Petra:** ověřit telefony recepcí (Kraskov 464 600 411 = obecné číslo hotelu), místo zastávky svozu v Seči,
+  název „EA Hotel Kraskov“ vs. „Hotel Kraskov“.
+- **Nápady nabídnuté Petrovi (probere s kolegy, zatím nic nestavět):**
+  1. offline režim (service worker teď nic necachuje – program/Doprava/Info/loga do mezipaměti, dotazy odeslat po připojení) – doporučeno jako první;
+  2. anonymní hodnocení konference / přednášek na konci (výsledky jen v aplikaci pořadatele);
+  3. odkazy na PDF prezentací / sborník u přednášek po konferenci;
+  4. Wi-Fi (síť + heslo s kopírováním) v Info;
+  5. plánek areálu Jezerky se stánky vystavovatelů (u partnera „stánek č. X“);
+  6. push upozornění při nové aktualitě (změna programu);
+  7. dálkové promítání dotazů (PIN bloku + pravidlo mojebudky).
