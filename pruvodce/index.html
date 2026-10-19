@@ -343,6 +343,10 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .hotel .hb{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:8px}.hotel .hb>*{flex:1 1 auto;justify-content:center;text-align:center}
 @media (max-width:560px){.hotel .rc{display:none}.hotel .hb>*{flex-basis:100%}}.hotel .hb .tel{margin-top:0}.hotel .hb .cbtn{padding:6px 11px;font-size:13px}
 .hotel .tel{display:inline-block;padding:5px 11px;border-radius:99px;background:var(--water-soft);color:var(--water);font-weight:700;font-size:13px;text-decoration:none;white-space:nowrap}
+.tools #q{flex:1 1 120px;min-width:0}
+.tog.mojep{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 12px;line-height:1.2}
+.mojep .mis{display:flex;gap:8px;font-size:12px;font-weight:700}.mojep .mi.nic{opacity:.45}
+@media (min-width:600px){.tools #q{flex:2 1 0}.tog.mojep{flex:1 1 0;flex-direction:row;justify-content:center;gap:14px;padding:9px 14px;font-size:14px}.mojep .mis{font-size:14px;gap:12px}}
 .tog.mam{background:#ffd54a;color:#3b2a00;border-color:#e0b100}
 .nbtn.mam{background:#ffd54a;color:#3b2a00;border-color:#e0b100}
 .nbtn.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
@@ -1152,7 +1156,7 @@ function vProgram(){
   <div class="note" style="margin-bottom:-2px">Program je zatím ukázka podle 30. ročníku (2026). Program 31. ročníku doplníme.</div>
   <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small>${badge(novychDen(d.k))}</button>`).join("")}<button class="dnow" id="dnow" aria-label="Přejít na aktuální přednášku"><span class="dot"></span>Právě teď<small>aktuální přednáška</small></button></div>
   ${S.mine&&pocetPoznamek()?nexpBtns():""}
-  <div class="tools"><input id="q" placeholder="Hledat přednášku, jméno, firmu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog${pocetPoznamek()&&!S.mine?" mam":""}" id="mine" aria-pressed="${S.mine}">✎ Moje poznámky${pocetPoznamek()?" · "+pocetPoznamek():""}</button></div>
+  <div class="tools"><input id="q" placeholder="Hledat v programu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog mojep${pocetPoznamek()&&!S.mine?" mam":""}" id="mine" aria-pressed="${S.mine}">${mojeIkony()}</button></div>
   ${rows.some(x=>!x.blok)?(()=>{let open=null;const out=rows.map(x=>{
    let pre="";if(open&&(x.blok||x.bid!==open)){pre="</div>";open=null}   // konec rámečku bloku
    if(x.blok){open=x.bid;const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter(q=>!S.read[y.id+":"+q.k]).length,0);
@@ -1470,6 +1474,10 @@ function prvniPozn(){   // po první poznámce (text, hlas, foto) jednou vysvět
   $("pzok").addEventListener("click",closeSheet);$("pzted").addEventListener("click",()=>{closeSheet();S.mine=true;go("program")})},700)}
 function drzData(){   // požádá prohlížeč, ať poznámky nemaže (uživatel nic nevidí)
  prvniPozn();try{const st=navigator.storage;if(st&&st.persist)st.persisted().then(p=>p||st.persist()).catch(()=>{})}catch(e){}}
+function mojeIkony(){   // „Moje poznámky“ + kolik čeho: ✎ text, 🎤 nahrávky, 📷 fotky
+ let t=0,h=0,f=0;ALLT.forEach(x=>{if(!x.id)return;if(S.notes[x.id])t++;medTid(x.id).forEach(m=>m.typ==="hlas"?h++:f++)});
+ const i=(z,n)=>`<span class="mi${n?"":" nic"}">${z}${n?" "+n:""}</span>`;
+ return `<b>Moje poznámky</b><span class="mis">${i("✎",t)}${i("🎤",h)}${i("📷",f)}</span>`}
 const pocetPoznamek=()=>ALLT.filter(x=>x.id&&maPozn(x.id)).length;
 const umiSdilet=()=>!!(navigator.share&&matchMedia("(pointer:coarse)").matches);
 function nexpBtns(){return `<div class="nexp">${umiSdilet()?'<button data-nx="share">📤 Sdílet</button>':""}<button data-nx="txt">⬇ Stáhnout text</button><button data-nx="mail">✉ Poslat e-mailem</button><button data-nx="pr">🖨 Vytisknout / PDF</button></div>`}
