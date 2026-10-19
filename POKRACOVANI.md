@@ -877,3 +877,16 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
   štítky „⏱ Posunuto o +10 min · původně …“, „⏱ Protahuje se do … (původně do …)“, „⏱ Začíná až v …“; „Právě teď“, odpočet,
   Upozornit i budíky jedou podle nových časů; upozornění „⏱ Pořadatel posunul program“.
 - **Pořadatel 1.21:** posun po minutách – u položky **[ − ] číslo [ + ] min** (jde i napsat) a **Uložit** (teprve pak zápis + aktualita), ✕ zruší. **Otevřené:** Petr chce samostatnou aplikaci **Předsedající** (bez ubytování): „▶ Začalo teď“ / „Skončilo teď“, posun ±1 min, dotazy s Přečteno; čeká na volbu přihlášení (A e-mail odkaz – doporučeno / B PIN) + pravidlo v mojebudky.
+
+### ▶ PŘÍŠTĚ ZAČÍT TADY (19. 10. 2026, pozdě večer) – Petr: „udělali jsme toho hodně, doladíme potom“
+Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebudky #188). Nic rozpracovaného.
+**Plán Petra – tři verze aplikace:**
+1. **Organizátor (Petr)** = aplikace pořadatele `index.html` – ubytování, večeře, přihlášky, aktuality, ohlasy, svoz, posun
+   programu. Jen Petrův seznam e-mailů (`florian_login_email`).
+2. **Předsedající** – NOVÁ samostatná aplikace (bez ubytování): svůj blok, **▶ „Začalo teď“** (posun od skutečného začátku),
+   **„Skončilo teď“**, posun **− / + po minutě** + Uložit (jako v pořadateli), dotazy podle 👍 s „Přečteno“ na všech jeho
+   zařízeních, čtení velkým písmem; později promítání na plátno a skrytí nevhodného dotazu.
+   **Čeká na Petra: přihlášení A (e-mailový odkaz, seznam předsedajících spravuje Petr – doporučeno) / B (jeden PIN).**
+   Potřebuje nové pravidlo v mojebudky: posun (`konference2027_verejne/posun`) zapisuje pořadatel NEBO předsedající ze seznamu.
+   „Pohled předsedajícího“ v průvodci pak pro veřejnost schovat.
+3. **Uživatel (účastník)** = veřejný průvodce `pruvodce/` – to, co jsme ladili (verze „1.0“ až bude doladěno).
