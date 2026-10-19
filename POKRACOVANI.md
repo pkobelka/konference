@@ -819,7 +819,7 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
   líbí?“, „Co vám chybí?“, nepovinný podpis, „☐ Pořadatel může můj ohlas zveřejnit“. Vstup: karta v **Info** (vždy) a jednou
   na **Domů** od středy 10:00 / po konferenci („Teď ne“ ji schová). Bez signálu se ohlas uloží a pošle později (`pr_ohlCeka`).
 - Firebase `konference2027_ohlasy`: `o/{id}` = {k?, p?, lib?, chybi?, a?, zv?, ts, dev} – veřejnost jen nový zápis (kontrola polí),
-  čte/maže pořadatel; `zv/{id}` = {t, a, ts} zveřejněné – čte každý. Pravidlo v **mojebudky** (větev `claude/konference-ohlasy`,
+  čte/maže pořadatel; `zv/{id}` = {t, a, ts} zveřejněné – čte každý. Pravidlo v **mojebudky PR #188 – sloučeno a nasazeno 19. 10.** (větev `claude/konference-ohlasy`,
   Petr pověřil přidat; otestováno v emulátoru: platný zápis OK, přepis/mazání/cizí pole/bez hodnocení/čtení veřejností zamítnuto).
 - **Aplikace pořadatele 1.19** → Průvodce: sekce „💬 Ohlasy na konferenci a průvodce“ – počty tváří a průměry (konference /
   průvodce), seznam (👍 líbí se, 💡 chybí, podpis, zda smí zveřejnit), **Zveřejnit / Skrýt z Domů**, Smazat.
