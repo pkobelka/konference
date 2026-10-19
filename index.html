@@ -15,6 +15,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="pruvodce/program.js"></script>
 <style>
 :root{--zelena:#2f6b3c;--zelena-tmava:#234f2d;--svetla:#f4f1ea;--karta:#fff;--ramecek:#e7e2d6;--cervena:#b0413e;--oranzova:#c77d1a;--seda:#888;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -191,7 +192,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.19 · 19. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.20 · 19. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -263,7 +264,7 @@ if(AUTH.isSignInWithEmailLink(location.href)){
 AUTH.onAuthStateChanged(user=>{
   if(!user){USER=null;showLogin();return;}
   FDB.ref("florian_login_email/"+leKey(user.email)).get().then(s=>{
-    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();loadAktuality();loadDoprava();loadOhlasy();}
+    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();loadAktuality();loadDoprava();loadOhlasy();loadPosun();}
     else{showLogin("E-mail <b>"+esc(user.email)+"</b> zatím nemá přístup. Ozvi se Petru Kobelkovi (stejný seznam jako Florián).");AUTH.signOut();}
   }).catch(()=>showLogin("Nepodařilo se ověřit přístup, zkus to znovu."));
 });
@@ -811,7 +812,7 @@ function prihStav(p){
 }
 function prihKPrevzeti(){return Object.keys(PRIH).filter(t=>["nova","zmena"].includes(prihStav(PRIH[t])[0]));}
 function verejneData(n){n=n||N();return clean({nazev:n.nazev||"",datum:n.datum||"",misto:n.misto||"",noci:n.noci||{},menu:n.menu||{},uzaverka:n.uzaverka||"",text:n.text_partneri||""});}
-function ulozVerejne(n){return FDB.ref(PUB).set(verejneData(n));}
+function ulozVerejne(n){return FDB.ref(PUB).update(verejneData(n));}   // update – ať nesmaže posun programu (PUB/posun)
 
 /* ---------- IMPORT E-PŘIHLÁŠEK (PDF z webu) ---------- */
 // PDF se čte v prohlížeči knihovnou pdf.js (nikam se neposílá). Řádky se složí podle polohy textu, pak se rozpoznají pole.
@@ -1033,6 +1034,39 @@ function htmlAktuality(){
     :`<p class="muted" style="font-size:.9rem">Zatím žádná zpráva. Průvodce bez zpráv ukazuje „Zatím žádné zprávy“.</p>`;
 }
 function aktBox(){const b=$("p_akt");if(b)b.innerHTML=htmlAktuality();}
+/* ---------- POSUN PROGRAMU (PUB/posun = {klíč přednášky: minut}, platí do konce bloku; průvodce ho bere živě) ---------- */
+let POSUN={}, POSUN_DEN="ut";
+function loadPosun(){FDB.ref(PUB+"/posun").on("value",s=>{POSUN=s.val()||{};posunPouzij(POSUN);posunBox();},()=>{});}
+function posunBox(){const b=$("s_posun");if(b)b.innerHTML=htmlPosun();}
+function htmlPosun(){
+  if(typeof PROG==="undefined")return `<p class="muted">Program se nenačetl (pruvodce/program.js).</p>`;
+  const zn=v=>v>0?"+"+v:String(v);
+  let h=`<div class="lista" style="margin-bottom:8px">${DAYS.map(d=>`<button class="btn ${POSUN_DEN===d.k?"":"ghost"} small" data-posden="${d.k}">${d.n} ${d.d}</button>`).join("")}
+    ${Object.keys(POSUN).length?`<button class="btn ghost small" data-posvse>Zrušit všechny posuny</button>`:""}</div><table class="t">`;
+  PROG[POSUN_DEN].forEach(x=>{
+    if(x.blok){h+=`<tr><td colspan="3" style="background:#eef5f6"><b>${esc(x.blok)}</b></td></tr>`;return}
+    if(x.a0==null)return;
+    const vl=POSUN[x.id]!=null;
+    h+=`<tr${x.brk?' style="color:#888"':""}><td style="white-space:nowrap"><b>${x.t}</b>${x.posun?`<div class="sub"><s>${x.t0}</s> <b style="color:#b0413e">${zn(x.posun)} min</b></div>`:""}</td>
+      <td>${esc(x.h)}${vl?`<div class="sub">⏱ posun zadán tady: ${zn(POSUN[x.id])} min (platí do konce bloku)</div>`:""}</td>
+      <td style="white-space:nowrap">${[-5,5,10,15].map(d=>`<button class="btn ghost small" data-posun="${x.id}" data-d="${d}">${zn(d)}</button>`).join(" ")}${vl?` <button class="btn ghost small" data-posun="${x.id}" data-d="0">✕</button>`:""}</td></tr>`;
+  });
+  return h+`</table><label style="display:flex;gap:6px;align-items:center;margin-top:8px;font-size:.9rem"><input type="checkbox" id="pos_akt" checked> Při posunu poslat účastníkům aktualitu</label>`;
+}
+document.addEventListener("click",e=>{
+  const dn=e.target.closest("[data-posden]");if(dn){POSUN_DEN=dn.dataset.posden;posunBox();return}
+  if(e.target.closest("[data-posvse]")){if(confirm("Zrušit všechny posuny programu?"))FDB.ref(PUB+"/posun").remove().catch(er=>alert("⚠️ "+errMsg(er)));return}
+  const b=e.target.closest("[data-posun]");if(!b)return;
+  const id=b.dataset.posun,d=+b.dataset.d,x=ALLT.find(y=>y.id===id);if(!x)return;
+  const nova=d===0?null:(x.posun||0)+d;   // ± k aktuálnímu posunu této přednášky
+  FDB.ref(PUB+"/posun/"+id).set(nova===0?null:nova).then(()=>{
+    if(!$("pos_akt")||!$("pos_akt").checked||nova==null)return;
+    const P=Object.assign({},POSUN,{[id]:nova});posunPouzij(P);
+    const blok=(()=>{let bk=null;for(const y of PROG[POSUN_DEN]){if(y.blok)bk=y;if(y===x)return bk}})();
+    FDB.ref(AKTU).push(clean({h:`⏱ Posun programu o ${nova>0?nova:-nova} min${nova>0?"":" dříve"}`,p:`Od přednášky ${x.t0} „${x.h}“${blok?" (blok "+blok.blok+")":""} se program posouvá ${nova>0?"o "+nova+" min později":"o "+(-nova)+" min dříve"}. Nové časy jsou v průvodci.`,ts:Date.now(),autor:USER?USER.email:""}));
+  }).catch(er=>alert("⚠️ "+errMsg(er)));
+});
+
 function rPruvodce(){
   const rozH=$("a_h")?$("a_h").value:"", rozP=$("a_p")?$("a_p").value:"";   // rozepsaná zpráva přežije překreslení
   $("view").innerHTML=`
@@ -1042,6 +1076,10 @@ function rPruvodce(){
     <textarea id="a_p" placeholder="Text zprávy (nepovinné)" maxlength="1000" style="margin-top:6px"></textarea>
     <div class="lista" style="margin-top:6px"><button class="btn" id="a_send">Zveřejnit zprávu</button><button class="btn ghost small hidden" id="a_cancel">Zrušit úpravu</button><span class="msg" id="a_msg"></span></div>
     <div id="p_akt" style="margin-top:10px">${htmlAktuality()}</div>
+  </div>
+  <div class="nast"><h2 class="sek">⏱ Posun programu</h2>
+    <p style="font-size:.84rem;color:#666">Když se přednáška zpozdí: u ní klikni na <b>+5 / +10 / +15</b> (nebo −5). Posun platí <b>od ní do konce bloku</b> (přestávka nebo oběd ho ukončí). V průvodci se nové časy, „Právě teď“, odpočet i upozornění změní všem do pár vteřin.</p>
+    <div id="s_posun">${htmlPosun()}</div>
   </div>
   <div class="nast"><h2 class="sek">💬 Ohlasy na konferenci a průvodce</h2>
     <p style="font-size:.84rem;color:#666">Účastníci je píší v průvodci (Info, a ve středu odpoledne nabídka na Domů). Ohlas, u kterého pisatel povolil zveřejnění, můžeš tlačítkem <b>Zveřejnit</b> dát do karty „Řekli o konferenci a průvodci“ na Domů.</p>

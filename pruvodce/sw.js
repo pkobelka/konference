@@ -1,9 +1,10 @@
 // Service worker průvodce: upozornění budíku + práce bez signálu.
 // Stránka: nejdřív síť (vždy nejnovější verze), bez signálu poslední uložená.
 // Obrázky, ikony a písma: z mezipaměti, na pozadí se obnoví. Firebase a počasí se necachují (data drží stránka sama).
-const CACHE = "pruvodce-v1";
+const CACHE = "pruvodce-v2";
 const PRED = [
   "./",
+  "program.js",
   "manifest.webmanifest",
   "../ikony/favicon-32.png",
   "../ikony/favicon-64.png",
@@ -96,6 +97,11 @@ self.addEventListener("fetch", e => {
       if (r.ok) { const k = r.clone(); caches.open(CACHE).then(c => c.put(STRANKA, k)); }
       return r;
     }).catch(() => caches.match(STRANKA).then(r => r || fetch(req))));
+    return;
+  }
+  if (u.origin === location.origin && u.pathname.endsWith("/program.js")) {   // program: nejdřív síť, bez signálu uložený
+    e.respondWith(zeSite(req, 4000).then(r => { if (r.ok) { const k = r.clone(); caches.open(CACHE).then(c => c.put(req, k)); } return r; })
+      .catch(() => caches.match(req, { ignoreSearch: true })));
     return;
   }
   const staticke = (u.origin === location.origin && /\.(webp|png|svg|jpg|jpeg|webmanifest|js|css)$/i.test(u.pathname)) ||

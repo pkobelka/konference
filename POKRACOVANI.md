@@ -862,3 +862,17 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
 - **0.66:** záložka v menu se jmenuje **„Moje poznámky“** (v úzkém mobilu na 2 řádky).
 - **0.67:** v záložce Dotazy je **👍 u každého dotazu klikací** (dát / vzít zpět palec rovnou v seznamu, `hlasuj()`; u vlastního dotazu jen počet); klik na text dotazu otevře okno dotazů.
 - **0.68:** u běžící přednášky „TEĎ · DO 10:15 · zbývá 12 min“ (do konce přednášky; v Programu i v Dotazech, obnovuje se každou minutu).
+
+### Průvodce 0.69 + pořadatel 1.20 (19. 10. 2026 večer) – POSUN PROGRAMU
+- Program je teď v **`pruvodce/program.js`** (společný pro průvodce i aplikaci pořadatele, tam počítá i klíče přednášek).
+  Úpravy programu dělat tam. SW (`pruvodce-v2`) bere program.js nejdřív ze sítě.
+- **Aplikace pořadatele → Průvodce → „⏱ Posun programu“**: Úterý/Středa, u každé položky −5 / +5 / +10 / +15 (± k aktuálnímu
+  posunu), ✕ zrušit, „Zrušit všechny posuny“; zaškrtnuto „Při posunu poslat účastníkům aktualitu“ → sama vytvoří aktualitu.
+  Data `konference2027_verejne/posun` = {klíč: minut} (veřejné čtení / zápis pořadatel – žádné nové pravidlo).
+  `ulozVerejne` přepnuto ze `set` na `update`, aby Nastavení posun nesmazalo.
+- **Logika (`posunPouzij`)**: posun platí od dané přednášky do konce bloku (přestávka / nový blok ho ukončí, pokud nemá svůj);
+  **předchozí přednáška se protáhne** do nového začátku (zpoždění vzniklo v ní), **přestávka po bloku se zkrátí** (začne později,
+  konec stejný, min. 5 min).
+- **Průvodce**: posun živě (EventSource) + uložený v zařízení (`pr_posun`); v Programu červeně nové časy, přeškrtnutý původní,
+  štítky „⏱ Posunuto o +10 min · původně …“, „⏱ Protahuje se do … (původně do …)“, „⏱ Začíná až v …“; „Právě teď“, odpočet,
+  Upozornit i budíky jedou podle nových časů; upozornění „⏱ Pořadatel posunul program“.
