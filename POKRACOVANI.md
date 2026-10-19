@@ -838,3 +838,18 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
   - **Info**: rozcestník 📣 Aktuality · 🚌 Cesta a svoz · 📞 Kontakty · ℹ️ O konferenci; pod aktualitami celá **Cesta a svoz**
     (`vDoprava` vložená do Info); `go("doprava")` vede do Info na sekci (dlaždice „Svoz a cesta“ na Domů).
   - Program, Dotazy a Domů se samy překreslí, když se změní minuta (běžící přednáška, mizí Upozornit) – ne při psaní / s okny.
+- **0.65 – poznámky a ukládání:**
+  - **Víc textových poznámek k jedné přednášce**: `S.notes[id] = [{id,t,ts}]` (staré jednotextové se samy převedou, `txt()`).
+    U přednášky jsou poznámky jako symboly **✎ Poznámka 1, 2…** (žluté), 🎤 0:10, náhledy fotek a **📤 Uložit / poslat**;
+    klik na symbol = úprava/smazání. Tlačítka jen na přidání: **✎ Napsat · 🎤 Namluvit · 📷 Vyfotit**.
+  - Export: u každé přednášky „POZNÁMKA K PŘEDNÁŠCE / Přednáška / Přednášející / Kdy / Moje poznámky: Poznámka 1…“ (text, e-mail, PDF).
+  - Tlačítka podle zařízení (`nexpBtns`): mobil/tablet hlavně **📤 Poslat / uložit** (sdílení telefonu, i fotky a nahrávky) + ✉ + PDF;
+    počítač hlavně **⬇ Uložit do počítače** + ✉ + PDF.
+  - Připomínky uložení: na **Domů hned**, jak přibude neuložená věc (`pocetVeci()` vs `pr_poznUlozeno`); **po skončení přednášky**
+    s neuloženými poznámkami okno uprostřed „Přednáška skončila“ (jednou na přednášku, `pr_pzKonec`); **po návratu do aplikace**
+    (>1 min pryč) okno „Máte neuložené poznámky“ (jednou za spuštění); mobil při schování upozornění v telefonu (jen s povolenými
+    upozorněními, max. 1× za 2 h); počítač při zavírání obecný dotaz prohlížeče. Vlastní okno při zavření prohlížeč nedovolí.
+  - **Ohlasy**: v Info jako předposlední karta (před „Příští ročník“); ve středu od 11:30 (nebo po konferenci) jednou **okno
+    uprostřed** „Budeme rádi za váš názor“ s tvářemi → formulář; „Napsat to můžete i kdykoli: Info → Ohlasy“.
+  - Okna uprostřed obrazovky: `openSheet(html, true)` (`.sheet.stred`).
+  - Info → Web: jen www.vhos.cz (czwa.cz pryč; Petr pak dodá přesný odkaz, nejspíš vhos.cz/konference).
