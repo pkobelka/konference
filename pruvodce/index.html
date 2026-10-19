@@ -53,7 +53,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .chip{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:var(--water-soft);color:var(--water);flex:none}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
 .tabbar .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
-.tabbar button{background:none;border:0;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:color-mix(in srgb,var(--ink) 72%,transparent)}
+.tabbar button{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;background:none;border:0;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:color-mix(in srgb,var(--ink) 72%,transparent)}
 .tabbar svg{width:22px;height:22px}
 .tabbar button[aria-current="page"]{color:var(--accent)}
 .sec{display:flex;flex-direction:column;gap:12px;padding-block:4px 18px}
@@ -266,6 +266,15 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .gen .lg{width:110px;height:42px}
 .gen .lg img{max-height:34px}
 .wxh{grid-column:1/-1;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--water);border-top:1px solid var(--line);padding-top:10px;margin-bottom:-4px}
+.aktd{border:2px solid var(--accent)}.aktd h3{font-size:17px;margin:0}.aktd p{margin:4px 0 0;font-size:14px}
+.nvbox{border:2px solid #d32f2f}.nvbox .label{color:#d32f2f}
+.nvr{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:9px 2px;color:var(--ink);font:inherit}
+.nvr:first-of-type{border-top:0}.nvt{font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--muted);white-space:nowrap}
+.nvh{font-weight:600;font-size:14px;line-height:1.3;min-width:0}.nvn{font-size:12px;font-weight:800;color:#fff;background:#d32f2f;border-radius:99px;padding:2px 8px;white-space:nowrap}
+.fsb{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--accent);border-radius:12px;height:40px;min-width:40px;padding:0 10px;font-size:20px;font-weight:700;line-height:1;cursor:pointer}
+.fsb.fsp{position:absolute;z-index:3;top:14px;left:calc(14px + 130px);height:30px;min-width:30px;font-size:16px;border-radius:99px;padding:0 9px}.fsb.fsp.on{font-size:12px}
+.fsb.on{font-size:13px;background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.offl{background:#3a3340;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;margin:0 0 10px;line-height:1.35}
 .nexp{display:flex;gap:6px;flex-wrap:wrap}
 .nsoukr{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:13px;font-weight:600;margin-bottom:10px}
 .pozul{border:2px solid var(--accent)}.pozul b{font-size:16px}
@@ -343,6 +352,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .alarm img{width:64px;height:64px;object-fit:contain;margin:0 auto;animation:wob 1s ease-in-out infinite}
 @keyframes wob{50%{transform:rotate(12deg) scale(1.08)}}
 @media (prefers-reduced-motion: reduce){.alarm img{animation:none}}
+.toast.klik{cursor:pointer;text-decoration:none}.toast.klik:hover{opacity:.92}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
 /* tablet a počítač: menu nahoře, širší obsah */
 @media (min-width: 820px){
@@ -570,7 +580,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
     <div class="ttl" style="min-width:0"><b id="pgt"></b><small id="pgs"></small></div>
     <img class="vh" id="vhimg" alt="VHOS, a.s.">
     <span class="chip" title="Obsah podle programu 2026" id="vchip">Ukázka</span>
+    <span id="fsh" style="display:contents"></span>
   </header>
+  <div id="offl" class="offl" role="status" hidden></div>
   <main id="view"></main>
 </div>
 <nav class="tabbar" aria-label="Hlavní menu"><div class="in" id="tabs"></div></nav>
@@ -581,7 +593,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.54 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.55 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -640,7 +652,18 @@ const dur=m=>m>=60?Math.floor(m/60)+" h "+(m%60?m%60+" min":""):m+" min";
 function naAktualni(){   // Program → skok na právě běžící (nebo nejbližší další) bod
  const st=nowState(), x=st.cur||st.next||st.last;S.day=st.c.day;S.q="";S.mine=false;render();
  if(!st.cur)toast(st.next?"Teď nic neběží – další v "+st.next.t+": "+st.next.h:"Program dne skončil");
- const el=x&&$("t-"+x.id);if(!el)return;el.scrollIntoView({block:"center",behavior:"smooth"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1700)}
+ if(x)ukazBod(x.id)}
+function ukazBod(id){const el=$("t-"+id);if(!el)return;el.scrollIntoView({block:"center",behavior:"smooth"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1700)}
+function naPrednasku(id){   // přepne den, zruší filtry a posune na přednášku
+ const d=Object.keys(PROG).find(k=>PROG[k].some(y=>y.id===id));if(!d)return;closeSheet();S.day=d;S.q="";S.mine=false;if(S.tab!=="program")S.tab="program";render();setTimeout(()=>ukazBod(id),60)}
+function noveSeznam(){   // přednášky s nepřečtenými dotazy
+ return ALLT.filter(x=>x.id&&novych(x.id)).map(x=>({x,n:novych(x.id),d:DAYS.find(z=>PROG[z.k].includes(x))}))}
+function noveRadky(){return noveSeznam().map(({x,n,d})=>`<button class="nvr" data-naq="${x.id}"><span class="nvt">${esc(d?d.n.slice(0,2):"")} ${esc(x.t)}</span><span class="nvh">${esc(x.h)}</span><span class="nvn">${n} ${n===1?"nový":n<5?"nové":"nových"}</span></button>`).join("")}
+function vNove(){const n=novychVse();if(!n)return "";
+ return `<div class="card nvbox"><div class="label" style="margin-bottom:6px">💬 Nové dotazy · ${n}</div>${noveRadky()}<button class="linkb" data-navse style="margin-top:8px">Označit vše jako přečtené</button></div>`}
+function sheetNove(){
+ if(!novychVse())return toast("Žádné nové dotazy");
+ openSheet(`<h2>Nové dotazy</h2><div class="muted" style="font-size:13px;margin-top:2px">Ťukněte na přednášku – program se na ni posune</div><div class="bd">${noveRadky()}</div>`)}
 function nowState(){
  const c=clock(),l=PROG[c.day].filter(x=>!x.blok&&x.a!=null);
  const cur=l.find(x=>x.a<=c.m&&c.m<(x.b??x.a+1)), next=l.find(x=>x.a>c.m);
@@ -888,7 +911,7 @@ function novychVse(){return Object.keys(PROG).reduce((a,d)=>a+novychDen(d),0)}
 function badge(n){return n?`<span class="bdg" aria-label="${n} ${n===1?"nový dotaz":n<5?"nové dotazy":"nových dotazů"}">${n>9?"9+":n}</span>`:""}
 function videno(id){S.seen[id]=(S.qa[id]||[]).length;store.set("seen",S.seen)}
 function noveDotazy(stare){for(const id in S.qa){const st=new Set((stare[id]||[]).map(q=>q.k));const cizi=(S.qa[id]||[]).filter(q=>!st.has(q.k)&&q.dev!==DEV);
-  if(cizi.length){const x=ALLT.find(y=>y.id===id);if(x)toast("Nový dotaz k přednášce: "+x.h)}}liveRefresh()}
+  if(cizi.length){const x=ALLT.find(y=>y.id===id),q=cizi[cizi.length-1];if(x)toast("💬 Nový dotaz – "+x.h+": „"+String(q.t).slice(0,90)+(String(q.t).length>90?"…":"")+"“ · zobrazit ›",()=>naPrednasku(id))}}liveRefresh()}
 Object.keys(S.qa).forEach(id=>S.qa[id].forEach((q,i)=>{if(!q.k)q.k="d"+i}));   // ukázková data: klíč = pořadí
 /* ===== Aktuality od pořadatele (konference2027_aktuality) – píše se v aplikaci pořadatele ===== */
 // {klíč: {h, p, ts}}. Nepřečtené = číslo u záložky Info. Bez připojení ukázkové NEWS.
@@ -897,13 +920,19 @@ const AKT={on:false,list:NEWS.slice().reverse(),raw:{}};
 S.aktSeen=store.get("aktseen",{});S.aktNoveTed={};
 function aktNove(){return AKT.list.filter(x=>!S.aktSeen[x.k]).length}
 function aktPrecteno(){S.aktNoveTed={};AKT.list.forEach(x=>{if(!S.aktSeen[x.k]){S.aktNoveTed[x.k]=1;S.aktSeen[x.k]=1}});store.set("aktseen",S.aktSeen)}
+function aktDomu(){   // nepřečtená zpráva od pořadatele rovnou na Domů
+ const l=AKT.list.filter(x=>!S.aktSeen[x.k]);if(!l.length)return "";const x=l[0];
+ return `<div class="card aktd"><div class="label" style="margin-bottom:4px">📣 ${l.length>1?l.length+" nové zprávy":"Nová zpráva"} od pořadatele</div>
+  <h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}
+  <div class="cact" style="margin-top:8px"><button class="cbtn" data-aktok style="border:0">✓ Přečteno</button>${l.length>1?'<button class="cbtn" data-go="info" style="border:0">Všechny zprávy</button>':""}</div></div>`}
+function aktSeznam(){AKT.list=Object.keys(AKT.raw).map(k=>Object.assign({k},AKT.raw[k])).filter(x=>x&&x.h).sort((a,b)=>(b.ts||0)-(a.ts||0));AKT.on=true}
 function aktStart(){
  if(!window.EventSource)return;let es;try{es=new EventSource(ADB)}catch(e){return}
  const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;
   AKT.raw=treeSet(AKT.raw,d.path,d.data,ev.type==="patch");
   const stare=new Set(AKT.on?AKT.list.map(x=>x.k):[]), prvni=!AKT.on;
-  AKT.list=Object.keys(AKT.raw).map(k=>Object.assign({k},AKT.raw[k])).filter(x=>x&&x.h).sort((a,b)=>(b.ts||0)-(a.ts||0));AKT.on=true;
-  if(!prvni){const n=AKT.list.find(x=>!stare.has(x.k));if(n)toast("📣 Nová zpráva: "+n.h)}
+  aktSeznam();store.set("snapA",AKT.raw);
+  if(!prvni){const n=AKT.list.find(x=>!stare.has(x.k));if(n&&S.tab!=="info")toast("📣 Nová zpráva: "+n.h+" · zobrazit ›",()=>go("info"))}
   if(S.tab==="info")aktPrecteno();render()};
  es.addEventListener("put",on);es.addEventListener("patch",on);es.addEventListener("cancel",()=>es.close());
 }
@@ -934,6 +963,7 @@ function liveStart(){
   LIVE.es.push(es);
   const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;
    LIVE[kind]=treeSet(LIVE[kind],d.path,d.data,ev.type==="patch");
+   OUT.l.forEach(o=>{if(o.path.startsWith(kind+"/"))liveApply(o.path,o.val)});snapUloz();
    if(kind==="q"){if(!LIVE.on){LIVE.on=true;S.voted={};}liveRebuild()}else liveRefresh()};
   es.addEventListener("put",on);es.addEventListener("patch",on);
   es.addEventListener("cancel",()=>{es.close()});
@@ -948,6 +978,28 @@ function liveRebuild(){
 function liveRefresh(){render();if(SHEET_DRAW&&!$("sheet").hidden)SHEET_DRAW();if(PJ&&!HR)pjKresli()}   // při přehrávání projekci nepřekreslujeme (tlačítko by ztratilo stav)
 function qKlic(){return "q"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function qPut(path,val){return fetch(QDB+path+".json",{method:val===null?"DELETE":"PUT",body:val===null?undefined:JSON.stringify(val)}).then(r=>{if(!r.ok)throw new Error(r.status);return r})}
+
+/* ===== Bez signálu: poslední stav dotazů v zařízení + fronta na odeslání ===== */
+const OUT={l:store.get("outbox",[])};   // [{path,val}] – dotazy a palce napsané bez připojení
+const odmitnuto=er=>!!(er&&/^\d{3}$/.test(er.message||""));   // server odpověděl chybou (ne výpadek sítě)
+function liveApply(path,val){const p=path.split("/"),kind=p.shift();if(kind==="au"){if(val)LIVE.au[p[0]]=val;return}LIVE[kind]=treeSet(LIVE[kind],"/"+p.join("/"),val,false)}
+function snapUloz(){clearTimeout(snapUloz.t);snapUloz.t=setTimeout(()=>store.set("snapQ",{q:LIVE.q,v:LIVE.v,ts:Date.now()}),800)}
+function qSend(path,val){   // jako qPut, ale bez signálu uloží do fronty a odešle později
+ return qPut(path,val).then(()=>({}),er=>{if(odmitnuto(er))throw er;
+  OUT.l.push({path,val});store.set("outbox",OUT.l);liveApply(path,val);snapUloz();liveRebuild();offlUkaz();return {fronta:true}})}
+function outFlush(){
+ if(outFlush.bezi||!OUT.l.length)return;outFlush.bezi=true;let n=0;
+ const dalsi=()=>{const o=OUT.l[0];
+  if(!o){outFlush.bezi=false;offlUkaz();if(n)toast("📶 Jste zpět online – odesláno, co čekalo ("+n+")");return}
+  qPut(o.path,o.val).then(()=>{n++;OUT.l.shift();store.set("outbox",OUT.l);dalsi()},
+   er=>{if(odmitnuto(er)){OUT.l.shift();store.set("outbox",OUT.l);return dalsi()}outFlush.bezi=false;offlUkaz()})};
+ dalsi()}
+function offlUkaz(){const e=$("offl");if(!e)return;const off=navigator.onLine===false,n=OUT.l.length;
+ e.hidden=!off&&!n;
+ e.innerHTML=off?`📴 <b>Bez připojení</b> – průvodce ukazuje uložený stav${n?` · čeká na odeslání: ${n}`:". Dotazy a palce se odešlou samy, až bude signál."}`
+  :`⏳ Odesílám, co čekalo (${n})…`}
+addEventListener("online",()=>{offlUkaz();outFlush()});addEventListener("offline",offlUkaz);
+setInterval(outFlush,20000);
 function audioDotazu(q){
  if(!q||!q.au)return Promise.reject();if(typeof q.au==="string")return Promise.resolve(q.au);
  if(LIVE.au[q.k])return Promise.resolve(LIVE.au[q.k]);
@@ -975,7 +1027,7 @@ const ALBA=[
  {id:"a26",h:"2026 – jubilejní 30. ročník",sub:"14.–15. dubna 2026, Kongres hotel Jezerka",n:9,hue:200,cap:["Zahájení","Kongresový sál","Předsednictvo","Diskuze","Výstava ve foyer","Prezentace partnerů","Oběd","Společenský večer","Závěr konference"]},
  {id:"arch",h:"Archiv 1996–2025",sub:"Ohlédnutí za historií konference",n:6,hue:30,cap:["Moravská Třebová","Výstava Voda a my","Dohoda AČE ČR a SR (2000)","Seminář v muzeu","První ročník v Seči (2022)","Rekordní ročník 2025"]},
 ];
-function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2400)}
+function toast(t,klik){const e=$("toast");e.textContent=t;e.classList.toggle("klik",!!klik);toast.klik=klik||null;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,klik?9000:2400)}
 
 /* ===== Scéna partnerů: kategorie se střídají, vždy svítí jedna ===== */
 const STG={i:0,since:Date.now(),hold:0};
@@ -997,6 +1049,14 @@ function stgDraw(anim){
 function stgGo(i,manual){STG.i=(i+PART.length)%PART.length;STG.since=Date.now();if(manual)STG.hold=Date.now()+20000;stgDraw(true)}
 setInterval(()=>{if(!$("stage"))return;if(Date.now()<STG.hold)return;if(Date.now()-STG.since>=stgDur(STG.i))stgGo(STG.i+1)},400);
 const PGT={domu:["",""],program:["Program","31. ročník · Seč"],partneri:["Partneři","31. ročník · Seč"],fotky:["Fotky","31. ročník · Seč"],doprava:["Doprava","31. ročník · Seč"],info:["Informace","31. ročník · Seč"]};
+/* Celá obrazovka (tablet / prohlížeč) – v nainstalované aplikaci není potřeba */
+const FS={d:document,el:document.documentElement};
+FS.umi=!PL.nainst&&!!(FS.d.fullscreenEnabled||FS.d.webkitFullscreenEnabled)&&!!(FS.el.requestFullscreen||FS.el.webkitRequestFullscreen);
+FS.je=()=>!!(FS.d.fullscreenElement||FS.d.webkitFullscreenElement);
+function fsBtn(cls){if(!FS.umi)return "";const on=FS.je();return `<button class="fsb ${cls||""} ${on?"on":""}" data-fs type="button" title="${on?"Zmenšit zpět":"Na celou obrazovku"}" aria-label="${on?"Zmenšit zpět":"Na celou obrazovku"}">${on?"✕ Zmenšit":"⛶"}</button>`}
+function fsKresli(){const h=$("fsh");if(h)h.innerHTML=fsBtn();render()}
+function fsToggle(){const d=FS.d,el=FS.el;if(FS.je())(d.exitFullscreen||d.webkitExitFullscreen).call(d);
+ else{const p=(el.requestFullscreen||el.webkitRequestFullscreen).call(el);if(p&&p.catch)p.catch(()=>toast("Celá obrazovka tady nejde – přidejte si průvodce na plochu"))}}
 function render(){
  $("pgt").textContent=PGT[S.tab][0];$("pgs").textContent=PGT[S.tab][1];document.querySelector(".top").classList.toggle("home",S.tab==="domu");
  $("tabs").innerHTML=TABS.map(([k,t,i])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${i}<span>${t}</span>${k==="program"?badge(novychVse()):k==="info"?badge(aktNove()):""}</button>`).join("");
@@ -1016,7 +1076,7 @@ function vDomu(){
  const qi=(n)=>`<span class="qi" style="background-image:url(${flek(n)})"></span>`;
  return `<section class="sec">
   <div class="poster">
-   <span class="pchip" title="Obsah podle programu 2026">Ukázka · v${VERZE.split(" ")[0]}</span>
+   <span class="pchip" title="Obsah podle programu 2026">Ukázka · v${VERZE.split(" ")[0]}</span>${fsBtn("fsp")}
    <div class="collage" aria-hidden="true">${FL.map(([n,c])=>`<img class="${c}" src="${IMG}fleky/flek${String(n).padStart(2,"0")}.webp" alt="">`).join("")}</div>
    <div class="pc">
     <div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
@@ -1027,6 +1087,7 @@ function vDomu(){
    </div>
    <div class="porg"><a class="pv" href="https://www.vhos.cz" target="_blank" rel="noopener" aria-label="Pořádá VHOS, a.s. – www.vhos.cz"><img src="${IMG}loga/vhos.webp" alt="VHOS, a.s."></a><div class="ps"><small>ve spolupráci s</small><span><a href="https://www.czwa.cz" target="_blank" rel="noopener"><img src="${IMG}loga/czwa.webp" alt="CzWA" class="pcz"></a><img src="${IMG}loga/mov.webp" alt="odborná skupina ČR MOV" title="odborná skupina ČR MOV" class="pmv"></span></div></div>
   </div>
+  ${aktDomu()}
   ${instalBanner()}
   ${poznUlozit()}
   ${S.karta?vKarta(true):""}
@@ -1078,6 +1139,7 @@ function vProgram(){
  const odb=PART[2][3];
  return `<section class="sec">
   ${poznUlozit()}
+  ${vNove()}
   <div class="note" style="margin-bottom:-2px">Program je zatím ukázka podle 30. ročníku (2026). Program 31. ročníku doplníme.</div>
   <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small>${badge(novychDen(d.k))}</button>`).join("")}<button class="dnow" id="dnow" aria-label="Přejít na aktuální přednášku"><span class="dot"></span>Právě teď<small>aktuální přednáška</small></button></div>
   ${S.mine&&Object.keys(S.notes).length?nexpBtns():""}
@@ -1163,10 +1225,10 @@ function vDoprava(){
 function vInfo(){
  const nove=S.aktNoveTed||{};
  return `<section class="sec">
-  ${instalBanner(true)}
   <div class="card akt"><div class="label" style="margin-bottom:4px">📣 Aktuality od pořadatele</div>
    ${AKT.list.length?AKT.list.map(x=>`<article class="${nove[x.k]?"nova":""}">${nove[x.k]?'<span class="chipn">Nové</span>':""}<h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}<small>${x.d?esc(x.d):x.ts>1e9?new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}):""}</small></article>`).join(""):'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Jakmile pořadatel něco napíše, uvidíte to tady a u záložky Info naskočí číslo.</p>'}
   </div>
+  ${instalBanner(true)}
   ${S.karta?vKarta(false):vKartaVstup()}
   <div class="card"><div class="label" style="margin-bottom:6px">Můj profil · nepovinné</div>
    <p class="muted" style="margin:0 0 10px;font-size:13px">Když vyplníte jméno a firmu, vaše dotazy k přednáškám se podepíšou samy. Údaje zůstávají jen v tomto telefonu.</p>
@@ -1223,7 +1285,7 @@ function sheetQ(id){
  $("qlist").addEventListener("click",e=>{
   const pl=e.target.closest("[data-qplay]");if(pl)return prehraj(qk(id,pl.dataset.qplay),pl,"🔊 Poslechnout nahrávku");
   const b=e.target.closest("[data-plus]");if(!b)return;const k=b.dataset.plus, bylo=hlasoval(id,k);
-  if(LIVE.on){qPut("v/"+id+"/"+k+"/"+DEV,bylo?null:true).then(()=>{if(!bylo)toast("👍 Palec přidán")}).catch(()=>toast("Nepodařilo se – zkontrolujte připojení"));return}
+  if(LIVE.on){qSend("v/"+id+"/"+k+"/"+DEV,bylo?null:true).then(o=>{if(!bylo)toast(o.fronta?"👍 Palec uložen – odešle se, až bude signál":"👍 Palec přidán")}).catch(()=>toast("Nepodařilo se – zkuste to znovu"));return}
   const kk=id+":"+k;if(bylo)delete S.voted[kk];else{S.voted[kk]=1;toast("👍 Palec přidán")}store.set("voted",S.voted);draw()});
  $("qf").addEventListener("submit",e=>{e.preventDefault();if(REC.mr)return toast("Nejdřív ukončete nahrávání");const t=$("qt").value.trim();if(!t&&!AU)return;
   const anon=!podpis()||($("qanon")&&$("qanon").checked);
@@ -1232,8 +1294,8 @@ function sheetQ(id){
   if(LIVE.on){
    if(AU&&AU.length>900000)return toast("Nahrávka je moc dlouhá – zkraťte ji");
    const k=qKlic(), btn=e.target.querySelector(".send");btn.disabled=true;btn.textContent="Odesílám…";
-   (AU?qPut("au/"+k,AU):Promise.resolve()).then(()=>qPut("q/"+id+"/"+k,Object.assign(q,AU?{au:true}:{})))
-    .then(()=>{if(AU)LIVE.au[k]=AU;hotovo()}).catch(()=>toast("Dotaz se nepodařilo odeslat – zkontrolujte připojení a zkuste znovu"))
+   let fr=false;(AU?qSend("au/"+k,AU):Promise.resolve({})).then(o=>{fr=!!o.fronta;return qSend("q/"+id+"/"+k,Object.assign(q,AU?{au:true}:{}))})
+    .then(o=>{if(AU)LIVE.au[k]=AU;hotovo();if(fr||o.fronta)toast("📴 Bez signálu – dotaz je uložený a odešle se sám, až budete online")}).catch(()=>toast("Dotaz se nepodařilo odeslat – zkontrolujte připojení a zkuste znovu"))
     .finally(()=>{btn.disabled=false;btn.textContent="Odeslat dotaz"});
    return}
   (S.qa[id]=S.qa[id]||[]).push(Object.assign(q,{k:qKlic()},AU?{au:AU}:{}));store.set("qa",S.qa);videno(id);hotovo()});
@@ -1452,11 +1514,16 @@ if(window.IMGBASE&&"serviceWorker" in navigator){navigator.serviceWorker.registe
 function openSheet(h){const s=$("sheet");s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+h;s.hidden=false;$("bd").hidden=false;$("sclose").focus()}
 function closeSheet(){SHEET_DRAW=null;if(REC.mr)REC.mr.stop();if(HR){HR.pause();HR=null}$("sheet").hidden=true;$("bd").hidden=true}
 $("bd").addEventListener("click",closeSheet);
-$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();{const nq=e.target.closest("[data-naq]");if(nq)return naPrednasku(nq.dataset.naq)}if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
 
 /* ===== Události ===== */
-$("tabs").addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
+$("tabs").addEventListener("click",e=>{if(LP.hotovo){LP.hotovo=false;return}const b=e.target.closest("[data-tab]");if(b)go(b.dataset.tab)});
+// podržení prstu na „Program“ = přehled nových dotazů
+const LP={t:0,hotovo:false};
+$("tabs").addEventListener("pointerdown",e=>{if(!e.target.closest('[data-tab="program"]'))return;clearTimeout(LP.t);LP.hotovo=false;LP.t=setTimeout(()=>{if(novychVse()){LP.hotovo=true;if(navigator.vibrate)navigator.vibrate(15);sheetNove()}},550)});
+["pointerup","pointerleave","pointercancel"].forEach(t=>$("tabs").addEventListener(t,()=>clearTimeout(LP.t)));
+$("tabs").addEventListener("contextmenu",e=>{if(e.target.closest('[data-tab="program"]'))e.preventDefault()});
 $("view").addEventListener("click",e=>{
  const sg=e.target.closest("[data-stg]");if(sg)return stgGo(+sg.dataset.stg,true);
  if(e.target.closest("[data-wx]"))return sheetWx();
@@ -1467,6 +1534,9 @@ $("view").addEventListener("click",e=>{
  {const nv=e.target.closest("[data-nav]");if(nv)return sheetNav(nv.dataset.nav)}
  if(e.target.closest("[data-doprava]"))return sheetDoprava();
  if(e.target.closest("#dnow"))return naAktualni();
+ {const nq=e.target.closest("[data-naq]");if(nq)return naPrednasku(nq.dataset.naq)}
+ if(e.target.closest("[data-navse]")){ALLT.forEach(x=>{if(x.id&&novych(x.id))S.seen[x.id]=(S.qa[x.id]||[]).length});store.set("seen",S.seen);return render()}
+ if(e.target.closest("[data-aktok]")){const x=AKT.list.find(y=>!S.aktSeen[y.k]);if(x){S.aktSeen[x.k]=1;store.set("aktseen",S.aktSeen)}return render()}
  const t=e.target.closest("[data-nxok],[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,[data-nx]");if(!t)return;
  if(t.dataset.alarm)return sheetAlarm(t.dataset.alarm);
  if(t.dataset.ph){const [a,i]=t.dataset.ph.split(":");return openLb(a,+i)}
@@ -1498,7 +1568,12 @@ $("view").addEventListener("input",e=>{
  if(PL.ios&&!PL.nainst&&S.karta&&S.karta.k&&S.karta.k!=="ukazka"&&!/[?&]k=/.test(location.search))history.replaceState(null,"",location.pathname+"?k="+encodeURIComponent(S.karta.k)+location.hash);
 }catch(e){}})();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.karta&&S.karta.k!=="ukazka"&&Date.now()-S.karta.ts>120000)kartaNacti(null,true)});
-liveStart();aktStart();
+{const sq=store.get("snapQ",null);if(sq&&sq.q){LIVE.q=sq.q;LIVE.v=sq.v||{};OUT.l.forEach(o=>liveApply(o.path,o.val));LIVE.on=true;S.voted={};liveRebuild()}
+ const sa=store.get("snapA",null);if(sa&&typeof sa==="object"){AKT.raw=sa;aktSeznam();render()}}   // bez signálu poslední uložený stav
+liveStart();aktStart();offlUkaz();outFlush();
+if(FS.umi){document.addEventListener("fullscreenchange",fsKresli);document.addEventListener("webkitfullscreenchange",fsKresli);fsKresli()}
+document.addEventListener("click",e=>{if(e.target.closest("[data-fs]"))fsToggle()});
+$("toast").addEventListener("click",()=>{const f=toast.klik;if(!f)return;$("toast").hidden=true;toast.klik=null;f()});
 document.getElementById("markimg").src=IMG+"cislo31.webp";document.getElementById("vhimg").src=IMG+"loga/vhos.webp";
 document.getElementById("vchip").textContent="Ukázka · v"+VERZE.split(" ")[0];
 render();

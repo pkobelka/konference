@@ -743,3 +743,17 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
   ubytovává pořadatel (hosté, přednášející, vystavující); pro veřejnost (~70 %) skoro žádný. Navrženo: blok v Info schovat
   všem bez karty a odkazy posílat jen „svým“ lidem – **nedělat, dokud Petr nerozhodne** (možná celé zrušit).
 - **0.54:** Info úplně dole pod verzí: „Aplikaci vytvořil **Petr Kobelka** · © 2026“ (znění může Petr upravit – např. zkratka, „pro VHOS, a.s.“).
+
+### Průvodce 0.55 (19. 10. 2026 večer)
+- **Bez signálu:** `pruvodce/sw.js` (mezipaměť `pruvodce-v1`): stránka nejdřív ze sítě (limit 5 s), jinak uložená; obrázky,
+  ikony, loga, fleky a písma z mezipaměti (předem 68 souborů, na pozadí se obnoví); Firebase a počasí se necachují.
+  Stránka si drží poslední stav dotazů (`pr_snapQ`) a aktualit (`pr_snapA`); dotazy a palce bez signálu jdou do fronty
+  (`pr_outbox`, `qSend()`/`outFlush()`, odešle se po `online` a každých 20 s); nahoře tmavý pruh „📴 Bez připojení…“.
+- **Aktuality:** Petrovi „svítila jednička“ a zpráva se po kliknutí neukázala (v testu se po otevření Info zhasne – nejspíš
+  klikal na vyskakovací upozornění). Teď: upozornění „📣 Nová zpráva … · zobrazit ›“ je klikací (otevře Info, 9 s),
+  nepřečtená zpráva je rovnou na Domů s „✓ Přečteno“, v Info jsou aktuality úplně nahoře (návod do telefonu pod nimi).
+- **Nové dotazy:** upozornění „💬 Nový dotaz – přednáška: „text…“ · zobrazit ›“ (9 s, klik = skok na přednášku);
+  v Programu nahoře karta **Nové dotazy · N** (seznam přednášek s počtem, klik = den + posun + bliknutí, „Označit vše jako
+  přečtené“); **podržení prstu na záložce Program** = stejný přehled v okně.
+- **Celá obrazovka** (tablet v prohlížeči): tlačítko ⛶ v záhlaví a na Domů vedle „Ukázka“, v režimu „✕ Zmenšit“;
+  v nainstalované aplikaci a na iPhonu (Safari to neumí) se neukazuje.
