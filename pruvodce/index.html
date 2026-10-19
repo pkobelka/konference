@@ -347,6 +347,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .tog.mojep{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 12px;line-height:1.2}
 .mojep .mis{display:flex;gap:8px;font-size:12px;font-weight:700}.mojep .mi.nic{opacity:.45}
 @media (min-width:600px){.tools #q{flex:2 1 0}.tog.mojep{flex:1 1 0;flex-direction:row;justify-content:center;gap:14px;padding:9px 14px;font-size:14px}.mojep .mis{font-size:14px;gap:12px}}
+.pzs b{font-family:var(--f-display);font-size:18px}.pzs .mis{display:flex;gap:16px;font-size:17px;font-weight:700}.pzs .mi.nic{opacity:.45}
+.pzt{display:flex;flex-direction:column;gap:2px}.pzt b{font-size:16px;line-height:1.3}.pzt small{font-size:13px}
+.pzb{display:flex;flex-wrap:wrap;margin-left:-6px}
 .tog.mam{background:#ffd54a;color:#3b2a00;border-color:#e0b100}
 .nbtn.mam{background:#ffd54a;color:#3b2a00;border-color:#e0b100}
 .nbtn.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
@@ -605,7 +608,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.58 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.59 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -1033,7 +1036,8 @@ IC.foto='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width
 IC.pin='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>';
 IC.cal='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
 IC.pen='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>';
-const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["partneri","Partneři",IC.part],["fotky","Fotky",IC.foto],["doprava","Doprava",IC.bus],["info","Info",IC.info]];
+IC.pozn='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
+const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["partneri","Partneři",IC.part],["poznamky","Poznámky",IC.pozn],["doprava","Doprava",IC.bus],["info","Info",IC.info]];
 /* Fotky – zatím zástupná místa, skutečné fotky nahraje pořadatel / fotograf */
 const ALBA=[
  {id:"a27",h:"2027 – 31. ročník",sub:"27.–28. dubna 2027 · fotky přibývají během konference",n:6,hue:150,cap:["Prezence","Zahájení","Legislativní blok","Výstava partnerů","Oběd","Společenský večer"]},
@@ -1061,7 +1065,7 @@ function stgDraw(anim){
 }
 function stgGo(i,manual){STG.i=(i+PART.length)%PART.length;STG.since=Date.now();if(manual)STG.hold=Date.now()+20000;stgDraw(true)}
 setInterval(()=>{if(!$("stage"))return;if(Date.now()<STG.hold)return;if(Date.now()-STG.since>=stgDur(STG.i))stgGo(STG.i+1)},400);
-const PGT={domu:["",""],program:["Program","31. ročník · Seč"],partneri:["Partneři","31. ročník · Seč"],fotky:["Fotky","31. ročník · Seč"],doprava:["Doprava","31. ročník · Seč"],info:["Informace","31. ročník · Seč"]};
+const PGT={domu:["",""],program:["Program","31. ročník · Seč"],partneri:["Partneři","31. ročník · Seč"],poznamky:["Moje poznámky","jen v tomto zařízení"],doprava:["Doprava","31. ročník · Seč"],info:["Informace","31. ročník · Seč"]};
 /* Celá obrazovka (tablet / prohlížeč) – v nainstalované aplikaci není potřeba */
 const FS={d:document,el:document.documentElement};
 FS.umi=!PL.nainst&&!!(FS.d.fullscreenEnabled||FS.d.webkitFullscreenEnabled)&&!!(FS.el.requestFullscreen||FS.el.webkitRequestFullscreen);
@@ -1070,11 +1074,15 @@ function fsBtn(cls){if(!FS.umi)return "";const on=FS.je();return `<button class=
 function fsKresli(){const h=$("fsh");if(h)h.innerHTML=fsBtn();render()}
 function fsToggle(){const d=FS.d,el=FS.el;if(FS.je())(d.exitFullscreen||d.webkitExitFullscreen).call(d);
  else{const p=(el.requestFullscreen||el.webkitRequestFullscreen).call(el);if(p&&p.catch)p.catch(()=>toast("Celá obrazovka tady nejde – přidejte si průvodce na plochu"))}}
+function ikonaCislo(){   // číslo na ikoně na ploše = nepřečtené zprávy + nové dotazy (jako červená čísla v menu)
+ try{if(!navigator.setAppBadge)return;const n=aktNove()+novychVse();if(n===ikonaCislo.n)return;ikonaCislo.n=n;
+  (n?navigator.setAppBadge(n):navigator.clearAppBadge()).catch(()=>{})}catch(e){}}
 function render(){
  $("pgt").textContent=PGT[S.tab][0];$("pgs").textContent=PGT[S.tab][1];document.querySelector(".top").classList.toggle("home",S.tab==="domu");
  $("tabs").innerHTML=TABS.map(([k,t,i])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${i}<span>${t}</span>${k==="program"?badge(novychVse()):k==="info"?badge(aktNove()):""}</button>`).join("");
  setTimeout(()=>stgDraw(false),0);
- $("view").innerHTML=(S.tab==="domu"?"":ticker())+{domu:vDomu,program:vProgram,partneri:vPartneri,fotky:vFotky,doprava:vDoprava,info:vInfo}[S.tab]();
+ $("view").innerHTML=(S.tab==="domu"||S.tab==="poznamky"?"":ticker())+{domu:vDomu,program:vProgram,partneri:vPartneri,poznamky:vPoznamky,doprava:vDoprava,info:vInfo}[S.tab]();
+ ikonaCislo();
 }
 function go(t){if(t==="info")aktPrecteno();S.tab=t;render();window.scrollTo(0,0)}
 
@@ -1111,7 +1119,7 @@ function vDomu(){
   </div>
   <div class="qk">
    <button data-go="program">${qi(9)}<span class="qt"><b>Program</b><small>${Object.values(PROG).flat().filter(x=>x.blok).length} bloků · dotazy · upozornění</small></span></button>
-   <button data-go="program" data-mine="1">${qi(5)}<span class="qt"><b>Moje poznámky</b><small>${nn?nn+" "+(nn===1?"poznámka":nn<5?"poznámky":"poznámek"):"k přednáškám"}${nb?" · "+nb+" 🔔":""}</small></span></button>
+   <button data-go="poznamky">${qi(5)}<span class="qt"><b>Moje poznámky</b><small>${nn?nn+" "+(nn===1?"poznámka":nn<5?"poznámky":"poznámek"):"k přednáškám"}${nb?" · "+nb+" 🔔":""}</small></span></button>
    <button data-go="doprava">${qi(1)}<span class="qt"><b>Svoz a cesta</b><small>svoz na večer · navigace</small></span></button>
    <button data-go="info">${qi(15)}<span class="qt"><b>Informace</b><small>${aktNove()?aktNove()+" "+(aktNove()===1?"nová zpráva":aktNove()<5?"nové zprávy":"nových zpráv"):"aktuality · kontakty"}</small></span>${badge(aktNove())}</button>
   </div>
@@ -1156,7 +1164,7 @@ function vProgram(){
   <div class="note" style="margin-bottom:-2px">Program je zatím ukázka podle 30. ročníku (2026). Program 31. ročníku doplníme.</div>
   <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small>${badge(novychDen(d.k))}</button>`).join("")}<button class="dnow" id="dnow" aria-label="Přejít na aktuální přednášku"><span class="dot"></span>Právě teď<small>aktuální přednáška</small></button></div>
   ${S.mine&&pocetPoznamek()?nexpBtns():""}
-  <div class="tools"><input id="q" placeholder="Hledat v programu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog mojep${pocetPoznamek()&&!S.mine?" mam":""}" id="mine" aria-pressed="${S.mine}">${mojeIkony()}</button></div>
+  <div class="tools"><input id="q" placeholder="Hledat v programu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog mojep${pocetPoznamek()?" mam":""}" id="mine">${mojeIkony()}</button></div>
   ${rows.some(x=>!x.blok)?(()=>{let open=null;const out=rows.map(x=>{
    let pre="";if(open&&(x.blok||x.bid!==open)){pre="</div>";open=null}   // konec rámečku bloku
    if(x.blok){open=x.bid;const cnt=ALLT.filter(y=>y.bid===x.bid&&y.id).reduce((a,y)=>a+(S.qa[y.id]||[]).filter(q=>!S.read[y.id+":"+q.k]).length,0);
@@ -1168,7 +1176,7 @@ function vProgram(){
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
    return h});return out.join("")+(open?"</div>":"")})()
   :`<div class="card empty"><b>${S.mine?"Zatím nemáte žádné poznámky":"Nic jsme nenašli"}</b><p class="muted" style="margin:6px 0 0;font-size:14px">${S.mine?"U přednášky klepněte na ✎ Poznámka, 🎤 Namluvit nebo 📷 Vyfotit.":"Zkuste jiné slovo."}</p></div>`}
-  <div class="note">Poznámky k přednáškám jsou soukromé a zůstávají jen ve vašem zařízení. Tlačítkem ✎ Poznámky zobrazíte jen přednášky s poznámkou – tam je můžete i vytisknout, uložit jako PDF, stáhnout nebo poslat e-mailem.</div>
+  <div class="note">Poznámky k přednáškám jsou soukromé a zůstávají jen ve vašem zařízení. Všechny je najdete v záložce Poznámky – tam je můžete i sdílet, stáhnout, poslat e-mailem nebo vytisknout do PDF.</div>
  </section>`;
 }
 
@@ -1189,6 +1197,18 @@ function sheetP(nm){
 
 function phStyle(a,i){return `background:var(--surface-2) url(${flek(a.hue+i*5)}) center/72% no-repeat`}
 function phStyleOld(a,i){return `background:linear-gradient(${135+i*20}deg,hsl(${a.hue+i*9} 35% ${34+i%3*6}%),hsl(${a.hue+40+i*7} 40% ${24+i%2*8}%))`}
+function vPoznamky(){
+ const l=mojePoznamky();
+ const tl=x=>{const f=!!S.notes[x.id],m=medTid(x.id),nh=m.filter(y=>y.typ==="hlas").length,nf=m.length-nh;
+  return `<button class="nbtn${f?" mam":""}" data-note="${x.id}">✎ ${f?"Upravit":"Poznámka"}</button><button class="nbtn${nh?" mam":""}" data-hlas="${x.id}">🎤 Namluvit${nh?" · "+nh:""}</button><button class="nbtn${nf?" mam":""}" data-foto="${x.id}">📷 Vyfotit${nf?" · "+nf:""}</button><button class="nbtn" data-naq="${x.id}">↗ V programu</button>`};
+ return `<section class="sec">
+  <div class="card pzhl"><div class="pzs">${mojeIkony().replace("<b>Moje poznámky</b>","")}</div>
+   <p class="muted" style="margin:6px 0 10px;font-size:13px">🔒 Vidíte je jen vy – jsou uložené jen v tomto zařízení. Přidáte je u přednášky v Programu tlačítky ✎ Poznámka, 🎤 Namluvit a 📷 Vyfotit.</p>
+   ${l.length?nexpBtns():""}</div>
+  ${l.length?l.map(({x,den})=>`<div class="card pzk"><div class="pzt"><span class="nvt">${esc(den?den.n.slice(0,2):"")} ${esc(x.t)}${x.e?"–"+esc(x.e):""}</span><b>${esc(x.h)}</b>${x.w?`<small class="muted">${esc(x.w)}</small>`:""}</div>
+    ${S.notes[x.id]?`<div class="mynote">${esc(S.notes[x.id])}</div>`:""}${medPas(x.id)}<div class="pzb">${tl(x)}</div></div>`).join("")
+  :`<div class="card empty"><b>Zatím nemáte žádné poznámky</b><p class="muted" style="margin:6px 0 10px;font-size:14px">V Programu u přednášky si napište poznámku, namluvte ji nebo vyfoťte zajímavý slajd. Všechno se objeví tady.</p><button class="cbtn" data-go="program" style="border:0">Otevřít program</button></div>`}
+ </section>`}
 function vFotky(){
  return `<section class="sec">${ALBA.map(a=>`<div class="album"><h2>${esc(a.h)}</h2><div class="sub">${esc(a.sub)} · ${a.n} fotek</div>
   <div class="photos">${a.cap.map((c,i)=>`<button class="ph" data-ph="${a.id}:${i}" style="${phStyle(a,i)}" aria-label="${esc(c)}">${IC.foto}<span>${esc(c)}</span></button>`).join("")}</div></div>`).join("")}
@@ -1416,7 +1436,7 @@ function sheetNote(id){
  openSheet(`<h2>Moje poznámka</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.t)} · ${esc(x.h)}</div>
   <div class="bd"><div class="nsoukr">🔒 Poznámku vidíte jen vy, je uložená v tomto zařízení.</div><form class="qform" id="nf"><textarea id="nt" rows="6" placeholder="Co vás zaujalo, na co se zeptat kolegů, odkaz na sborník…" aria-label="Poznámka">${esc(S.notes[id]||"")}</textarea>
    <div style="display:flex;gap:8px"><button class="send" style="flex:1">Uložit poznámku</button>${S.notes[id]?'<button type="button" class="btn" id="ndel">Smazat</button>':""}</div></form>
-  <div class="note">Na server se neposílá a nikdo jiný ji neuvidí. Všechny poznámky si můžete uložit nebo poslat tlačítkem ✎ Poznámky v Programu.</div></div>`);
+  <div class="note">Na server se neposílá a nikdo jiný ji neuvidí. Všechny poznámky najdete v záložce Poznámky, kde si je můžete uložit nebo poslat.</div></div>`);
  $("nt").focus();
  $("nf").addEventListener("submit",e=>{e.preventDefault();const v=$("nt").value.trim();if(v){S.notes[id]=v;drzData()}else delete S.notes[id];store.set("notes",S.notes);closeSheet();render();toast(v?"Poznámka uložena":"Poznámka smazána")});
  const d=$("ndel");if(d)d.addEventListener("click",()=>{delete S.notes[id];store.set("notes",S.notes);closeSheet();render();toast("Poznámka smazána")});
@@ -1451,7 +1471,7 @@ function sheetHlas(tid){
    <textarea id="ht" rows="4" placeholder="Sem se během nahrávání píše přepis (pokud to prohlížeč umí) – můžete ho opravit" aria-label="Přepis"></textarea>
    <div id="hprev" hidden><audio id="haud" controls style="width:100%"></audio></div>
    <button type="button" class="send" id="hsave" disabled>Uložit nahrávku</button></div>
-  <div class="note">Nahrávat můžete až 5 minut. Nahrávky najdete u přednášky a v ✎ Poznámkách, kde si je můžete i sdílet.</div></div>`);
+  <div class="note">Nahrávat můžete až 5 minut. Nahrávky najdete u přednášky a v záložce Poznámky, kde si je můžete i sdílet.</div></div>`);
  $("hmic").addEventListener("click",()=>nahravej((u,b,sek)=>{if(!$("haud"))return;BL=b;SEK=sek;$("haud").src=u;$("hprev").hidden=false;$("hsave").disabled=false},{b:"hmic",info:"hrec",ta:"ht",max:300,znovu:"🎤 Nahrát znovu"}));
  $("hsave").addEventListener("click",()=>{if(REC.mr)return toast("Nejdřív ukončete nahrávání");if(!BL)return;
   medPridej(tid,"hlas",BL,{prepis:$("ht").value.trim(),sek:SEK}).then(()=>{closeSheet();toast("🎤 Nahrávka uložena – je jen v tomto zařízení")}).catch(()=>toast("Nahrávku se nepodařilo uložit"))})}
@@ -1469,9 +1489,9 @@ function prvniPozn(){   // po první poznámce (text, hlas, foto) jednou vysvět
  setTimeout(()=>{openSheet(`<h2>Poznámky máte jen vy</h2><div class="bd">
   <div class="nsoukr">🔒 Poznámky, nahrávky i fotky jsou uložené <b>jen v tomto zařízení</b>. Na server se neposílají a nikdo jiný je neuvidí.</div>
   <p style="margin:0 0 6px">Nejsou ale nikde zálohované. Když vymažete data prohlížeče nebo změníte telefon, zmizí.</p>
-  <p style="margin:0 0 12px"><b>Po konferenci si je proto uložte</b> – tlačítkem ✎ Poznámky v Programu je můžete sdílet, stáhnout, poslat e-mailem nebo vytisknout do PDF. Na konci konference vám to průvodce připomene.</p>
+  <p style="margin:0 0 12px"><b>Po konferenci si je proto uložte</b> – v záložce Poznámky je můžete sdílet, stáhnout, poslat e-mailem nebo vytisknout do PDF. Na konci konference vám to průvodce připomene.</p>
   <div class="cact"><button class="cbtn" id="pzok" style="border:0">Rozumím</button><button class="cbtn" id="pzted" style="border:0">Ukázat moje poznámky</button></div></div>`);
-  $("pzok").addEventListener("click",closeSheet);$("pzted").addEventListener("click",()=>{closeSheet();S.mine=true;go("program")})},700)}
+  $("pzok").addEventListener("click",closeSheet);$("pzted").addEventListener("click",()=>{closeSheet();go("poznamky")})},700)}
 function drzData(){   // požádá prohlížeč, ať poznámky nemaže (uživatel nic nevidí)
  prvniPozn();try{const st=navigator.storage;if(st&&st.persist)st.persisted().then(p=>p||st.persist()).catch(()=>{})}catch(e){}}
 function mojeIkony(){   // „Moje poznámky“ + kolik čeho: ✎ text, 🎤 nahrávky, 📷 fotky
@@ -1621,7 +1641,7 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.day){S.day=t.dataset.day;return render()}
  if(t.dataset.note)return sheetNote(t.dataset.note);
  if(t.dataset.p)return sheetP(t.dataset.p);
- if(t.id==="mine"){S.mine=!S.mine;return render()}
+ if(t.id==="mine")return go("poznamky");
  if(t.dataset.nx){const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[t.dataset.nx];if(f){f();store.set("poznUlozeno",pocetPoznamek())}return}
  if(t.dataset.nxok!==undefined){store.set("poznUlozeno",pocetPoznamek());return render()}
 });

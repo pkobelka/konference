@@ -771,3 +771,11 @@ Vše nasazeno (průvodce 0.52). Nic nerozpracovaného. Petrovi dávat **málo mo
 - **0.57 (nasazeno):** podpis dotazu přímo u dotazu – zaškrtávátko „Podepsat dotaz (nepovinné)“ odkryje Jméno a Firmu (pamatuje se poslední volba, `S.me.pod`); bez zaškrtnutí anonymně. Karta „Můj profil“ v Info zrušena, dlaždice na Domů vždy „Informace“.
 - **0.58:** tlačítka u přednášky žlutá, když tam něco mám: „✎ Moje poznámka ✓“, „🎤 Namluvit · N“, „📷 Vyfotit · N“ (`.nbtn.mam`); v Programu tlačítko „✎ Moje poznámky · N“ (žluté, když nějaké mám) – filtr jen přednášek s poznámkou + uložení/sdílení; na Domů dlaždice „Moje poznámky“.
 - **0.58:** v Programu místo „Poznámky“ širší tlačítko **„Moje poznámky ✎ N 🎤 N 📷 N“** (`mojeIkony()`; chybějící druh bledý; v mobilu ikony pod nápisem, od 600 px vedle a tlačítko zabere ⅓ řádku); hledání zkráceno na „Hledat v programu…“.
+- **0.59:** **číslo na ikoně na ploše** (`ikonaCislo()`, `navigator.setAppBadge`) = nepřečtené zprávy + nové dotazy; obnoví se, dokud
+  aplikace běží (i na pozadí). Při úplně zavřené aplikaci nic – to by chtělo Web Push (odesílací služba / Firebase Functions,
+  na iPhonu jen průvodce na ploše) → **nabídnuto jako samostatný krok, zatím nestavět**.
+- **0.59:** záložka **Fotky zrušena** (Petr: „nemá význam“; kód `vFotky` zůstal nepoužitý) → nová záložka **Poznámky**
+  (`vPoznamky`): souhrn ✎/🎤/📷, soukromí, Sdílet/Stáhnout/E-mail/PDF, karty přednášek s poznámkou, fotkami a nahrávkami,
+  tlačítka Upravit / Namluvit / Vyfotit / ↗ V programu. Tlačítko „Moje poznámky“ v Programu i dlaždice na Domů vedou sem.
+- Petr se ptal, jak poslat všem zprávu: **aplikace pořadatele → Aktuality** (už funguje). Role: pořadatel (přihlášení), předsedající
+  bez profilu (otevřená otázka A/B), účastníci bez přihlášení.
