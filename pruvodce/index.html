@@ -64,6 +64,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .btn{border:0;border-radius:10px;padding:9px 13px;font-weight:700;background:var(--accent-soft);color:var(--accent);font-size:14px}
 .kv{display:grid;grid-template-columns:104px 1fr;gap:8px 10px;font-size:14px;margin:0}
 .kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.kv .hadr{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:2px}.kv .hadr a{color:var(--water);font-weight:700;text-decoration:none;white-space:nowrap}
 
 /* pás log */
 .ticker{overflow:hidden;margin-inline:-16px;padding-block:2px 10px;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
@@ -689,8 +690,8 @@ const KONTAKTY=[
  {role:"Fakturace",jm:"Danuše Kaderková",org:"vedoucí ÚTV UCE, VHOS, a.s.",pozn:"platby, daňové doklady",tel:"461 357 151",mail:"danuse.kaderkova@vhos.cz"}
 ];
 /* ===== Termín do kalendáře, navigace do hotelu ===== */
-const MISTO={nazev:"Kongres hotel Jezerka",adr:"Ústupky 278, 538 07 Seč",lat:49.821586,lon:15.659936,gps:"49°49’17.71“N, 15°39’35.77“E"};
-const KRASKOV={nazev:"Hotel Kraskov",adr:"Kraskov, Seč"};   // bez souřadnic – navigace hledá podle názvu
+const MISTO={nazev:"Kongres hotel Jezerka",adr:"Ústupky 278, 538 07 Seč",tel:"469 676 327",lat:49.821586,lon:15.659936,gps:"49°49’17.71“N, 15°39’35.77“E"};
+const KRASKOV={nazev:"Hotel Kraskov",adr:"Starý Dvůr 47, 538 43 Třemošnice",tel:"464 600 411"};   // bez souřadnic – navigace hledá podle adresy
 /* ===== Svoz na společenský večer (úterý) – zájem se posílá pořadateli do Firebase ===== */
 const DDB="https://moje-budky-default-rtdb.firebaseio.com/konference2027_doprava/z";
 const DNAST={kraskov:"Hotel Kraskov",sec:"Seč – zastávka"}, DSMER={oba:"tam i zpět",tam:"jen tam",zpet:"jen zpět"};
@@ -1106,7 +1107,7 @@ function vDoprava(){
     :`<p style="margin:0"><button class="cbtn" data-doprava="1" style="border:0">🚌 Mám zájem o dopravu</button></p>`}
   </div>
   <div class="card"><div class="label" style="margin-bottom:8px">Cesta na místo</div>
-   <dl class="kv"><dt>Konference</dt><dd>Kongres hotel Jezerka, Seč – Ústupky 278</dd><dt>GPS</dt><dd>${MISTO.gps}</dd><dt>Parkování</dt><dd>u hotelu (upřesníme)</dd><dt>Ubytování</dt><dd>část hostů v Hotelu Kraskov (asi 9 km)</dd></dl>
+   <dl class="kv"><dt>Konference</dt><dd>${MISTO.nazev}<span class="hadr">${MISTO.adr}<br>recepce <a href="tel:+420${MISTO.tel.replace(/ /g,"")}">${MISTO.tel}</a></span></dd><dt>GPS</dt><dd>${MISTO.gps}</dd><dt>Parkování</dt><dd>u hotelu (upřesníme)</dd><dt>Ubytování</dt><dd>část hostů v Hotelu Kraskov (asi 9 km)<span class="hadr">${KRASKOV.adr}<br>recepce <a href="tel:+420${KRASKOV.tel.replace(/ /g,"")}">${KRASKOV.tel}</a></span></dd></dl>
    <div class="cact" style="margin-top:10px"><button class="cbtn" data-nav="1" style="border:0">🧭 Navigovat na Jezerku</button><button class="cbtn" data-nav="kraskov" style="border:0">🧭 Navigovat do Kraskova</button></div>
   </div>
  </section>`;
