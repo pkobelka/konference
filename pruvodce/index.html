@@ -265,6 +265,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .gen .lg img{max-height:34px}
 .wxh{grid-column:1/-1;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--water);border-top:1px solid var(--line);padding-top:10px;margin-bottom:-4px}
 .nexp{display:flex;gap:6px;flex-wrap:wrap}
+.nsoukr{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:13px;font-weight:600;margin-bottom:10px}
+.pozul{border:2px solid var(--accent)}.pozul b{font-size:16px}
 .nexp button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px;color:var(--accent)}
 @media print{
   body.tisk>*:not(#printarea){display:none!important}
@@ -565,7 +567,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.46 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.47 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -1003,6 +1005,7 @@ function vDomu(){
    <div class="porg"><a class="pv" href="https://www.vhos.cz" target="_blank" rel="noopener" aria-label="Pořádá VHOS, a.s. – www.vhos.cz"><img src="${IMG}loga/vhos.webp" alt="VHOS, a.s."></a><div class="ps"><small>ve spolupráci s</small><span><a href="https://www.czwa.cz" target="_blank" rel="noopener"><img src="${IMG}loga/czwa.webp" alt="CzWA" class="pcz"></a><img src="${IMG}loga/mov.webp" alt="odborná skupina ČR MOV" title="odborná skupina ČR MOV" class="pmv"></span></div></div>
   </div>
   ${instalBanner()}
+  ${poznUlozit()}
   ${S.karta?vKarta(true):""}
   ${ticker()}
   <div class="bento">
@@ -1051,9 +1054,10 @@ function vProgram(){
  rows=rows.filter((x,i)=>!x.blok||rows.slice(i+1).some(y=>!y.blok)&&!(rows[i+1]&&rows[i+1].blok));
  const odb=PART[2][3];
  return `<section class="sec">
+  ${poznUlozit()}
   <div class="note" style="margin-bottom:-2px">Program je zatím ukázka podle 30. ročníku (2026). Program 31. ročníku doplníme.</div>
   <div class="days" role="group" aria-label="Den">${DAYS.map(d=>`<button data-day="${d.k}" aria-pressed="${S.day===d.k}">${d.n}<small>${d.d}</small>${badge(novychDen(d.k))}</button>`).join("")}</div>
-  ${S.mine&&Object.keys(S.notes).length?`<div class="nexp"><button id="npr">🖨 Vytisknout / PDF</button><button id="ntxt">⬇ Stáhnout text</button><button id="nmail">✉ Poslat e-mailem</button></div>`:""}
+  ${S.mine&&Object.keys(S.notes).length?nexpBtns():""}
   <div class="tools"><input id="q" placeholder="Hledat přednášku, jméno, firmu…" value="${esc(S.q)}" aria-label="Hledat v programu"><button class="tog" id="mine" aria-pressed="${S.mine}">✎ Poznámky</button></div>
   ${rows.some(x=>!x.blok)?(()=>{let open=null;const out=rows.map(x=>{
    let pre="";if(open&&(x.blok||x.bid!==open)){pre="</div>";open=null}   // konec rámečku bloku
@@ -1303,15 +1307,30 @@ function sheetChair(bid){
 function sheetNote(id){
  const x=ALLT.find(y=>y.id===id);
  openSheet(`<h2>Moje poznámka</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.t)} · ${esc(x.h)}</div>
-  <div class="bd"><form class="qform" id="nf"><textarea id="nt" rows="6" placeholder="Co vás zaujalo, na co se zeptat kolegů, odkaz na sborník…" aria-label="Poznámka">${esc(S.notes[id]||"")}</textarea>
+  <div class="bd"><div class="nsoukr">🔒 Poznámku vidíte jen vy, je uložená v tomto zařízení.</div><form class="qform" id="nf"><textarea id="nt" rows="6" placeholder="Co vás zaujalo, na co se zeptat kolegů, odkaz na sborník…" aria-label="Poznámka">${esc(S.notes[id]||"")}</textarea>
    <div style="display:flex;gap:8px"><button class="send" style="flex:1">Uložit poznámku</button>${S.notes[id]?'<button type="button" class="btn" id="ndel">Smazat</button>':""}</div></form>
-  <div class="note">Poznámku vidíte jen vy. Zůstává v tomto zařízení.</div></div>`);
+  <div class="note">Na server se neposílá a nikdo jiný ji neuvidí. Všechny poznámky si můžete uložit nebo poslat tlačítkem ✎ Poznámky v Programu.</div></div>`);
  $("nt").focus();
- $("nf").addEventListener("submit",e=>{e.preventDefault();const v=$("nt").value.trim();if(v)S.notes[id]=v;else delete S.notes[id];store.set("notes",S.notes);closeSheet();render();toast(v?"Poznámka uložena":"Poznámka smazána")});
+ $("nf").addEventListener("submit",e=>{e.preventDefault();const v=$("nt").value.trim();if(v){S.notes[id]=v;drzData()}else delete S.notes[id];store.set("notes",S.notes);closeSheet();render();toast(v?"Poznámka uložena":"Poznámka smazána")});
  const d=$("ndel");if(d)d.addEventListener("click",()=>{delete S.notes[id];store.set("notes",S.notes);closeSheet();render();toast("Poznámka smazána")});
 }
 
 /* ===== Export poznámek ===== */
+function drzData(){   // požádá prohlížeč, ať poznámky nemaže (uživatel nic nevidí)
+ try{const st=navigator.storage;if(st&&st.persist)st.persisted().then(p=>p||st.persist()).catch(()=>{})}catch(e){}}
+const pocetPoznamek=()=>Object.values(S.notes).filter(Boolean).length;
+const umiSdilet=()=>!!(navigator.share&&matchMedia("(pointer:coarse)").matches);
+function nexpBtns(){return `<div class="nexp">${umiSdilet()?'<button data-nx="share">📤 Sdílet</button>':""}<button data-nx="txt">⬇ Stáhnout text</button><button data-nx="mail">✉ Poslat e-mailem</button><button data-nx="pr">🖨 Vytisknout / PDF</button></div>`}
+function sdilejPoznamky(){
+ navigator.share({title:"Moje poznámky – konference ČOV 2027",text:poznamkyText()}).catch(e=>{if(e&&e.name!=="AbortError")stahniPoznamky()})}
+function poznUlozit(){   // připomínka na konci konference: poznámky jsou jen v zařízení
+ const n=pocetPoznamek();if(!n||store.get("poznUlozeno",0)>=n)return "";
+ const c=clock(), konec=new Date()>new Date("2027-04-28T11:40:00+02:00"), naKonci=c.day==="st"&&c.m>=11*60+40;
+ if(!konec&&!naKonci)return "";
+ return `<div class="card pozul"><div class="label" style="margin-bottom:6px">📝 Konference končí</div>
+  <b>Máte ${n} ${n===1?"poznámku":n<5?"poznámky":"poznámek"} – uložte si ${n===1?"ji":"je"}</b>
+  <p class="muted" style="margin:4px 0 10px;font-size:13px">Poznámky jsou jen v tomto zařízení. Uložte si je, ať o ně nepřijdete – i s názvy přednášek.</p>
+  ${nexpBtns()}<button class="linkb" data-nxok style="margin-top:8px">Hotovo, mám uloženo</button></div>`}
 function mojePoznamky(){return ALLT.filter(x=>x.id&&S.notes[x.id]).map(x=>{const d=Object.keys(PROG).find(k=>PROG[k].includes(x));return {x,den:DAYS.find(z=>z.k===d)}})}
 function poznamkyText(){
  const l=mojePoznamky();
@@ -1416,7 +1435,7 @@ $("view").addEventListener("click",e=>{
  if(e.target.closest("[data-kal]"))return sheetKal();
  {const nv=e.target.closest("[data-nav]");if(nv)return sheetNav(nv.dataset.nav)}
  if(e.target.closest("[data-doprava]"))return sheetDoprava();
- const t=e.target.closest("[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,#npr,#ntxt,#nmail");if(!t)return;
+ const t=e.target.closest("[data-nxok],[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,[data-nx]");if(!t)return;
  if(t.dataset.alarm)return sheetAlarm(t.dataset.alarm);
  if(t.dataset.ph){const [a,i]=t.dataset.ph.split(":");return openLb(a,+i)}
  if(t.dataset.q)return sheetQ(t.dataset.q);
@@ -1426,9 +1445,8 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.note)return sheetNote(t.dataset.note);
  if(t.dataset.p)return sheetP(t.dataset.p);
  if(t.id==="mine"){S.mine=!S.mine;return render()}
- if(t.id==="npr")return tiskPoznamek();
- if(t.id==="ntxt")return stahniPoznamky();
- if(t.id==="nmail")return mailPoznamky();
+ if(t.dataset.nx){const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[t.dataset.nx];if(f)f();return}
+ if(t.dataset.nxok!==undefined){store.set("poznUlozeno",pocetPoznamek());return render()}
 });
 $("view").addEventListener("change",e=>{if(e.target.id==="simday"){S.sim.day=e.target.value;$("nowbox").outerHTML=vNow()}});
 $("view").addEventListener("click",e=>{const g=e.target.closest(".now[data-goday]");if(g){S.day=g.dataset.goday;S.q="";S.mine=false;go("program");const l=document.querySelector(".talk.live");if(l)l.scrollIntoView({block:"center"})}});
