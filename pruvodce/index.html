@@ -201,6 +201,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .cq.read button{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .chk{display:flex;gap:8px;align-items:center;font-size:14px}
 .chk input{width:18px;height:18px}
+.qpodf{display:grid;gap:6px}.qpodf[hidden]{display:none}
 .signas{font-size:13px;color:var(--muted)} .signas b{color:var(--ink)}
 .linkb{border:0;background:none;padding:0;color:var(--water);font-weight:700;text-decoration:underline;font-size:13px}
 .now{border:0;width:100%;text-align:left;background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:8px;border-left:5px solid var(--water)}
@@ -598,7 +599,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.56 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.57 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -1106,7 +1107,7 @@ function vDomu(){
    <button data-go="program">${qi(9)}<span class="qt"><b>Program</b><small>${Object.values(PROG).flat().filter(x=>x.blok).length} bloků · dotazy · upozornění</small></span></button>
    <button data-go="program" data-mine="1">${qi(5)}<span class="qt"><b>Moje poznámky</b><small>${nn?nn+" "+(nn===1?"poznámka":nn<5?"poznámky":"poznámek"):"k přednáškám"}${nb?" · "+nb+" 🔔":""}</small></span></button>
    <button data-go="doprava">${qi(1)}<span class="qt"><b>Svoz a cesta</b><small>svoz na večer · navigace</small></span></button>
-   <button data-go="info">${qi(15)}<span class="qt"><b>${podpis()?esc(S.me.jm):"Informace"}</b><small>${aktNove()?aktNove()+" "+(aktNove()===1?"nová zpráva":aktNove()<5?"nové zprávy":"nových zpráv"):podpis()?"aktuality · profil":"aktuality · kontakty"}</small></span>${badge(aktNove())}</button>
+   <button data-go="info">${qi(15)}<span class="qt"><b>Informace</b><small>${aktNove()?aktNove()+" "+(aktNove()===1?"nová zpráva":aktNove()<5?"nové zprávy":"nových zpráv"):"aktuality · kontakty"}</small></span>${badge(aktNove())}</button>
   </div>
   <div class="blockh"><h2>Generální partneři</h2><button class="lnk" data-go="partneri">Všichni partneři →</button></div>
   <div class="gen">${PART[0][3].map(nm=>`<button class="genp" data-p="${esc(nm)}" aria-label="${esc(nm)}">${lm(nm)}</button>`).join("")}</div>
@@ -1236,11 +1237,6 @@ function vInfo(){
   </div>
   ${instalBanner(true)}
   ${S.karta?vKarta(false):vKartaVstup()}
-  <div class="card"><div class="label" style="margin-bottom:6px">Můj profil · nepovinné</div>
-   <p class="muted" style="margin:0 0 10px;font-size:13px">Když vyplníte jméno a firmu, vaše dotazy k přednáškám se podepíšou samy. Údaje zůstávají jen v tomto telefonu.</p>
-   <form class="qform" id="pf"><input id="pjm" placeholder="Jméno a příjmení" value="${esc(S.me.jm)}" autocomplete="name" aria-label="Jméno a příjmení">
-    <input id="pfirma" placeholder="Firma / instituce" value="${esc(S.me.firma)}" autocomplete="organization" aria-label="Firma">
-    <div style="display:flex;gap:8px"><button class="send" style="flex:1">Uložit</button>${podpis()?'<button type="button" class="btn" id="pdel">Smazat</button>':""}</div></form></div>
   <div class="card"><div class="label" style="margin-bottom:8px">O konferenci</div>
    <dl class="kv"><dt>Termín</dt><dd>${TERMIN}</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborný garant</dt><dd>Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA (kontakt níže)</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
@@ -1280,12 +1276,14 @@ function sheetQ(id){
   <form class="qform" id="qf"><textarea id="qt" rows="3" placeholder="Napište svůj dotaz na přednášejícího…" aria-label="Dotaz"></textarea>
    <div class="mic"><button type="button" class="micb" id="qmic">🎤 Složitý dotaz? Namluvte ho</button><span id="qrec" class="muted"></span></div>
    <div id="qprev" hidden><audio id="qaud" controls></audio><button type="button" class="linkb" id="qadel">Smazat nahrávku</button><small class="muted" style="flex-basis:100%">Přepis je v poli nahoře – zkontrolujte ho, ostatní si dotaz přečtou. Nahrávku pustí předsedající.</small></div>
-   ${podpis()?`<div class="signas">Odešle se jako <b>${esc(podpis())}</b></div><label class="chk"><input type="checkbox" id="qanon"> Odeslat anonymně</label>`
-     :`<div class="signas">Dotaz se odešle anonymně. <button type="button" class="linkb" data-profil="1">Vyplnit profil</button>, ať se podepíše sám.</div>`}
+   <label class="chk"><input type="checkbox" id="qpod" ${S.me.pod?"checked":""}> Podepsat dotaz <span class="muted">(nepovinné)</span></label>
+   <div class="qpodf" id="qpodf" ${S.me.pod?"":"hidden"}><input id="qjm" placeholder="Jméno a příjmení" value="${esc(S.me.jm||"")}" autocomplete="name" aria-label="Jméno a příjmení"><input id="qfi" placeholder="Firma (nepovinné)" value="${esc(S.me.firma||"")}" autocomplete="organization" aria-label="Firma"></div>
+   <div class="signas" id="qsig">${S.me.pod?"Podpis uvidí všichni u dotazu.":"Bez podpisu se dotaz odešle anonymně."}</div>
    <button class="send">Odeslat dotaz</button></form>
   <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první. Namluvený dotaz se přepíše na text, aby si ho ostatní mohli přečíst; předsedající ho může i pustit do sálu (max. 1 minuta).</div></div>`);
  draw();
  let AU=null;   // namluvený dotaz (data: URL)
+ $("qpod").addEventListener("change",e=>{const on=e.target.checked;$("qpodf").hidden=!on;$("qsig").textContent=on?"Podpis uvidí všichni u dotazu.":"Bez podpisu se dotaz odešle anonymně.";if(on&&!$("qjm").value)$("qjm").focus()});
  $("qmic").addEventListener("click",()=>nahravej(u=>{if(!$("qaud"))return;AU=u;$("qaud").src=u;$("qprev").hidden=false}));
  $("qadel").addEventListener("click",()=>{AU=null;$("qprev").hidden=true;$("qaud").removeAttribute("src")});
  $("qlist").addEventListener("click",e=>{
@@ -1294,7 +1292,9 @@ function sheetQ(id){
   if(LIVE.on){qSend("v/"+id+"/"+k+"/"+DEV,bylo?null:true).then(o=>{if(!bylo)toast(o.fronta?"👍 Palec uložen – odešle se, až bude signál":"👍 Palec přidán")}).catch(()=>toast("Nepodařilo se – zkuste to znovu"));return}
   const kk=id+":"+k;if(bylo)delete S.voted[kk];else{S.voted[kk]=1;toast("👍 Palec přidán")}store.set("voted",S.voted);draw()});
  $("qf").addEventListener("submit",e=>{e.preventDefault();if(REC.mr)return toast("Nejdřív ukončete nahrávání");const t=$("qt").value.trim();if(!t&&!AU)return;
-  const anon=!podpis()||($("qanon")&&$("qanon").checked);
+  const jm=$("qjm").value.trim(),fi=$("qfi").value.trim(),pod=$("qpod").checked&&!!jm;
+  if($("qpod").checked&&!jm){$("qjm").focus();return toast("Napište jméno, nebo zrušte podpis")}
+  S.me={jm,firma:fi,pod};store.set("me",S.me);const anon=!pod;
   const q={t:(t||"🎤 Namluvený dotaz (bez přepisu)").slice(0,1000),a:(anon?"anonymně":podpis()).slice(0,120),c:now(),ts:Date.now(),dev:DEV,h:String(x.h).slice(0,300)};
   const hotovo=()=>{$("qt").value="";AU=null;$("qprev").hidden=true;draw();render();toast("Dotaz odeslán předsedajícímu")};
   if(LIVE.on){
