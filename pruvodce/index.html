@@ -637,7 +637,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.70 · 19. 10. 2026";
+const VERZE="0.71 · 19. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1516,7 +1516,7 @@ const medPopis=l=>{const f=l.filter(m=>m.typ==="foto").length,h=l.length-f;retur
 function sheetExport(){const n=pocetVeci(),p=pocetPoznamek();
  openSheet(`<h2>Uložit poznámky</h2><div class="muted" style="font-size:13px;margin-top:2px">${n} ${n===1?"poznámka":n<5?"poznámky":"poznámek"} k ${p} ${p===1?"přednášce":"přednáškám"}</div>
   <div class="bd"><div class="nsoukr">🔒 Poznámky jsou jen v tomto zařízení. Uložte si je jinam, ať o ně nepřijdete.</div>${nexpBtns()}
-  <div class="note">U každé poznámky bude název přednášky, přednášející, den a čas. E-mail pošle text, PDF obsahuje i fotky, Sdílet (v mobilu) pošle i fotky a nahrávky.</div></div>`)}
+  <div class="note">U každé poznámky bude název přednášky, přednášející, den a čas. V mobilu „Poslat / uložit“ i „E-mailem“ přiloží fotky a nahrávky. Na počítači „Uložit do počítače“ stáhne vše v jednom ZIPu (ten pak můžete přiložit k e-mailu); fotky jsou i v PDF.</div></div>`)}
 function medPas(id){const l=medTid(id),tx=txt(id);if(!l.length&&!tx.length)return "";
  return `<div class="mmed">${tx.map((n,i)=>`<button class="mtx" data-tx="${id}|${n.id}" title="${esc(n.t.slice(0,80))}">✎ Poznámka ${i+1}</button>`).join("")}${l.map(m=>m.typ==="foto"?`<button class="mth" data-med="${m.id}" aria-label="Moje fotka"><img src="${medUrl(m)}" alt=""></button>`:`<button class="mhl" data-med="${m.id}" aria-label="Moje nahrávka">🎤 ${mss(m.sek||0)}</button>`).join("")}<button class="mexp" data-exp>📤 Uložit / poslat</button></div>`}
 function zmensi(file){return new Promise((ok,ko)=>{const img=new Image(),u=URL.createObjectURL(file);
@@ -1636,7 +1636,7 @@ function nexpBtns(){   // mobil/tablet: hlavně sdílení (e-mail, Soubory, Pozn
   :`<div class="nexp"><button class="hl" data-nx="txt">⬇ Uložit do počítače</button><button data-nx="mail">✉ Poslat e-mailem</button><button data-nx="pr">🖨 Vytisknout / PDF</button></div>`}
 function sdilejPoznamky(){
  const d={title:"Moje poznámky – konference ČOV 2027",text:poznamkyText()};
- const fs=[];ALLT.forEach(x=>{if(x.id)medTid(x.id).forEach((m,i)=>{try{fs.push(new File([m.blob],"konference-2027-"+x.t.replace(":","")+"-"+(i+1)+(m.typ==="foto"?".jpg":m.blob.type.includes("mp4")?".m4a":".webm"),{type:m.blob.type||(m.typ==="foto"?"image/jpeg":"audio/webm")}))}catch(e){}})});
+ const fs=[];medSoubory().forEach(({m,jm})=>{try{fs.push(new File([m.blob],jm,{type:m.blob.type||(m.typ==="foto"?"image/jpeg":"audio/webm")}))}catch(e){}});
  if(fs.length&&navigator.canShare&&navigator.canShare({files:fs}))d.files=fs;
  navigator.share(d).catch(e=>{if(e&&e.name!=="AbortError")stahniPoznamky()})}
 const pocetVeci=()=>ALLT.reduce((a,x)=>x.id?a+txt(x.id).length+medTid(x.id).length:a,0);   // všechny poznámky, fotky a nahrávky
@@ -1649,8 +1649,11 @@ function poznUlozit(vzdy){   // připomínka uložit: na Domů hned při nové p
   <p class="muted" style="margin:4px 0 10px;font-size:13px">Pošlete si je e-mailem, sdílejte nebo vytiskněte do PDF, ať o ně nepřijdete – i s názvy přednášek.</p>
   ${nexpBtns()}<button class="linkb" data-nxok style="margin-top:8px">Hotovo, mám uloženo</button></div>`}
 function mojePoznamky(){return ALLT.filter(x=>x.id&&maPozn(x.id)).map(x=>{const d=Object.keys(PROG).find(k=>PROG[k].includes(x));return {x,den:DAYS.find(z=>z.k===d)}})}
-function medTxt(id){const l=medTid(id);if(!l.length)return "";
- return "\n"+l.map(m=>m.typ==="foto"?"📷 fotka (přiložená)":"🎤 nahrávka "+mss(m.sek||0)+(m.prepis?" – přepis: "+m.prepis:"")).join("\n")}
+function medJmeno(x,m,i){const d=Object.keys(PROG).find(k=>PROG[k].includes(x))||"";   // stejné jméno v textu, ZIPu i sdílení
+ return "konference-2027-"+d+"-"+String(x.t).replace(":","")+"-"+(i+1)+(m.typ==="foto"?".jpg":(m.blob.type||"").includes("mp4")?".m4a":".webm")}
+function medSoubory(){const l=[];ALLT.forEach(x=>{if(x.id)medTid(x.id).forEach((m,i)=>l.push({x,m,jm:medJmeno(x,m,i)}))});return l}
+function medTxt(id){const l=medTid(id),x=ALLT.find(y=>y.id===id);if(!l.length)return "";
+ return "\n"+l.map((m,i)=>(m.typ==="foto"?"📷 fotka":"🎤 nahrávka "+mss(m.sek||0)+(m.prepis?" – přepis: "+m.prepis:""))+" – soubor "+medJmeno(x,m,i)).join("\n")}
 function poznamkyText(){
  const l=mojePoznamky();
  return "Moje poznámky – Nové metody a postupy při provozování ČOV, 31. ročník ("+TERMIN+")\n"+(podpis()?podpis()+"\n":"")+"\n"+
@@ -1666,12 +1669,26 @@ function tiskPoznamek(){
  try{window.print()}catch(e){}
  setTimeout(()=>{if(document.body.classList.contains("tisk")){done();toast("Tisk tady není dostupný – na webu aplikace funguje")}},1500);
 }
+function stahni(b,jm){const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=jm;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+async function zip(soubory){   // jednoduchý ZIP bez komprese (fotky i zvuk už komprimované jsou)
+ const enc=new TextEncoder(),cast=[],cent=[];let off=0;
+ for(const f of soubory){const d=new Uint8Array(await f.blob.arrayBuffer()),n=enc.encode(f.jm),c=crc32(d),h=new DataView(new ArrayBuffer(30));
+  h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint32(14,c,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,n.length,true);
+  cast.push(h.buffer,n,d);const z=new DataView(new ArrayBuffer(46));z.setUint32(0,0x02014b50,true);z.setUint16(4,20,true);z.setUint16(6,20,true);z.setUint16(8,0x0800,true);
+  z.setUint32(16,c,true);z.setUint32(20,d.length,true);z.setUint32(24,d.length,true);z.setUint16(28,n.length,true);z.setUint32(42,off,true);cent.push(z.buffer,n);off+=30+n.length+d.length}
+ const cs=cent.reduce((a,b)=>a+(b.byteLength||b.length),0),e=new DataView(new ArrayBuffer(22));
+ e.setUint32(0,0x06054b50,true);e.setUint16(8,soubory.length,true);e.setUint16(10,soubory.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+ return new Blob([...cast,...cent,e.buffer],{type:"application/zip"})}
 function stahniPoznamky(){
- const b=new Blob(["\ufeff"+poznamkyText()],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");
- a.href=URL.createObjectURL(b);a.download="moje-poznamky-konference-2027.txt";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+ const txt=new Blob(["\ufeff"+poznamkyText()],{type:"text/plain;charset=utf-8"}),med=medSoubory();
+ if(!med.length)return stahni(txt,"moje-poznamky-konference-2027.txt");
+ zip([{jm:"moje-poznamky-konference-2027.txt",blob:txt},...med.map(o=>({jm:o.jm,blob:o.m.blob}))]).then(b=>{stahni(b,"moje-poznamky-konference-2027.zip");toast("⬇ Staženo: poznámky, fotky a nahrávky v jednom ZIPu")}).catch(()=>stahni(txt,"moje-poznamky-konference-2027.txt"))
 }
 function mailPoznamky(){
- const t=poznamkyText();location.href="mailto:?subject="+encodeURIComponent("Moje poznámky – konference ČOV 2027")+"&body="+encodeURIComponent(t.length>1800?t.slice(0,1800)+"\n…(zkráceno, celé poznámky si stáhněte jako text)":t);
+ const med=medSoubory().length;if(med&&umiSdilet())return sdilejPoznamky();   // mobil: vyberete poštu a fotky/nahrávky se přiloží
+ const t=(med?"(Fotky a nahrávky e-mail z prohlížeče neumí přiložit – jsou v ZIPu (tlačítko „Uložit do počítače“) a fotky i v PDF.)\n\n":"")+poznamkyText();location.href="mailto:?subject="+encodeURIComponent("Moje poznámky – konference ČOV 2027")+"&body="+encodeURIComponent(t.length>1800?t.slice(0,1800)+"\n…(zkráceno, celé poznámky si stáhněte jako text)":t);
 }
 
 /* ===== Upozornění na přednášku ===== */

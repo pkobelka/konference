@@ -895,3 +895,4 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   Pryč: sekce Posun programu v aplikaci pořadatele, čtení `konference2027_verejne/posun` v průvodci, štítky posunu,
   `posunPouzij` v program.js; `ulozVerejne` zase `set`. **Aplikace pro předsedající se zatím nedělá** (bez posunu nemá
   hlavní smysl; případně později jen dotazy). `pruvodce/program.js` zůstává jako jediné místo s programem.
+- **0.71 – fotky a nahrávky v exportu:** e-mail z prohlížeče (mailto) přílohy neumí → text už nepíše „(přiložená)“, ale „📷 fotka – soubor konference-2027-ut-1015-1.jpg“ a nahoře upozornění, kde soubory jsou. **Počítač:** „⬇ Uložit do počítače“ stáhne **ZIP** (text + fotky + nahrávky, vlastní `zip()` bez knihovny) – ten jde přiložit k e-mailu; fotky i v PDF. **Mobil:** „✉ E-mailem“ jde přes sdílení telefonu (vybrat poštu → přílohy se přiloží). Jména souborů stejná v textu, ZIPu i sdílení (`medJmeno`).
