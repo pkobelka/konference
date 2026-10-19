@@ -278,6 +278,11 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .mmed{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .mth{width:64px;height:64px;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface-2)}.mth img{width:100%;height:100%;object-fit:cover;display:block}
 .mhl{height:34px;align-self:center;border:1px solid var(--line);background:var(--accent-soft);color:var(--accent);border-radius:99px;padding:0 12px;font-weight:700;font-size:13px}
+.pfuk{border:2px dashed color-mix(in srgb,var(--accent) 45%,transparent);border-radius:14px;padding:12px}
+.pfu{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line)}.pfu:first-of-type{border-top:0}.pfu>span{font-size:20px;line-height:1.2}.pfu b{display:block;font-size:14px}.pfu small{color:var(--muted);font-size:12.5px}
+.pfvid{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}.pfvid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pfnab{background:#fff4c7;color:#3b2a00;border-radius:12px;padding:10px 12px}.pfnab b{display:block;margin-bottom:2px}
+.pfst{font-weight:700;color:var(--accent)}.pfkont b{display:block;margin-bottom:4px}
 .offl{background:#3a3340;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;margin:0 0 10px;line-height:1.35}
 .nexp{display:flex;gap:6px;flex-wrap:wrap}
 .nsoukr{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:13px;font-weight:600;margin-bottom:10px}
@@ -333,6 +338,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .kform{display:flex;gap:8px;margin-top:8px}.kform input{flex:1;min-width:0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);font:inherit}
 .cbtn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:10px;padding:9px 13px;font-weight:700;font-size:14px;background:var(--accent);color:var(--accent-ink)}
 .cbtn+.cbtn,.cbtn.alt{background:var(--accent-soft);color:var(--accent)}
+.cbtn.wa{background:#e3f6ea;color:#127a3a}
 .r2028{border:2px dashed color-mix(in srgb,var(--accent) 45%,transparent)}.r2028 b{font-size:16px}
 .hotely{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .hotel{display:flex;flex-direction:column;gap:3px;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);min-width:0}
@@ -608,7 +614,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) ===== */
-const VERZE="0.61 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
+const VERZE="0.62 · 19. 10. 2026";   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
@@ -1188,12 +1194,36 @@ function vPartneri(){
  return `<section class="sec">${PART.map(([k,t,g,l])=>`<div class="cat cat-${k}"><h2><span class="tcat tc-${k}" style="margin:0">${t.replace(" partneři","")}<small>partneři</small></span></h2><div class="logos ${g}">${l.map(nm=>`<button class="logo" data-p="${esc(nm)}" aria-label="${esc(nm)}" style="--i:${i++}">${lm(nm)}${LOGA[nm]?"":`<span>${esc(nm)}</span>`}</button>`).join("")}</div></div>`).join("")}
   <div class="note">Seznam podle pozvánky 2026. Místo iniciál budou skutečná loga, profil, video a nabídka, které dodají partneři.</div></section>`;
 }
+/* Prezentace partnera – podklady dodá firma, pořadatel je sem doplní:
+   PROF["Název"]={txt:"2–3 věty", web:"https://…", video:"https://youtu.be/…", nab:"nabídka pro účastníky", pdf:"https://….pdf", kont:{jm,tel,mail}, stanek:"5"} */
+const PROF={};
+function ytId(u){const m=/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/.exec(u||"");return m?m[1]:""}
+function profil(P){const yt=ytId(P.video);
+ return `${P.stanek?`<div class="pfst">📍 Najdete nás u stánku č. <b>${esc(P.stanek)}</b></div>`:""}
+  ${P.txt?`<p style="margin:0">${esc(P.txt)}</p>`:""}
+  ${yt?`<div class="pfvid"><iframe src="https://www.youtube-nocookie.com/embed/${yt}" title="Video partnera" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>`:P.video?`<a class="cbtn" href="${esc(P.video)}" target="_blank" rel="noopener">▶ Pustit video</a>`:""}
+  ${P.nab?`<div class="pfnab"><b>🎁 Pro účastníky konference</b>${esc(P.nab)}</div>`:""}
+  <div class="cact">${P.web?`<a class="cbtn" href="${esc(P.web)}" target="_blank" rel="noopener">🌐 Web firmy</a>`:""}${P.pdf?`<a class="cbtn" href="${esc(P.pdf)}" target="_blank" rel="noopener">📄 Leták / katalog</a>`:""}</div>
+  ${P.kont?`<div class="pfkont"><b>👤 Na konferenci: ${esc(P.kont.jm||"")}</b><div class="cact">${P.kont.tel?`<a class="cbtn" href="tel:+420${P.kont.tel.replace(/\D/g,"")}">📞 ${esc(P.kont.tel)}</a>`:""}${P.kont.tel&&/^[67]/.test(P.kont.tel.replace(/\D/g,""))?`<a class="cbtn wa" href="https://wa.me/420${P.kont.tel.replace(/\D/g,"")}" target="_blank" rel="noopener">🟢 WhatsApp</a>`:""}${P.kont.mail?`<a class="cbtn" href="mailto:${esc(P.kont.mail)}">✉ E-mail</a>`:""}</div></div>`:""}`}
+function profilUkazka(nm){   // dokud firma nic nedodá: co tu může mít + jak poslat podklady
+ const sub=encodeURIComponent("Průvodce Seč 2027 – prezentace firmy "+nm),
+  body=encodeURIComponent("Dobrý den,\n\ndo průvodce konferencí posíláme podklady pro firmu "+nm+":\n\n- web: \n- 2–3 věty o firmě: \n- video (odkaz YouTube/Vimeo): \n- nabídka pro účastníky: \n- leták / katalog (PDF): \n- kontakt na konferenci (jméno, telefon): \n- číslo stánku: \n\nS pozdravem\n");
+ const it=(i,h,t)=>`<div class="pfu"><span>${i}</span><div><b>${h}</b><small>${t}</small></div></div>`;
+ return `<div class="pfuk"><div class="label" style="margin-bottom:6px">Ukázka · co tu může mít vaše firma</div>
+  ${it("📝","Pár vět o firmě","čím se zabýváte, co přivezete na konferenci")}
+  ${it("▶️","Video","firemní spot nebo ukázka produktu – přehraje se přímo tady")}
+  ${it("🎁","Nabídka pro účastníky","sleva, dárek u stánku, pozvánka na předvedení")}
+  ${it("🌐","Web a leták","odkaz na web, katalog nebo leták v PDF")}
+  ${it("👤","Kontakt na konferenci","kdo z vaší firmy je na místě a jeho telefon")}
+  ${it("📍","Číslo stánku","aby vás účastníci snadno našli")}
+  <p class="muted" style="margin:8px 0 10px;font-size:13px">Vše je nepovinné. Podklady pošlete organizačnímu garantovi, doplníme je a všem účastníkům se zobrazí hned.</p>
+  <a class="cbtn" href="mailto:petr.kobelka@vhos.cz?subject=${sub}&body=${body}">✉ Poslat podklady</a></div>`}
 function sheetP(nm){
  const p=ALLP.find(x=>x.nm===nm), key=KEY[nm];
  const talks=key?Object.entries(PROG).flatMap(([d,l])=>l.filter(x=>x.w&&x.w.includes(key)).map(x=>({...x,d}))):[];
  openSheet(`<div style="display:flex;gap:12px;align-items:center;margin-bottom:6px">${LOGA[nm]?`<span class="lg big"><img src="${IMG}loga/${LOGA[nm]}" alt="${esc(nm)}"></span>`:`<div class="lm" style="width:52px;height:52px;font-size:22px;background-image:url(${flek(hashN(nm))})">${esc(ini(nm))}</div>`}<div><h2 style="padding:0">${esc(nm)}</h2><div class="muted" style="font-size:13px">${KATN[p.k]}</div></div></div>
   <div class="bd">
-   <div class="note">Tady bude prezentace partnera: logo, krátký text, videospot, nabídka, kontakt a číslo stánku. Obsah dodá firma, pořadatel ho schválí.</div>
+   ${PROF[nm]?profil(PROF[nm]):profilUkazka(nm)}
    ${talks.length?`<div><div class="label" style="margin-bottom:6px">Přednášky partnera</div>${talks.map(x=>`<button class="mini" data-goday="${x.d}" style="margin-bottom:6px"><b>${esc(x.h)}</b><small>${DAYS.find(d=>d.k===x.d).n} ${esc(x.t)}</small></button>`).join("")}</div>`:""}
   </div>`);
 }
@@ -1276,7 +1306,7 @@ function vInfo(){
   ${KONTAKTY.map(k=>`<div class="card kont${k.hl?" garant":""}"><div class="label" style="margin-bottom:6px">${esc(k.role)}</div>
    <b style="font-size:16px">${esc(k.jm)}</b>${k.org?`<div class="muted" style="font-size:13px">${esc(k.org)}</div>`:""}${k.pozn?`<div style="font-size:13px;margin-top:4px">${esc(k.pozn)}</div>`:""}
    ${k.tel||k.mail?`<dl class="kv" style="margin-top:8px">${k.tel?`<dt>Telefon</dt><dd>${esc(k.tel)}</dd>`:""}${k.mail?`<dt>E-mail</dt><dd>${esc(k.mail)}</dd>`:""}</dl>
-   <div class="cact">${k.tel?`<a class="cbtn" href="tel:+420${k.tel.replace(/\D/g,"")}">📞 Zavolat</a>`:""}${k.sms?`<a class="cbtn" href="sms:+420${k.tel.replace(/\D/g,"")}">💬 SMS</a>`:""}${k.mail?`<a class="cbtn" href="mailto:${k.mail}?subject=${encodeURIComponent("Konference ČOV 2027")}">✉ E-mail</a>`:""}</div>`:""}</div>`).join("")}
+   <div class="cact">${k.tel?`<a class="cbtn" href="tel:+420${k.tel.replace(/\D/g,"")}">📞 Zavolat</a>`:""}${k.sms?`<a class="cbtn" href="sms:+420${k.tel.replace(/\D/g,"")}">💬 SMS</a><a class="cbtn wa" href="https://wa.me/420${k.tel.replace(/\D/g,"")}" target="_blank" rel="noopener">🟢 WhatsApp</a>`:""}${k.mail?`<a class="cbtn" href="mailto:${k.mail}?subject=${encodeURIComponent("Konference ČOV 2027")}">✉ E-mail</a>`:""}</div>`:""}</div>`).join("")}
   <div class="card qrc"><div class="label" style="margin-bottom:8px">Průvodce do telefonu · pro kolegy</div>
    <div class="qrw"><img src="${IMG}qr-pruvodce.svg" alt="QR kód průvodce"><div><p style="margin:0 0 8px;font-size:14px">Kolega si průvodce otevře naskenováním QR kódu fotoaparátem. Přihlášení není potřeba.</p>
    <div class="cact" style="margin:0">${PL.nainst?"":`<button class="cbtn" data-instal="1">📲 Přidat na plochu</button>`}<button class="cbtn" id="sdil">↗ Sdílet odkaz</button></div></div></div></div>

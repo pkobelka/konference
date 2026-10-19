@@ -805,5 +805,10 @@ Stav 19. 10. 2026 večer, průvodce 0.60. Petr: „až to budeme mít hotový, m
 11. **Ověřit telefony recepcí** (Kraskov = obecné číslo hotelu) a název „EA Hotel Kraskov“ vs. „Hotel Kraskov“.
 12. **Info → Pořadatelé** – text z pozvánky 2026 („VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV“) ověřit.
 13. **Aplikace pořadatele** – počty lůžek, hromadné e-maily, před ostrým provozem smazat testovací data 2026.
-14. **Prezentace partnerů v detailu loga** – Petr osloví partnery; každý může dodat (nepovinně): web, 2–3 věty o firmě, video (YouTube/Vimeo, přehrát v průvodci), nabídku/akci pro účastníky, PDF leták, kontaktní osobu na konferenci, číslo stánku. Místo už je připravené (`sheetP` – text „Tady bude prezentace partnera…“).
+14. ~~Prezentace partnerů – šablona hotová v 0.62~~, čeká na podklady od partnerů: – Petr osloví partnery; každý může dodat (nepovinně): web, 2–3 věty o firmě, video (YouTube/Vimeo, přehrát v průvodci), nabídku/akci pro účastníky, PDF leták, kontaktní osobu na konferenci, číslo stánku. Místo už je připravené (`sheetP` – text „Tady bude prezentace partnera…“).
 - **0.61:** „🔔 Upozornit“ se neukazuje u přednášky, která právě běží, ani u těch, které už skončily (`probehlo()`).
+- **0.62:** **prezentace partnera** v detailu loga: data `PROF["Název"]={txt,web,video,nab,pdf,kont:{jm,tel,mail},stanek}`
+  (video z YouTube se přehraje přímo, jiné jako odkaz). Dokud firma nic nedodá, je tam **„Ukázka · co tu může mít vaše firma“**
+  (6 položek) a tlačítko **„✉ Poslat podklady“** – předvyplněný e-mail na petr.kobelka@vhos.cz se seznamem. Návrh e-mailu
+  partnerům: `navrh/email-partnerum.md` (doplnit datum).
+- **0.62:** **WhatsApp** u mobilních čísel (garant v Info; u kontaktu partnera, pokud je číslo mobilní) – `https://wa.me/420…`.
