@@ -191,13 +191,14 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.22 · 19. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.23 · 21. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
 const PUB="konference2027_verejne";    // veřejné údaje pro formulář (název, noci, menu)
 const PRI="konference2027_prihlasky";  // přihlášky partnerů – každá pod tajným klíčem (odkazem)
 const AKTU="konference2027_aktuality"; // zprávy pořadatele pro průvodce (Info, číslo u záložky)
+const TYMU="konference2027_tym";      // tým pořadatele v průvodci: {e-mail s čárkami místo teček: true} – čte ohlasy, posílá zprávy všem
 const OHL="konference2027_ohlasy";   // ohlasy z průvodce: o/{id} píše kdokoli (jen nový), čte pořadatel; zv/{id} = zveřejněné (čte každý)
 const DOPR="konference2027_doprava"; // zájem o svoz na úterní společenský večer (z průvodce, zapisuje kdokoli, čte jen pořadatel)
 const DOT="konference2027_dotazy";     // dotazy k přednáškám z průvodce (q = texty, au = nahrávky, v = +1)
@@ -263,7 +264,7 @@ if(AUTH.isSignInWithEmailLink(location.href)){
 AUTH.onAuthStateChanged(user=>{
   if(!user){USER=null;showLogin();return;}
   FDB.ref("florian_login_email/"+leKey(user.email)).get().then(s=>{
-    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();loadAktuality();loadDoprava();loadOhlasy();}
+    if(s.exists()){USER=user;$("who").textContent=user.email;showApp();loadData();loadPrihlasky();loadKarty();loadDotazy();loadAktuality();loadDoprava();loadOhlasy();loadTym();}
     else{showLogin("E-mail <b>"+esc(user.email)+"</b> zatím nemá přístup. Ozvi se Petru Kobelkovi (stejný seznam jako Florián).");AUTH.signOut();}
   }).catch(()=>showLogin("Nepodařilo se ověřit přístup, zkus to znovu."));
 });
@@ -1029,7 +1030,7 @@ function loadAktuality(){FDB.ref(AKTU).on("value",s=>{AKTUALITY=s.val()||{};AKT_
 function htmlAktuality(){
   if(AKT_ERR)return `<div class="probbox"><div>⛔ Aktuality nejde načíst: <b>${esc(AKT_ERR)}</b>. Chybí pravidlo pro <b>${AKTU}</b> ve Firebase.</div></div>`;
   const l=Object.entries(AKTUALITY).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
-  return l.length?`<table class="t">${l.map(([k,x])=>`<tr><td class="sub" style="white-space:nowrap">${new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})}</td><td><b>${esc(x.h)}</b>${x.p?`<div class="sub">${esc(x.p)}</div>`:""}</td><td style="white-space:nowrap"><button class="btn ghost small" data-aktedit="${esc(k)}">Upravit</button> <button class="btn red small" data-aktdel="${esc(k)}">Smazat</button></td></tr>`).join("")}</table>`
+  return l.length?`<table class="t">${l.map(([k,x])=>`<tr><td class="sub" style="white-space:nowrap">${new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})}</td><td><b>${esc(x.h)}</b>${x.p?`<div class="sub">${esc(x.p)}</div>`:""}${x.autor?`<div class="sub">✍ ${esc(x.autor)}</div>`:""}</td><td style="white-space:nowrap"><button class="btn ghost small" data-aktedit="${esc(k)}">Upravit</button> <button class="btn red small" data-aktdel="${esc(k)}">Smazat</button></td></tr>`).join("")}</table>`
     :`<p class="muted" style="font-size:.9rem">Zatím žádná zpráva. Průvodce bez zpráv ukazuje „Zatím žádné zprávy“.</p>`;
 }
 function aktBox(){const b=$("p_akt");if(b)b.innerHTML=htmlAktuality();}
@@ -1042,6 +1043,11 @@ function rPruvodce(){
     <textarea id="a_p" placeholder="Text zprávy (nepovinné)" maxlength="1000" style="margin-top:6px"></textarea>
     <div class="lista" style="margin-top:6px"><button class="btn" id="a_send">Zveřejnit zprávu</button><button class="btn ghost small hidden" id="a_cancel">Zrušit úpravu</button><span class="msg" id="a_msg"></span></div>
     <div id="p_akt" style="margin-top:10px">${htmlAktuality()}</div>
+  </div>
+  <div class="nast"><h2 class="sek">👥 Tým pořadatele v průvodci</h2>
+    <p style="font-size:.84rem;color:#666">Lidé, kteří se v průvodci přihlásí (Info → dole „🔑 Pro pořadatele“, odkaz přijde e-mailem). Uvidí <b>ohlasy</b> (s upozorněním na nový) a můžou poslat <b>zprávu všem účastníkům</b>; smazat můžou jen svou zprávu. K datům v této aplikaci přístup nemají.</p>
+    <div class="lista"><input id="t_em" type="email" placeholder="e-mail člena týmu" style="max-width:280px"><button class="btn" id="t_add">Přidat</button><span class="msg" id="t_msg"></span></div>
+    <div id="s_tym" style="margin-top:8px">${htmlTym()}</div>
   </div>
   <div class="nast"><h2 class="sek">💬 Ohlasy na konferenci a průvodce</h2>
     <p style="font-size:.84rem;color:#666">Účastníci je píší v průvodci (Info, a ve středu odpoledne nabídka na Domů). Ohlas, u kterého pisatel povolil zveřejnění, můžeš tlačítkem <b>Zveřejnit</b> dát do karty „Řekli o konferenci a průvodci“ na Domů.</p>
@@ -1070,6 +1076,8 @@ function rPruvodce(){
       .catch(e=>{$("a_msg").textContent="⚠️ "+errMsg(e);});
   });
   $("a_cancel").addEventListener("click",reset);
+  $("t_add").addEventListener("click",()=>{const em=$("t_em").value.trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(em)){$("t_msg").textContent="Napiš e-mail.";return;}
+    FDB.ref(TYMU+"/"+leKey(em)).set(true).then(()=>{$("t_em").value="";$("t_msg").textContent="✔ Přidáno";setTimeout(()=>{const m=$("t_msg");if(m)m.textContent="";},2500);}).catch(e=>{$("t_msg").textContent="⚠️ "+errMsg(e);});});
   $("p_akt").addEventListener("click",e=>{
     const ed=e.target.closest("[data-aktedit]");if(ed){const x=AKTUALITY[ed.dataset.aktedit];EDIT=ed.dataset.aktedit;$("a_h").value=x.h||"";$("a_p").value=x.p||"";$("a_send").textContent="Uložit úpravu";$("a_cancel").classList.remove("hidden");$("a_h").focus();return;}
     const d=e.target.closest("[data-aktdel]");if(d&&confirm("Smazat zprávu? Zmizí všem v průvodci."))FDB.ref(AKTU+"/"+d.dataset.aktdel).remove();
@@ -1098,10 +1106,29 @@ function htmlDoprava(){
 document.addEventListener("click",e=>{const b=e.target.closest("[data-dopdel]");if(!b)return;
   if(confirm("Smazat tento zájem o dopravu?"))FDB.ref(DOPR+"/z/"+b.dataset.dopdel).remove().catch(er=>alert("⚠️ "+errMsg(er)));});
 
+/* ---------- TÝM POŘADATELE V PRŮVODCI (čte ohlasy, posílá zprávy všem) ---------- */
+let TYM={}, TYM_ERR="";
+function loadTym(){FDB.ref(TYMU).on("value",s=>{TYM=s.val()||{};TYM_ERR="";const b=$("s_tym");if(b)b.innerHTML=htmlTym();},e=>{TYM_ERR=errMsg(e);const b=$("s_tym");if(b)b.innerHTML=htmlTym();});}
+function htmlTym(){
+  if(TYM_ERR)return `<div class="probbox"><div>⛔ Tým nejde načíst: <b>${esc(TYM_ERR)}</b>. Chybí pravidlo pro <b>${TYMU}</b> ve Firebase.</div></div>`;
+  const l=Object.keys(TYM).filter(k=>TYM[k]===true).sort();
+  return l.length?`<table class="t">${l.map(k=>`<tr><td>${esc(k.replace(/,/g,"."))}</td><td style="text-align:right"><button class="btn ghost small" data-tymdel="${esc(k)}">Odebrat</button></td></tr>`).join("")}</table>`
+    :`<p class="muted" style="font-size:.9rem">Zatím nikdo. Ty se v průvodci přihlásit nemusíš – ohlasy i zprávy máš tady.</p>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-tymdel]");if(!b)return;
+  if(confirm("Odebrat "+b.dataset.tymdel.replace(/,/g,".")+" z týmu? Přestane vidět ohlasy a posílat zprávy."))FDB.ref(TYMU+"/"+b.dataset.tymdel).remove().catch(er=>alert("⚠️ "+errMsg(er)));});
+
 /* ---------- OHLASY Z PRŮVODCE ---------- */
 let OHLASY={}, OHLZV={}, OHL_ERR="";
 const TVARE={4:"😍",3:"🙂",2:"😐",1:"🙁"};
-function loadOhlasy(){FDB.ref(OHL+"/o").on("value",s=>{OHLASY=s.val()||{};OHL_ERR="";ohlasyBox();},e=>{OHL_ERR=errMsg(e);ohlasyBox();});
+let OHL_NAC=false;
+function ohlUpoz(x){   // nový ohlas → systémové upozornění (když ho prohlížeč povolil)
+  const b=[x.k?"konference "+TVARE[x.k]:"",x.p?"průvodce "+TVARE[x.p]:"",x.lib||x.chybi||""].filter(Boolean).join(" · ");
+  if("Notification" in window&&Notification.permission==="granted")try{new Notification("💬 Nový ohlas",{body:b.slice(0,200),icon:"ikony/ikona-192.png",tag:"ohlas"})}catch(e){}
+}
+function loadOhlasy(){if("Notification" in window&&Notification.permission==="default")Notification.requestPermission().catch(()=>{});
+  FDB.ref(OHL+"/o").on("value",s=>{const v=s.val()||{};if(OHL_NAC){const n=Object.keys(v).filter(k=>!OHLASY[k]).map(k=>v[k]).sort((a,b)=>(b.ts||0)-(a.ts||0));if(n.length)ohlUpoz(n[0]);}
+    OHLASY=v;OHL_NAC=true;OHL_ERR="";ohlasyBox();},e=>{OHL_ERR=errMsg(e);ohlasyBox();});
   FDB.ref(OHL+"/zv").on("value",s=>{OHLZV=s.val()||{};ohlasyBox();},()=>{});}
 function ohlasyBox(){const b=$("s_ohlasy");if(b)b.innerHTML=htmlOhlasy();}
 function htmlOhlasy(){

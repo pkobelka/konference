@@ -896,3 +896,30 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   `posunPouzij` v program.js; `ulozVerejne` zase `set`. **Aplikace pro předsedající se zatím nedělá** (bez posunu nemá
   hlavní smysl; případně později jen dotazy). `pruvodce/program.js` zůstává jako jediné místo s programem.
 - **0.71 – fotky a nahrávky v exportu:** e-mail z prohlížeče (mailto) přílohy neumí → text už nepíše „(přiložená)“, ale „📷 fotka – soubor konference-2027-ut-1015-1.jpg“ a nahoře upozornění, kde soubory jsou. **Počítač:** „⬇ Uložit do počítače“ stáhne **ZIP** (text + fotky + nahrávky, vlastní `zip()` bez knihovny) – ten jde přiložit k e-mailu; fotky i v PDF. **Mobil:** „✉ E-mailem“ jde přes sdílení telefonu (vybrat poštu → přílohy se přiloží). Jména souborů stejná v textu, ZIPu i sdílení (`medJmeno`).
+- **0.72 – logo ENERGIE AG BOHEMIA s ochrannou zónou:** podle požadavku Energie AG (zóna = výška písmene „G“, platí i pro logo s claimem) má `obrazky/loga/energie-ag-bohemia.webp` kolem loga bílý okraj 38 px (= výška G v souboru), bezeztrátově; logo je proto v kartách menší. Cache SW `pruvodce-v3`. V `promo/src/sec27.html` výška 80 → 119 px (logo stejně velké jako dřív); **video promo/*.mp4 se nepřerenderovalo**.
+- **0.73 – logo ENERGIE AG BOHEMIA bez claimu:** Petr: s claimem „Myslíme na zítřek“ by bylo malinké; pro pracovní verzi stačí, pak bude korektura. Nový `energie-ag-bohemia.webp` (600 × 228) vyrenderovaný z vektorového PDF od Energie AG `EAGB_logo_Gzone` – ořez stránky = ochranná zóna (výška G). Cache SW `pruvodce-v4`; promo výška 96 px.
+- **0.74 – záložka Partneři bez horní otáčecí lišty partnerů** (Petr: zbytečná, níže je celý přehled). Lišta zůstává na Domů, Programu a Info.
+
+### Průvodce 0.75 + pořadatel 1.23 (21. 10. 2026) – TÝM POŘADATELE V PRŮVODCI
+- Petr: ohlasy mají vidět i 2–3 další lidi a ti mají umět poslat **zprávu všem účastníkům**; nechtěl další aplikaci
+  ani přístup do aplikace pořadatele (osobní data). Řešení: **přihlášení přímo v průvodci**, jen pro tým.
+- Průvodce: Info → dole nenápadně **„🔑 Pro pořadatele“** → e-mail → přihlašovací odkaz (Firebase Auth přes REST, bez SDK;
+  iPhone: „Mám odkaz z e-mailu – vložit ručně“). Přihlášený tým vidí nahoře v Info kartu: **💬 Ohlasy** (živě, souhrn tváří,
+  „Nový“) a **📣 Zpráva všem** (zapíše do `konference2027_aktuality` {h, p, ts (serverový), autor, uid}); u **vlastní** zprávy
+  v Info tlačítko Smazat. Nové ohlasy = červené číslo u Info a na ikoně, upozornění v průvodci, a když je průvodce na pozadí,
+  systémové upozornění (tlačítko „🔔 Upozorňovat…“). **Při úplně zavřeném průvodci upozornění nepřijde** (to by chtělo server/FCM).
+- Pořadatel 1.23 → Průvodce: sekce **„👥 Tým pořadatele v průvodci“** (přidat/odebrat e-mail → `konference2027_tym/{e-mail s , místo .}: true`),
+  u aktualit je vidět autor, nový ohlas = systémové upozornění (prohlížeč se zeptá na povolení).
+- **Pravidla Firebase: mojebudky PR #190 – sloučeno 21. 10.** (Petr: „vlož pravidlo do Firebase sám“), emulátor 30/30.
+  Tým = 2 lidé z Energie AG (e-maily zapisuje Petr v aplikaci pořadatele, do GitHubu ne). Znění:
+  ```
+  ORG = auth != null && root.child('florian_login_email').child(auth.token.email.toLowerCase().replace('.', ',')).exists()
+  TYM = auth != null && auth.token.email_verified === true && root.child('konference2027_tym').child(auth.token.email.toLowerCase().replace('.', ',')).val() === true
+
+  "konference2027_tym": { ".read": ORG, ".write": ORG,
+    "$e": { ".read": "auth != null && auth.token.email.toLowerCase().replace('.', ',') === $e", ".validate": "newData.val() === true" } },
+  "konference2027_ohlasy": { "o": { ".read": "ORG || TYM", …zbytek beze změny } },
+  "konference2027_aktuality": { ".read": true, ".write": ORG,
+    "$k": { ".write": "TYM && ((!data.exists() && newData.child('uid').val() === auth.uid) || (data.exists() && data.child('uid').val() === auth.uid && !newData.exists()))",
+            ".validate": "newData.child('h').isString() && newData.child('h').val().length > 0 && newData.child('h').val().length <= 120 && newData.child('ts').isNumber() && (!newData.child('p').exists() || (newData.child('p').isString() && newData.child('p').val().length <= 1000))" } }
+  ```
