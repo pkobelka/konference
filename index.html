@@ -191,7 +191,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.23 · 21. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.24 · 21. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -1049,6 +1049,10 @@ function rPruvodce(){
     <div class="lista"><input id="t_em" type="email" placeholder="e-mail člena týmu" style="max-width:280px"><button class="btn" id="t_add">Přidat</button><span class="msg" id="t_msg"></span></div>
     <div id="s_tym" style="margin-top:8px">${htmlTym()}</div>
   </div>
+  <div class="nast"><h2 class="sek">🎤 Odkazy pro předsedající</h2>
+    <p style="font-size:.84rem;color:#666">Každý předsedající dostane odkaz na svůj blok. Otevře mu v průvodci <b>Pohled předsedajícího</b> (dotazy k přednáškám bloku, nejžádanější první, velkým písmem na plátno). Bez přihlášení; průvodce si odkaz zapamatuje a v Programu mu u bloku ukáže tlačítko. Hodí se i pro počítač v sále.</p>
+    <div id="s_pr">Načítám program…</div>
+  </div>
   <div class="nast"><h2 class="sek">💬 Ohlasy na konferenci a průvodce</h2>
     <p style="font-size:.84rem;color:#666">Účastníci je píší v průvodci (Info, a ve středu odpoledne nabídka na Domů). Ohlas, u kterého pisatel povolil zveřejnění, můžeš tlačítkem <b>Zveřejnit</b> dát do karty „Řekli o konferenci a průvodci“ na Domů.</p>
     <div id="s_ohlasy">${htmlOhlasy()}</div>
@@ -1067,6 +1071,7 @@ function rPruvodce(){
     <p style="font-size:.84rem;color:#666;margin:0 0 8px">QR kód dej do pozvánky, na plakát u registrace a na plátno. Fotoaparát iPhonu ho otevře rovnou v Safari – odtud jde průvodce přidat na plochu (průvodce sám ukáže jak).</p>
     <a class="btn ghost small" href="obrazky/qr-pruvodce.png" download="QR-Sec27-pruvodce.png">⬇ QR obrázek (PNG)</a> <a class="btn ghost small" href="obrazky/qr-pruvodce.svg" download="QR-Sec27-pruvodce.svg">⬇ QR pro tisk (SVG)</a></div></div></div>`;
   $("a_h").value=rozH;$("a_p").value=rozP;
+  predsOdkazy();
   let EDIT=null;
   const reset=()=>{EDIT=null;$("a_h").value="";$("a_p").value="";$("a_send").textContent="Zveřejnit zprávu";$("a_cancel").classList.add("hidden");};
   $("a_send").addEventListener("click",()=>{
@@ -1105,6 +1110,23 @@ function htmlDoprava(){
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-dopdel]");if(!b)return;
   if(confirm("Smazat tento zájem o dopravu?"))FDB.ref(DOPR+"/z/"+b.dataset.dopdel).remove().catch(er=>alert("⚠️ "+errMsg(er)));});
+
+/* ---------- ODKAZY PRO PŘEDSEDAJÍCÍ (bloky z pruvodce/program.js, stejné klíče jako průvodce) ---------- */
+let BLOKY=null;
+function predsOdkazy(){
+  const box=()=>$("s_pr");
+  const kresli=()=>{const b=box();if(!b)return;if(!BLOKY.length){b.innerHTML=`<p class="muted" style="font-size:.9rem">V programu nejsou žádné bloky.</p>`;return;}
+    const den={ut:"Út",st:"St"};
+    b.innerHTML=`<table class="t">${BLOKY.map(x=>{const u=pruvodceBase()+"?pr="+x.bid,predm="Konference ČOV – Pohled předsedajícího: "+x.blok;
+      const telo="Dobrý den,\n\nv průvodci konference máte připravený Pohled předsedajícího pro blok „"+x.blok+"“ – dotazy účastníků k přednáškám bloku, nejžádanější první, velkým písmem i na plátno:\n\n"+u+"\n\nStačí odkaz jednou otevřít v telefonu nebo v počítači v sále; průvodce si ho zapamatuje a v Programu vám u bloku ukáže tlačítko Pohled předsedajícího.\n\nDěkuji\n";
+      return `<tr><td class="sub" style="white-space:nowrap">${den[x.bid.slice(0,2)]||""}</td><td><b>${esc(x.blok)}</b><div class="sub">předsedá ${esc(x.pr||"")}</div><div class="sub"><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a></div></td>
+        <td style="white-space:nowrap"><button class="btn ghost small" data-prkop="${esc(u)}">Kopírovat</button> <a class="btn ghost small" href="mailto:?subject=${encodeURIComponent(predm)}&body=${encodeURIComponent(telo)}">✉ E-mail</a></td></tr>`}).join("")}</table>`;};
+  if(BLOKY)return kresli();
+  fetch("pruvodce/program.js",{cache:"no-store"}).then(r=>r.text()).then(t=>{BLOKY=new Function(t+";return ALLT")().filter(x=>x.blok);kresli();})
+    .catch(()=>{const b=box();if(b)b.innerHTML=`<p class="muted" style="font-size:.9rem">Program se nepodařilo načíst.</p>`;});
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-prkop]");if(!b)return;
+  (navigator.clipboard?navigator.clipboard.writeText(b.dataset.prkop):Promise.reject()).then(()=>{b.textContent="✔ Zkopírováno";setTimeout(()=>b.textContent="Kopírovat",1500);}).catch(()=>prompt("Zkopírujte odkaz:",b.dataset.prkop));});
 
 /* ---------- TÝM POŘADATELE V PRŮVODCI (čte ohlasy, posílá zprávy všem) ---------- */
 let TYM={}, TYM_ERR="";
