@@ -910,7 +910,8 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   systémové upozornění (tlačítko „🔔 Upozorňovat…“). **Při úplně zavřeném průvodci upozornění nepřijde** (to by chtělo server/FCM).
 - Pořadatel 1.23 → Průvodce: sekce **„👥 Tým pořadatele v průvodci“** (přidat/odebrat e-mail → `konference2027_tym/{e-mail s , místo .}: true`),
   u aktualit je vidět autor, nový ohlas = systémové upozornění (prohlížeč se zeptá na povolení).
-- **Pravidla Firebase (mojebudky/database.rules.json) – ČEKÁ NA NASAZENÍ** (bez nich tým nic neuvidí ani nepošle):
+- **Pravidla Firebase: mojebudky PR #190 – sloučeno 21. 10.** (Petr: „vlož pravidlo do Firebase sám“), emulátor 30/30.
+  Tým = 2 lidé z Energie AG (e-maily zapisuje Petr v aplikaci pořadatele, do GitHubu ne). Znění:
   ```
   ORG = auth != null && root.child('florian_login_email').child(auth.token.email.toLowerCase().replace('.', ',')).exists()
   TYM = auth != null && auth.token.email_verified === true && root.child('konference2027_tym').child(auth.token.email.toLowerCase().replace('.', ',')).val() === true
