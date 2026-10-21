@@ -649,7 +649,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.97 · 21. 10. 2026";
+const VERZE="0.98 · 21. 10. 2026";
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
@@ -1343,7 +1343,7 @@ function vInfo(){
   <div class="rozc"><button data-skok="i-akt">📣 Aktuality</button><button data-skok="i-dop">🚌 Cesta a svoz</button><button data-skok="i-kont">📞 Kontakty</button><button data-skok="i-o">ℹ️ O konferenci</button></div>
   ${vTym()}
   <div class="card akt" id="i-akt"><div class="label" style="margin-bottom:4px">📣 Aktuality od pořadatele</div>
-   ${AKT.list.length?AKT.list.map(x=>`<article class="${!S.aktSeen[x.k]?"nova":""}">${!S.aktSeen[x.k]?`<button class="aktok" data-aktk="${esc(x.k)}" aria-label="Označit jako přečtené" title="Přečteno">✓</button><span class="chipn">Nové</span>`:""}<h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}<small>${x.d?esc(x.d):x.ts>1e9?new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}):""}</small>${tymJe()&&(TYM.s.org||x.uid&&x.uid===TYM.s.uid)?` <button class="linkb" data-tymdel="${esc(x.k)}">Smazat</button>`:""}</article>`).join("")+(aktNove()>1?'<button class="linkb" data-aktall style="margin-top:6px">Označit vše jako přečtené</button>':""):'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Jakmile pořadatel něco napíše, uvidíte to tady a u záložky Info naskočí číslo.</p>'}
+   ${AKT.list.length?AKT.list.map(x=>`<article class="${!S.aktSeen[x.k]?"nova":""}">${!S.aktSeen[x.k]?`<button class="aktok" data-aktk="${esc(x.k)}" aria-label="Označit jako přečtené" title="Přečteno">✓</button><span class="chipn">Nové</span>`:""}<h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}<small>${x.d?esc(x.d):x.ts>1e9?new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}):""}</small>${AKT.on&&tymJe()&&(TYM.s.org||x.uid&&x.uid===TYM.s.uid)?` <button class="linkb" data-tymdel="${esc(x.k)}">Smazat</button>`:""}</article>`).join("")+(aktNove()>1?'<button class="linkb" data-aktall style="margin-top:6px">Označit vše jako přečtené</button>':""):'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Jakmile pořadatel něco napíše, uvidíte to tady a u záložky Info naskočí číslo.</p>'}
   </div>
   <div class="blockh" id="i-dop"><h2>🚌 Cesta a svoz</h2></div>
   ${vDoprava().replace(/^\s*<section class="sec">/,"").replace(/<\/section>\s*$/,"")}
