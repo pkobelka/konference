@@ -312,6 +312,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .dqnow{border:2px solid #d32f2f}.dqnow>b{display:block;font-size:16px;margin:2px 0 4px}
 .offl{background:#3a3340;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;margin:0 0 10px;line-height:1.35}
 .nexp{display:flex;gap:6px;flex-wrap:wrap}
+.nvol{display:grid;gap:8px}.nvol button{display:grid;gap:3px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;color:var(--ink)}.nvol button b{font-size:15px;color:var(--accent)}.nvol button small{font-size:13px;color:var(--muted);line-height:1.35}
 .nsoukr{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:13px;font-weight:600;margin-bottom:10px}
 .pozul{border:2px solid var(--accent)}.pozul b{font-size:16px}
 .nexp button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px;color:var(--accent)}.nexp button.hl{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -647,7 +648,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.93 · 21. 10. 2026";
+const VERZE="0.94 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1195,7 +1196,7 @@ function vProgram(){
 </div></div>`;
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
    return h});return out.join("")+(open?"</div>":"")})()
-  :`<div class="card empty"><b>${S.mine?"Zatím nemáte žádné poznámky":"Nic jsme nenašli"}</b><p class="muted" style="margin:6px 0 0;font-size:14px">${S.mine?"U přednášky klepněte na ✎ Poznámka, 🎤 Namluvit nebo 📷 Foto.":"Zkuste jiné slovo."}</p></div>`}
+  :`<div class="card empty"><b>${S.mine?"Zatím nemáte žádné poznámky":"Nic jsme nenašli"}</b><p class="muted" style="margin:6px 0 0;font-size:14px">${S.mine?"U přednášky klepněte na ✎ Poznámka, 🎤 Nahrát nebo 📷 Foto.":"Zkuste jiné slovo."}</p></div>`}
   <div class="note">Poznámky k přednáškám jsou soukromé a zůstávají jen ve vašem zařízení. Všechny je najdete v záložce Poznámky – tam je můžete i sdílet, stáhnout, poslat e-mailem nebo vytisknout do PDF.</div>
  </section>`;
 }
@@ -1276,7 +1277,7 @@ function vPoznamky(){
   return `<button class="nbtn" data-note="${x.id}">✎ Poznámka</button><button class="nbtn" data-hlas="${x.id}">🎤 Namluvit</button><button class="nbtn" data-foto="${x.id}">📷 Foto</button><button class="nbtn" data-naq="${x.id}">↗ V programu</button>`};
  return `<section class="sec">
   <div class="card pzhl"><div class="pzs">${mojeIkony().replace("<b>Poznámky</b>","")}</div>
-   <p class="muted" style="margin:6px 0 10px;font-size:13px">🔒 Vidíte je jen vy – jsou uložené jen v tomto zařízení. Přidáte je u přednášky v Programu tlačítky ✎ Poznámka, 🎤 Namluvit a 📷 Foto.</p>
+   <p class="muted" style="margin:6px 0 10px;font-size:13px">🔒 Vidíte je jen vy – jsou uložené jen v tomto zařízení. Přidáte je u přednášky v Programu tlačítky ✎ Poznámka, 🎤 Nahrát a 📷 Foto.</p>
    ${l.length?nexpBtns():""}</div>
   ${l.length?l.map(({x,den})=>`<div class="card pzk"><div class="pzt"><span class="nvt">${esc(den?den.n.slice(0,2):"")} ${esc(x.t)}${x.e?"–"+esc(x.e):""}</span><b>${esc(x.h)}</b>${x.w?`<small class="muted">${esc(x.w)}</small>`:""}</div>
     ${txt(x.id).map((n,i)=>`<button class="mynote pzn" data-tx="${x.id}|${n.id}"><b>✎ Poznámka ${i+1}</b>${esc(n.t)}</button>`).join("")}${medPas(x.id).replace(/<button class="mtx"[^]*?<\/button>/g,"")}<div class="pzb">${tl(x)}</div></div>`).join("")
@@ -1792,9 +1793,15 @@ function mojeIkony(){   // „Moje poznámky“ + kolik čeho: ✎ text, 🎤 na
  return `<b>Poznámky</b><span class="mis">${i("✎",t)}${i("🎤",h)}${i("📷",f)}</span>`}
 const pocetPoznamek=()=>ALLT.filter(x=>x.id&&maPozn(x.id)).length;
 const umiSdilet=()=>!!(navigator.share&&matchMedia("(pointer:coarse)").matches);
-function nexpBtns(){   // mobil/tablet: hlavně sdílení (e-mail, Soubory, Poznámky…); počítač: hlavně uložit do počítače
- return umiSdilet()?`<div class="nexp"><button class="hl" data-nx="share">Poslat / uložit</button><button data-nx="mail">E-mailem</button><button data-nx="pr">PDF</button><button data-nx="txt">⬇ Stáhnout</button></div>`
+function nexpBtns(){   // mobil/tablet: jedno tlačítko → výběr ze tří možností; počítač: uložit do počítače / e-mail / PDF
+ return umiSdilet()?`<div class="nexp"><button class="hl" data-nx="volby">Poslat / uložit</button></div>`
   :`<div class="nexp"><button class="hl" data-nx="txt">⬇ Uložit do počítače</button><button data-nx="mail">Poslat e-mailem</button><button data-nx="pr">Vytisknout / PDF</button></div>`}
+function sheetNexp(){   // mobil: jak si poznámky poslat nebo uložit
+ const med=medSoubory().length;
+ openSheet(`<h2>Poslat / uložit</h2><div class="muted" style="font-size:13px;margin-top:2px">U každé poznámky bude název přednášky, přednášející a čas</div>
+  <div class="bd nvol"><button data-nx="share"><b>✉ Poslat e-mailem nebo jinam</b><small>Vyberte Gmail, Outlook, WhatsApp…${med?" Text, fotky i nahrávky se přiloží samy.":" Text poznámek se vloží sám."} Nic nestahujete.</small></button>
+  <button data-nx="pr"><b>📄 Uložit jako PDF</b><small>Přehledný dokument${med?" i s fotkami":""} – v dalším kroku zvolte „Uložit jako PDF“.</small></button>
+  <button data-nx="txt"><b>⬇ Stáhnout do telefonu</b><small>${med?"Text, fotky a nahrávky v jednom souboru ZIP.":"Textový soubor s poznámkami."}</small></button></div>`,true)}
 function sdilejPoznamky(){
  const d={title:"Moje poznámky – konference ČOV 2027",text:poznamkyText()};
  const fs=[];medSoubory().forEach(({m,jm})=>{try{fs.push(new File([m.blob],jm,{type:m.blob.type||(m.typ==="foto"?"image/jpeg":"audio/webm")}))}catch(e){}});
@@ -1922,7 +1929,7 @@ $("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSh
  {const nu=e.target.closest("[data-nowuk]");if(nu){const [d,id]=nu.dataset.nowuk.split("|");closeSheet();S.day=d;S.q="";S.mine=false;S.tab="program";render();return setTimeout(()=>ukazBod(id),60)}}
  {const o=e.target.closest("[data-ohl]");if(o){closeSheet();return sheetOhlas(+o.dataset.ohl)}}
  {const g2=e.target.closest("[data-go]");if(g2){closeSheet();return go(g2.dataset.go)}}
- {const k2=e.target.closest("[data-kal]");if(k2){closeSheet();return sheetKal(k2.dataset.kal)}}{const op=e.target.closest("[data-ohlp]");if(op){closeSheet();return sheetOhlas(+op.dataset.ohlp)}}{const nx=e.target.closest("[data-nx]");if(nx){const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[nx.dataset.nx];if(f){store.set("poznUlozeno",pocetVeci());closeSheet();render();f()}return}}{const nq=e.target.closest("[data-naq]");if(nq)return naPrednasku(nq.dataset.naq)}if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
+ {const k2=e.target.closest("[data-kal]");if(k2){closeSheet();return sheetKal(k2.dataset.kal)}}{const op=e.target.closest("[data-ohlp]");if(op){closeSheet();return sheetOhlas(+op.dataset.ohlp)}}{const nx=e.target.closest("[data-nx]");if(nx){if(nx.dataset.nx==="volby")return sheetNexp();const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[nx.dataset.nx];if(f){store.set("poznUlozeno",pocetVeci());closeSheet();render();f()}return}}{const nq=e.target.closest("[data-naq]");if(nq)return naPrednasku(nq.dataset.naq)}if(e.target.closest("[data-profil]")){closeSheet();return go("info")}const g=e.target.closest("[data-goday]");if(g){closeSheet();S.day=g.dataset.goday;S.q="";S.mine=false;go("program")}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
 
 /* ===== Události ===== */
@@ -1968,7 +1975,7 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.note)return sheetNote(t.dataset.note);
  if(t.dataset.p)return sheetP(t.dataset.p);
  if(t.id==="mine")return go("poznamky");
- if(t.dataset.nx){const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[t.dataset.nx];if(f){f();store.set("poznUlozeno",pocetVeci())}return}
+ if(t.dataset.nx){if(t.dataset.nx==="volby")return sheetNexp();const f={pr:tiskPoznamek,txt:stahniPoznamky,mail:mailPoznamky,share:sdilejPoznamky}[t.dataset.nx];if(f){f();store.set("poznUlozeno",pocetVeci())}return}
  if(t.dataset.nxok!==undefined){store.set("poznUlozeno",pocetVeci());return render()}
 });
 $("view").addEventListener("change",e=>{if(e.target.id==="simday"){simNastav(e.target.value,clock().m);$("nowbox").outerHTML=vNow()}if(e.target.id==="simx"){const c=clock();simNastav(c.day,c.m);S.sim.x=+e.target.value;$("nowbox").outerHTML=vNow()}});
