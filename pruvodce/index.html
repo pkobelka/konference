@@ -647,7 +647,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.92 · 21. 10. 2026";
+const VERZE="0.93 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -671,7 +671,7 @@ function naAktualni(){   // „Právě teď“: běží-li něco, skok na to; ji
  if(st.next){okno("Teď je volno",`Další bod programu v ${bod(st.next)}.<br><span class="muted">Za ${dur(st.next.a-c.m)}.</span>`,`<button class="cbtn" data-nowuk="${c.day}|${st.next.id}" style="border:0">Ukázat v programu</button>`);return}
  if(dalsi){const f=PROG[dalsi.k].find(x=>!x.blok&&x.a!=null);okno("Dnešní program skončil",`Děkujeme za dnešek! Zítra (${dalsi.n.toLowerCase()} ${dalsi.d}) začínáme v ${bod(f)}.`,`<button class="cbtn" data-nowuk="${dalsi.k}|${f.id}" style="border:0">Ukázat zítřejší program</button>`);return}
  okno("Konference skončila",`Děkujeme za účast na 31. ročníku a těšíme se na shledanou <b>4.–5. dubna 2028</b> v Seči.<br><span class="muted">Nezapomeňte si uložit poznámky – a budeme rádi za váš ohlas.</span>`,
-  `<button class="cbtn" data-ohl="0" style="border:0">💬 Napsat ohlas</button><button class="cbtn" data-go="poznamky" style="border:0">📝 Moje poznámky</button><button class="cbtn" data-kal="2028" style="border:0">📅 Termín 2028</button>`)}
+  `<button class="cbtn" data-ohl="0" style="border:0">💬 Napsat ohlas</button><button class="cbtn" data-go="poznamky" style="border:0">📝 Poznámky</button><button class="cbtn" data-kal="2028" style="border:0">📅 Termín 2028</button>`)}
 function ukazBod(id){const el=$("t-"+id);if(!el)return;el.scrollIntoView({block:"center",behavior:"smooth"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1700)}
 function naPrednasku(id,dotazy){   // přepne den, zruší filtry a posune na přednášku (a případně otevře její dotazy)
  const d=Object.keys(PROG).find(k=>PROG[k].some(y=>y.id===id));if(!d)return;closeSheet();S.day=d;S.q="";S.mine=false;if(S.tab!=="program")S.tab="program";render();setTimeout(()=>{ukazBod(id);if(dotazy)setTimeout(()=>sheetQ(id),450)},60)}
@@ -1057,7 +1057,7 @@ IC.cal='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=
 IC.pen='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>';
 IC.pozn='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
 IC.dotaz='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.6 9.5a2.5 2.5 0 0 1 4.8.8c0 1.7-2.4 2.2-2.4 3.4"/><path d="M12 16.6h.01"/></svg>';
-const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["dotazy","Dotazy",IC.dotaz],["poznamky","Moje poznámky",IC.pozn],["partneri","Partneři",IC.part],["info","Info",IC.info]];
+const TABS=[["domu","Domů",IC.home],["program","Program",IC.prog],["dotazy","Dotazy",IC.dotaz],["poznamky","Poznámky",IC.pozn],["partneri","Partneři",IC.part],["info","Info",IC.info]];
 /* Fotky – zatím zástupná místa, skutečné fotky nahraje pořadatel / fotograf */
 const ALBA=[
  {id:"a27",h:"2027 – 31. ročník",sub:"27.–28. dubna 2027 · fotky přibývají během konference",n:6,hue:150,cap:["Prezence","Zahájení","Legislativní blok","Výstava partnerů","Oběd","Společenský večer"]},
@@ -1140,7 +1140,7 @@ function vDomu(){
   </div>
   <div class="qk">
    <button data-go="program">${qi(9)}<span class="qt"><b>Program</b><small>${Object.values(PROG).flat().filter(x=>x.blok).length} bloků · dotazy · upozornění</small></span></button>
-   <button data-go="poznamky">${qi(5)}<span class="qt"><b>Moje poznámky</b><small>${nn?nn+" "+(nn===1?"poznámka":nn<5?"poznámky":"poznámek"):"k přednáškám"}${nb?" · "+nb+" 🔔":""}</small></span></button>
+   <button data-go="poznamky">${qi(5)}<span class="qt"><b>Poznámky</b><small>${nn?nn+" "+(nn===1?"poznámka":nn<5?"poznámky":"poznámek"):"k přednáškám"}${nb?" · "+nb+" 🔔":""}</small></span></button>
    <button data-go="doprava">${qi(1)}<span class="qt"><b>Svoz a cesta</b><small>svoz na večer · navigace</small></span></button>
    <button data-go="info">${qi(15)}<span class="qt"><b>Informace</b><small>${aktNove()?aktNove()+" "+(aktNove()===1?"nová zpráva":aktNove()<5?"nové zprávy":"nových zpráv"):"aktuality · kontakty"}</small></span>${badge(aktNove())}</button>
   </div>
@@ -1275,7 +1275,7 @@ function vPoznamky(){
  const tl=x=>{const f=txt(x.id).length,m=medTid(x.id),nh=m.filter(y=>y.typ==="hlas").length,nf=m.length-nh;
   return `<button class="nbtn" data-note="${x.id}">✎ Poznámka</button><button class="nbtn" data-hlas="${x.id}">🎤 Namluvit</button><button class="nbtn" data-foto="${x.id}">📷 Foto</button><button class="nbtn" data-naq="${x.id}">↗ V programu</button>`};
  return `<section class="sec">
-  <div class="card pzhl"><div class="pzs">${mojeIkony().replace("<b>Moje poznámky</b>","")}</div>
+  <div class="card pzhl"><div class="pzs">${mojeIkony().replace("<b>Poznámky</b>","")}</div>
    <p class="muted" style="margin:6px 0 10px;font-size:13px">🔒 Vidíte je jen vy – jsou uložené jen v tomto zařízení. Přidáte je u přednášky v Programu tlačítky ✎ Poznámka, 🎤 Namluvit a 📷 Foto.</p>
    ${l.length?nexpBtns():""}</div>
   ${l.length?l.map(({x,den})=>`<div class="card pzk"><div class="pzt"><span class="nvt">${esc(den?den.n.slice(0,2):"")} ${esc(x.t)}${x.e?"–"+esc(x.e):""}</span><b>${esc(x.h)}</b>${x.w?`<small class="muted">${esc(x.w)}</small>`:""}</div>
@@ -1371,43 +1371,38 @@ function sheetQ(id){
  const x=ALLT.find(y=>y.id===id), bk=ALLT.find(y=>y.blok&&y.bid===x.bid);
  const draw=()=>{const l=(S.qa[id]||[]).slice().sort((a,b)=>votes(id,b.k)-votes(id,a.k));videno(id);
   $("qlist").innerHTML=l.length?`<div class="label" style="margin-bottom:2px">Dotazy ostatních</div><p class="muted" style="margin:0 0 4px;font-size:13px">Zajímá vás některý dotaz? Dejte mu <b>👍</b> – předsedající čte nejdřív ty s nejvíc palci. Než napíšete svůj, podívejte se, jestli tu už není.</p>`+l.map(q=>{const on=hlasoval(id,q.k),n=votes(id,q.k),muj=q.dev&&q.dev===DEV;
-   return `<div class="q"><div><p>${esc(q.t)}</p>${q.au?`<button type="button" class="linkb" data-qplay="${esc(q.k)}">🔊 Poslechnout nahrávku</button>`:""}<small>${esc(q.a)} · ${esc(q.c)}${muj?" · váš dotaz":""}</small></div>${muj?`<span class="plus mine" title="Palce od ostatních">👍 <b>${n-1}</b></span>`:`<button class="plus" data-plus="${esc(q.k)}" aria-pressed="${on}" aria-label="${on?"Zrušit palec":"Dát palec – zajímá mě to"}">👍 <b>${n-1}</b></button>`}</div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
+   return `<div class="q"><div><p>${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}${muj?" · váš dotaz":""}</small></div>${muj?`<span class="plus mine" title="Palce od ostatních">👍 <b>${n-1}</b></span>`:`<button class="plus" data-plus="${esc(q.k)}" aria-pressed="${on}" aria-label="${on?"Zrušit palec":"Dát palec – zajímá mě to"}">👍 <b>${n-1}</b></button>`}</div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
  SHEET_DRAW=draw;
  videno(id);setTimeout(render,0);
  openSheet(`<h2>Dotaz k přednášce</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.h)}</div>
   <div class="bd"><div id="qlist"></div>
   <form class="qform" id="qf"><textarea id="qt" rows="3" placeholder="Napište svůj dotaz na přednášejícího…" aria-label="Dotaz"></textarea>
-   <div class="mic"><button type="button" class="micb" id="qmic">🎤 Složitý dotaz? Namluvte ho</button><span id="qrec" class="muted"></span></div>
-   <div id="qprev" hidden><audio id="qaud" controls></audio><button type="button" class="linkb" id="qadel">Smazat nahrávku</button><small class="muted" style="flex-basis:100%">Přepis je v poli nahoře – zkontrolujte ho, ostatní si dotaz přečtou. Nahrávku pustí předsedající.</small></div>
+   ${window.SpeechRecognition||window.webkitSpeechRecognition?`<div class="mic"><button type="button" class="micb" id="qmic">🎤 Nadiktovat</button><span id="qrec" class="muted"></span></div>`:""}
    <label class="chk"><input type="checkbox" id="qpod" ${S.me.pod?"checked":""}> Podepsat dotaz <span class="muted">(nepovinné)</span></label>
    <div class="qpodf" id="qpodf" ${S.me.pod?"":"hidden"}><input id="qjm" placeholder="Jméno a příjmení" value="${esc(S.me.jm||"")}" autocomplete="name" aria-label="Jméno a příjmení"><input id="qfi" placeholder="Firma (nepovinné)" value="${esc(S.me.firma||"")}" autocomplete="organization" aria-label="Firma"></div>
    <div class="signas" id="qsig">${S.me.pod?"Podpis uvidí všichni u dotazu.":"Bez podpisu se dotaz odešle anonymně."}</div>
    <button class="send">Odeslat dotaz</button></form>
-  <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první. Namluvený dotaz se přepíše na text, aby si ho ostatní mohli přečíst; předsedající ho může i pustit do sálu (max. 1 minuta).</div></div>`);
+  <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první. Dotaz můžete i nadiktovat – řeč se přepíše na text, před odesláním ho zkontrolujte.</div></div>`);
  draw();
- let AU=null;   // namluvený dotaz (data: URL)
  $("qpod").addEventListener("change",e=>{const on=e.target.checked;$("qpodf").hidden=!on;$("qsig").textContent=on?"Podpis uvidí všichni u dotazu.":"Bez podpisu se dotaz odešle anonymně.";if(on&&!$("qjm").value)$("qjm").focus()});
- $("qmic").addEventListener("click",()=>nahravej(u=>{if(!$("qaud"))return;AU=u;$("qaud").src=u;$("qprev").hidden=false}));
- $("qadel").addEventListener("click",()=>{AU=null;$("qprev").hidden=true;$("qaud").removeAttribute("src")});
+ if($("qmic"))$("qmic").addEventListener("click",()=>diktuj($("qmic"),$("qrec"),"qt"));
  $("qlist").addEventListener("click",e=>{
-  const pl=e.target.closest("[data-qplay]");if(pl)return prehraj(qk(id,pl.dataset.qplay),pl,"🔊 Poslechnout nahrávku");
   const b=e.target.closest("[data-plus]");if(!b)return;hlasuj(id,b.dataset.plus,draw)});
- $("qf").addEventListener("submit",e=>{e.preventDefault();if(REC.mr)return toast("Nejdřív ukončete nahrávání");const t=$("qt").value.trim();if(!t&&!AU)return;
+ $("qf").addEventListener("submit",e=>{e.preventDefault();diktujStop();const t=$("qt").value.trim();if(!t)return;
   const jm=$("qjm").value.trim(),fi=$("qfi").value.trim(),pod=$("qpod").checked&&!!jm;
   if($("qpod").checked&&!jm){$("qjm").focus();return toast("Napište jméno, nebo zrušte podpis")}
   S.me={jm,firma:fi,pod};store.set("me",S.me);const anon=!pod;
-  const q={t:(t||"🎤 Namluvený dotaz (bez přepisu)").slice(0,1000),a:(anon?"anonymně":podpis()).slice(0,120),c:now(),ts:Date.now(),dev:DEV,h:String(x.h).slice(0,300)};
-  const hotovo=()=>{$("qt").value="";AU=null;$("qprev").hidden=true;draw();render();toast("Dotaz odeslán předsedajícímu")};
+  const q={t:t.slice(0,1000),a:(anon?"anonymně":podpis()).slice(0,120),c:now(),ts:Date.now(),dev:DEV,h:String(x.h).slice(0,300)};
+  const hotovo=()=>{$("qt").value="";draw();render();toast("Dotaz odeslán předsedajícímu")};
   if(LIVE.on){
-   if(AU&&AU.length>900000)return toast("Nahrávka je moc dlouhá – zkraťte ji");
    const k=qKlic(), btn=e.target.querySelector(".send");btn.disabled=true;btn.textContent="Odesílám…";
-   let fr=false;(AU?qSend("au/"+k,AU):Promise.resolve({})).then(o=>{fr=!!o.fronta;return qSend("q/"+id+"/"+k,Object.assign(q,AU?{au:true}:{}))})
-    .then(o=>{if(AU)LIVE.au[k]=AU;hotovo();if(fr||o.fronta)toast("📴 Bez signálu – dotaz je uložený a odešle se sám, až budete online")}).catch(()=>toast("Dotaz se nepodařilo odeslat – zkontrolujte připojení a zkuste znovu"))
+   let fr=false;qSend("q/"+id+"/"+k,q)
+    .then(o=>{hotovo();if(fr||o.fronta)toast("📴 Bez signálu – dotaz je uložený a odešle se sám, až budete online")}).catch(()=>toast("Dotaz se nepodařilo odeslat – zkontrolujte připojení a zkuste znovu"))
     .finally(()=>{btn.disabled=false;btn.textContent="Odeslat dotaz"});
    return}
-  (S.qa[id]=S.qa[id]||[]).push(Object.assign(q,{k:qKlic()},AU?{au:AU}:{}));store.set("qa",S.qa);videno(id);hotovo()});
+  (S.qa[id]=S.qa[id]||[]).push(Object.assign(q,{k:qKlic()}));store.set("qa",S.qa);videno(id);hotovo()});
 }
-/* ===== Namluvený dotaz: nahrání (max 60 s) a přehrání do sálu ===== */
+/* ===== Diktování dotazu, nahrávání hlasových poznámek a přehrávání ===== */
 const REC={mr:null,t:null,start:0,sr:null};
 // Přepis řeči na text (Chrome/Android, Safari/iPhone; posílá zvuk rozpoznávací službě prohlížeče). Když není, zůstane jen nahrávka.
 function prepis(taId){
@@ -1416,7 +1411,7 @@ function prepis(taId){
  const zaklad=ta.value.trim()?ta.value.trim()+" ":"";let fin="";
  r.onresult=e=>{let mez="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t+" ";else mez+=t}
   ta.value=(zaklad+fin+mez).replace(/\s+/g," ").replace(/^./,c=>c.toUpperCase());};
- r.onerror=()=>{};r.onend=()=>{if(REC.mr&&REC.sr===r){try{r.start()}catch(e){}}};   // Android po pauze končí – pokračovat
+ r.onerror=e=>{if(REC.dikt&&e&&/not-allowed|service-not-allowed/.test(e.error)){diktujStop();toast("Bez povolení mikrofonu to nejde – povolte ho v prohlížeči")}};r.onend=()=>{if((REC.mr||REC.dikt)&&REC.sr===r){try{r.start()}catch(e){}}};   // Android po pauze končí – pokračovat
  try{r.start()}catch(e){return null}return r;
 }
 function nahravej(hotovo,o){   // o: tlačítko, info, pole přepisu, max. délka (s)
@@ -1435,6 +1430,13 @@ function nahravej(hotovo,o){   // o: tlačítko, info, pole přepisu, max. délk
   REC.t=setInterval(()=>{const sec=Math.floor((Date.now()-REC.start)/1000);info.textContent=(REC.sr?"● nahrávám a přepisuji ":"● nahrávám ")+mss(sec)+" / "+mss(o.max);if(sec>=o.max)mr.stop()},250);
  }).catch(()=>toast("Bez povolení mikrofonu to nejde – povolte ho v prohlížeči"));
 }
+function diktuj(b,info,ta){   // dotaz nadiktovat: jen přepis řeči na text, nic se nenahrává ani neposílá jako zvuk
+ if(REC.dikt)return diktujStop();
+ const r=prepis(ta);if(!r)return toast("Diktování tu nejde – napište dotaz textem");
+ REC.sr=r;REC.dikt={b,info,t:setTimeout(diktujStop,90000)};b.textContent="⏹ Hotovo";b.classList.add("on");info.textContent="● poslouchám – mluvte";
+ $(ta).focus()}
+function diktujStop(){const d=REC.dikt;if(!d)return;REC.dikt=null;clearTimeout(d.t);const r=REC.sr;REC.sr=null;if(r)try{r.stop()}catch(e){}
+ d.b.textContent="🎤 Nadiktovat";d.b.classList.remove("on");d.info.textContent=""}
 let HR=null;
 function prehraj(q,btn,popis){
  popis=popis||"▶ Přehrát do sálu";
@@ -1466,7 +1468,7 @@ function pjKresli(){
  el.innerHTML=`<div class="pjh"><div class="pjtl"><div class="pjbl">${esc(bk.blok||"Dotazy z publika")}</div>${o?`<div class="pjtt">${esc(o.x.h)}</div><div class="pjsp">${esc(o.x.t)}${o.x.w?" · "+esc(o.x.w):""}</div>`:""}</div><div class="pjcnt">${L.length?(i+1)+" / "+L.length:""}</div></div>
   <div class="pjm">${!o?`<div class="pjempty">Zatím žádné dotazy – přibývají živě z telefonů účastníků.</div>`
    :`${bez?`<div class="pjspk" aria-hidden="true">🔊</div>`:`<div class="pjq${rd?" rd":""}" id="pjq">${esc(o.q.t)}</div>`}
-     ${o.q.au?`<button class="pjplay" id="pjplay">🔊 Přehrát do sálu</button>`:""}`}</div>
+ `}</div>
   <div class="pjf"><div class="pjwho">${o?esc(o.q.a)+" · "+esc(o.q.c)+(n>1?`<span class="pjvt">👍 ${n-1} ${n-1===1?"palec":n-1<5?"palce":"palců"}</span>`:""):""}</div>
    <button id="pjprev" aria-label="Předchozí dotaz">‹ Předchozí</button>${o?`<button id="pjrd" class="${rd?"on":""}">${rd?"Přečteno ✓":"Označit přečtené"}</button>`:""}<button id="pjnext" aria-label="Další dotaz">Další ›</button>
    <button id="pjfs" aria-label="Celá obrazovka">⛶</button><button id="pjdk" aria-label="Tmavé / světlé pozadí">🌓</button><button id="pjx" aria-label="Zavřít projekci">✕</button></div>`;
@@ -1476,7 +1478,6 @@ function pjKresli(){
  const go=d=>{if(!L.length)return;if(HR){HR.pause();HR=null}PJ.key=L[(i+d+L.length)%L.length].key;pjKresli()};
  $("pjprev").onclick=()=>go(-1);$("pjnext").onclick=()=>go(1);
  if($("pjrd"))$("pjrd").onclick=()=>pjPrecteno(o.key);
- if($("pjplay"))$("pjplay").onclick=()=>prehraj(o.q,$("pjplay"),"🔊 Přehrát do sálu");
  $("pjfs").onclick=()=>{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else if(el.requestFullscreen)el.requestFullscreen().catch(()=>toast("Celá obrazovka tady nejde – použijte F11"))};
  $("pjdk").onclick=()=>{PJ.dark=!PJ.dark;store.set("pjdark",PJ.dark);pjKresli()};
  $("pjx").onclick=pjZavri;
@@ -1495,7 +1496,7 @@ function sheetChair(bid){
  const bk=ALLT.find(y=>y.blok&&y.bid===bid), talks=ALLT.filter(y=>y.id&&y.bid===bid);
  const draw=()=>{$("clist").innerHTML=talks.map(x=>{const l=(S.qa[x.id]||[]).slice().sort((a,b)=>(!!S.read[x.id+":"+a.k]-!!S.read[x.id+":"+b.k])||votes(x.id,b.k)-votes(x.id,a.k));
    return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(q=>{const k=x.id+":"+q.k,r=!!S.read[k],n=votes(x.id,q.k);
-    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p>${q.au?`<button class="play" data-play="${esc(k)}">▶ Přehrát do sálu</button>`:""}<small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes" title="Palce od ostatních">👍 ${n-1}</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">🔎 Velkým písmem</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
+    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes" title="Palce od ostatních">👍 ${n-1}</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">🔎 Velkým písmem</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
  openSheet(`<h2>Pohled předsedajícího</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(bk.blok)} · předsedá ${esc(bk.pr)}</div>
   <div class="bd chair"><button class="projall" data-projall="1">🔎 Dotazy velkým písmem · na plátno</button><div id="clist"></div>
   <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe.<br><b>Na mobilu</b> (předsedající s mikrofonem): „Velkým písmem“ ukáže dotaz přes celý displej – pohodlně ho přečtete do mikrofonu, hlasový dotaz pustíte tlačítkem 🔊 a telefon podržíte u mikrofonu.<br><b>Na počítači u projektoru</b> (např. v diskuzi po přednášce): stejný pohled přes celé plátno. Ovládání: ← → další dotaz, mezerník přehrát, R přečteno, F celá obrazovka, Esc zpět.<br>Přímý odkaz pro počítač v sále: <b>…/pruvodce/?pr=${esc(bid)}</b></div></div>`);
@@ -1654,7 +1655,7 @@ function tymUloz(d){const s=TYM.s||{};TYM.s={em:d.email||s.em,uid:d.localId||d.u
  exp:Date.now()+((+(d.expiresIn||d.expires_in)||3600)-120)*1000,ok:!!s.ok,org:!!s.org,jm:s.jm||store.get("tymJm","")};store.set("tym",TYM.s)}
 function tymToken(){const s=TYM.s;if(!s||!s.rt)return Promise.reject(new Error("odhlášen"));if(Date.now()<s.exp)return Promise.resolve(s.it);
  return fbPost("https://securetoken.googleapis.com/v1/token?key="+FBKEY,"grant_type=refresh_token&refresh_token="+encodeURIComponent(s.rt),true)
-  .then(d=>{tymUloz(d);return TYM.s.it}).catch(e=>{if(e.st===400)tymOdhlas("Přihlášení vypršelo, přihlaste se znovu.");throw e})}
+  .then(d=>{tymUloz(d);return TYM.s.it}).catch(e=>{if(e.st===400&&/INVALID_REFRESH_TOKEN|TOKEN_EXPIRED|USER_DISABLED|USER_NOT_FOUND/.test(e.message))tymOdhlas("Přihlášení vypršelo, přihlaste se znovu.","Google: "+e.message);throw e})}
 function tymOdkaz(em){store.set("tymEm",em);
  return fbPost("https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key="+FBKEY,{requestType:"EMAIL_SIGNIN",email:em,continueUrl:location.origin+location.pathname+"?tym=1"})}
 function tymZOdkazu(url){   // odkaz z e-mailu (otevřený, nebo vložený ručně) → přihlásit
@@ -1670,9 +1671,10 @@ function tymVysledek(h,t){go("info");setTimeout(()=>openSheet(`<h2>${h}</h2><div
 function tymOver(poOdkazu){   // je e-mail v seznamu týmu, nebo pořadatel (stejný seznam jako aplikace pořadatele)?
  const cti=(t,u)=>fetchT(FBDB+u+"/"+tymKlic(TYM.s.em)+".json?auth="+t).then(r=>{if(r.ok)return r.json();if(u==="florian_login_email"&&r.status===401)return null;throw new Error("SPOJENI")});   // výpadek ≠ „není v týmu“ – neodhlašovat
  return tymToken().then(t=>Promise.all([cti(t,"konference2027_tym"),cti(t,"florian_login_email")])).then(([v,o])=>{
-  if(v!==true&&o==null){const em=TYM.s.em;tymOdhlas();if(poOdkazu)tymVysledek("Tento e-mail nemá přístup",`Odkaz byl v pořádku, ale e-mail <b>${esc(em)}</b> není mezi pořadateli ani v týmu.<br><br>Pořadatel: přihlaste se stejným e-mailem jako do aplikace pořadatele. Člen týmu: požádejte pořadatele, ať vás přidá (aplikace pořadatele → Průvodce → Tým).`);return}
+  if(v!==true&&o==null){const em=TYM.s.em;tymOdhlas(null,"e-mail "+em+" není v týmu ani mezi pořadateli");if(poOdkazu)tymVysledek("Tento e-mail nemá přístup",`Odkaz byl v pořádku, ale e-mail <b>${esc(em)}</b> není mezi pořadateli ani v týmu.<br><br>Pořadatel: přihlaste se stejným e-mailem jako do aplikace pořadatele. Člen týmu: požádejte pořadatele, ať vás přidá (aplikace pořadatele → Průvodce → Tým).`);return}
   TYM.s.ok=true;TYM.s.org=o!=null;store.set("tym",TYM.s);if(poOdkazu)tymVysledek("🔑 Přihlášeno","Jste přihlášen jako <b>"+esc(tymJmeno())+"</b> ("+(o!=null?"pořadatel":"tým pořadatele")+"). Karta s ohlasy a zprávou všem je nahoře v Info.");else toast("🔑 Přihlášeno: "+tymJmeno());tymStart();if(S.tab==="info")render();else go("info")})}
-function tymOdhlas(proc){if(TYM.es)TYM.es.close();TYM.es=null;TYM.s=null;TYM.ohl={};TYM.nac=false;store.set("tym",null);if(proc)toast(proc);render()}
+function tymOdhlas(proc,duvod){if(duvod||proc!=="Odhlášeno")store.set("tymOdhl",{t:Date.now(),d:duvod||proc||"bez důvodu",v:VERZE});   // důvod automatického odhlášení – ukáže se v okně přihlášení
+ if(TYM.es)TYM.es.close();TYM.es=null;TYM.s=null;TYM.ohl={};TYM.nac=false;store.set("tym",null);if(proc)toast(proc);render()}
 function tymOhlasy(){return Object.keys(TYM.ohl).map(k=>Object.assign({k},TYM.ohl[k])).filter(x=>x&&x.ts).sort((a,b)=>b.ts-a.ts)}
 function tymNove(){return tymJe()?tymOhlasy().filter(x=>x.ts>TYM.seen).length:0}
 function tymStart(){   // živý seznam ohlasů; token platí hodinu → Firebase pošle auth_revoked a připojíme se s novým
@@ -1737,7 +1739,8 @@ function sheetTymPrihlas(){
   <details style="margin-top:10px"><summary class="linkb" style="cursor:pointer">Mám odkaz z e-mailu – vložit ručně</summary>
    <p class="muted" style="font-size:13px;margin:6px 0">Hodí se na iPhonu, když se odkaz otevře v Safari místo průvodce na ploše: v e-mailu odkaz podržte, zkopírujte a vložte sem.</p>
    <form class="qform" id="tpo"><input id="tpu" placeholder="https://…" aria-label="Odkaz z e-mailu"><button class="send">Přihlásit</button></form></details>
-  <div class="note">Účastníci se nikam nepřihlašují. Tohle je jen pro tým, jehož e-maily zapsal pořadatel.</div></div>`);
+  <div class="note">Účastníci se nikam nepřihlašují. Tohle je jen pro tým, jehož e-maily zapsal pořadatel.</div>
+  ${(o=>o?`<p class="muted" style="font-size:12px;margin:8px 0 0">Naposledy odhlášeno samo: ${new Date(o.t).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})} – ${esc(o.d)} (${esc(String(o.v).split(" ")[0])})</p>`:"")(store.get("tymOdhl",null))}</div>`);
  $("tpf").addEventListener("submit",e=>{e.preventDefault();const em=$("tpe").value.trim(),jm=$("tpj").value.trim();if(!jm){$("tpj").focus();return toast("Napište jméno – uvidí ho účastníci u vašich zpráv")}if(!/^\S+@\S+\.\S+$/.test(em))return toast("Napište e-mail");store.set("tymJm",jm);
   const b=e.target.querySelector(".send");b.disabled=true;
   tymOdkaz(em).then(()=>{$("tpm").innerHTML="✉️ Odkaz jsme poslali na <b>"+esc(em)+"</b>. Otevřete ho v tomto telefonu (podívejte se i do nevyžádané pošty)."})
@@ -1786,7 +1789,7 @@ function drzData(){   // požádá prohlížeč, ať poznámky nemaže (uživate
 function mojeIkony(){   // „Moje poznámky“ + kolik čeho: ✎ text, 🎤 nahrávky, 📷 fotky
  let t=0,h=0,f=0;ALLT.forEach(x=>{if(!x.id)return;t+=txt(x.id).length;medTid(x.id).forEach(m=>m.typ==="hlas"?h++:f++)});
  const i=(z,n)=>`<span class="mi${n?"":" nic"}">${z}${n?" "+n:""}</span>`;
- return `<b>Moje poznámky</b><span class="mis">${i("✎",t)}${i("🎤",h)}${i("📷",f)}</span>`}
+ return `<b>Poznámky</b><span class="mis">${i("✎",t)}${i("🎤",h)}${i("📷",f)}</span>`}
 const pocetPoznamek=()=>ALLT.filter(x=>x.id&&maPozn(x.id)).length;
 const umiSdilet=()=>!!(navigator.share&&matchMedia("(pointer:coarse)").matches);
 function nexpBtns(){   // mobil/tablet: hlavně sdílení (e-mail, Soubory, Poznámky…); počítač: hlavně uložit do počítače
