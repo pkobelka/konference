@@ -334,6 +334,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .akt article{position:relative;padding:10px 0;border-top:1px solid var(--line)}.akt article:first-of-type{border-top:0}
 .akt h3{font-size:16px;font-family:var(--f-body);font-weight:700;margin:0}.akt p{margin:4px 0 2px;font-size:14px;line-height:1.45}.akt small{color:var(--muted);font-size:12px}
 .akt article.nova{background:linear-gradient(90deg,var(--accent-soft),transparent);margin:0 -14px;padding:10px 14px;border-radius:10px}
+.onl{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}.onl[hidden]{display:none}.onl b{color:var(--ink)}
+.onl i{flex:none;width:8px;height:8px;border-radius:50%;background:#2fa84f;animation:onlp 2s infinite}@keyframes onlp{0%{box-shadow:0 0 0 0 rgba(47,168,79,.55)}70%,100%{box-shadow:0 0 0 7px rgba(47,168,79,0)}}
 .tymc{border:2px dashed var(--water)}.tbad{background:#d6342c;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;font-weight:800}
 .chipn{display:inline-block;margin-bottom:4px;border-radius:99px;padding:2px 8px;font-size:11px;font-weight:800;background:#d6342c;color:#fff;letter-spacing:.03em}
 .qk button{position:relative}.qk .bdg{position:absolute;top:8px;right:8px}
@@ -638,7 +640,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.75 · 21. 10. 2026";
+const VERZE="0.76 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1104,7 +1106,7 @@ function vDomu(){
     <h1>Nové metody a postupy při provozování ČOV</h1>
     <p class="mem">memoriál Ing. Jakuba S. Čecha, CSc.</p>
     <div class="pills"><button class="pb" data-kal="1" aria-label="27.–28. dubna 2027 – přidat do kalendáře">${IC.cal}27.–28. dubna 2027<i>+</i></button><button class="pb plc" data-nav="1" aria-label="Kongres hotel Jezerka, Seč – navigovat">${IC.pin}Kongres hotel Jezerka, Seč<i>➜</i></button>${vToday()}</div>
-    <div class="cdrow"><div class="cd">${odpocet()}</div>${dnesTxt()}</div>
+    <div class="cdrow"><div class="cd">${odpocet()}</div>${dnesTxt()}</div>${vOnline()}
    </div>
    <div class="porg"><a class="pv" href="https://www.vhos.cz" target="_blank" rel="noopener" aria-label="Pořádá VHOS, a.s. – www.vhos.cz"><img src="${IMG}loga/vhos.webp" alt="VHOS, a.s."></a><div class="ps"><small>ve spolupráci s</small><span><a href="https://www.czwa.cz" target="_blank" rel="noopener"><img src="${IMG}loga/czwa.webp" alt="CzWA" class="pcz"></a><img src="${IMG}loga/mov.webp" alt="odborná skupina ČR MOV" title="odborná skupina ČR MOV" class="pmv"></span></div></div>
   </div>
@@ -1315,7 +1317,7 @@ function vInfo(){
   <div class="rozc"><button data-skok="i-akt">📣 Aktuality</button><button data-skok="i-dop">🚌 Cesta a svoz</button><button data-skok="i-kont">📞 Kontakty</button><button data-skok="i-o">ℹ️ O konferenci</button></div>
   ${vTym()}
   <div class="card akt" id="i-akt"><div class="label" style="margin-bottom:4px">📣 Aktuality od pořadatele</div>
-   ${AKT.list.length?AKT.list.map(x=>`<article class="${nove[x.k]?"nova":""}">${nove[x.k]?'<span class="chipn">Nové</span>':""}<h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}<small>${x.d?esc(x.d):x.ts>1e9?new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}):""}</small>${tymJe()&&x.uid&&x.uid===TYM.s.uid?` <button class="linkb" data-tymdel="${esc(x.k)}">Smazat</button>`:""}</article>`).join(""):'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Jakmile pořadatel něco napíše, uvidíte to tady a u záložky Info naskočí číslo.</p>'}
+   ${AKT.list.length?AKT.list.map(x=>`<article class="${nove[x.k]?"nova":""}">${nove[x.k]?'<span class="chipn">Nové</span>':""}<h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}<small>${x.d?esc(x.d):x.ts>1e9?new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}):""}</small>${tymJe()&&(TYM.s.org||x.uid&&x.uid===TYM.s.uid)?` <button class="linkb" data-tymdel="${esc(x.k)}">Smazat</button>`:""}</article>`).join(""):'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Jakmile pořadatel něco napíše, uvidíte to tady a u záložky Info naskočí číslo.</p>'}
   </div>
   <div class="blockh" id="i-dop"><h2>🚌 Cesta a svoz</h2></div>
   ${vDoprava().replace(/^\s*<section class="sec">/,"").replace(/<\/section>\s*$/,"")}
@@ -1629,7 +1631,7 @@ function tymChyba(e){const m=String(e&&e.message||e);return {INVALID_OOB_CODE:"o
 function fbPost(url,body,form){return fetch(url,{method:"POST",headers:{"Content-Type":form?"application/x-www-form-urlencoded":"application/json"},body:form?body:JSON.stringify(body)})
  .then(r=>r.json().catch(()=>({})).then(d=>{if(!r.ok){const e=new Error((d.error&&d.error.message)||r.status);e.st=r.status;throw e}return d}))}
 function tymUloz(d){const s=TYM.s||{};TYM.s={em:d.email||s.em,uid:d.localId||d.user_id||s.uid,rt:d.refreshToken||d.refresh_token,it:d.idToken||d.id_token,
- exp:Date.now()+((+(d.expiresIn||d.expires_in)||3600)-120)*1000,ok:!!s.ok};store.set("tym",TYM.s)}
+ exp:Date.now()+((+(d.expiresIn||d.expires_in)||3600)-120)*1000,ok:!!s.ok,org:!!s.org};store.set("tym",TYM.s)}
 function tymToken(){const s=TYM.s;if(!s||!s.rt)return Promise.reject(new Error("odhlášen"));if(Date.now()<s.exp)return Promise.resolve(s.it);
  return fbPost("https://securetoken.googleapis.com/v1/token?key="+FBKEY,"grant_type=refresh_token&refresh_token="+encodeURIComponent(s.rt),true)
   .then(d=>{tymUloz(d);return TYM.s.it}).catch(e=>{if(e.st===400)tymOdhlas("Přihlášení vypršelo, přihlaste se znovu.");throw e})}
@@ -1641,10 +1643,11 @@ function tymZOdkazu(url){   // odkaz z e-mailu (otevřený, nebo vložený ručn
  toast("Přihlašuji…");
  fbPost("https://identitytoolkit.googleapis.com/v1/accounts:signInWithEmailLink?key="+FBKEY,{email:em,oobCode:oob})
   .then(d=>{TYM.s=null;tymUloz(d);return tymOver()}).catch(e=>toast("⚠️ Přihlášení se nepovedlo: "+tymChyba(e)));return true}
-function tymOver(){   // je e-mail v seznamu týmu?
- return tymToken().then(t=>fetch(FBDB+"konference2027_tym/"+tymKlic(TYM.s.em)+".json?auth="+t)).then(r=>r.ok?r.json():null).then(v=>{
-  if(v!==true)return tymOdhlas("E-mail "+TYM.s.em+" nemá přístup pro pořadatele. Ozvěte se Petru Kobelkovi.");
-  TYM.s.ok=true;store.set("tym",TYM.s);toast("🔑 Přihlášeno: "+TYM.s.em);tymStart();if(S.tab==="info")render();else go("info")})}
+function tymOver(){   // je e-mail v seznamu týmu, nebo pořadatel (stejný seznam jako aplikace pořadatele)?
+ const cti=(t,u)=>fetch(FBDB+u+"/"+tymKlic(TYM.s.em)+".json?auth="+t).then(r=>r.ok?r.json():null).catch(()=>null);
+ return tymToken().then(t=>Promise.all([cti(t,"konference2027_tym"),cti(t,"florian_login_email")])).then(([v,o])=>{
+  if(v!==true&&o==null)return tymOdhlas("E-mail "+TYM.s.em+" nemá přístup pro pořadatele. Ozvěte se Petru Kobelkovi.");
+  TYM.s.ok=true;TYM.s.org=o!=null;store.set("tym",TYM.s);toast("🔑 Přihlášeno: "+TYM.s.em);tymStart();if(S.tab==="info")render();else go("info")})}
 function tymOdhlas(proc){if(TYM.es)TYM.es.close();TYM.es=null;TYM.s=null;TYM.ohl={};TYM.nac=false;store.set("tym",null);if(proc)toast(proc);render()}
 function tymOhlasy(){return Object.keys(TYM.ohl).map(k=>Object.assign({k},TYM.ohl[k])).filter(x=>x&&x.ts).sort((a,b)=>b.ts-a.ts)}
 function tymNove(){return tymJe()?tymOhlasy().filter(x=>x.ts>TYM.seen).length:0}
@@ -1665,7 +1668,8 @@ function tymUpoz(x){const b=[x.k?"konference "+tymTvar(x.k):"",x.p?"průvodce "+
   (navigator.serviceWorker&&navigator.serviceWorker.getRegistration?navigator.serviceWorker.getRegistration():Promise.resolve(null)).then(r=>{if(r)r.showNotification(t,o);else new Notification(t,o)}).catch(()=>{try{new Notification(t,o)}catch(e){}})}}
 function vTym(){   // karta nahoře v Info (jen přihlášený tým)
  if(!tymJe())return "";const n=tymNove(),l=tymOhlasy();
- return `<div class="card tymc"><div class="label" style="margin-bottom:6px">🔑 Pro pořadatele · ${esc(TYM.s.em)}</div>
+ return `<div class="card tymc"><div class="label" style="margin-bottom:6px">🔑 ${TYM.s.org?"Pořadatel":"Tým pořadatele"} · ${esc(TYM.s.em)}</div>
+  <p id="tymonl" style="margin:0 0 10px;font-size:14px">${tymOnlTxt()}</p>
   <div class="cact" style="margin:0"><button class="cbtn" data-tym="ohl">💬 Ohlasy (${TYM.nac?l.length:"…"})${n?` <span class="tbad">${n} ${n===1?"nový":n<5?"nové":"nových"}</span>`:""}</button><button class="cbtn" data-tym="zpr">📣 Zpráva všem</button></div>
   ${"Notification" in window&&Notification.permission!=="granted"?`<button class="linkb" data-tym="notif" style="margin-top:10px;display:block">🔔 Upozorňovat na nové ohlasy i při zavřené obrazovce</button>`:""}
   <button class="linkb" data-tym="odhl" style="margin-top:10px">Odhlásit</button></div>`}
@@ -1676,15 +1680,22 @@ function sheetTymOhlasy(){
  openSheet(`<h2>💬 Ohlasy</h2><div class="muted" style="font-size:13px;margin-top:2px">${l.length} ${l.length===1?"ohlas":l.length>1&&l.length<5?"ohlasy":"ohlasů"} · vidí jen tým pořadatele</div><div class="bd">
   ${l.length?`<dl class="kv"><dt>Konference</dt><dd>${sum("k")} · průměr ${pr("k")} / 4</dd><dt>Průvodce</dt><dd>${sum("p")} · průměr ${pr("p")} / 4</dd></dl>
   <div class="akt">${l.map(x=>`<article class="${x.ts>seen?"nova":""}">${x.ts>seen?'<span class="chipn">Nový</span>':""}<h3>${x.k?"Konference "+tymTvar(x.k):""}${x.k&&x.p?" · ":""}${x.p?"Průvodce "+tymTvar(x.p):""}</h3>
-   ${x.lib?`<p>👍 ${esc(x.lib)}</p>`:""}${x.chybi?`<p>💡 ${esc(x.chybi)}</p>`:""}<small>${new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})} · ${esc(x.a||"anonymně")}${x.zv?" · smí se zveřejnit":""}</small></article>`).join("")}</div>`
+   ${x.lib?`<p>👍 ${esc(x.lib)}</p>`:""}${x.chybi?`<p>💡 ${esc(x.chybi)}</p>`:""}<small>${new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})} · ${esc(x.a||"anonymně")}${x.zv?" · smí se zveřejnit":""}</small>
+   ${TYM.s.org?`<div class="cact" style="margin-top:6px">${x.zv&&x.lib?(OHL.zv[x.k]?`<button class="linkb" data-ohlorg="skryt" data-k="${esc(x.k)}">Skrýt z Domů</button>`:`<button class="linkb" data-ohlorg="zverejnit" data-k="${esc(x.k)}">Zveřejnit na Domů</button>`):""} <button class="linkb" data-ohlorg="smazat" data-k="${esc(x.k)}" style="color:var(--muted)">Smazat</button></div>`:""}</article>`).join("")}</div>`
   :`<p class="muted" style="margin:0">${TYM.nac?"Zatím žádný ohlas.":"Načítám…"}</p>`}
-  <div class="note">Zveřejnit ohlas na Domů nebo ho smazat jde v aplikaci pořadatele.</div></div>`);render()}
+  ${TYM.s.org?"":'<div class="note">Zveřejnit ohlas na Domů nebo ho smazat může pořadatel.</div>'}</div>`);render()}
+function ohlOrg(akce,k){   // pořadatel v průvodci: zveřejnit / skrýt z Domů / smazat ohlas
+ const x=TYM.ohl[k];if(!x)return;if(akce==="smazat"&&!confirm("Smazat tento ohlas?"))return;
+ const req=(t,cesta,m,body)=>fetch(OHLDB+cesta+".json?auth="+t,{method:m,body:body&&JSON.stringify(body)}).then(r=>{if(!r.ok)throw new Error(r.status===401||r.status===403?"nemáte oprávnění":r.status)});
+ tymToken().then(t=>akce==="zverejnit"?req(t,"zv/"+k,"PUT",{t:x.lib,a:x.a||"",ts:x.ts}):req(t,"zv/"+k,"DELETE").then(()=>akce==="smazat"?req(t,"o/"+k,"DELETE"):0))
+  .then(()=>{if(akce==="zverejnit")OHL.zv[k]={t:x.lib,a:x.a||"",ts:x.ts};else delete OHL.zv[k];store.set("ohlZv",OHL.zv);
+   toast(akce==="zverejnit"?"Ohlas je na Domů":akce==="skryt"?"Ohlas skrytý z Domů":"Ohlas smazán");sheetTymOhlasy()}).catch(er=>toast("⚠️ Nepovedlo se: "+tymChyba(er)))}
 function sheetTymZprava(){
  openSheet(`<h2>📣 Zpráva všem účastníkům</h2><div class="muted" style="font-size:13px;margin-top:2px">Hned se objeví všem v průvodci v Info, u záložky naskočí číslo</div>
   <div class="bd"><form class="qform" id="tzf"><input id="tzh" maxlength="120" placeholder="Nadpis – např. Přednáška Ing. Nováka začne o 15 minut později" aria-label="Nadpis">
    <textarea id="tzp" rows="4" maxlength="1000" placeholder="Text zprávy (nepovinné)" aria-label="Text zprávy"></textarea>
    <button class="send">Odeslat všem</button></form>
-  <div class="note">Odesláno jako ${esc(TYM.s.em)}. Svou zprávu můžete později v Info smazat.</div></div>`);
+  <div class="note">Odesláno jako ${esc(TYM.s.em)}. ${TYM.s.org?"Zprávy":"Svou zprávu"} můžete později v Info smazat.</div></div>`);
  $("tzh").focus();
  $("tzf").addEventListener("submit",e=>{e.preventDefault();const h=$("tzh").value.trim(),p=$("tzp").value.trim();if(!h){$("tzh").focus();return toast("Napište aspoň nadpis")}
   if(!confirm("Odeslat zprávu všem účastníkům?\n\n"+h))return;const btn=e.target.querySelector(".send");btn.disabled=true;btn.textContent="Odesílám…";
@@ -1709,10 +1720,30 @@ function sheetTymPrihlas(){
  $("tpo").addEventListener("submit",e=>{e.preventDefault();if(tymZOdkazu($("tpu").value))closeSheet();else toast("Tohle není přihlašovací odkaz z e-mailu")})}
 document.addEventListener("click",e=>{
  const z=e.target.closest("[data-tymdel]");if(z)return tymSmazZpravu(z.dataset.tymdel);
+ const oo=e.target.closest("[data-ohlorg]");if(oo)return ohlOrg(oo.dataset.ohlorg,oo.dataset.k);
  const b=e.target.closest("[data-tym]");if(!b)return;const a=b.dataset.tym;
  if(a==="prihl")sheetTymPrihlas();else if(a==="ohl")sheetTymOhlasy();else if(a==="zpr")sheetTymZprava();
  else if(a==="odhl"){if(confirm("Odhlásit z části pro pořadatele?"))tymOdhlas("Odhlášeno")}
  else if(a==="notif"&&"Notification" in window)Notification.requestPermission().then(r=>{toast(r==="granted"?"🔔 Upozornění zapnuto":"Upozornění zakázáno v nastavení prohlížeče");render()}).catch(()=>{})});
+
+/* ===== Kolik lidí má teď průvodce otevřený (konference2027_online) ===== */
+// Otevřený průvodce (obrazovka zapnutá) každou minutu zapíše d/{DEV} = čas serveru – anonymně, jen kód zařízení.
+// Serverová funkce konferenceOnline (mojebudky) jednou za minutu spočítá aktivní za 2,5 min a zapíše
+// n = {n, ts, max, maxTs, den}. Průvodce čte jen n, takže 400 telefonů nestahuje seznam všech.
+const ONDB=FBDB+"konference2027_online/";
+const ONL={n:null};
+function onlTep(){if(document.visibilityState!=="visible"||navigator.onLine===false)return;fetch(ONDB+"d/"+DEV+".json",{method:"PUT",body:'{".sv":"timestamp"}'}).catch(()=>{})}
+function onlLidi(n){return n===1?"člověk":n>=2&&n<=4?"lidé":"lidí"}
+function onlCerstve(){return !!(ONL.n&&ONL.n.ts&&Date.now()-ONL.n.ts<5*60000&&ONL.n.n>0)}
+function onlTxt(){return onlCerstve()?`<i></i><span>Teď s námi v průvodci <b>${ONL.n.n}</b> ${onlLidi(ONL.n.n)}</span>`:""}
+function vOnline(){return `<div class="onl" ${onlCerstve()?"":"hidden"}>${onlTxt()}</div>`}
+function tymOnlTxt(){const o=ONL.n;if(!onlCerstve())return "📶 Počet lidí online se zobrazí, jakmile bude někdo připojený.";
+ return `📶 Online teď <b>${o.n}</b> · dnes nejvíc <b>${o.max||o.n}</b>${o.maxTs?" (v "+new Date(o.maxTs).toLocaleTimeString("cs",{hour:"2-digit",minute:"2-digit"})+")":""}`}
+function onlUkaz(){document.querySelectorAll(".onl").forEach(e=>{e.hidden=!onlCerstve();e.innerHTML=onlTxt()});const t=$("tymonl");if(t)t.innerHTML=tymOnlTxt()}
+function onlStart(){onlTep();setInterval(onlTep,60000);document.addEventListener("visibilitychange",onlTep);setInterval(onlUkaz,60000);
+ if(!window.EventSource)return;let es;try{es=new EventSource(ONDB+"n.json")}catch(e){return}
+ const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;ONL.n=treeSet(ONL.n||{},d.path,d.data,ev.type==="patch");onlUkaz()};
+ es.addEventListener("put",on);es.addEventListener("patch",on);es.addEventListener("cancel",()=>es.close())}
 
 /* ===== Export poznámek ===== */
 function prvniPozn(){   // po první poznámce (text, hlas, foto) jednou vysvětlit, kde poznámky jsou a jak si je uložit
@@ -1924,7 +1955,7 @@ $("view").addEventListener("input",e=>{
 try{if(new URLSearchParams(location.search).has("k"))history.replaceState(null,"",location.pathname+location.hash)}catch(e){}
 {const sq=store.get("snapQ",null);if(sq&&sq.q){LIVE.q=sq.q;LIVE.v=sq.v||{};OUT.l.forEach(o=>liveApply(o.path,o.val));LIVE.on=true;S.voted={};liveRebuild()}
  const sa=store.get("snapA",null);if(sa&&typeof sa==="object"){AKT.raw=sa;aktSeznam();render()}}   // bez signálu poslední uložený stav
-liveStart();aktStart();offlUkaz();outFlush();medNacti();ohlNacti();ohlCekajici();tymStart();
+liveStart();aktStart();offlUkaz();outFlush();medNacti();ohlNacti();ohlCekajici();tymStart();onlStart();
 if(tymZOdkazu(location.href))try{history.replaceState(null,"",location.pathname+location.hash)}catch(e){}   // přihlašovací odkaz pro tým pořadatele
 // Program a Dotazy se s během času samy obnoví (běžící přednáška, Upozornit) – ne při psaní ani s otevřeným oknem
 let TIK=(c=>c.day+c.m)(clock());setTimeout(ohlProsba,4000);PRED=(s=>s.cur&&s.cur.id||null)(nowState());
