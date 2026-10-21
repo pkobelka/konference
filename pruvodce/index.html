@@ -640,7 +640,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.78 · 21. 10. 2026";
+const VERZE="0.79 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1628,8 +1628,11 @@ function tymKlic(em){return String(em||"").trim().toLowerCase().replace(/\./g,",
 function tymJe(){return !!(TYM.s&&TYM.s.ok)}
 function tymJmeno(){return TYM.s&&(TYM.s.jm||TYM.s.em)||""}   // jméno (zadané při přihlášení), jinak e-mail
 function tymChyba(e){const m=String(e&&e.message||e);return {INVALID_OOB_CODE:"odkaz už byl použitý nebo je starý – pošlete si nový",EXPIRED_OOB_CODE:"odkaz vypršel – pošlete si nový",INVALID_EMAIL:"e-mail není správně",
- "Failed to fetch":"není připojení"}[m]||m}
-function fbPost(url,body,form){return fetch(url,{method:"POST",headers:{"Content-Type":form?"application/x-www-form-urlencoded":"application/json"},body:form?body:JSON.stringify(body)})
+ "Failed to fetch":"nepodařilo se spojit s Firebase – zkontrolujte připojení; v prohlížeči může přihlášení blokovat blokátor reklam nebo přísná ochrana proti sledování",SPOJENI:"Firebase neodpovídá – v prohlížeči ho nejspíš blokuje blokátor reklam, přísná ochrana proti sledování nebo firemní filtr"}[m]||m}
+function fetchT(url,o){   // fetch, který po 15 s vzdá (blokátor / firemní filtr jinak nechá čekat donekonečna)
+ const c=window.AbortController?new AbortController():null,t=c&&setTimeout(()=>c.abort(),15000);
+ return fetch(url,Object.assign({},o,c?{signal:c.signal}:{})).catch(e=>{throw new Error(e&&e.name==="AbortError"?"SPOJENI":"Failed to fetch")}).finally(()=>clearTimeout(t))}
+function fbPost(url,body,form){return fetchT(url,{method:"POST",headers:{"Content-Type":form?"application/x-www-form-urlencoded":"application/json"},body:form?body:JSON.stringify(body)})
  .then(r=>r.json().catch(()=>({})).then(d=>{if(!r.ok){const e=new Error((d.error&&d.error.message)||r.status);e.st=r.status;throw e}return d}))}
 function tymUloz(d){const s=TYM.s||{};TYM.s={em:d.email||s.em,uid:d.localId||d.user_id||s.uid,rt:d.refreshToken||d.refresh_token,it:d.idToken||d.id_token,
  exp:Date.now()+((+(d.expiresIn||d.expires_in)||3600)-120)*1000,ok:!!s.ok,org:!!s.org,jm:s.jm||store.get("tymJm","")};store.set("tym",TYM.s)}
@@ -1647,7 +1650,7 @@ function tymZOdkazu(url){   // odkaz z e-mailu (otevřený, nebo vložený ručn
 function tymVysledek(h,t){go("info");setTimeout(()=>openSheet(`<h2>${h}</h2><div class="bd"><p style="margin:0">${t}</p><button class="send" id="tvok" style="margin-top:14px">Rozumím</button></div>`,true),50);
  setTimeout(()=>{const b=$("tvok");if(b)b.addEventListener("click",closeSheet)},120)}
 function tymOver(poOdkazu){   // je e-mail v seznamu týmu, nebo pořadatel (stejný seznam jako aplikace pořadatele)?
- const cti=(t,u)=>fetch(FBDB+u+"/"+tymKlic(TYM.s.em)+".json?auth="+t).then(r=>r.ok?r.json():null).catch(()=>null);
+ const cti=(t,u)=>fetchT(FBDB+u+"/"+tymKlic(TYM.s.em)+".json?auth="+t).then(r=>r.ok?r.json():null);
  return tymToken().then(t=>Promise.all([cti(t,"konference2027_tym"),cti(t,"florian_login_email")])).then(([v,o])=>{
   if(v!==true&&o==null){const em=TYM.s.em;tymOdhlas();if(poOdkazu)tymVysledek("Tento e-mail nemá přístup",`Odkaz byl v pořádku, ale e-mail <b>${esc(em)}</b> není mezi pořadateli ani v týmu.<br><br>Pořadatel: přihlaste se stejným e-mailem jako do aplikace pořadatele. Člen týmu: požádejte pořadatele, ať vás přidá (aplikace pořadatele → Průvodce → Tým).`);return}
   TYM.s.ok=true;TYM.s.org=o!=null;store.set("tym",TYM.s);if(poOdkazu)tymVysledek("🔑 Přihlášeno","Jste přihlášen jako <b>"+esc(tymJmeno())+"</b> ("+(o!=null?"pořadatel":"tým pořadatele")+"). Karta s ohlasy a zprávou všem je nahoře v Info.");else toast("🔑 Přihlášeno: "+tymJmeno());tymStart();if(S.tab==="info")render();else go("info")})}
