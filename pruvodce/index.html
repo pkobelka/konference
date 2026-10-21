@@ -640,7 +640,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.79 · 21. 10. 2026";
+const VERZE="0.80 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1627,7 +1627,7 @@ const TYM={s:store.get("tym",null),ohl:{},nac:false,es:null,seen:store.get("tymS
 function tymKlic(em){return String(em||"").trim().toLowerCase().replace(/\./g,",")}
 function tymJe(){return !!(TYM.s&&TYM.s.ok)}
 function tymJmeno(){return TYM.s&&(TYM.s.jm||TYM.s.em)||""}   // jméno (zadané při přihlášení), jinak e-mail
-function tymChyba(e){const m=String(e&&e.message||e);return {INVALID_OOB_CODE:"odkaz už byl použitý nebo je starý – pošlete si nový",EXPIRED_OOB_CODE:"odkaz vypršel – pošlete si nový",INVALID_EMAIL:"e-mail není správně",
+function tymChyba(e){const m=String(e&&e.message||e).replace(/ *:.*$/,"");return {INVALID_OOB_CODE:"odkaz už byl použitý nebo je starý – pošlete si nový",EXPIRED_OOB_CODE:"odkaz vypršel – pošlete si nový",INVALID_EMAIL:"e-mail nesouhlasí s adresou, na kterou přišel odkaz",
  "Failed to fetch":"nepodařilo se spojit s Firebase – zkontrolujte připojení; v prohlížeči může přihlášení blokovat blokátor reklam nebo přísná ochrana proti sledování",SPOJENI:"Firebase neodpovídá – v prohlížeči ho nejspíš blokuje blokátor reklam, přísná ochrana proti sledování nebo firemní filtr"}[m]||m}
 function fetchT(url,o){   // fetch, který po 15 s vzdá (blokátor / firemní filtr jinak nechá čekat donekonečna)
  const c=window.AbortController?new AbortController():null,t=c&&setTimeout(()=>c.abort(),15000);
@@ -1645,8 +1645,10 @@ function tymZOdkazu(url){   // odkaz z e-mailu (otevřený, nebo vložený ručn
  let u;try{u=new URL(String(url).trim())}catch(e){return false}const oob=u.searchParams.get("oobCode");if(!oob||u.searchParams.get("mode")!=="signIn")return false;
  let em=store.get("tymEm","");if(!em)em=(prompt("Potvrďte e-mail, na který přišel přihlašovací odkaz:")||"").trim();if(!em)return true;
  toast("Přihlašuji…");
- fbPost("https://identitytoolkit.googleapis.com/v1/accounts:signInWithEmailLink?key="+FBKEY,{email:em,oobCode:oob})
-  .then(d=>{TYM.s=null;tymUloz(d);return tymOver(true)}).catch(e=>tymVysledek("⚠️ Přihlášení se nepovedlo",esc(tymChyba(e))+". Zkuste to znovu: Info → dole „🔑 Pro pořadatele“."));return true}
+ const zkus=(em,znovu)=>fbPost("https://identitytoolkit.googleapis.com/v1/accounts:signInWithEmailLink?key="+FBKEY,{email:em,oobCode:oob}).then(d=>{store.set("tymEm",em);return d})
+  .catch(e=>{if(znovu||!/^INVALID_EMAIL/.test(String(e.message)))throw e;   // uložený e-mail nesedí (odkaz si poslal z jiného zařízení) → zeptat se
+   const em2=(prompt("Odkaz přišel na jiný e-mail než "+em+".\nNa jaký e-mail přišel?",em)||"").trim();if(!em2||em2===em)throw e;return zkus(em2,true)});
+ zkus(em,false).then(d=>{TYM.s=null;tymUloz(d);return tymOver(true)}).catch(e=>tymVysledek("⚠️ Přihlášení se nepovedlo",esc(tymChyba(e))+". Zkuste to znovu: Info → dole „🔑 Pro pořadatele“."));return true}
 function tymVysledek(h,t){go("info");setTimeout(()=>openSheet(`<h2>${h}</h2><div class="bd"><p style="margin:0">${t}</p><button class="send" id="tvok" style="margin-top:14px">Rozumím</button></div>`,true),50);
  setTimeout(()=>{const b=$("tvok");if(b)b.addEventListener("click",closeSheet)},120)}
 function tymOver(poOdkazu){   // je e-mail v seznamu týmu, nebo pořadatel (stejný seznam jako aplikace pořadatele)?
