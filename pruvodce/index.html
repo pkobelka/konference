@@ -345,6 +345,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .onl{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}.onl[hidden]{display:none}.onl b{color:var(--ink)}
 .onl i{flex:none;width:8px;height:8px;border-radius:50%;background:#2fa84f;animation:onlp 2s infinite}@keyframes onlp{0%{box-shadow:0 0 0 0 rgba(47,168,79,.55)}70%,100%{box-shadow:0 0 0 7px rgba(47,168,79,0)}}
 .tymc{border:2px dashed var(--water)}.tbad{background:#d6342c;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;font-weight:800}
+.qno{font-weight:800;color:var(--water);font-variant-numeric:tabular-nums}
 .chipn{display:inline-block;margin-bottom:4px;border-radius:99px;padding:2px 8px;font-size:11px;font-weight:800;background:#d6342c;color:#fff;letter-spacing:.03em}
 .qk button{position:relative}.qk .bdg{position:absolute;top:8px;right:8px}
 .inst{display:flex;align-items:center;gap:10px;border:2px dashed var(--accent);background:var(--accent-soft)}
@@ -648,12 +649,15 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.96 · 21. 10. 2026";
+const VERZE="0.97 · 21. 10. 2026";
+// Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
+const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
-function clock(){ // skutečný čas během konference, jinak simulace
+function clock(){ // skutečný čas během konference; mimo ni v ostré verzi „před“ / „po“ konferenci, v ukázce simulace
  const d=new Date(),iso=d.toISOString().slice(0,10),day=Object.keys(DATES).find(k=>DATES[k]===iso);
  if(day)return {day,m:d.getHours()*60+d.getMinutes(),real:1};
+ if(!UKAZKA)return iso<DATES.ut?{day:"ut",m:-1,real:0,mimo:"pred"}:{day:"st",m:1439,real:0,mimo:"po"};
  let m=S.sim.m+Math.floor((Date.now()-(S.sim.t0||Date.now()))/60000*(S.sim.x||1)),den=S.sim.day;   // ukázka: nastavený čas dál běží
  if(m>=1440&&den==="ut"){den="st";m-=1440}if(m>1439)m=1439;
  return {day:den,m,real:0};
@@ -869,7 +873,7 @@ const NEWS=[
 /* ===== Stav (jen v tomto telefonu) ===== */
 const store={get(k,d){try{const v=localStorage.getItem("pr_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pr_"+k,JSON.stringify(v))}catch(e){}}};
 const S={sim:{day:"ut",m:10*60+2,t0:Date.now(),x:1},tab:"domu",day:"ut",q:"",mine:false,notes:store.get("notes",{}),alarms:store.get("alarms",{}),fired:store.get("fired",{}),
- qa:store.get("qa",null)||{ut5:[{t:"Kdy můžeme čekat transpozici nové směrnice do české legislativy?",a:"Jan, VaK",c:"9:31",v:6}],ut6:[{t:"Týká se nový reporting i ČOV pod 2 000 EO?",a:"anonymně",c:"9:58",v:3},{t:"Budou data z reportingu veřejně dostupná?",a:"Lenka, PVK",c:"10:04"}],ut9:[{t:"Jak řešíte odpovědnost za rozhodnutí, která navrhne AI?",a:"Petra",c:"11:21",v:4}]},
+ qa:store.get("qa",null)||(UKAZKA?{ut5:[{t:"Kdy můžeme čekat transpozici nové směrnice do české legislativy?",a:"Jan, VaK",c:"9:31",v:6}],ut6:[{t:"Týká se nový reporting i ČOV pod 2 000 EO?",a:"anonymně",c:"9:58",v:3},{t:"Budou data z reportingu veřejně dostupná?",a:"Lenka, PVK",c:"10:04"}],ut9:[{t:"Jak řešíte odpovědnost za rozhodnutí, která navrhne AI?",a:"Petra",c:"11:21",v:4}]}:{}),
  read:store.get("read",{}),seen:store.get("seen",{}),seenK:store.get("seenK",{}),voted:store.get("voted",{}),me:store.get("me",{jm:"",firma:""})};
 /* ===== Moje registrace (osobní karta z aplikace pořadatele) ===== */
 // Odkaz z potvrzovacího e-mailu …/pruvodce/?k=KLIC. Klíč se uloží do telefonu, karta se čte z Firebase
@@ -941,7 +945,7 @@ Object.keys(S.qa).forEach(id=>S.qa[id].forEach((q,i)=>{if(!q.k)q.k="d"+i}));   /
 /* ===== Aktuality od pořadatele (konference2027_aktuality) – píše se v aplikaci pořadatele ===== */
 // {klíč: {h, p, ts}}. Nepřečtené = číslo u záložky Info. Bez připojení ukázkové NEWS.
 const ADB=window.ADB_URL||"https://moje-budky-default-rtdb.firebaseio.com/konference2027_aktuality.json";
-const AKT={on:false,list:NEWS.slice().reverse(),raw:{}};
+const AKT={on:false,list:UKAZKA?NEWS.slice().reverse():[],raw:{}};
 (()=>{let zm=false;for(const k in S.notes){const v=S.notes[k];if(typeof v==="string"){S.notes[k]=v.trim()?[{id:"n"+Date.now().toString(36)+k,t:v,ts:Date.now()}]:[];zm=true}if(!S.notes[k]||!S.notes[k].length){delete S.notes[k];zm=true}}if(zm)store.set("notes",S.notes)})();   // převod starých poznámek
 S.aktSeen=store.get("aktseen",{});S.aktNoveTed={};
 function aktNove(){return AKT.list.filter(x=>!S.aktSeen[x.k]).length}
@@ -963,6 +967,8 @@ function aktStart(){
  es.addEventListener("put",on);es.addEventListener("patch",on);es.addEventListener("cancel",()=>es.close());
 }
 function podpis(){return [S.me.jm,S.me.firma].filter(Boolean).join(", ")}
+function qCislo(id,k){const l=(S.qa[id]||[]).slice().sort((a,b)=>(a.ts||0)-(b.ts||0));return l.findIndex(q=>q.k===k)+1}   // pořadí dotazu u přednášky
+function qNo(id,k){const n=qCislo(id,k);return n?`<span class="qno">č. ${n}</span> `:""}
 function qk(id,k){return (S.qa[id]||[]).find(q=>q.k===k)}
 function hlasoval(id,k){return LIVE.on?!!(((LIVE.v[id]||{})[k]||{})[DEV]):!!S.voted[id+":"+k]}
 function votes(id,k){const q=qk(id,k);if(!q)return 1;return 1+(LIVE.on?Object.keys((LIVE.v[id]||{})[k]||{}).length:(q.v||0)+(S.voted[id+":"+k]?1:0))}
@@ -1119,7 +1125,7 @@ function vDomu(){
  const qi=(n)=>`<span class="qi" style="background-image:url(${flek(n)})"></span>`;
  return `<section class="sec">
   <div class="poster">
-   <span class="pchip" title="Obsah podle programu 2026">Ukázka · v${VERZE.split(" ")[0]}</span>${fsBtn("fsp")}
+   <span class="pchip" title="Verze průvodce">${UKAZKA?"Ukázka · ":""}v${VERZE.split(" ")[0]}</span>${fsBtn("fsp")}
    <div class="collage" aria-hidden="true">${FL.map(([n,c])=>`<img class="${c}" src="${IMG}fleky/flek${String(n).padStart(2,"0")}.webp" alt="">`).join("")}</div>
    <div class="pc">
     <div class="yr"><img src="${IMG}cislo31.webp" alt="31."><span>ročník<br>konference</span></div>
@@ -1152,6 +1158,8 @@ function vDomu(){
 function vNow(){
  const {c,cur,next,bk,first,last}=nowState(), D=DAYS.find(d=>d.k===c.day);
  let h;
+ if(c.mimo==="pred")return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px"><button class="now" data-goday="ut"><div class="lbl">${esc(DAYS[0].n)} ${esc(DAYS[0].d)}</div><h2>Program začne v ${esc(first.t)}</h2><div class="next">${esc(first.h)}${first.w?" · "+esc(first.w):""} – celý program najdete v záložce Program</div></button></div>`;
+ if(c.mimo==="po")return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px"><div class="now"><div class="lbl">Konference skončila</div><h2>Děkujeme za účast</h2><div class="who">Poznámky, dotazy i program tu zůstávají. Těšíme se příště.</div></div></div>`;
  if(cur){const tot=(cur.b??cur.a+1)-cur.a, el=c.m-cur.a, pct=Math.min(100,Math.round(el/tot*100));
   h=`<button class="now ${cur.brk?"brk":""}" data-goday="${c.day}"><div class="lbl"><span class="dot"></span>${cur.brk?"Právě teď":"Právě probíhá"} · ${esc(cur.t)}–${esc(cur.e||"")}</div>
    <h2>${esc(cur.h)}</h2>${cur.w&&!cur.brk?`<div class="who">${esc(cur.w)}</div>`:""}${bk?`<div class="who">Blok: ${esc(bk.blok)}</div>`:""}${cur.det?`<ul class="det">${cur.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}
@@ -1160,7 +1168,7 @@ function vNow(){
  else if(next&&first&&c.m<first.a){h=`<button class="now" data-goday="${c.day}"><div class="lbl">${D.n} ${D.d}</div><h2>Program začne za ${dur(first.a-c.m)}</h2><div class="next">V ${esc(first.t)}: <b>${esc(first.h)}</b></div></button>`}
  else if(next){h=`<button class="now brk" data-goday="${c.day}"><div class="lbl">Volno</div><h2>Další bod programu za ${dur(next.a-c.m)}</h2><div class="next">V ${esc(next.t)}: <b>${esc(next.h)}</b></div></button>`}
  else{h=`<div class="now"><div class="lbl">${D.n} ${D.d}</div><h2>Program dne skončil</h2><div class="who">${c.day==="st"?"Děkujeme za účast a těšíme se příště.":"Zítra pokračujeme – podívejte se do programu."}</div></div>`}
- if(!c.real)h+=`<div class="sim"><div>Ukázka: konference teď neprobíhá – nastavte si den a čas, dál poběží sám (jde i zrychlit). V ostré verzi jde podle hodin.</div>
+ if(!c.real&&UKAZKA)h+=`<div class="sim"><div>Ukázka: konference teď neprobíhá – nastavte si den a čas, dál poběží sám (jde i zrychlit). V ostré verzi jde podle hodin.</div>
   <div class="r"><select id="simday" aria-label="Den">${DAYS.map(d=>`<option value="${d.k}" ${c.day===d.k?"selected":""}>${d.n}</option>`).join("")}</select>
   <input type="range" id="simm" min="420" max="1439" step="5" value="${c.m}" aria-label="Čas"><b id="simt">${hm(c.m)}</b>
   <select id="simx" aria-label="Rychlost času" title="Rychlost času">${[[1,"čas běží"],[10,"10× rychleji"],[60,"60× rychleji"]].map(([v,t])=>`<option value="${v}" ${(S.sim.x||1)===v?"selected":""}>${t}</option>`).join("")}</select></div></div>`;
@@ -1235,7 +1243,7 @@ function sheetP(nm){
  const talks=key?Object.entries(PROG).flatMap(([d,l])=>l.filter(x=>x.w&&x.w.includes(key)).map(x=>({...x,d}))):[];
  openSheet(`<div style="display:flex;gap:12px;align-items:center;margin-bottom:6px">${LOGA[nm]?`<span class="lg big"><img src="${IMG}loga/${LOGA[nm]}" alt="${esc(nm)}"></span>`:`<div class="lm" style="width:52px;height:52px;font-size:22px;background-image:url(${flek(hashN(nm))})">${esc(ini(nm))}</div>`}<div><h2 style="padding:0">${esc(nm)}</h2><div class="muted" style="font-size:13px">${KATN[p.k]}</div></div></div>
   <div class="bd">
-   ${PROF[nm]?profil(PROF[nm]):profilUkazka(nm)}
+   ${PROF[nm]?profil(PROF[nm]):UKAZKA?profilUkazka(nm):""}
    ${talks.length?`<div><div class="label" style="margin-bottom:6px">Přednášky partnera</div>${talks.map(x=>`<button class="mini" data-goday="${x.d}" style="margin-bottom:6px"><b>${esc(x.h)}</b><small>${DAYS.find(d=>d.k===x.d).n} ${esc(x.t)}</small></button>`).join("")}</div>`:""}
   </div>`);
 }
@@ -1251,7 +1259,7 @@ function vDotazy(){   // všechny dotazy na jednom místě: nové, nejžádaněj
  const den=x=>DAYS.find(z=>PROG[z.k].includes(x));
  const vse=[];ALLT.forEach(x=>{if(x.id)(S.qa[x.id]||[]).forEach((d,i)=>vse.push({x,d,n:votes(x.id,d.k),nov:novyQ(x.id,d,i)&&d.dev!==DEV}))});
  const hod=o=>!q||norm(o.d.t+" "+o.d.a+" "+o.x.h).includes(q);
- const radek=(o,sNazvem)=>`<div class="dqr${o.nov?" nov":""}"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(o.d.c||"")}${o.d.dev===DEV?" · váš dotaz":""}</span></button>${o.nov?`<button class="dqok" data-dqok="${o.x.id}|${o.d.k}" aria-label="Označit jako přečtené" title="Přečteno">✓</button>`:""}${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" aria-label="${hlasoval(o.x.id,o.d.k)?"Zrušit palec":"Dát palec"}">👍 ${o.n-1}</button>`}</div>`;
+ const radek=(o,sNazvem)=>`<div class="dqr${o.nov?" nov":""}"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${qNo(o.x.id,o.d.k)}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(o.d.c||"")}${o.d.dev===DEV?" · váš dotaz":""}</span></button>${o.nov?`<button class="dqok" data-dqok="${o.x.id}|${o.d.k}" aria-label="Označit jako přečtené" title="Přečteno">✓</button>`:""}${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" aria-label="${hlasoval(o.x.id,o.d.k)?"Zrušit palec":"Dát palec"}">👍 ${o.n-1}</button>`}</div>`;
  const skup=l=>{const g=[];l.forEach(o=>{let G=g.find(z=>z.x===o.x);if(!G)g.push(G={x:o.x,l:[]});G.l.push(o)});
   return g.map(G=>`<div class="card dqg"><button class="dqh" data-naq="${G.x.id}"><span class="nvt">${esc((den(G.x)||{n:""}).n.slice(0,2))} ${esc(G.x.t)}</span><b>${esc(G.x.h)}</b><small>↗ v programu</small></button>
    ${G.l.sort((a,b)=>b.n-a.n).map(o=>radek(o,false)).join("")}<button class="cbtn" data-q="${G.x.id}" style="border:0;margin-top:8px">? Zeptat se</button></div>`).join("")};
@@ -1372,7 +1380,7 @@ function sheetQ(id){
  const x=ALLT.find(y=>y.id===id), bk=ALLT.find(y=>y.blok&&y.bid===x.bid);
  const draw=()=>{const l=(S.qa[id]||[]).slice().sort((a,b)=>votes(id,b.k)-votes(id,a.k));videno(id);
   $("qlist").innerHTML=l.length?`<div class="label" style="margin-bottom:2px">Dotazy ostatních</div><p class="muted" style="margin:0 0 4px;font-size:13px">Zajímá vás některý dotaz? Dejte mu <b>👍</b> – předsedající čte nejdřív ty s nejvíc palci. Než napíšete svůj, podívejte se, jestli tu už není.</p>`+l.map(q=>{const on=hlasoval(id,q.k),n=votes(id,q.k),muj=q.dev&&q.dev===DEV;
-   return `<div class="q"><div><p>${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}${muj?" · váš dotaz":""}</small></div>${muj?`<span class="plus mine" title="Palce od ostatních">👍 <b>${n-1}</b></span>`:`<button class="plus" data-plus="${esc(q.k)}" aria-pressed="${on}" aria-label="${on?"Zrušit palec":"Dát palec – zajímá mě to"}">👍 <b>${n-1}</b></button>`}</div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
+   return `<div class="q"><div><p>${qNo(id,q.k)}${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}${muj?" · váš dotaz":""}</small></div>${muj?`<span class="plus mine" title="Palce od ostatních">👍 <b>${n-1}</b></span>`:`<button class="plus" data-plus="${esc(q.k)}" aria-pressed="${on}" aria-label="${on?"Zrušit palec":"Dát palec – zajímá mě to"}">👍 <b>${n-1}</b></button>`}</div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
  SHEET_DRAW=draw;
  videno(id);setTimeout(render,0);
  openSheet(`<h2>Dotaz k přednášce</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.h)}</div>
@@ -1466,7 +1474,7 @@ function pjKresli(){
  const L=pjSeznam(PJ.bid), bk=ALLT.find(y=>y.blok&&y.bid===PJ.bid)||{};let i=L.findIndex(o=>o.key===PJ.key);if(i<0&&L.length){i=0;PJ.key=L[0].key}
  el.classList.toggle("dark",!!PJ.dark);
  const o=L[i], bez=o&&/^🎤 Namluvený dotaz/.test(o.q.t), n=o?votes(o.x.id,o.q.k):0, rd=o&&!!S.read[o.key];
- el.innerHTML=`<div class="pjh"><div class="pjtl"><div class="pjbl">${esc(bk.blok||"Dotazy z publika")}</div>${o?`<div class="pjtt">${esc(o.x.h)}</div><div class="pjsp">${esc(o.x.t)}${o.x.w?" · "+esc(o.x.w):""}</div>`:""}</div><div class="pjcnt">${L.length?(i+1)+" / "+L.length:""}</div></div>
+ el.innerHTML=`<div class="pjh"><div class="pjtl"><div class="pjbl">${esc(bk.blok||"Dotazy z publika")}</div>${o?`<div class="pjtt">${esc(o.x.h)}</div><div class="pjsp">${esc(o.x.t)}${o.x.w?" · "+esc(o.x.w):""}</div>`:""}</div><div class="pjcnt">${o?"Dotaz č. "+qCislo(o.x.id,o.q.k):""}</div></div>
   <div class="pjm">${!o?`<div class="pjempty">Zatím žádné dotazy – přibývají živě z telefonů účastníků.</div>`
    :`${bez?`<div class="pjspk" aria-hidden="true">🔊</div>`:`<div class="pjq${rd?" rd":""}" id="pjq">${esc(o.q.t)}</div>`}
  `}</div>
@@ -1496,7 +1504,7 @@ function sheetChair(bid){
  const bk=ALLT.find(y=>y.blok&&y.bid===bid), talks=ALLT.filter(y=>y.id&&y.bid===bid);
  const draw=()=>{$("clist").innerHTML=talks.map(x=>{const l=(S.qa[x.id]||[]).slice().sort((a,b)=>(!!S.read[x.id+":"+a.k]-!!S.read[x.id+":"+b.k])||votes(x.id,b.k)-votes(x.id,a.k));
    return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(q=>{const k=x.id+":"+q.k,r=!!S.read[k],n=votes(x.id,q.k);
-    return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes" title="Palce od ostatních">👍 ${n-1}</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">🔎 Velkým písmem</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
+    return `<div class="cq ${r?"read":""}"><div><p>${qNo(x.id,q.k)}${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes" title="Palce od ostatních">👍 ${n-1}</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">🔎 Velkým písmem</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
  openSheet(`<h2>Pohled předsedajícího</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(bk.blok)} · předsedá ${esc(bk.pr)}</div>
   <div class="bd chair"><button class="projall" data-projall="1">🔎 Velkým písmem – ukázat přednášejícímu</button><div id="clist"></div>
   <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe.<br><b>Na mobilu</b> (předsedající s mikrofonem): „Velkým písmem“ ukáže dotaz přes celý displej – pohodlně ho přečtete do mikrofonu a pak telefon nebo tablet ukážete přednášejícímu, aby měl dotaz před očima. Na počítači: ← → další dotaz, R přečteno, F celá obrazovka, Esc zpět.<br>Přímý odkaz pro počítač v sále: <b>…/pruvodce/?pr=${esc(bid)}</b></div></div>`);
@@ -2030,7 +2038,7 @@ if(FS.umi){document.addEventListener("fullscreenchange",fsKresli);document.addEv
 document.addEventListener("click",e=>{if(e.target.closest("[data-fs]"))fsToggle()});
 $("toast").addEventListener("click",()=>{const f=toast.klik;if(!f)return;$("toast").hidden=true;toast.klik=null;f()});
 document.getElementById("markimg").src=IMG+"cislo31.webp";document.getElementById("vhimg").src=IMG+"loga/vhos.webp";
-document.getElementById("vchip").textContent="Ukázka · v"+VERZE.split(" ")[0];
+document.getElementById("vchip").textContent=(UKAZKA?"Ukázka · v":"v")+VERZE.split(" ")[0];
 render();
 </script>
 
