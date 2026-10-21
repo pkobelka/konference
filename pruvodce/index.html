@@ -647,7 +647,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.91 · 21. 10. 2026";
+const VERZE="0.92 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1085,7 +1085,7 @@ function stgDraw(anim){
 }
 function stgGo(i,manual){STG.i=(i+PART.length)%PART.length;STG.since=Date.now();if(manual)STG.hold=Date.now()+20000;stgDraw(true)}
 setInterval(()=>{if(!$("stage"))return;if(Date.now()<STG.hold)return;if(Date.now()-STG.since>=stgDur(STG.i))stgGo(STG.i+1)},400);
-const PGT={domu:["",""],program:["Program","31. ročník · Seč"],partneri:["Partneři","31. ročník · Seč"],poznamky:["Moje poznámky","jen v tomto zařízení"],dotazy:["Dotazy","vidí všichni"],info:["Informace","31. ročník · Seč"]};
+const PGT={domu:["",""],program:["Program","31. ročník · Seč"],partneri:["Partneři","31. ročník · Seč"],poznamky:["Poznámky","jen v tomto zařízení"],dotazy:["Dotazy","vidí všichni"],info:["Informace","31. ročník · Seč"]};
 /* Celá obrazovka (tablet / prohlížeč) – v nainstalované aplikaci není potřeba */
 const FS={d:document,el:document.documentElement};
 FS.umi=!PL.nainst&&!!(FS.d.fullscreenEnabled||FS.d.webkitFullscreenEnabled)&&!!(FS.el.requestFullscreen||FS.el.webkitRequestFullscreen);
