@@ -646,7 +646,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.88 · 21. 10. 2026";
+const VERZE="0.89 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1848,7 +1848,7 @@ function stahniPoznamky(){
 }
 function mailPoznamky(){
  const med=medSoubory().length;if(med&&umiSdilet())return sdilejPoznamky();   // mobil: vyberete poštu a fotky/nahrávky se přiloží
- const t=(med?"(Fotky a nahrávky e-mail z prohlížeče neumí přiložit – jsou v ZIPu (tlačítko „Uložit do počítače“) a fotky i v PDF.)\n\n":"")+poznamkyText();location.href="mailto:?subject="+encodeURIComponent("Moje poznámky – konference ČOV 2027")+"&body="+encodeURIComponent(t.length>1800?t.slice(0,1800)+"\n…(zkráceno, celé poznámky si stáhněte jako text)":t);
+ const t=(med?"(Fotky a nahrávky e-mail z prohlížeče neumí přiložit – jsou v ZIPu (tlačítko „Uložit do počítače“) a fotky i v PDF.)\n\n":"")+poznamkyText();ODKAZ_VEN=Date.now();location.href="mailto:?subject="+encodeURIComponent("Moje poznámky – konference ČOV 2027")+"&body="+encodeURIComponent(t.length>1800?t.slice(0,1800)+"\n…(zkráceno, celé poznámky si stáhněte jako text)":t);
 }
 
 /* ===== Upozornění na přednášku ===== */
@@ -2000,7 +2000,9 @@ setInterval(()=>{const c=clock(),k=c.day+c.m;if(k===TIK)return;TIK=k;poznPoPredn
 // 1) počítač – obecný dotaz prohlížeče „Opustit stránku?“; 2) mobil – upozornění v telefonu, když aplikaci schová
 // (jen pokud už povolil upozornění, nejvýš jednou za 2 h); 3) po návratu do aplikace okno „Máte neuložené poznámky“.
 const neulozeno=()=>pocetVeci()>store.get("poznUlozeno",0);
-addEventListener("beforeunload",e=>{if(neulozeno()){e.preventDefault();e.returnValue=""}});
+// Otevření pošty / telefonu (mailto:, tel:, sms:) prohlížeč bere jako odchod ze stránky → při tom se neptat
+let ODKAZ_VEN=0;document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest('a[href^="mailto:"],a[href^="tel:"],a[href^="sms:"]'))ODKAZ_VEN=Date.now()},true);
+addEventListener("beforeunload",e=>{if(Date.now()-ODKAZ_VEN<3000)return;if(neulozeno()){e.preventDefault();e.returnValue=""}});
 let SKRYTO=0,PZVYZVA=false;
 document.addEventListener("visibilitychange",()=>{
  if(document.hidden){SKRYTO=Date.now();if(!neulozeno())return;
