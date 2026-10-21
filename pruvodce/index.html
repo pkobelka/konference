@@ -303,6 +303,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .dqr{display:flex;gap:10px;align-items:center;width:100%;border-top:1px solid var(--line);padding:9px 0}
 .dqg .dqh+.dqr{border-top:1px solid var(--line)}.card>.dqr:first-child{border-top:0}
 .dql{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;border:0;background:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer}.dqr .dqt{font-size:12px;color:var(--muted);font-weight:700}.dqr .dqx{font-size:15px}.dqr .dqm{font-size:12px;color:var(--muted)}
+.dqr .dqok{flex:none;width:36px;height:36px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--water);font-weight:900;font-size:16px;cursor:pointer}.dqr .dqok:active{background:var(--water);color:var(--surface)}
 .dqr .dqv{flex:none;font-weight:800;font-size:14px;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:99px;padding:6px 12px;white-space:nowrap;cursor:pointer}.dqr .dqv[aria-pressed="true"]{background:var(--water);color:var(--surface);border-color:var(--water)}.dqr .dqv.mine{cursor:default;color:var(--muted);background:var(--surface-2)}
 .dqnow{border:2px solid #d32f2f}.dqnow>b{display:block;font-size:16px;margin:2px 0 4px}
 .offl{background:#3a3340;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;margin:0 0 10px;line-height:1.35}
@@ -640,7 +641,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.81 · 21. 10. 2026";
+const VERZE="0.82 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -862,7 +863,7 @@ const NEWS=[
 const store={get(k,d){try{const v=localStorage.getItem("pr_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pr_"+k,JSON.stringify(v))}catch(e){}}};
 const S={sim:{day:"ut",m:10*60+2,t0:Date.now(),x:1},tab:"domu",day:"ut",q:"",mine:false,notes:store.get("notes",{}),alarms:store.get("alarms",{}),fired:store.get("fired",{}),
  qa:store.get("qa",null)||{ut5:[{t:"Kdy můžeme čekat transpozici nové směrnice do české legislativy?",a:"Jan, VaK",c:"9:31",v:6}],ut6:[{t:"Týká se nový reporting i ČOV pod 2 000 EO?",a:"anonymně",c:"9:58",v:3},{t:"Budou data z reportingu veřejně dostupná?",a:"Lenka, PVK",c:"10:04"}],ut9:[{t:"Jak řešíte odpovědnost za rozhodnutí, která navrhne AI?",a:"Petra",c:"11:21",v:4}]},
- read:store.get("read",{}),seen:store.get("seen",{}),voted:store.get("voted",{}),me:store.get("me",{jm:"",firma:""})};
+ read:store.get("read",{}),seen:store.get("seen",{}),seenK:store.get("seenK",{}),voted:store.get("voted",{}),me:store.get("me",{jm:"",firma:""})};
 /* ===== Moje registrace (osobní karta z aplikace pořadatele) ===== */
 // Odkaz z potvrzovacího e-mailu …/pruvodce/?k=KLIC. Klíč se uloží do telefonu, karta se čte z Firebase
 // (uzel konference2027_karty/KLIC – čte jen ten, kdo zná klíč) a drží se i offline.
@@ -920,7 +921,9 @@ function vKartaVstup(){
 }
 /* ===== Nové dotazy: červené číslo u přednášky, dne a záložky Program ===== */
 // S.seen[id] = kolik dotazů k přednášce už člověk viděl (otevřel okno dotazů). Vlastní dotaz se počítá jako viděný.
-function novych(id){return Math.max(0,(S.qa[id]||[]).length-(S.seen[id]||0))}
+// S.seenK[id][klíč] = jednotlivý dotaz označený ✓ jako přečtený (bez otevření celé přednášky)
+function novyQ(id,q,i){return i>=(S.seen[id]||0)&&!(S.seenK[id]||{})[q.k]}
+function novych(id){return (S.qa[id]||[]).filter((q,i)=>novyQ(id,q,i)).length}
 function novychDen(d){return PROG[d].reduce((a,x)=>a+(x.id?novych(x.id):0),0)}
 function novychVse(){return Object.keys(PROG).reduce((a,d)=>a+novychDen(d),0)}
 function badge(n){return n?`<span class="bdg" aria-label="${n} ${n===1?"nový dotaz":n<5?"nové dotazy":"nových dotazů"}">${n>9?"9+":n}</span>`:""}
@@ -1241,9 +1244,9 @@ function hlasuj(id,k,hotovo){   // 👍 palec k dotazu: přidat / vzít zpět (�
 function vDotazy(){   // všechny dotazy na jednom místě: nové, nejžádanější, všechny, moje + běžící přednáška
  const f=S.dqf||(novychVse()?"nove":"top"), q=norm((S.dqq||"").trim()), st=nowState();
  const den=x=>DAYS.find(z=>PROG[z.k].includes(x));
- const vse=[];ALLT.forEach(x=>{if(x.id)(S.qa[x.id]||[]).forEach((d,i)=>vse.push({x,d,n:votes(x.id,d.k),nov:i>=(S.seen[x.id]||0)&&d.dev!==DEV}))});
+ const vse=[];ALLT.forEach(x=>{if(x.id)(S.qa[x.id]||[]).forEach((d,i)=>vse.push({x,d,n:votes(x.id,d.k),nov:novyQ(x.id,d,i)&&d.dev!==DEV}))});
  const hod=o=>!q||norm(o.d.t+" "+o.d.a+" "+o.x.h).includes(q);
- const radek=(o,sNazvem)=>`<div class="dqr"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(o.d.c||"")}${o.d.dev===DEV?" · váš dotaz":""}</span></button>${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" aria-label="${hlasoval(o.x.id,o.d.k)?"Zrušit palec":"Dát palec"}">👍 ${o.n-1}</button>`}</div>`;
+ const radek=(o,sNazvem)=>`<div class="dqr"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(o.d.c||"")}${o.d.dev===DEV?" · váš dotaz":""}</span></button>${o.nov?`<button class="dqok" data-dqok="${o.x.id}|${o.d.k}" aria-label="Označit jako přečtené" title="Přečteno">✓</button>`:""}${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" aria-label="${hlasoval(o.x.id,o.d.k)?"Zrušit palec":"Dát palec"}">👍 ${o.n-1}</button>`}</div>`;
  const skup=l=>{const g=[];l.forEach(o=>{let G=g.find(z=>z.x===o.x);if(!G)g.push(G={x:o.x,l:[]});G.l.push(o)});
   return g.map(G=>`<div class="card dqg"><button class="dqh" data-naq="${G.x.id}"><span class="nvt">${esc((den(G.x)||{n:""}).n.slice(0,2))} ${esc(G.x.t)}</span><b>${esc(G.x.h)}</b><small>↗ v programu</small></button>
    ${G.l.sort((a,b)=>b.n-a.n).map(o=>radek(o,false)).join("")}<button class="cbtn" data-q="${G.x.id}" style="border:0;margin-top:8px">? Zeptat se</button></div>`).join("")};
@@ -1935,6 +1938,7 @@ $("view").addEventListener("click",e=>{
  if(e.target.closest("#dnow"))return naAktualni();
  {const dp=e.target.closest("[data-dqp]");if(dp){const [a,b]=dp.dataset.dqp.split("|");return hlasuj(a,b)}}
  {const sk=e.target.closest("[data-skok]");if(sk)return skok(sk.dataset.skok)}
+ {const ok=e.target.closest("[data-dqok]");if(ok){const [id,k]=ok.dataset.dqok.split("|");(S.seenK[id]=S.seenK[id]||{})[k]=1;store.set("seenK",S.seenK);return render()}}
  {const df=e.target.closest("[data-dqf]");if(df){S.dqf=df.dataset.dqf;return render()}}
  {const oh=e.target.closest("[data-ohl]");if(oh)return sheetOhlas(+oh.dataset.ohl)}
  if(e.target.closest("[data-ohlne]")){store.set("ohlSkryt",1);return render()}
