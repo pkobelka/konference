@@ -191,7 +191,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.24 · 21. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.25 · 21. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -1050,7 +1050,7 @@ function rPruvodce(){
     <div id="s_tym" style="margin-top:8px">${htmlTym()}</div>
   </div>
   <div class="nast"><h2 class="sek">🎤 Odkazy pro předsedající</h2>
-    <p style="font-size:.84rem;color:#666">Každý předsedající dostane odkaz na svůj blok. Otevře mu v průvodci <b>Pohled předsedajícího</b> (dotazy k přednáškám bloku, nejžádanější první, velkým písmem na plátno). Bez přihlášení; průvodce si odkaz zapamatuje a v Programu mu u bloku ukáže tlačítko. Hodí se i pro počítač v sále.</p>
+    <p style="font-size:.84rem;color:#666">Každý předsedající dostane odkaz na svůj blok. Otevře mu v průvodci <b>Pohled předsedajícího</b> (dotazy k přednáškám bloku, nejžádanější první, velkým písmem – ukáže je přednášejícímu). Bez přihlášení; průvodce si odkaz zapamatuje a v Programu mu u bloku ukáže tlačítko. Hodí se i pro počítač v sále.</p>
     <div id="s_pr">Načítám program…</div>
   </div>
   <div class="nast"><h2 class="sek">💬 Ohlasy na konferenci a průvodce</h2>
@@ -1118,7 +1118,7 @@ function predsOdkazy(){
   const kresli=()=>{const b=box();if(!b)return;if(!BLOKY.length){b.innerHTML=`<p class="muted" style="font-size:.9rem">V programu nejsou žádné bloky.</p>`;return;}
     const den={ut:"Út",st:"St"};
     b.innerHTML=`<table class="t">${BLOKY.map(x=>{const u=pruvodceBase()+"?pr="+x.bid,predm="Konference ČOV – Pohled předsedajícího: "+x.blok;
-      const telo="Dobrý den,\n\nv průvodci konference máte připravený Pohled předsedajícího pro blok „"+x.blok+"“ – dotazy účastníků k přednáškám bloku, nejžádanější první, velkým písmem i na plátno:\n\n"+u+"\n\nStačí odkaz jednou otevřít v telefonu nebo v počítači v sále; průvodce si ho zapamatuje a v Programu vám u bloku ukáže tlačítko Pohled předsedajícího.\n\nDěkuji\n";
+      const telo="Dobrý den,\n\nv průvodci konference máte připravený Pohled předsedajícího pro blok „"+x.blok+"“ – dotazy účastníků k přednáškám bloku, nejžádanější první; velkým písmem je můžete ukázat přednášejícímu:\n\n"+u+"\n\nStačí odkaz jednou otevřít v telefonu nebo v počítači v sále; průvodce si ho zapamatuje a v Programu vám u bloku ukáže tlačítko Pohled předsedajícího.\n\nDěkuji\n";
       return `<tr><td class="sub" style="white-space:nowrap">${den[x.bid.slice(0,2)]||""}</td><td><b>${esc(x.blok)}</b><div class="sub">předsedá ${esc(x.pr||"")}</div><div class="sub"><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a></div></td>
         <td style="white-space:nowrap"><button class="btn ghost small" data-prkop="${esc(u)}">Kopírovat</button> <a class="btn ghost small" href="mailto:?subject=${encodeURIComponent(predm)}&body=${encodeURIComponent(telo)}">✉ E-mail</a></td></tr>`}).join("")}</table>`;};
   if(BLOKY)return kresli();
