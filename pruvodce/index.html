@@ -637,7 +637,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.73 · 21. 10. 2026";
+const VERZE="0.74 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1079,7 +1079,7 @@ function render(){
  $("pgt").textContent=PGT[S.tab][0];$("pgs").textContent=PGT[S.tab][1];document.querySelector(".top").classList.toggle("home",S.tab==="domu");
  $("tabs").innerHTML=TABS.map(([k,t,i])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':""}>${i}<span>${t}</span>${k==="dotazy"?badge(novychVse()):k==="info"?badge(aktNove()):""}</button>`).join("");
  setTimeout(()=>stgDraw(false),0);
- $("view").innerHTML=(S.tab==="domu"||S.tab==="poznamky"||S.tab==="dotazy"?"":ticker())+{domu:vDomu,program:vProgram,partneri:vPartneri,poznamky:vPoznamky,dotazy:vDotazy,info:vInfo}[S.tab]();
+ $("view").innerHTML=(S.tab==="domu"||S.tab==="poznamky"||S.tab==="dotazy"||S.tab==="partneri"?"":ticker())+{domu:vDomu,program:vProgram,partneri:vPartneri,poznamky:vPoznamky,dotazy:vDotazy,info:vInfo}[S.tab]();
  ikonaCislo();
 }
 function go(t){let kam=null;if(t==="doprava"){t="info";kam="i-dop"}if(t==="info")aktPrecteno();S.tab=t;render();window.scrollTo(0,0);if(kam)setTimeout(()=>skok(kam),30)}
