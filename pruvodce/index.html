@@ -646,7 +646,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.89 · 21. 10. 2026";
+const VERZE="0.90 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1204,7 +1204,7 @@ function vProgram(){
 function vPartneri(){
  let i=0;
  return `<section class="sec">${PART.map(([k,t,g,l])=>`<div class="cat cat-${k}"><h2><span class="tcat tc-${k}" style="margin:0">${t.replace(" partneři","")}<small>partneři</small></span></h2><div class="logos ${g}">${l.map(nm=>`<button class="logo" data-p="${esc(nm)}" aria-label="${esc(nm)}" style="--i:${i++}">${lm(nm)}${LOGA[nm]?"":`<span>${esc(nm)}</span>`}</button>`).join("")}</div></div>`).join("")}
-  <div class="note">Seznam podle pozvánky 2026. Místo iniciál budou skutečná loga, profil, video a nabídka, které dodají partneři.</div></section>`;
+  <div class="note">Seznam podle pozvánky 2026. Ťukněte na logo – u partnera najdete jeho přednášky; profil, video a nabídku doplníme, jakmile je partneři dodají.</div></section>`;
 }
 /* Prezentace partnera – podklady dodá firma, pořadatel je sem doplní:
    PROF["Název"]={txt:"2–3 věty", web:"https://…", video:"https://youtu.be/…", nab:"nabídka pro účastníky", pdf:"https://….pdf", kont:{jm,tel,mail}, stanek:"5"} */
@@ -1339,7 +1339,6 @@ function vInfo(){
   </div>
   <div class="blockh" id="i-dop"><h2>🚌 Cesta a svoz</h2></div>
   ${vDoprava().replace(/^\s*<section class="sec">/,"").replace(/<\/section>\s*$/,"")}
-  ${instalBanner(true)}
   <div class="card" id="i-o"><div class="label" style="margin-bottom:8px">O konferenci</div>
    <dl class="kv"><dt>Termín</dt><dd>${TERMIN}</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborný garant</dt><dd>Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA (kontakt níže)</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
@@ -1569,7 +1568,7 @@ function sheetMed(mid){
 
 /* ===== Ohlasy na průvodce a konferenci (konference2027_ohlasy) ===== */
 // o/{id} = {k?:1–4 konference, p?:1–4 průvodce (aspoň jedno), lib?, chybi?, a?, zv?:bool, ts, dev} – zapsat může kdokoli jen nový, čte pořadatel
-// zv/{id} = {t, a} – ohlasy, které pořadatel zveřejnil (čte každý) → karta „Řekli o průvodci“ na Domů
+// zv/{id} = {t, a} – ohlasy, které pořadatel zveřejnil (čte každý) → karta „Řekli o konferenci a průvodci“ na Domů
 const OHLDB="https://moje-budky-default-rtdb.firebaseio.com/konference2027_ohlasy/";
 const TVARE=[[4,"😍","Skvělý"],[3,"🙂","Dobrý"],[2,"😐","Ujde"],[1,"🙁","Slabý"]];
 const OHL={zv:store.get("ohlZv",{})};   // k = konference, p = průvodce (obojí 1–4, aspoň jedno)
@@ -1621,7 +1620,7 @@ function sheetOhlas(kv){
    <div class="qpodf" id="opodf" ${S.me.pod?"":"hidden"}><input id="ojm" placeholder="Jméno a příjmení" value="${esc(S.me.jm||"")}" autocomplete="name"><input id="ofi" placeholder="Firma (nepovinné)" value="${esc(S.me.firma||"")}" autocomplete="organization"></div>
    <label class="chk"><input type="checkbox" id="ozv"> Pořadatel může můj ohlas zveřejnit</label>
    <button class="send">Odeslat ohlas</button></form>
-  <div class="note">Ohlas čte jen pořadatel. Zveřejní ho (v průvodci v kartě „Řekli o průvodci“) jen tehdy, když to výše povolíte.</div></div>`);
+  <div class="note">Ohlas čte jen pořadatel. Zveřejní ho (v průvodci v kartě „Řekli o konferenci a průvodci“) jen tehdy, když to výše povolíte.</div></div>`);
  let K=kv||0,P=0;
  const vyber=(id,set)=>$(id).addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;set(+b.dataset.v);$(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
  vyber("ohk",v=>K=v);vyber("ohp",v=>P=v);
