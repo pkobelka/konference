@@ -925,6 +925,7 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   ```
 
 ### Průvodce 0.76 (21. 10. 2026) – POČET LIDÍ ONLINE + PETR JAKO POŘADATEL V PRŮVODCI
+- **0.81 – živá spojení s náhradou:** `zivyZdroj(url, s)` místo `new EventSource` (aktuality 30 s, dotazy q/v 20 s, ohlasy týmu 30 s, online 60 s). Když EventSource do 8 s nic nepřinese (antivirus s kontrolou HTTPS / firemní filtr – na Petrově PC byly jen ukázkové aktuality a přihlášení padalo na „Firebase neodpovídá“, protože zaseklá spojení zablokovala frontu), zavře se a data se stahují pravidelně (jen při změně se překreslí).
 - **0.80:** když uložený e-mail nesouhlasí s adresou odkazu (INVALID_EMAIL – odkaz vyžádaný z jiného zařízení/prohlížeče), průvodce se zeptá na e-mail a zkusí znovu; chybové hlášky Firebase bez anglického dovětku.
 - **0.79:** přihlašovací dotazy na Firebase vzdají po 15 s s oknem „Firebase neodpovídá – blokátor reklam / ochrana proti sledování / firemní filtr“. Petrovi se na PC odkaz otevřel v prohlížeči, kde Firebase neodpovídal (i aktuality tam byly jen ukázkové) → dřív nic neukázalo.
 - **0.78:** výsledek přihlášení odkazem se ukáže v okně (ne jen problikne): „Přihlášeno“, nebo „Tento e-mail nemá přístup“ s radou. Petr se přihlásil e-mailem, který není v seznamu pořadatelů → byl hned odhlášen a hlášku přehlédl.

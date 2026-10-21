@@ -640,7 +640,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.80 · 21. 10. 2026";
+const VERZE="0.81 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -943,7 +943,7 @@ function aktDomu(){   // nepřečtená zpráva od pořadatele rovnou na Domů
   <div class="cact" style="margin-top:8px"><button class="cbtn" data-aktok style="border:0">✓ Přečteno</button>${l.length>1?'<button class="cbtn" data-go="info" style="border:0">Všechny zprávy</button>':""}</div></div>`}
 function aktSeznam(){AKT.list=Object.keys(AKT.raw).map(k=>Object.assign({k},AKT.raw[k])).filter(x=>x&&x.h).sort((a,b)=>(b.ts||0)-(a.ts||0));AKT.on=true}
 function aktStart(){
- if(!window.EventSource)return;let es;try{es=new EventSource(ADB)}catch(e){return}
+ if(!window.EventSource)return;const es=zivyZdroj(ADB,30);
  const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;
   AKT.raw=treeSet(AKT.raw,d.path,d.data,ev.type==="patch");
   const stare=new Set(AKT.on?AKT.list.map(x=>x.k):[]), prvni=!AKT.on;
@@ -965,6 +965,16 @@ const QDB=window.QDB_URL||"https://moje-budky-default-rtdb.firebaseio.com/konfer
 const DEV=(()=>{let d=store.get("dev","");if(!d){d=Date.now().toString(36)+Math.random().toString(36).slice(2,8);store.set("dev",d)}return d})();
 const LIVE={on:false,q:{},v:{},es:[],au:{}};
 let SHEET_DRAW=null;   // překreslení otevřeného okna dotazů / předsedajícího po změně
+function zivyZdroj(url,sek){   // EventSource z Firebase; když do 8 s nic nepřijde (antivirus s kontrolou HTTPS / firemní filtr
+ // živá spojení zadržují a zablokují i ostatní dotazy), zavře se a data se stahují každých `sek` s. Události stejné: put/patch/cancel/auth_revoked.
+ const h={},z={zavreno:false,poll:false,addEventListener(t,f){(h[t]=h[t]||[]).push(f)},close(){z.zavreno=true;if(es)es.close();clearTimeout(z.t);clearInterval(z.iv)}};
+ const emit=(t,data)=>(h[t]||[]).forEach(f=>{try{f({type:t,data})}catch(e){}});
+ let es=null,prislo=false,posl=null;
+ try{es=new EventSource(url);["put","patch","cancel","auth_revoked"].forEach(t=>es.addEventListener(t,ev=>{prislo=true;emit(t,ev.data)}))}catch(e){es=null}
+ const stahni=()=>{if(z.zavreno||navigator.onLine===false)return;fetchT(url).then(r=>{if(r.status===401&&/auth=/.test(url))return emit("auth_revoked","null");if(!r.ok)return r.status===401||r.status===403?emit("cancel","null"):0;
+  return r.text().then(t=>{if(t===posl)return;posl=t;emit("put",JSON.stringify({path:"/",data:JSON.parse(t)}))})}).catch(()=>{})};
+ z.t=setTimeout(()=>{if(prislo||z.zavreno)return;if(es)es.close();es=null;z.poll=true;stahni();z.iv=setInterval(stahni,sek*1000)},8000);
+ return z}
 function treeSet(root,path,data,patch){
  const ks=path.split("/").filter(Boolean);if(!ks.length){if(patch){for(const k in data)root[k]=data[k];return root}return data||{}}
  let o=root;ks.slice(0,-1).forEach(k=>{if(typeof o[k]!=="object"||!o[k])o[k]={};o=o[k]});const last=ks[ks.length-1];
@@ -975,7 +985,7 @@ function liveStart(){
  if(!window.EventSource||!window.fetch)return;
  const pending={q:false,v:false};
  ["q","v"].forEach(kind=>{
-  let es;try{es=new EventSource(QDB+kind+".json")}catch(e){return}
+  const es=zivyZdroj(QDB+kind+".json",20);
   LIVE.es.push(es);
   const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;
    LIVE[kind]=treeSet(LIVE[kind],d.path,d.data,ev.type==="patch");
@@ -1661,7 +1671,7 @@ function tymOhlasy(){return Object.keys(TYM.ohl).map(k=>Object.assign({k},TYM.oh
 function tymNove(){return tymJe()?tymOhlasy().filter(x=>x.ts>TYM.seen).length:0}
 function tymStart(){   // živý seznam ohlasů; token platí hodinu → Firebase pošle auth_revoked a připojíme se s novým
  if(!tymJe()||!window.EventSource)return;if(TYM.es)TYM.es.close();
- tymToken().then(t=>{const es=TYM.es=new EventSource(FBDB+"konference2027_ohlasy/o.json?auth="+t);
+ tymToken().then(t=>{const es=TYM.es=zivyZdroj(FBDB+"konference2027_ohlasy/o.json?auth="+t,30);
   const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;const stare=new Set(Object.keys(TYM.ohl)),prvni=!TYM.nac;
    TYM.ohl=treeSet(TYM.ohl,d.path,d.data,ev.type==="patch")||{};TYM.nac=true;
    if(!prvni){const n=tymOhlasy().filter(x=>!stare.has(x.k));if(n.length)tymUpoz(n[0])}render()};
@@ -1751,7 +1761,7 @@ function tymOnlTxt(){const o=ONL.n;if(!onlCerstve())return "📶 Počet lidí on
  return `📶 Online teď <b>${o.n}</b> · dnes nejvíc <b>${o.max||o.n}</b>${o.maxTs?" (v "+new Date(o.maxTs).toLocaleTimeString("cs",{hour:"2-digit",minute:"2-digit"})+")":""}`}
 function onlUkaz(){document.querySelectorAll(".onl").forEach(e=>{e.hidden=!onlCerstve();e.innerHTML=onlTxt()});const t=$("tymonl");if(t)t.innerHTML=tymOnlTxt()}
 function onlStart(){onlTep();setInterval(onlTep,60000);document.addEventListener("visibilitychange",onlTep);setInterval(onlUkaz,60000);
- if(!window.EventSource)return;let es;try{es=new EventSource(ONDB+"n.json")}catch(e){return}
+ const es=zivyZdroj(ONDB+"n.json",60);
  const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;ONL.n=treeSet(ONL.n||{},d.path,d.data,ev.type==="patch");onlUkaz()};
  es.addEventListener("put",on);es.addEventListener("patch",on);es.addEventListener("cancel",()=>es.close())}
 
