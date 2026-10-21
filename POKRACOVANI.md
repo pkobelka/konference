@@ -925,6 +925,7 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   ```
 
 ### Průvodce 0.76 (21. 10. 2026) – POČET LIDÍ ONLINE + PETR JAKO POŘADATEL V PRŮVODCI
+- **0.89:** „E-mailem“ u poznámek (a mailto:/tel:/sms: odkazy v Kontaktech) už nevyvolá dotaz prohlížeče „Odejít ze stránky? Změny se možná neuloží“ (beforeunload hlídá neuložené poznámky, otevření pošty bral jako odchod).
 - **0.88:** tlačítko „💬 Ohlasy“ bez celkového počtu (Petr: „furt mi tam svítí 4“) – červený štítek jen „N nové“, po otevření zmizí.
 - **0.87:** tlačítka uložení poznámek bez ikon (📤 ✉ 🖨 pryč), šipka ⬇ zůstala jen u Stáhnout / Uložit do počítače (Petr).
 - **0.86 – aktuality jako dotazy:** otevření Info už neoznačí aktuality jako přečtené; nové jsou podbarvené žlutě se štítkem Nové a tlačítkem ✓ (`data-aktk`), při 2+ nových „Označit vše jako přečtené“ (`data-aktall`). Číslo u Info klesá po ✓.
