@@ -925,6 +925,7 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   ```
 
 ### Průvodce 0.76 (21. 10. 2026) – POČET LIDÍ ONLINE + PETR JAKO POŘADATEL V PRŮVODCI
+- **0.85:** `tymOver` při výpadku (chyba HTTP mimo 401 u florian_login_email, timeout) už neodhlásí – dřív se chyba brala jako „není v týmu“ a odhlásilo. Petr na PC zjistil, že je odhlášený (příčina nejasná – jiný prohlížeč, nebo tohle).
 - **0.84:** vlastní dotazy (napsané z tohoto zařízení) se nepočítají do čísla nových – Petrovi svítilo 5, i když vše přečetl (své zkušební dotazy).
 - **0.83:** záložka Dotazy se otevírá na **Všechny**; nové dotazy podbarvené žlutě (`.dqr.nov`), po ✓ podbarvení plynule zmizí (render po 0,6 s).
 - **0.82 – ✓ Přečteno u jednotlivého dotazu** (Petr: „splyne mi, jestli je jich 8 nebo 9“): u každého nového dotazu (záložka Dotazy, i v kartě Běží teď) kulaté ✓ → dotaz zmizí z Nových a číslo u záložky se sníží. `S.seenK[id][klíč]` v zařízení (localStorage `seenK`), vedle dosavadního `S.seen[id]` (počet při otevření dotazů přednášky). `novyQ(id,q,i)`.
