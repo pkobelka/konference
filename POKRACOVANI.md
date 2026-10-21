@@ -925,6 +925,7 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   ```
 
 ### Průvodce 0.76 (21. 10. 2026) – POČET LIDÍ ONLINE + PETR JAKO POŘADATEL V PRŮVODCI
+- **0.84:** vlastní dotazy (napsané z tohoto zařízení) se nepočítají do čísla nových – Petrovi svítilo 5, i když vše přečetl (své zkušební dotazy).
 - **0.83:** záložka Dotazy se otevírá na **Všechny**; nové dotazy podbarvené žlutě (`.dqr.nov`), po ✓ podbarvení plynule zmizí (render po 0,6 s).
 - **0.82 – ✓ Přečteno u jednotlivého dotazu** (Petr: „splyne mi, jestli je jich 8 nebo 9“): u každého nového dotazu (záložka Dotazy, i v kartě Běží teď) kulaté ✓ → dotaz zmizí z Nových a číslo u záložky se sníží. `S.seenK[id][klíč]` v zařízení (localStorage `seenK`), vedle dosavadního `S.seen[id]` (počet při otevření dotazů přednášky). `novyQ(id,q,i)`.
 - **0.81 – živá spojení s náhradou:** `zivyZdroj(url, s)` místo `new EventSource` (aktuality 30 s, dotazy q/v 20 s, ohlasy týmu 30 s, online 60 s). Když EventSource do 8 s nic nepřinese (antivirus s kontrolou HTTPS / firemní filtr – na Petrově PC byly jen ukázkové aktuality a přihlášení padalo na „Firebase neodpovídá“, protože zaseklá spojení zablokovala frontu), zavře se a data se stahují pravidelně (jen při změně se překreslí).

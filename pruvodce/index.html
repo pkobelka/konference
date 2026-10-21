@@ -644,7 +644,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.83 · 21. 10. 2026";
+const VERZE="0.84 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -925,7 +925,7 @@ function vKartaVstup(){
 /* ===== Nové dotazy: červené číslo u přednášky, dne a záložky Program ===== */
 // S.seen[id] = kolik dotazů k přednášce už člověk viděl (otevřel okno dotazů). Vlastní dotaz se počítá jako viděný.
 // S.seenK[id][klíč] = jednotlivý dotaz označený ✓ jako přečtený (bez otevření celé přednášky)
-function novyQ(id,q,i){return i>=(S.seen[id]||0)&&!(S.seenK[id]||{})[q.k]}
+function novyQ(id,q,i){return q.dev!==DEV&&i>=(S.seen[id]||0)&&!(S.seenK[id]||{})[q.k]}   // vlastní dotaz nikdy není nový
 function novych(id){return (S.qa[id]||[]).filter((q,i)=>novyQ(id,q,i)).length}
 function novychDen(d){return PROG[d].reduce((a,x)=>a+(x.id?novych(x.id):0),0)}
 function novychVse(){return Object.keys(PROG).reduce((a,d)=>a+novychDen(d),0)}
