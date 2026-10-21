@@ -925,6 +925,7 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   ```
 
 ### Průvodce 0.76 (21. 10. 2026) – POČET LIDÍ ONLINE + PETR JAKO POŘADATEL V PRŮVODCI
+- **0.88:** tlačítko „💬 Ohlasy“ bez celkového počtu (Petr: „furt mi tam svítí 4“) – červený štítek jen „N nové“, po otevření zmizí.
 - **0.87:** tlačítka uložení poznámek bez ikon (📤 ✉ 🖨 pryč), šipka ⬇ zůstala jen u Stáhnout / Uložit do počítače (Petr).
 - **0.86 – aktuality jako dotazy:** otevření Info už neoznačí aktuality jako přečtené; nové jsou podbarvené žlutě se štítkem Nové a tlačítkem ✓ (`data-aktk`), při 2+ nových „Označit vše jako přečtené“ (`data-aktall`). Číslo u Info klesá po ✓.
 - **0.85:** `tymOver` při výpadku (chyba HTTP mimo 401 u florian_login_email, timeout) už neodhlásí – dřív se chyba brala jako „není v týmu“ a odhlásilo. Petr na PC zjistil, že je odhlášený (příčina nejasná – jiný prohlížeč, nebo tohle).
