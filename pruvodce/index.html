@@ -640,7 +640,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.77 · 21. 10. 2026";
+const VERZE="0.78 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1643,12 +1643,14 @@ function tymZOdkazu(url){   // odkaz z e-mailu (otevřený, nebo vložený ručn
  let em=store.get("tymEm","");if(!em)em=(prompt("Potvrďte e-mail, na který přišel přihlašovací odkaz:")||"").trim();if(!em)return true;
  toast("Přihlašuji…");
  fbPost("https://identitytoolkit.googleapis.com/v1/accounts:signInWithEmailLink?key="+FBKEY,{email:em,oobCode:oob})
-  .then(d=>{TYM.s=null;tymUloz(d);return tymOver()}).catch(e=>toast("⚠️ Přihlášení se nepovedlo: "+tymChyba(e)));return true}
-function tymOver(){   // je e-mail v seznamu týmu, nebo pořadatel (stejný seznam jako aplikace pořadatele)?
+  .then(d=>{TYM.s=null;tymUloz(d);return tymOver(true)}).catch(e=>tymVysledek("⚠️ Přihlášení se nepovedlo",esc(tymChyba(e))+". Zkuste to znovu: Info → dole „🔑 Pro pořadatele“."));return true}
+function tymVysledek(h,t){go("info");setTimeout(()=>openSheet(`<h2>${h}</h2><div class="bd"><p style="margin:0">${t}</p><button class="send" id="tvok" style="margin-top:14px">Rozumím</button></div>`,true),50);
+ setTimeout(()=>{const b=$("tvok");if(b)b.addEventListener("click",closeSheet)},120)}
+function tymOver(poOdkazu){   // je e-mail v seznamu týmu, nebo pořadatel (stejný seznam jako aplikace pořadatele)?
  const cti=(t,u)=>fetch(FBDB+u+"/"+tymKlic(TYM.s.em)+".json?auth="+t).then(r=>r.ok?r.json():null).catch(()=>null);
  return tymToken().then(t=>Promise.all([cti(t,"konference2027_tym"),cti(t,"florian_login_email")])).then(([v,o])=>{
-  if(v!==true&&o==null)return tymOdhlas("E-mail "+TYM.s.em+" nemá přístup pro pořadatele. Ozvěte se Petru Kobelkovi.");
-  TYM.s.ok=true;TYM.s.org=o!=null;store.set("tym",TYM.s);toast("🔑 Přihlášeno: "+tymJmeno());tymStart();if(S.tab==="info")render();else go("info")})}
+  if(v!==true&&o==null){const em=TYM.s.em;tymOdhlas();if(poOdkazu)tymVysledek("Tento e-mail nemá přístup",`Odkaz byl v pořádku, ale e-mail <b>${esc(em)}</b> není mezi pořadateli ani v týmu.<br><br>Pořadatel: přihlaste se stejným e-mailem jako do aplikace pořadatele. Člen týmu: požádejte pořadatele, ať vás přidá (aplikace pořadatele → Průvodce → Tým).`);return}
+  TYM.s.ok=true;TYM.s.org=o!=null;store.set("tym",TYM.s);if(poOdkazu)tymVysledek("🔑 Přihlášeno","Jste přihlášen jako <b>"+esc(tymJmeno())+"</b> ("+(o!=null?"pořadatel":"tým pořadatele")+"). Karta s ohlasy a zprávou všem je nahoře v Info.");else toast("🔑 Přihlášeno: "+tymJmeno());tymStart();if(S.tab==="info")render();else go("info")})}
 function tymOdhlas(proc){if(TYM.es)TYM.es.close();TYM.es=null;TYM.s=null;TYM.ohl={};TYM.nac=false;store.set("tym",null);if(proc)toast(proc);render()}
 function tymOhlasy(){return Object.keys(TYM.ohl).map(k=>Object.assign({k},TYM.ohl[k])).filter(x=>x&&x.ts).sort((a,b)=>b.ts-a.ts)}
 function tymNove(){return tymJe()?tymOhlasy().filter(x=>x.ts>TYM.seen).length:0}

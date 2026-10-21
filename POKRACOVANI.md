@@ -925,6 +925,7 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
   ```
 
 ### Průvodce 0.76 (21. 10. 2026) – POČET LIDÍ ONLINE + PETR JAKO POŘADATEL V PRŮVODCI
+- **0.78:** výsledek přihlášení odkazem se ukáže v okně (ne jen problikne): „Přihlášeno“, nebo „Tento e-mail nemá přístup“ s radou. Petr se přihlásil e-mailem, který není v seznamu pořadatelů → byl hned odhlášen a hlášku přehlédl.
 - **0.77:** v kartě „Přihlášen: Jméno Příjmení“ (jméno se zadá při přihlášení, „změnit jméno“); jméno je i autor zpráv všem (místo e-mailu – aktuality čte veřejnost).
 - Petr bude během konference pracovat jen v průvodci (aplikaci pořadatele po přidělení pokojů nepotřebuje).
 - **Přihlášení pořadatele v průvodci:** stejné „🔑 Pro pořadatele“ jako tým; průvodce kromě `konference2027_tym` zkouší
