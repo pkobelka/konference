@@ -150,6 +150,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
   .tabs,.top .userbox,.lista .btn,.filtry,.zpet,.noprint{display:none!important;}
   .row,.card,.pokoj{break-inside:avoid;}
 }
+.tscroll{overflow-x:auto;max-width:100%}
 </style>
 </head>
 <body>
@@ -191,7 +192,7 @@ table.t tr.cl:hover{background:#f7f5ef;}
 /* ================== FIREBASE (stejný projekt jako Volby / Florián) ================== */
 const CFG={apiKey:"AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI",authDomain:"moje-budky.firebaseapp.com",databaseURL:"https://moje-budky-default-rtdb.firebaseio.com",projectId:"moje-budky",storageBucket:"moje-budky.firebasestorage.app",messagingSenderId:"325649258561",appId:"1:325649258561:web:b5571c3278d98405320ec0"};
 firebase.initializeApp(CFG);
-const VERZE="1.25 · 21. 10. 2026";     // při každém nasazení zvýšit
+const VERZE="1.26 · 21. 10. 2026";     // při každém nasazení zvýšit
 const AUTH=firebase.auth(), FDB=firebase.database();
 document.querySelectorAll(".vz").forEach(e=>e.textContent=VERZE);
 const ROOT="konference2027";           // uzel ve Firebase – data nejsou v repozitáři
@@ -1119,8 +1120,8 @@ function predsOdkazy(){
     const den={ut:"Út",st:"St"};
     b.innerHTML=`<table class="t">${BLOKY.map(x=>{const u=pruvodceBase()+"?pr="+x.bid,predm="Konference ČOV – Pohled předsedajícího: "+x.blok;
       const telo="Dobrý den,\n\nv průvodci konference máte připravený Pohled předsedajícího pro blok „"+x.blok+"“ – dotazy účastníků k přednáškám bloku, nejžádanější první; velkým písmem je můžete ukázat přednášejícímu:\n\n"+u+"\n\nStačí odkaz jednou otevřít v telefonu nebo v počítači v sále; průvodce si ho zapamatuje a v Programu vám u bloku ukáže tlačítko Pohled předsedajícího.\n\nDěkuji\n";
-      return `<tr><td class="sub" style="white-space:nowrap">${den[x.bid.slice(0,2)]||""}</td><td><b>${esc(x.blok)}</b><div class="sub">předsedá ${esc(x.pr||"")}</div><div class="sub"><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a></div></td>
-        <td style="white-space:nowrap"><button class="btn ghost small" data-prkop="${esc(u)}">Kopírovat</button> <a class="btn ghost small" href="mailto:?subject=${encodeURIComponent(predm)}&body=${encodeURIComponent(telo)}">✉ E-mail</a></td></tr>`}).join("")}</table>`;};
+      return `<tr><td class="sub" style="white-space:nowrap">${den[x.bid.slice(0,2)]||""}</td><td><b>${esc(x.blok)}</b><div class="sub">předsedá ${esc(x.pr||"")}</div><div class="sub" style="overflow-wrap:anywhere"><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a></div></td>
+        <td><button class="btn ghost small" data-prkop="${esc(u)}">Kopírovat</button> <a class="btn ghost small" href="mailto:?subject=${encodeURIComponent(predm)}&body=${encodeURIComponent(telo)}">✉ E-mail</a></td></tr>`}).join("")}</table>`;};
   if(BLOKY)return kresli();
   fetch("pruvodce/program.js",{cache:"no-store"}).then(r=>r.text()).then(t=>{BLOKY=new Function(t+";return ALLT")().filter(x=>x.blok);kresli();})
     .catch(()=>{const b=box();if(b)b.innerHTML=`<p class="muted" style="font-size:.9rem">Program se nepodařilo načíst.</p>`;});
@@ -1310,14 +1311,14 @@ function rPrihlasky(){
   for(const [k,t] of FKAT){
     const ids=firmyS.filter(f=>(DB.firmy[f].kat||"ostatni")===k).sort((a,b)=>DB.firmy[a].nazev.localeCompare(DB.firmy[b].nazev,"cs"));
     if(!ids.length)continue;
-    h+=`<h2 class="sek">${esc(t)} <span class="cnt">${ids.length}</span></h2><table class="t"><tr><th>Firma</th><th>Stav</th><th>Lidí</th><th>Vyplněno</th><th></th></tr>`+ids.map(fid=>{
+    h+=`<h2 class="sek">${esc(t)} <span class="cnt">${ids.length}</span></h2><div class="tscroll"><table class="t"><tr><th>Firma</th><th>Stav</th><th>Lidí</th><th>Vyplněno</th><th></th></tr>`+ids.map(fid=>{
       const tk=tokenFirmy(fid), p=PRIH[tk], st=prihStav(p), lidi=p&&p.lide?Object.keys(p.lide).length:0;
       return `<tr><td class="cl" data-firma="${esc(fid)}" style="cursor:pointer"><b>${esc(DB.firmy[fid].nazev)}</b></td><td><span class="b" style="background:${st[2]}">${st[1]}</span></td><td>${p&&p.odeslano_ts?lidi:"—"}</td><td class="sub">${p&&p.odeslano_ts?new Date(p.odeslano_ts).toLocaleString("cs"):""}</td>
       <td style="white-space:nowrap;text-align:right">${!tk?`<button class="btn ghost small" data-vytvorit="${esc(fid)}">Vytvořit odkaz</button>`:
         `<button class="btn ghost small" data-kopirovat="${esc(tk)}" title="Kopírovat odkaz">📋</button> <a class="btn ghost small" style="text-decoration:none" href="${esc(mailto(tk))}" title="Napsat e-mail s odkazem">✉</a> <a class="btn ghost small" style="text-decoration:none" href="${esc(odkaz(tk))}" target="_blank" rel="noopener" title="Otevřít formulář">↗</a>`+
         (p.odeslano_ts?` <button class="btn ghost small" data-zobrazit="${esc(tk)}">Zobrazit</button>`:"")+
         (["nova","zmena"].includes(st[0])?` <button class="btn small" data-prevzit="${esc(tk)}">Převzít</button>`:"")}</td></tr>`;
-    }).join("")+`</table>`;
+    }).join("")+`</table></div>`;
   }
   $("view").innerHTML=h;
   eimpInit();
