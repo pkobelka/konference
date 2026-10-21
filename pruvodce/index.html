@@ -646,7 +646,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.86 · 21. 10. 2026";
+const VERZE="0.87 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1792,8 +1792,8 @@ function mojeIkony(){   // „Moje poznámky“ + kolik čeho: ✎ text, 🎤 na
 const pocetPoznamek=()=>ALLT.filter(x=>x.id&&maPozn(x.id)).length;
 const umiSdilet=()=>!!(navigator.share&&matchMedia("(pointer:coarse)").matches);
 function nexpBtns(){   // mobil/tablet: hlavně sdílení (e-mail, Soubory, Poznámky…); počítač: hlavně uložit do počítače
- return umiSdilet()?`<div class="nexp"><button class="hl" data-nx="share">📤 Poslat / uložit</button><button data-nx="mail">✉ E-mailem</button><button data-nx="pr">🖨 PDF</button><button data-nx="txt">⬇ Stáhnout</button></div>`
-  :`<div class="nexp"><button class="hl" data-nx="txt">⬇ Uložit do počítače</button><button data-nx="mail">✉ Poslat e-mailem</button><button data-nx="pr">🖨 Vytisknout / PDF</button></div>`}
+ return umiSdilet()?`<div class="nexp"><button class="hl" data-nx="share">Poslat / uložit</button><button data-nx="mail">E-mailem</button><button data-nx="pr">PDF</button><button data-nx="txt">⬇ Stáhnout</button></div>`
+  :`<div class="nexp"><button class="hl" data-nx="txt">⬇ Uložit do počítače</button><button data-nx="mail">Poslat e-mailem</button><button data-nx="pr">Vytisknout / PDF</button></div>`}
 function sdilejPoznamky(){
  const d={title:"Moje poznámky – konference ČOV 2027",text:poznamkyText()};
  const fs=[];medSoubory().forEach(({m,jm})=>{try{fs.push(new File([m.blob],jm,{type:m.blob.type||(m.typ==="foto"?"image/jpeg":"audio/webm")}))}catch(e){}});
