@@ -646,7 +646,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.87 · 21. 10. 2026";
+const VERZE="0.88 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1693,11 +1693,11 @@ function tymUpoz(x){const b=[x.k?"konference "+tymTvar(x.k):"",x.p?"průvodce "+
  if(document.hidden&&"Notification" in window&&Notification.permission==="granted"){const t="💬 Nový ohlas",o={body:b.slice(0,200),icon:IMG+"cislo31.webp",tag:"ohlas"};
   (navigator.serviceWorker&&navigator.serviceWorker.getRegistration?navigator.serviceWorker.getRegistration():Promise.resolve(null)).then(r=>{if(r)r.showNotification(t,o);else new Notification(t,o)}).catch(()=>{try{new Notification(t,o)}catch(e){}})}}
 function vTym(){   // karta nahoře v Info (jen přihlášený tým)
- if(!tymJe())return "";const n=tymNove(),l=tymOhlasy();
+ if(!tymJe())return "";const n=tymNove();
  return `<div class="card tymc"><div class="label" style="margin-bottom:2px">🔑 ${TYM.s.org?"Pořadatel":"Tým pořadatele"}</div>
   <div style="margin-bottom:8px"><b>Přihlášen: ${esc(tymJmeno())}</b> <button class="linkb" data-tym="jm" style="font-weight:400">změnit jméno</button></div>
   <p id="tymonl" style="margin:0 0 10px;font-size:14px">${tymOnlTxt()}</p>
-  <div class="cact" style="margin:0"><button class="cbtn" data-tym="ohl">💬 Ohlasy (${TYM.nac?l.length:"…"})${n?` <span class="tbad">${n} ${n===1?"nový":n<5?"nové":"nových"}</span>`:""}</button><button class="cbtn" data-tym="zpr">📣 Zpráva všem</button></div>
+  <div class="cact" style="margin:0"><button class="cbtn" data-tym="ohl">💬 Ohlasy${n?` <span class="tbad">${n} ${n===1?"nový":n<5?"nové":"nových"}</span>`:""}</button><button class="cbtn" data-tym="zpr">📣 Zpráva všem</button></div>
   ${"Notification" in window&&Notification.permission!=="granted"?`<button class="linkb" data-tym="notif" style="margin-top:10px;display:block">🔔 Upozorňovat na nové ohlasy i při zavřené obrazovce</button>`:""}
   <button class="linkb" data-tym="odhl" style="margin-top:10px">Odhlásit</button></div>`}
 function sheetTymOhlasy(){
