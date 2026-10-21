@@ -648,7 +648,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.95 · 21. 10. 2026";
+const VERZE="0.96 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1447,7 +1447,7 @@ function prehraj(q,btn,popis){
   a.onended=()=>{btn.textContent=popis.replace("Přehrát do sálu","Přehrát znovu");HR=null};return a.play()})
   .catch(()=>{btn.textContent=popis;HR=null;toast("Nahrávku se nepodařilo přehrát")});
 }
-/* ===== Projekce dotazů na plátno (předsedající / přednášející, tablet nebo PC u projektoru) ===== */
+/* ===== Dotazy velkým písmem (předsedající čte do mikrofonu a ukáže přednášejícímu) ===== */
 let PJ=null;   // {bid, key, dark}
 function pjSeznam(bid){   // stejné pořadí jako v pohledu předsedajícího: nepřečtené a nejžádanější první
  const talks=ALLT.filter(y=>y.id&&y.bid===bid), r=[];
@@ -1488,7 +1488,6 @@ document.addEventListener("keydown",e=>{if(!PJ||e.target.closest("input,textarea
  const k=e.key;if(k==="Escape")return pjZavri();
  if(k==="ArrowRight"||k==="PageDown"){e.preventDefault();return $("pjnext").click()}
  if(k==="ArrowLeft"||k==="PageUp"){e.preventDefault();return $("pjprev").click()}
- if(k===" "){e.preventDefault();if($("pjplay"))$("pjplay").click();return}
  if(k==="r"||k==="R"){if($("pjrd"))$("pjrd").click();return}
  if(k==="f"||k==="F")return $("pjfs").click();
  if(k==="d"||k==="D")return $("pjdk").click()});
@@ -1499,8 +1498,8 @@ function sheetChair(bid){
    return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(q=>{const k=x.id+":"+q.k,r=!!S.read[k],n=votes(x.id,q.k);
     return `<div class="cq ${r?"read":""}"><div><p>${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes" title="Palce od ostatních">👍 ${n-1}</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">🔎 Velkým písmem</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
  openSheet(`<h2>Pohled předsedajícího</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(bk.blok)} · předsedá ${esc(bk.pr)}</div>
-  <div class="bd chair"><button class="projall" data-projall="1">🔎 Dotazy velkým písmem · na plátno</button><div id="clist"></div>
-  <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe.<br><b>Na mobilu</b> (předsedající s mikrofonem): „Velkým písmem“ ukáže dotaz přes celý displej – pohodlně ho přečtete do mikrofonu, hlasový dotaz pustíte tlačítkem 🔊 a telefon podržíte u mikrofonu.<br><b>Na počítači u projektoru</b> (např. v diskuzi po přednášce): stejný pohled přes celé plátno. Ovládání: ← → další dotaz, mezerník přehrát, R přečteno, F celá obrazovka, Esc zpět.<br>Přímý odkaz pro počítač v sále: <b>…/pruvodce/?pr=${esc(bid)}</b></div></div>`);
+  <div class="bd chair"><button class="projall" data-projall="1">🔎 Velkým písmem – ukázat přednášejícímu</button><div id="clist"></div>
+  <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe.<br><b>Na mobilu</b> (předsedající s mikrofonem): „Velkým písmem“ ukáže dotaz přes celý displej – pohodlně ho přečtete do mikrofonu a pak telefon nebo tablet ukážete přednášejícímu, aby měl dotaz před očima. Na počítači: ← → další dotaz, R přečteno, F celá obrazovka, Esc zpět.<br>Přímý odkaz pro počítač v sále: <b>…/pruvodce/?pr=${esc(bid)}</b></div></div>`);
  draw();SHEET_DRAW=draw;
  $("sheet").querySelector("[data-projall]").addEventListener("click",()=>promitej(bid));
  $("clist").addEventListener("click",e=>{const pj=e.target.closest("[data-proj]");if(pj)return promitej(bid,pj.dataset.proj);
