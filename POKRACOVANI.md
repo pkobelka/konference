@@ -923,3 +923,15 @@ Vše nasazeno: průvodce **0.69**, pořadatel **1.21**, pravidlo ohlasů (mojebu
     "$k": { ".write": "TYM && ((!data.exists() && newData.child('uid').val() === auth.uid) || (data.exists() && data.child('uid').val() === auth.uid && !newData.exists()))",
             ".validate": "newData.child('h').isString() && newData.child('h').val().length > 0 && newData.child('h').val().length <= 120 && newData.child('ts').isNumber() && (!newData.child('p').exists() || (newData.child('p').isString() && newData.child('p').val().length <= 1000))" } }
   ```
+
+### Průvodce 0.76 (21. 10. 2026) – POČET LIDÍ ONLINE + PETR JAKO POŘADATEL V PRŮVODCI
+- Petr bude během konference pracovat jen v průvodci (aplikaci pořadatele po přidělení pokojů nepotřebuje).
+- **Přihlášení pořadatele v průvodci:** stejné „🔑 Pro pořadatele“ jako tým; průvodce kromě `konference2027_tym` zkouší
+  i `florian_login_email` (stejný seznam jako aplikace pořadatele) → `TYM.s.org`. Pořadatel navíc: **smaže jakoukoli zprávu**,
+  v Ohlasech **Zveřejnit na Domů / Skrýt / Smazat** (pravidla to pro ORG už dovolovala).
+- **„📶 Teď s námi v průvodci N lidí“** – vidí všichni na Domů pod odpočtem (zelená tečka); v kartě týmu/pořadatele navíc
+  „dnes nejvíc M (v HH:MM)“. Skryto, když nikdo / data starší 5 min.
+  Otevřený průvodce (obrazovka zapnutá) každou minutu `PUT konference2027_online/d/{DEV}` = čas serveru (anonymně);
+  funkce **`konferenceOnline`** v mojebudky (každou minutu) spočítá aktivní za 2,5 min, maže záznamy > 10 min a píše
+  `konference2027_online/n = {n, ts, max, maxTs, den}`; telefony čtou jen `n`. **mojebudky PR #191 – sloučeno 21. 10.**
+  (emulátor 11/11). Firebase má tarif **Blaze** (naplánované funkce) → 400+ spojení OK; 4. plánovač ≈ 0,10 USD/měsíc.
