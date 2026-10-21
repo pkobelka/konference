@@ -337,7 +337,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .cq .play,.play{display:block;width:auto;min-width:0;height:auto;margin:8px 0 6px;border:0;border-radius:10px;padding:10px 16px;font-weight:800;font-size:15px;background:var(--water);color:var(--surface)}
 .akt article{position:relative;padding:10px 0;border-top:1px solid var(--line)}.akt article:first-of-type{border-top:0}
 .akt h3{font-size:16px;font-family:var(--f-body);font-weight:700;margin:0}.akt p{margin:4px 0 2px;font-size:14px;line-height:1.45}.akt small{color:var(--muted);font-size:12px}
-.akt article.nova{background:linear-gradient(90deg,var(--accent-soft),transparent);margin:0 -14px;padding:10px 14px;border-radius:10px}
+.akt article{transition:background-color .5s ease}
+.akt article.nova{background:color-mix(in srgb,#f5b400 17%,var(--surface));margin:0 -14px 6px;padding:10px 58px 10px 14px;border-radius:10px;border-top-color:transparent}.akt article.nova+article{border-top-color:transparent}
+.akt .aktok{position:absolute;right:12px;top:10px;width:36px;height:36px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--water);font-weight:900;font-size:16px;cursor:pointer}.akt .aktok:active{background:var(--water);color:var(--surface)}
 .onl{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--muted)}.onl[hidden]{display:none}.onl b{color:var(--ink)}
 .onl i{flex:none;width:8px;height:8px;border-radius:50%;background:#2fa84f;animation:onlp 2s infinite}@keyframes onlp{0%{box-shadow:0 0 0 0 rgba(47,168,79,.55)}70%,100%{box-shadow:0 0 0 7px rgba(47,168,79,0)}}
 .tymc{border:2px dashed var(--water)}.tbad{background:#d6342c;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;font-weight:800}
@@ -644,7 +646,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.85 · 21. 10. 2026";
+const VERZE="0.86 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -955,7 +957,7 @@ function aktStart(){
   const stare=new Set(AKT.on?AKT.list.map(x=>x.k):[]), prvni=!AKT.on;
   aktSeznam();store.set("snapA",AKT.raw);
   if(!prvni){const n=AKT.list.find(x=>!stare.has(x.k));if(n&&S.tab!=="info")toast("📣 Nová zpráva: "+n.h+" · zobrazit ›",()=>go("info"))}
-  if(S.tab==="info")aktPrecteno();render()};
+  render()};
  es.addEventListener("put",on);es.addEventListener("patch",on);es.addEventListener("cancel",()=>es.close());
 }
 function podpis(){return [S.me.jm,S.me.firma].filter(Boolean).join(", ")}
@@ -1101,7 +1103,7 @@ function render(){
  $("view").innerHTML=(S.tab==="domu"||S.tab==="poznamky"||S.tab==="dotazy"||S.tab==="partneri"?"":ticker())+{domu:vDomu,program:vProgram,partneri:vPartneri,poznamky:vPoznamky,dotazy:vDotazy,info:vInfo}[S.tab]();
  ikonaCislo();
 }
-function go(t){let kam=null;if(t==="doprava"){t="info";kam="i-dop"}if(t==="info")aktPrecteno();S.tab=t;render();window.scrollTo(0,0);if(kam)setTimeout(()=>skok(kam),30)}
+function go(t){let kam=null;if(t==="doprava"){t="info";kam="i-dop"}S.tab=t;render();window.scrollTo(0,0);if(kam)setTimeout(()=>skok(kam),30)}
 function skok(id){const e=$(id);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
 
 function odpocet(){const st=Date.UTC(2027,3,27,6,0),en=Date.UTC(2027,3,28,10,0),n=Date.now();
@@ -1333,7 +1335,7 @@ function vInfo(){
   <div class="rozc"><button data-skok="i-akt">📣 Aktuality</button><button data-skok="i-dop">🚌 Cesta a svoz</button><button data-skok="i-kont">📞 Kontakty</button><button data-skok="i-o">ℹ️ O konferenci</button></div>
   ${vTym()}
   <div class="card akt" id="i-akt"><div class="label" style="margin-bottom:4px">📣 Aktuality od pořadatele</div>
-   ${AKT.list.length?AKT.list.map(x=>`<article class="${nove[x.k]?"nova":""}">${nove[x.k]?'<span class="chipn">Nové</span>':""}<h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}<small>${x.d?esc(x.d):x.ts>1e9?new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}):""}</small>${tymJe()&&(TYM.s.org||x.uid&&x.uid===TYM.s.uid)?` <button class="linkb" data-tymdel="${esc(x.k)}">Smazat</button>`:""}</article>`).join(""):'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Jakmile pořadatel něco napíše, uvidíte to tady a u záložky Info naskočí číslo.</p>'}
+   ${AKT.list.length?AKT.list.map(x=>`<article class="${!S.aktSeen[x.k]?"nova":""}">${!S.aktSeen[x.k]?`<button class="aktok" data-aktk="${esc(x.k)}" aria-label="Označit jako přečtené" title="Přečteno">✓</button><span class="chipn">Nové</span>`:""}<h3>${esc(x.h)}</h3>${x.p?`<p>${esc(x.p)}</p>`:""}<small>${x.d?esc(x.d):x.ts>1e9?new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}):""}</small>${tymJe()&&(TYM.s.org||x.uid&&x.uid===TYM.s.uid)?` <button class="linkb" data-tymdel="${esc(x.k)}">Smazat</button>`:""}</article>`).join("")+(aktNove()>1?'<button class="linkb" data-aktall style="margin-top:6px">Označit vše jako přečtené</button>':""):'<p class="muted" style="margin:0;font-size:14px">Zatím žádné zprávy. Jakmile pořadatel něco napíše, uvidíte to tady a u záložky Info naskočí číslo.</p>'}
   </div>
   <div class="blockh" id="i-dop"><h2>🚌 Cesta a svoz</h2></div>
   ${vDoprava().replace(/^\s*<section class="sec">/,"").replace(/<\/section>\s*$/,"")}
@@ -1952,6 +1954,8 @@ $("view").addEventListener("click",e=>{
  {const hb=e.target.closest("[data-hlas]");if(hb)return sheetHlas(hb.dataset.hlas)}
  {const nq=e.target.closest("[data-naq]");if(nq)return naPrednasku(nq.dataset.naq)}
  if(e.target.closest("[data-navse]")){ALLT.forEach(x=>{if(x.id&&novych(x.id))S.seen[x.id]=(S.qa[x.id]||[]).length});store.set("seen",S.seen);return render()}
+ {const ak=e.target.closest("[data-aktk]");if(ak){S.aktSeen[ak.dataset.aktk]=1;store.set("aktseen",S.aktSeen);const a=ak.closest("article");if(a){a.classList.remove("nova");const ch=a.querySelector(".chipn");if(ch)ch.remove()}ak.remove();return setTimeout(render,600)}}
+ if(e.target.closest("[data-aktall]")){AKT.list.forEach(x=>S.aktSeen[x.k]=1);store.set("aktseen",S.aktSeen);return render()}
  if(e.target.closest("[data-aktok]")){const x=AKT.list.find(y=>!S.aktSeen[y.k]);if(x){S.aktSeen[x.k]=1;store.set("aktseen",S.aktSeen)}return render()}
  const t=e.target.closest("[data-nxok],[data-go],[data-day],[data-note],[data-alarm],[data-p],[data-q],[data-chair],[data-ph],#mine,[data-nx]");if(!t)return;
  if(t.dataset.alarm)return sheetAlarm(t.dataset.alarm);
