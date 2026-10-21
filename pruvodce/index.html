@@ -303,6 +303,9 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .dqr{display:flex;gap:10px;align-items:center;width:100%;border-top:1px solid var(--line);padding:9px 0}
 .dqg .dqh+.dqr{border-top:1px solid var(--line)}.card>.dqr:first-child{border-top:0}
 .dql{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;border:0;background:none;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer}.dqr .dqt{font-size:12px;color:var(--muted);font-weight:700}.dqr .dqx{font-size:15px}.dqr .dqm{font-size:12px;color:var(--muted)}
+.dqr{transition:background-color .5s ease}
+.dqr.nov{background:color-mix(in srgb,#f5b400 17%,var(--surface));border-radius:12px;margin-inline:-10px;padding-inline:10px;width:calc(100% + 20px);border-top-color:transparent}
+.dqr.nov+.dqr{border-top-color:transparent}
 .dqr .dqok{flex:none;width:36px;height:36px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--water);font-weight:900;font-size:16px;cursor:pointer}.dqr .dqok:active{background:var(--water);color:var(--surface)}
 .dqr .dqv{flex:none;font-weight:800;font-size:14px;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:99px;padding:6px 12px;white-space:nowrap;cursor:pointer}.dqr .dqv[aria-pressed="true"]{background:var(--water);color:var(--surface);border-color:var(--water)}.dqr .dqv.mine{cursor:default;color:var(--muted);background:var(--surface-2)}
 .dqnow{border:2px solid #d32f2f}.dqnow>b{display:block;font-size:16px;margin:2px 0 4px}
@@ -641,7 +644,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.82 · 21. 10. 2026";
+const VERZE="0.83 · 21. 10. 2026";
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference, jinak simulace
@@ -1242,11 +1245,11 @@ function hlasuj(id,k,hotovo){   // 👍 palec k dotazu: přidat / vzít zpět (�
  if(LIVE.on){qSend("v/"+id+"/"+k+"/"+DEV,bylo?null:true).then(o=>{toast(bylo?"Palec zrušen":o.fronta?"👍 Palec uložen – odešle se, až bude signál":"👍 Palec přidán");liveRefresh()}).catch(()=>toast("Nepodařilo se – zkuste to znovu"));return}
  const kk=id+":"+k;if(bylo)delete S.voted[kk];else S.voted[kk]=1;toast(bylo?"Palec zrušen":"👍 Palec přidán");store.set("voted",S.voted);if(hotovo)hotovo();render()}
 function vDotazy(){   // všechny dotazy na jednom místě: nové, nejžádanější, všechny, moje + běžící přednáška
- const f=S.dqf||(novychVse()?"nove":"top"), q=norm((S.dqq||"").trim()), st=nowState();
+ const f=S.dqf||"vse", q=norm((S.dqq||"").trim()), st=nowState();
  const den=x=>DAYS.find(z=>PROG[z.k].includes(x));
  const vse=[];ALLT.forEach(x=>{if(x.id)(S.qa[x.id]||[]).forEach((d,i)=>vse.push({x,d,n:votes(x.id,d.k),nov:novyQ(x.id,d,i)&&d.dev!==DEV}))});
  const hod=o=>!q||norm(o.d.t+" "+o.d.a+" "+o.x.h).includes(q);
- const radek=(o,sNazvem)=>`<div class="dqr"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(o.d.c||"")}${o.d.dev===DEV?" · váš dotaz":""}</span></button>${o.nov?`<button class="dqok" data-dqok="${o.x.id}|${o.d.k}" aria-label="Označit jako přečtené" title="Přečteno">✓</button>`:""}${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" aria-label="${hlasoval(o.x.id,o.d.k)?"Zrušit palec":"Dát palec"}">👍 ${o.n-1}</button>`}</div>`;
+ const radek=(o,sNazvem)=>`<div class="dqr${o.nov?" nov":""}"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(o.d.c||"")}${o.d.dev===DEV?" · váš dotaz":""}</span></button>${o.nov?`<button class="dqok" data-dqok="${o.x.id}|${o.d.k}" aria-label="Označit jako přečtené" title="Přečteno">✓</button>`:""}${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" aria-label="${hlasoval(o.x.id,o.d.k)?"Zrušit palec":"Dát palec"}">👍 ${o.n-1}</button>`}</div>`;
  const skup=l=>{const g=[];l.forEach(o=>{let G=g.find(z=>z.x===o.x);if(!G)g.push(G={x:o.x,l:[]});G.l.push(o)});
   return g.map(G=>`<div class="card dqg"><button class="dqh" data-naq="${G.x.id}"><span class="nvt">${esc((den(G.x)||{n:""}).n.slice(0,2))} ${esc(G.x.t)}</span><b>${esc(G.x.h)}</b><small>↗ v programu</small></button>
    ${G.l.sort((a,b)=>b.n-a.n).map(o=>radek(o,false)).join("")}<button class="cbtn" data-q="${G.x.id}" style="border:0;margin-top:8px">? Zeptat se</button></div>`).join("")};
@@ -1938,7 +1941,7 @@ $("view").addEventListener("click",e=>{
  if(e.target.closest("#dnow"))return naAktualni();
  {const dp=e.target.closest("[data-dqp]");if(dp){const [a,b]=dp.dataset.dqp.split("|");return hlasuj(a,b)}}
  {const sk=e.target.closest("[data-skok]");if(sk)return skok(sk.dataset.skok)}
- {const ok=e.target.closest("[data-dqok]");if(ok){const [id,k]=ok.dataset.dqok.split("|");(S.seenK[id]=S.seenK[id]||{})[k]=1;store.set("seenK",S.seenK);return render()}}
+ {const ok=e.target.closest("[data-dqok]");if(ok){const [id,k]=ok.dataset.dqok.split("|");(S.seenK[id]=S.seenK[id]||{})[k]=1;store.set("seenK",S.seenK);const row=ok.closest(".dqr");if(row){row.classList.remove("nov");ok.remove();const ch=row.querySelector(".chipn");if(ch)ch.remove()}return setTimeout(render,600)}}
  {const df=e.target.closest("[data-dqf]");if(df){S.dqf=df.dataset.dqf;return render()}}
  {const oh=e.target.closest("[data-ohl]");if(oh)return sheetOhlas(+oh.dataset.ohl)}
  if(e.target.closest("[data-ohlne]")){store.set("ohlSkryt",1);return render()}
