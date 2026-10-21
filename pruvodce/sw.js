@@ -1,7 +1,7 @@
 // Service worker průvodce: upozornění budíku + práce bez signálu.
 // Stránka: nejdřív síť (vždy nejnovější verze), bez signálu poslední uložená.
 // Obrázky, ikony a písma: z mezipaměti, na pozadí se obnoví. Firebase a počasí se necachují (data drží stránka sama).
-const CACHE = "pruvodce-v2";
+const CACHE = "pruvodce-v3";
 const PRED = [
   "./",
   "program.js",
