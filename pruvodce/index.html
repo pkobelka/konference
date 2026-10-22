@@ -665,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.01 · 22. 10. 2026";
+const VERZE="1.02 · 22. 10. 2026";
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
 // Vyzkoušení času – kdokoli si ho zapne tlačítkem na Domů (jen simulace času, bez ukázkových dat); platí do zavření okna
@@ -1002,14 +1002,26 @@ const LIVE={on:false,q:{},v:{},es:[],au:{}};
 let SHEET_DRAW=null;   // překreslení otevřeného okna dotazů / předsedajícího po změně
 function zivyZdroj(url,sek){   // EventSource z Firebase; když do 8 s nic nepřijde (antivirus s kontrolou HTTPS / firemní filtr
  // živá spojení zadržují a zablokují i ostatní dotazy), zavře se a data se stahují každých `sek` s. Události stejné: put/patch/cancel/auth_revoked.
- const h={},z={zavreno:false,poll:false,addEventListener(t,f){(h[t]=h[t]||[]).push(f)},close(){z.zavreno=true;if(es)es.close();clearTimeout(z.t);clearInterval(z.iv)}};
+ // Na pozadí (jiná záložka / aplikace) se spojení zavře a po návratu otevře znovu – viz ZDROJE níže.
+ const h={},z={zavreno:false,poll:false,addEventListener(t,f){(h[t]=h[t]||[]).push(f)},close(){z.zavreno=true;zastav();ZDROJE.delete(z)}};
  const emit=(t,data)=>(h[t]||[]).forEach(f=>{try{f({type:t,data})}catch(e){}});
- let es=null,prislo=false,posl=null;
- try{es=new EventSource(url);["put","patch","cancel","auth_revoked"].forEach(t=>es.addEventListener(t,ev=>{prislo=true;emit(t,ev.data)}))}catch(e){es=null}
+ let es=null,posl=null,tm=null,iv=null;
+ const zastav=()=>{if(es)es.close();es=null;clearTimeout(tm);clearInterval(iv);tm=iv=null};
  const stahni=()=>{if(z.zavreno||navigator.onLine===false)return;fetchT(url).then(r=>{if(r.status===401&&/auth=/.test(url))return emit("auth_revoked","null");if(!r.ok)return r.status===401||r.status===403?emit("cancel","null"):0;
   return r.text().then(t=>{if(t===posl)return;posl=t;emit("put",JSON.stringify({path:"/",data:JSON.parse(t)}))})}).catch(()=>{})};
- z.t=setTimeout(()=>{if(prislo||z.zavreno)return;if(es)es.close();es=null;z.poll=true;stahni();z.iv=setInterval(stahni,sek*1000)},8000);
+ const anket=()=>{stahni();iv=setInterval(stahni,sek*1000)};
+ const spust=()=>{if(z.zavreno||es||iv)return;posl=null;if(z.poll)return anket();
+  let prislo=false;try{const e=es=new EventSource(url);["put","patch","cancel","auth_revoked"].forEach(t=>e.addEventListener(t,ev=>{if(e!==es)return;prislo=true;emit(t,ev.data)}))}catch(e){es=null}
+  tm=setTimeout(()=>{if(prislo||z.zavreno||!es)return;es.close();es=null;z.poll=true;anket()},8000)};
+ z._pauza=zastav;z._spust=spust;ZDROJE.add(z);if(!document.hidden&&!ZDROJE.pauza)spust();
  return z}
+// Všechna živá spojení na Firebase. Prohlížeč jich na jeden server pustí jen pár (Safari na iPhonu 6) a ostatní dotazy čekají ve frontě.
+// Na iPhonu odkaz z e-mailu otevře průvodce v NOVÉ záložce, stará záložka spojení dál držela → přihlašovací dotaz se nedostal na řadu
+// a po 15 s padl na „Firebase neodpovídá“. Proto: skrytá záložka spojení zavře, a během přihlašování se na chvíli uvolní i ve viditelné.
+const ZDROJE=new Set();ZDROJE.pauza=0;
+function zdrojePauza(ano){ZDROJE.pauza=Math.max(0,ZDROJE.pauza+(ano?1:-1));zdrojeSrovnej()}
+function zdrojeSrovnej(){const bezi=!document.hidden&&!ZDROJE.pauza;ZDROJE.forEach(z=>bezi?z._spust():z._pauza())}
+document.addEventListener("visibilitychange",zdrojeSrovnej);addEventListener("pageshow",zdrojeSrovnej);
 function treeSet(root,path,data,patch){
  const ks=path.split("/").filter(Boolean);if(!ks.length){if(patch){for(const k in data)root[k]=data[k];return root}return data||{}}
  let o=root;ks.slice(0,-1).forEach(k=>{if(typeof o[k]!=="object"||!o[k])o[k]={};o=o[k]});const last=ks[ks.length-1];
@@ -1757,7 +1769,8 @@ function tymZOdkazu(url){   // odkaz z e-mailu (otevřený, nebo vložený ručn
  const zkus=(em,znovu)=>fbPost("https://identitytoolkit.googleapis.com/v1/accounts:signInWithEmailLink?key="+FBKEY,{email:em,oobCode:oob}).then(d=>{store.set("tymEm",em);return d})
   .catch(e=>{if(znovu||!/^INVALID_EMAIL/.test(String(e.message)))throw e;   // uložený e-mail nesedí (odkaz si poslal z jiného zařízení) → zeptat se
    const em2=(prompt("Odkaz přišel na jiný e-mail než "+em+".\nNa jaký e-mail přišel?",em)||"").trim();if(!em2||em2===em)throw e;return zkus(em2,true)});
- zkus(em,false).then(d=>{TYM.s=null;tymUloz(d);return tymOver(true)}).catch(e=>tymVysledek("⚠️ Přihlášení se nepovedlo",esc(tymChyba(e))+". Zkuste to znovu: Info → dole „🔑 Pro pořadatele“."));return true}
+ zdrojePauza(true);   // uvolnit spojení na Firebase pro přihlašovací dotazy (viz ZDROJE)
+ zkus(em,false).then(d=>{TYM.s=null;tymUloz(d);return tymOver(true)}).catch(e=>tymVysledek("⚠️ Přihlášení se nepovedlo",esc(tymChyba(e))+". Zkuste to znovu: Info → dole „🔑 Pro pořadatele“.")).finally(()=>zdrojePauza(false));return true}
 function tymVysledek(h,t){go("info");setTimeout(()=>openSheet(`<h2>${h}</h2><div class="bd"><p style="margin:0">${t}</p><button class="send" id="tvok" style="margin-top:14px">Rozumím</button></div>`,true),50);
  setTimeout(()=>{const b=$("tvok");if(b)b.addEventListener("click",closeSheet)},120)}
 function tymOver(poOdkazu){   // je e-mail v seznamu týmu, nebo pořadatel (stejný seznam jako aplikace pořadatele)?
