@@ -665,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.02 · 22. 10. 2026";
+const VERZE="1.03 · 22. 10. 2026";
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
 // Vyzkoušení času – kdokoli si ho zapne tlačítkem na Domů (jen simulace času, bez ukázkových dat); platí do zavření okna
@@ -1744,7 +1744,7 @@ function sheetOhlas(kv){
 // (seznam vede pořadatel v aplikaci pořadatele). Tým čte ohlasy a posílá zprávy všem do konference2027_aktuality
 // {h, p, ts, autor, uid}; smazat smí jen svou zprávu. Hlídají to pravidla Firebase (mojebudky), průvodce jen ukazuje.
 const FBKEY="AIzaSyBEAhZNxq3REoy1vExIrnNEXlyFXHzP4uI", FBDB="https://moje-budky-default-rtdb.firebaseio.com/";
-const TYM={s:store.get("tym",null),ohl:{},nac:false,es:null,seen:store.get("tymSeen",0)};   // s = {em, uid, rt, it, exp, ok}
+const TYM={s:store.get("tym",null),ohl:{},nac:false,es:null,seen:store.get("tymSeen",0),seenK:store.get("tymSeenK",{})};   // seen = starší ohlasy brát jako přečtené, seenK = ✓ u jednotlivých   // s = {em, uid, rt, it, exp, ok}
 function tymKlic(em){return String(em||"").trim().toLowerCase().replace(/\./g,",")}
 function tymJe(){return !!(TYM.s&&TYM.s.ok)}
 function tymJmeno(){return TYM.s&&(TYM.s.jm||TYM.s.em)||""}   // jméno (zadané při přihlášení), jinak e-mail
@@ -1780,14 +1780,17 @@ function tymOver(poOdkazu){   // je e-mail v seznamu týmu, nebo pořadatel (ste
   TYM.s.ok=true;TYM.s.org=o!=null;store.set("tym",TYM.s);if(poOdkazu)tymVysledek("🔑 Přihlášeno","Jste přihlášen jako <b>"+esc(tymJmeno())+"</b> ("+(o!=null?"pořadatel":"tým pořadatele")+"). Karta s ohlasy a zprávou všem je nahoře v Info.");else toast("🔑 Přihlášeno: "+tymJmeno());tymStart();if(S.tab==="info")render();else go("info")})}
 function tymOdhlas(proc,duvod){if(duvod||proc!=="Odhlášeno")store.set("tymOdhl",{t:Date.now(),d:duvod||proc||"bez důvodu",v:VERZE});   // důvod automatického odhlášení – ukáže se v okně přihlášení
  if(TYM.es)TYM.es.close();TYM.es=null;TYM.s=null;TYM.ohl={};TYM.nac=false;store.set("tym",null);if(proc)toast(proc);render()}
-function tymOhlasy(){return Object.keys(TYM.ohl).map(k=>Object.assign({k},TYM.ohl[k])).filter(x=>x&&x.ts).sort((a,b)=>b.ts-a.ts)}
-function tymNove(){return tymJe()?tymOhlasy().filter(x=>x.ts>TYM.seen).length:0}
+// Klíč ohlasu je `id` – pole `k` v datech je hodnocení konference (dřív klíč přepsalo → průměr NaN a Smazat/Zveřejnit mířilo vedle)
+function tymOhlasy(){return Object.keys(TYM.ohl).map(id=>Object.assign({},TYM.ohl[id],{id})).filter(x=>x&&x.ts).sort((a,b)=>b.ts-a.ts)}
+function tymNovy(x){return x.ts>TYM.seen&&!TYM.seenK[x.id]}
+function tymNove(){return tymJe()?tymOhlasy().filter(tymNovy).length:0}
+function tymPrecteno(ids){ids.forEach(id=>TYM.seenK[id]=1);store.set("tymSeenK",TYM.seenK)}
 function tymStart(){   // živý seznam ohlasů; token platí hodinu → Firebase pošle auth_revoked a připojíme se s novým
  if(!tymJe()||!window.EventSource)return;if(TYM.es)TYM.es.close();
  tymToken().then(t=>{const es=TYM.es=zivyZdroj(FBDB+"konference2027_ohlasy/o.json?auth="+t,30);
   const on=ev=>{let d;try{d=JSON.parse(ev.data)}catch(e){return}if(!d)return;const stare=new Set(Object.keys(TYM.ohl)),prvni=!TYM.nac;
    TYM.ohl=treeSet(TYM.ohl,d.path,d.data,ev.type==="patch")||{};TYM.nac=true;
-   if(!prvni){const n=tymOhlasy().filter(x=>!stare.has(x.k));if(n.length)tymUpoz(n[0])}render()};
+   if(!prvni){const n=tymOhlasy().filter(x=>!stare.has(x.id));if(n.length)tymUpoz(n[0])}render()};
   es.addEventListener("put",on);es.addEventListener("patch",on);
   es.addEventListener("auth_revoked",()=>{es.close();setTimeout(tymStart,500)});
   es.addEventListener("cancel",()=>{es.close();tymOver().catch(()=>{})});   // pravidlo nepustí → ověřit, zda je ještě v týmu
@@ -1806,14 +1809,15 @@ function vTym(){   // karta nahoře v Info (jen přihlášený tým)
   ${"Notification" in window&&Notification.permission!=="granted"?`<button class="linkb" data-tym="notif" style="margin-top:10px;display:block">🔔 Upozorňovat na nové ohlasy i při zavřené obrazovce</button>`:""}
   <button class="linkb" data-tym="odhl" style="margin-top:10px">Odhlásit</button></div>`}
 function sheetTymOhlasy(){
- const l=tymOhlasy(),seen=TYM.seen;TYM.seen=Date.now();store.set("tymSeen",TYM.seen);
+ const l=tymOhlasy(),nov=l.filter(tymNovy).length;   // přečtené se značí ✓ u každého ohlasu (dřív otevření označilo vše)
  const sum=f=>TVARE.map(([v,e])=>`${e} <b>${l.filter(x=>x[f]===v).length}</b>`).join(" &nbsp; ");
  const pr=f=>{const z=l.filter(x=>x[f]);return z.length?(z.reduce((a,x)=>a+x[f],0)/z.length).toFixed(1).replace(".",","):"–"};
  openSheet(`<h2>💬 Ohlasy</h2><div class="muted" style="font-size:13px;margin-top:2px">${l.length} ${l.length===1?"ohlas":l.length>1&&l.length<5?"ohlasy":"ohlasů"} · vidí jen tým pořadatele</div><div class="bd">
   ${l.length?`<dl class="kv"><dt>Konference</dt><dd>${sum("k")} · průměr ${pr("k")} / 4</dd><dt>Průvodce</dt><dd>${sum("p")} · průměr ${pr("p")} / 4</dd></dl>
-  <div class="akt">${l.map(x=>`<article class="${x.ts>seen?"nova":""}">${x.ts>seen?'<span class="chipn">Nový</span>':""}<h3>${x.k?"Konference "+tymTvar(x.k):""}${x.k&&x.p?" · ":""}${x.p?"Průvodce "+tymTvar(x.p):""}</h3>
+  ${nov>1?'<button class="linkb" data-ohlall style="margin:0 0 8px">✓ Označit vše jako přečtené</button>':""}
+  <div class="akt">${l.map(x=>`<article class="${tymNovy(x)?"nova":""}">${tymNovy(x)?`<button class="aktok" data-ohlok="${esc(x.id)}" aria-label="Označit jako přečtené" title="Přečteno">✓</button><span class="chipn">Nový</span>`:""}<h3>${x.k?"Konference "+tymTvar(x.k):""}${x.k&&x.p?" · ":""}${x.p?"Průvodce "+tymTvar(x.p):""}</h3>
    ${x.lib?`<p>👍 ${esc(x.lib)}</p>`:""}${x.chybi?`<p>💡 ${esc(x.chybi)}</p>`:""}<small>${new Date(x.ts).toLocaleString("cs",{day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"})} · ${esc(x.a||"anonymně")}${x.zv?" · smí se zveřejnit":""}</small>
-   ${TYM.s.org?`<div class="cact" style="margin-top:6px">${x.zv&&x.lib?(OHL.zv[x.k]?`<button class="linkb" data-ohlorg="skryt" data-k="${esc(x.k)}">Skrýt z Domů</button>`:`<button class="linkb" data-ohlorg="zverejnit" data-k="${esc(x.k)}">Zveřejnit na Domů</button>`):""} <button class="linkb" data-ohlorg="smazat" data-k="${esc(x.k)}" style="color:var(--muted)">Smazat</button></div>`:""}</article>`).join("")}</div>`
+   ${TYM.s.org?`<div class="cact" style="margin-top:6px">${x.zv&&x.lib?(OHL.zv[x.id]?`<button class="linkb" data-ohlorg="skryt" data-k="${esc(x.id)}">Skrýt z Domů</button>`:`<button class="linkb" data-ohlorg="zverejnit" data-k="${esc(x.id)}">Zveřejnit na Domů</button>`):""} <button class="linkb" data-ohlorg="smazat" data-k="${esc(x.id)}" style="color:var(--muted)">Smazat</button></div>`:""}</article>`).join("")}</div>`
   :`<p class="muted" style="margin:0">${TYM.nac?"Zatím žádný ohlas.":"Načítám…"}</p>`}
   ${TYM.s.org?"":'<div class="note">Zveřejnit ohlas na Domů nebo ho smazat může pořadatel.</div>'}</div>`);render()}
 function ohlOrg(akce,k){   // pořadatel v průvodci: zveřejnit / skrýt z Domů / smazat ohlas
@@ -1854,6 +1858,8 @@ function sheetTymPrihlas(){
 document.addEventListener("click",e=>{
  const z=e.target.closest("[data-tymdel]");if(z)return tymSmazZpravu(z.dataset.tymdel);
  const oo=e.target.closest("[data-ohlorg]");if(oo)return ohlOrg(oo.dataset.ohlorg,oo.dataset.k);
+ const ok=e.target.closest("[data-ohlok]");if(ok){tymPrecteno([ok.dataset.ohlok]);const a=ok.closest("article");if(a){a.classList.remove("nova");const ch=a.querySelector(".chipn");if(ch)ch.remove()}ok.remove();return render()}
+ if(e.target.closest("[data-ohlall]")){tymPrecteno(tymOhlasy().map(x=>x.id));return sheetTymOhlasy()}
  const b=e.target.closest("[data-tym]");if(!b)return;const a=b.dataset.tym;
  if(a==="prihl")sheetTymPrihlas();else if(a==="ohl")sheetTymOhlasy();else if(a==="zpr")sheetTymZprava();
  else if(a==="jm"){const j=(prompt("Vaše jméno (uvidí ho účastníci u vašich zpráv):",tymJmeno())||"").trim();if(j){TYM.s.jm=j;store.set("tym",TYM.s);store.set("tymJm",j);render()}}
