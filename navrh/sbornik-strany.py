@@ -9,7 +9,7 @@
 import os, re, shutil, subprocess, sys, unicodedata
 
 PROG = "pruvodce/program.js"
-CIL = "sbornik/sbornik-2027.pdf"
+CIL = "sbornik/sbornik.pdf"
 
 def norm(t):
     t = unicodedata.normalize("NFKD", t.lower())
@@ -27,7 +27,11 @@ def prednasky(js):
         if "brk:1" in r or ',w:"' not in r or ',w:""' in r:
             continue
         h = re.search(r'h:"((?:[^"\\]|\\.)*)"', r).group(1)
-        yield m.start(), m.end(), h
+        w = re.search(r'w:"((?:[^"\\]|\\.)*)"', r).group(1)
+        yield m.start(), m.end(), h, w
+
+def prijmeni(w):   # příjmení prvního autora: „Ing. Martin Koller, Ph.D., …“ → koller
+    return norm(w.split(",")[0]).split()[-1]
 
 def najdi(nazev, st, od):
     slova = norm(nazev).split()
@@ -45,15 +49,23 @@ def main():
         sys.exit(__doc__ or "použití: sbornik-strany.py sbornik.pdf [--zapsat]")
     st = strany(sys.argv[1])
     js = open(PROG, encoding="utf-8").read()
+    # přehled programu / obsah (strana se 3+ názvy přednášek) se nepočítá
+    zac = [" ".join(norm(h).split()[:4]) for _, _, h, _ in prednasky(js)]
+    st = ["" if sum(z in t for z in zac) >= 3 else t for t in st]
     vysl, od = [], 0
-    for a, b, h in prednasky(js):
+    for a, b, h, w in prednasky(js):
         s, cele = najdi(h, st, od)
         if s is None:
             s, cele = najdi(h, st, 0)
+        pozn = "" if cele or not s else "(jen začátek názvu) "
+        if s is None and od:   # titulní slajd bez názvu → první další strana se jménem prvního autora
+            pr = prijmeni(w)
+            s = next((i + 1 for i in range(od + 1, len(st)) if re.search(r"(?<![a-z])" + pr + r"(?![a-z])", st[i])), None)
+            pozn = f"(podle autora: {pr}) " if s else ""
         if s:
             od = s - 1
         vysl.append((a, b, h, s, cele))
-        print(f"{'str. %3d' % s if s else '  ???   '} {'' if cele or not s else '(jen začátek názvu) '}{h[:90]}")
+        print(f"{'str. %3d' % s if s else '  ???   '} {pozn}{h[:90]}")
     print(f"\nPDF má {len(st) - (1 if st and not st[-1] else 0)} stran, nalezeno {sum(1 for v in vysl if v[3])} z {len(vysl)} přednášek.")
     if "--zapsat" in sys.argv:
         for a, b, h, s, _ in reversed(vysl):
