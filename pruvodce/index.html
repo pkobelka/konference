@@ -665,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.03 · 22. 10. 2026";
+const VERZE="1.04 · 22. 10. 2026";
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
 // Vyzkoušení času – kdokoli si ho zapne tlačítkem na Domů (jen simulace času, bez ukázkových dat); platí do zavření okna
@@ -1143,7 +1143,10 @@ function render(){
  ikonaCislo();
  if(S.tab==="info")sbStavUloz();
 }
-function go(t){let kam=null;if(t==="doprava"){t="info";kam="i-dop"}S.tab=t;render();window.scrollTo(0,0);if(kam)setTimeout(()=>skok(kam),30)}
+function go(t){let kam=null;if(t==="doprava"){t="info";kam="i-dop"}
+ // Dotazy s nepřečtenými → rovnou Nové (Petr: klikl na „Dotazy 3“ a musel k novým rolovat); bez nových zůstane poslední volba / Všechny
+ if(t==="dotazy"&&S.tab!=="dotazy"&&novychVse())S.dqf="nove";
+ S.tab=t;render();window.scrollTo(0,0);if(kam)setTimeout(()=>skok(kam),30)}
 function skok(id){const e=$(id);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
 
 function odpocet(){const st=Date.UTC(2027,3,27,6,0),en=Date.UTC(2027,3,28,10,0),n=Date.now();
