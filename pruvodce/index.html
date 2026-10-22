@@ -665,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.03 · 22. 10. 2026";
+const VERZE="1.05 · 22. 10. 2026";
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
 // Vyzkoušení času – kdokoli si ho zapne tlačítkem na Domů (jen simulace času, bez ukázkových dat); platí do zavření okna
@@ -990,6 +990,8 @@ function qCislo(id,k){const l=(S.qa[id]||[]).slice().sort((a,b)=>(a.ts||0)-(b.ts
 function qNo(id,k){const n=qCislo(id,k);return n?`<span class="qno">č. ${n}</span> `:""}
 function qk(id,k){return (S.qa[id]||[]).find(q=>q.k===k)}
 function hlasoval(id,k){return LIVE.on?!!(((LIVE.v[id]||{})[k]||{})[DEV]):!!S.voted[id+":"+k]}
+// Popisek tlačítka 👍 (při najetí myší) – ať je jasné, jestli je mezi palci i ten můj (Petr: „ta trojka znamená, že jeden je ode mě?“)
+function palecTit(on,n){return on?`Váš palec je mezi nimi (${n} celkem) – klepnutím ho zrušíte`:n?`${n} ${n===1?"palec":n<5?"palce":"palců"} od ostatních – klepnutím přidáte svůj`:"Dát palec – zajímá mě to"}
 function votes(id,k){const q=qk(id,k);if(!q)return 1;return 1+(LIVE.on?Object.keys((LIVE.v[id]||{})[k]||{}).length:(q.v||0)+(S.voted[id+":"+k]?1:0))}
 
 /* ===== Dotazy živě přes Firebase (konference2027_dotazy) ===== */
@@ -1143,7 +1145,10 @@ function render(){
  ikonaCislo();
  if(S.tab==="info")sbStavUloz();
 }
-function go(t){let kam=null;if(t==="doprava"){t="info";kam="i-dop"}S.tab=t;render();window.scrollTo(0,0);if(kam)setTimeout(()=>skok(kam),30)}
+function go(t){let kam=null;if(t==="doprava"){t="info";kam="i-dop"}
+ // Dotazy s nepřečtenými → rovnou Nové (Petr: klikl na „Dotazy 3“ a musel k novým rolovat); bez nových zůstane poslední volba / Všechny
+ if(t==="dotazy"&&S.tab!=="dotazy"&&novychVse())S.dqf="nove";
+ S.tab=t;render();window.scrollTo(0,0);if(kam)setTimeout(()=>skok(kam),30)}
 function skok(id){const e=$(id);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
 
 function odpocet(){const st=Date.UTC(2027,3,27,6,0),en=Date.UTC(2027,3,28,10,0),n=Date.now();
@@ -1353,7 +1358,7 @@ function vDotazy(){   // všechny dotazy na jednom místě: nové, nejžádaněj
  const den=x=>DAYS.find(z=>PROG[z.k].includes(x));
  const vse=[];ALLT.forEach(x=>{if(x.id)(S.qa[x.id]||[]).forEach((d,i)=>vse.push({x,d,n:votes(x.id,d.k),nov:novyQ(x.id,d,i)&&d.dev!==DEV}))});
  const hod=o=>!q||norm(o.d.t+" "+o.d.a+" "+o.x.h).includes(q);
- const radek=(o,sNazvem)=>`<div class="dqr${o.nov?" nov":""}"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${qNo(o.x.id,o.d.k)}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(o.d.c||"")}${o.d.dev===DEV?" · váš dotaz":""}</span></button>${o.nov?`<button class="dqok" data-dqok="${o.x.id}|${o.d.k}" aria-label="Označit jako přečtené" title="Přečteno">✓</button>`:""}${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" aria-label="${hlasoval(o.x.id,o.d.k)?"Zrušit palec":"Dát palec"}">👍 ${o.n-1}</button>`}</div>`;
+ const radek=(o,sNazvem)=>`<div class="dqr${o.nov?" nov":""}"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${qNo(o.x.id,o.d.k)}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(o.d.c||"")}${o.d.dev===DEV?" · váš dotaz":hlasoval(o.x.id,o.d.k)?" · <b>dali jste 👍</b>":""}</span></button>${o.nov?`<button class="dqok" data-dqok="${o.x.id}|${o.d.k}" aria-label="Označit jako přečtené" title="Přečteno">✓</button>`:""}${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" title="${palecTit(hlasoval(o.x.id,o.d.k),o.n-1)}" aria-label="${palecTit(hlasoval(o.x.id,o.d.k),o.n-1)}">👍 ${o.n-1}</button>`}</div>`;
  const skup=l=>{const g=[];l.forEach(o=>{let G=g.find(z=>z.x===o.x);if(!G)g.push(G={x:o.x,l:[]});G.l.push(o)});
   return g.map(G=>`<div class="card dqg"><button class="dqh" data-naq="${G.x.id}"><span class="nvt">${esc((den(G.x)||{n:""}).n.slice(0,2))} ${esc(G.x.t)}</span><b>${esc(G.x.h)}</b><small>↗ v programu</small></button>
    ${G.l.sort((a,b)=>b.n-a.n).map(o=>radek(o,false)).join("")}<button class="cbtn" data-q="${G.x.id}" style="border:0;margin-top:8px">? Zeptat se</button></div>`).join("")};
@@ -1476,7 +1481,7 @@ function sheetQ(id){
  const x=ALLT.find(y=>y.id===id), bk=ALLT.find(y=>y.blok&&y.bid===x.bid);
  const draw=()=>{const l=(S.qa[id]||[]).slice().sort((a,b)=>votes(id,b.k)-votes(id,a.k));videno(id);
   $("qlist").innerHTML=l.length?`<div class="label" style="margin-bottom:2px">Dotazy ostatních</div><p class="muted" style="margin:0 0 4px;font-size:13px">Zajímá vás některý dotaz? Dejte mu <b>👍</b> – předsedající čte nejdřív ty s nejvíc palci. Než napíšete svůj, podívejte se, jestli tu už není.</p>`+l.map(q=>{const on=hlasoval(id,q.k),n=votes(id,q.k),muj=q.dev&&q.dev===DEV;
-   return `<div class="q"><div><p>${qNo(id,q.k)}${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}${muj?" · váš dotaz":""}</small></div>${muj?`<span class="plus mine" title="Palce od ostatních">👍 <b>${n-1}</b></span>`:`<button class="plus" data-plus="${esc(q.k)}" aria-pressed="${on}" aria-label="${on?"Zrušit palec":"Dát palec – zajímá mě to"}">👍 <b>${n-1}</b></button>`}</div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
+   return `<div class="q"><div><p>${qNo(id,q.k)}${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}${muj?" · váš dotaz":on?" · <b>dali jste 👍</b>":""}</small></div>${muj?`<span class="plus mine" title="Palce od ostatních">👍 <b>${n-1}</b></span>`:`<button class="plus" data-plus="${esc(q.k)}" aria-pressed="${on}" title="${palecTit(on,n-1)}" aria-label="${palecTit(on,n-1)}">👍 <b>${n-1}</b></button>`}</div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
  SHEET_DRAW=draw;
  videno(id);setTimeout(render,0);
  openSheet(`<h2>Dotaz k přednášce</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.h)}</div>
