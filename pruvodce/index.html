@@ -1128,11 +1128,12 @@ setInterval(()=>{if(!$("stage"))return;if(Date.now()<STG.hold)return;if(Date.now
 const PGT={domu:["",""],program:["Program","31. ročník · Seč"],partneri:["Partneři","31. ročník · Seč"],poznamky:["Poznámky","jen v tomto zařízení"],dotazy:["Dotazy","vidí všichni"],info:["Informace","31. ročník · Seč"]};
 /* Celá obrazovka (tablet / prohlížeč) – v nainstalované aplikaci není potřeba */
 const FS={d:document,el:document.documentElement};
-FS.umi=!PL.nainst&&!!(FS.d.fullscreenEnabled||FS.d.webkitFullscreenEnabled)&&!!(FS.el.requestFullscreen||FS.el.webkitRequestFullscreen);
+FS.api=!!(FS.d.fullscreenEnabled||FS.d.webkitFullscreenEnabled)&&!!(FS.el.requestFullscreen||FS.el.webkitRequestFullscreen);
+FS.umi=!PL.nainst&&(FS.api||PL.ios);   // iPhone Safari celou obrazovku stránce nedovolí – tlačítko tam ukáže návod „Přidat na plochu“
 FS.je=()=>!!(FS.d.fullscreenElement||FS.d.webkitFullscreenElement);
 function fsBtn(cls){if(!FS.umi)return "";const on=FS.je();return `<button class="fsb ${cls||""} ${on?"on":""}" data-fs type="button" title="${on?"Zmenšit zpět":"Na celou obrazovku"}" aria-label="${on?"Zmenšit zpět":"Na celou obrazovku"}">${on?"✕ Zmenšit":"⛶"}</button>`}
 function fsKresli(){const h=$("fsh");if(h)h.innerHTML=fsBtn();render()}
-function fsToggle(){const d=FS.d,el=FS.el;if(FS.je())(d.exitFullscreen||d.webkitExitFullscreen).call(d);
+function fsToggle(){const d=FS.d,el=FS.el;if(!FS.api){sheetInstal();return}if(FS.je())(d.exitFullscreen||d.webkitExitFullscreen).call(d);
  else{const p=(el.requestFullscreen||el.webkitRequestFullscreen).call(el);if(p&&p.catch)p.catch(()=>toast("Celá obrazovka tady nejde – přidejte si průvodce na plochu"))}}
 function ikonaCislo(){   // číslo na ikoně na ploše = nepřečtené zprávy + nové dotazy (jako červená čísla v menu)
  try{if(!navigator.setAppBadge)return;const n=aktNove()+novychVse()+tymNove();if(n===ikonaCislo.n)return;ikonaCislo.n=n;
@@ -2144,7 +2145,8 @@ document.addEventListener("visibilitychange",()=>{
    <button class="linkb" id="pzpoz" style="margin-top:10px">Později</button></div>`);$("pzpoz").addEventListener("click",closeSheet)}});
 $("fotoin").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0],tid=e.target.dataset.tid;if(!f||!tid)return;
  zmensi(f).catch(()=>f).then(b=>medPridej(tid,"foto",b)).then(()=>toast("📷 Fotka uložena k přednášce – je jen v tomto zařízení")).catch(()=>toast("Fotku se nepodařilo uložit"))});
-if(FS.umi){document.addEventListener("fullscreenchange",fsKresli);document.addEventListener("webkitfullscreenchange",fsKresli);fsKresli()}
+if(FS.umi&&!FS.api)fsKresli();
+if(FS.umi&&FS.api){document.addEventListener("fullscreenchange",fsKresli);document.addEventListener("webkitfullscreenchange",fsKresli);fsKresli()}
 document.addEventListener("click",e=>{if(e.target.closest("[data-fs]"))fsToggle()});
 $("toast").addEventListener("click",()=>{const f=toast.klik;if(!f)return;$("toast").hidden=true;toast.klik=null;f()});
 document.getElementById("markimg").src=IMG+"cislo31.webp";document.getElementById("vhimg").src=IMG+"loga/vhos.webp";
