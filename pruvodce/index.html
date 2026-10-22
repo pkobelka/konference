@@ -210,6 +210,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .now.brk{border-left-color:var(--warn)}
 .now .lbl{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--water)}
 .now.brk .lbl{color:var(--warn)}
+.now .lbl.zive{align-self:flex-start;background:#d32f2f;color:#fff;font-size:13px;letter-spacing:.06em;padding:6px 14px 6px 12px;border-radius:999px;box-shadow:0 4px 12px -4px rgba(211,47,47,.55)}
+.now .lbl.zive .dot{width:9px;height:9px;background:#fff}
 .dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.6s infinite}
 @keyframes pulse{50%{opacity:.25}}
 .now h2{font-size:18px}
@@ -225,6 +227,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .sim input[type=range]{flex:1;min-width:0;accent-color:var(--water)}
 .sim select{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:3px 4px}
 .sim b{color:var(--ink);font-variant-numeric:tabular-nums}
+.simbtn{align-self:flex-start;font:inherit;font-size:13px;font-weight:600;color:var(--water);background:var(--surface-2);border:1px dashed var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+.sim .simbtn{font-size:12px;padding:2px 10px;margin-left:4px}
 .talk.live{background:var(--water-soft);border-left:6px solid var(--water);box-shadow:0 0 0 2px var(--water),0 12px 28px -14px rgba(31,122,140,.55)}
 .talk.live h3{font-size:17px}
 .livechip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:#fff;background:#d32f2f;animation:liveR 1.2s ease-in-out infinite;border-radius:99px;padding:3px 10px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
@@ -649,15 +653,18 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.98 · 21. 10. 2026";
+const VERZE="0.99 · 22. 10. 2026";
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
+// Vyzkoušení času – kdokoli si ho zapne tlačítkem na Domů (jen simulace času, bez ukázkových dat); platí do zavření okna
+let SIMZAP=UKAZKA||(()=>{try{return sessionStorage.getItem("pr_sim")==="1"}catch(e){return false}})();
+function simZap(on){SIMZAP=on||UKAZKA;try{sessionStorage.setItem("pr_sim",on?"1":"")}catch(e){}}
 try{localStorage.removeItem("pr_posun")}catch(e){}   // posun programu zrušen (jede se podle plánovaných časů)   // verze průvodce – při každém nasazení zvýšit
 const TERMIN="27.–28. dubna 2027";
 function clock(){ // skutečný čas během konference; mimo ni v ostré verzi „před“ / „po“ konferenci, v ukázce simulace
  const d=new Date(),iso=d.toISOString().slice(0,10),day=Object.keys(DATES).find(k=>DATES[k]===iso);
  if(day)return {day,m:d.getHours()*60+d.getMinutes(),real:1};
- if(!UKAZKA)return iso<DATES.ut?{day:"ut",m:-1,real:0,mimo:"pred"}:{day:"st",m:1439,real:0,mimo:"po"};
+ if(!SIMZAP)return iso<DATES.ut?{day:"ut",m:-1,real:0,mimo:"pred"}:{day:"st",m:1439,real:0,mimo:"po"};
  let m=S.sim.m+Math.floor((Date.now()-(S.sim.t0||Date.now()))/60000*(S.sim.x||1)),den=S.sim.day;   // ukázka: nastavený čas dál běží
  if(m>=1440&&den==="ut"){den="st";m-=1440}if(m>1439)m=1439;
  return {day:den,m,real:0};
@@ -1155,20 +1162,21 @@ function vDomu(){
  </section>`;
 }
 
+const SIMTL=`<button class="simbtn" data-simon="1">🕐 Vyzkoušet, jak to bude vypadat během konference</button>`;
 function vNow(){
  const {c,cur,next,bk,first,last}=nowState(), D=DAYS.find(d=>d.k===c.day);
  let h;
- if(c.mimo==="pred")return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px"><button class="now" data-goday="ut"><div class="lbl">${esc(DAYS[0].n)} ${esc(DAYS[0].d)}</div><h2>Program začne v ${esc(first.t)}</h2><div class="next">${esc(first.h)}${first.w?" · "+esc(first.w):""} – celý program najdete v záložce Program</div></button></div>`;
- if(c.mimo==="po")return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px"><div class="now"><div class="lbl">Konference skončila</div><h2>Děkujeme za účast</h2><div class="who">Poznámky, dotazy i program tu zůstávají. Těšíme se příště.</div></div></div>`;
+ if(c.mimo==="pred")return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px"><button class="now" data-goday="ut"><div class="lbl">${esc(DAYS[0].n)} ${esc(DAYS[0].d)}</div><h2>Program začne v ${esc(first.t)}</h2><div class="next">${esc(first.h)}${first.w?" · "+esc(first.w):""} – celý program najdete v záložce Program</div></button>${SIMTL}</div>`;
+ if(c.mimo==="po")return `<div id="nowbox" style="display:flex;flex-direction:column;gap:8px"><div class="now"><div class="lbl">Konference skončila</div><h2>Děkujeme za účast</h2><div class="who">Poznámky, dotazy i program tu zůstávají. Těšíme se příště.</div></div>${SIMTL}</div>`;
  if(cur){const tot=(cur.b??cur.a+1)-cur.a, el=c.m-cur.a, pct=Math.min(100,Math.round(el/tot*100));
-  h=`<button class="now ${cur.brk?"brk":""}" data-goday="${c.day}"><div class="lbl"><span class="dot"></span>${cur.brk?"Právě teď":"Právě probíhá"} · ${esc(cur.t)}–${esc(cur.e||"")}</div>
+  h=`<button class="now ${cur.brk?"brk":""}" data-goday="${c.day}"><div class="lbl${cur.brk?"":" zive"}"><span class="dot"></span>${cur.brk?"Právě teď":"Právě probíhá"} · ${esc(cur.t)}–${esc(cur.e||"")}</div>
    <h2>${esc(cur.h)}</h2>${cur.w&&!cur.brk?`<div class="who">${esc(cur.w)}</div>`:""}${bk?`<div class="who">Blok: ${esc(bk.blok)}</div>`:""}${cur.det?`<ul class="det">${cur.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}
    <div class="bar"><i style="width:${pct}%"></i></div><div class="left">${cur.brk?"Konec":"Do konce"} za ${dur((cur.b??cur.a+1)-c.m)} · v ${hm(cur.b??cur.a+1)}</div>
    ${next?`<div class="next">Následuje v ${esc(next.t)}: <b>${esc(next.h)}</b></div>`:""}</button>`+(cur.bid?`<button class="qbtn has" data-q="${cur.id}" style="align-self:flex-start;margin-top:0;font-size:13px;padding:7px 12px">? Napsat dotaz k této přednášce${(()=>{const n=(S.qa[cur.id]||[]).length;return n?" · "+n+" "+(n===1?"dotaz":n<5?"dotazy":"dotazů"):""})()}${badge(novych(cur.id))}</button>`:"")}
  else if(next&&first&&c.m<first.a){h=`<button class="now" data-goday="${c.day}"><div class="lbl">${D.n} ${D.d}</div><h2>Program začne za ${dur(first.a-c.m)}</h2><div class="next">V ${esc(first.t)}: <b>${esc(first.h)}</b></div></button>`}
  else if(next){h=`<button class="now brk" data-goday="${c.day}"><div class="lbl">Volno</div><h2>Další bod programu za ${dur(next.a-c.m)}</h2><div class="next">V ${esc(next.t)}: <b>${esc(next.h)}</b></div></button>`}
  else{h=`<div class="now"><div class="lbl">${D.n} ${D.d}</div><h2>Program dne skončil</h2><div class="who">${c.day==="st"?"Děkujeme za účast a těšíme se příště.":"Zítra pokračujeme – podívejte se do programu."}</div></div>`}
- if(!c.real&&UKAZKA)h+=`<div class="sim"><div>Ukázka: konference teď neprobíhá – nastavte si den a čas, dál poběží sám (jde i zrychlit). V ostré verzi jde podle hodin.</div>
+ if(!c.real&&SIMZAP)h+=`<div class="sim"><div>Vyzkoušení: konference teď neprobíhá – nastavte si den a čas, dál poběží sám (jde i zrychlit). Během konference jde průvodce podle skutečných hodin.${UKAZKA?"":` <button class="simbtn" data-simoff="1">Vypnout</button>`}</div>
   <div class="r"><select id="simday" aria-label="Den">${DAYS.map(d=>`<option value="${d.k}" ${c.day===d.k?"selected":""}>${d.n}</option>`).join("")}</select>
   <input type="range" id="simm" min="420" max="1439" step="5" value="${c.m}" aria-label="Čas"><b id="simt">${hm(c.m)}</b>
   <select id="simx" aria-label="Rychlost času" title="Rychlost času">${[[1,"čas běží"],[10,"10× rychleji"],[60,"60× rychleji"]].map(([v,t])=>`<option value="${v}" ${(S.sim.x||1)===v?"selected":""}>${t}</option>`).join("")}</select></div></div>`;
@@ -1986,7 +1994,9 @@ $("view").addEventListener("click",e=>{
  if(t.dataset.nxok!==undefined){store.set("poznUlozeno",pocetVeci());return render()}
 });
 $("view").addEventListener("change",e=>{if(e.target.id==="simday"){simNastav(e.target.value,clock().m);$("nowbox").outerHTML=vNow()}if(e.target.id==="simx"){const c=clock();simNastav(c.day,c.m);S.sim.x=+e.target.value;$("nowbox").outerHTML=vNow()}});
-$("view").addEventListener("click",e=>{const g=e.target.closest(".now[data-goday]");if(g)naAktualni()});
+$("view").addEventListener("click",e=>{const g=e.target.closest(".now[data-goday]");if(g)naAktualni();
+ if(e.target.closest("[data-simon]")){simZap(true);simNastav("ut",9*60);render()}
+ if(e.target.closest("[data-simoff]")){simZap(false);render()}});
 setInterval(()=>{if(clock().real)render()},30000);
 $("view").addEventListener("submit",e=>{if(e.target.id!=="pf")return;e.preventDefault();S.me={jm:$("pjm").value.trim(),firma:$("pfirma").value.trim()};store.set("me",S.me);render();toast(podpis()?"Profil uložen":"Profil je prázdný")});
 $("view").addEventListener("click",e=>{
