@@ -234,7 +234,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 #sbv .sbbar button{border:0;background:var(--surface-2);color:var(--ink);border-radius:99px;min-width:36px;height:36px;font:inherit;font-size:17px;font-weight:700;cursor:pointer}
 #sbv .sbbar label{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--muted);white-space:nowrap}
 #sbv .sbbar input{width:52px;font:inherit;font-size:14px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:5px 2px;background:var(--surface);color:var(--ink)}
-#sbv .sbsc{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 8px calc(10px + env(safe-area-inset-bottom,0px))}
+#sbv .sbsc{flex:1;overflow:auto;position:relative;-webkit-overflow-scrolling:touch;padding:10px 8px calc(10px + env(safe-area-inset-bottom,0px))}
 #sbv .sbp{margin:0 auto 10px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 #sbv .sbp canvas{display:block;width:100%;height:100%}
 #sbv .sbmsg{color:#fff;text-align:center;padding:48px 20px;font-size:15px;line-height:1.5}
@@ -665,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.00 · 22. 10. 2026";
+const VERZE="1.01 · 22. 10. 2026";
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
 // Vyzkoušení času – kdokoli si ho zapne tlačítkem na Domů (jen simulace času, bez ukázkových dat); platí do zavření okna
@@ -1199,32 +1199,32 @@ async function sbOtevri(str){
  let v=$("sbv");if(!v){v=document.createElement("div");v.id="sbv";v.setAttribute("role","dialog");v.setAttribute("aria-label","Sborník");document.body.appendChild(v)}
  v.hidden=false;document.documentElement.style.overflow="hidden";
  v.innerHTML=`<div class="sbbar"><b>📖 Sborník</b><label>str. <input id="sbstr" type="number" inputmode="numeric" min="1" value="${str}"> <span id="sbpoc"></span></label><button data-sbz="-1" aria-label="Zmenšit">−</button><button data-sbz="1" aria-label="Zvětšit">+</button><button data-sbzav="1" aria-label="Zavřít">×</button></div><div class="sbsc" id="sbsc"><div class="sbmsg">Načítám sborník…</div></div>`;
- try{const lib=await sbPdfjs();if(!SB.doc)SB.doc=await lib.getDocument({url:sbUrl(),disableAutoFetch:true,disableStream:true,rangeChunkSize:262144}).promise}
+ try{const lib=await sbPdfjs();if(!SB.doc)SB.doc=await lib.getDocument({url:sbUrl(),disableAutoFetch:true,disableStream:true,rangeChunkSize:65536}).promise}
  catch(e){SB.doc=null;if($("sbsc"))$("sbsc").innerHTML=`<div class="sbmsg">Sborník se teď nepodařilo načíst – asi slabý signál.<br>Zkuste to za chvíli, nebo si ho uložte do telefonu na Wi-Fi (Info → Sborník).<br><br><a href="${esc(sbUrl())}#page=${str}" target="_blank" rel="noopener">Otevřít PDF v prohlížeči</a></div>`;return}
  if(v.hidden)return;
  $("sbpoc").textContent="/ "+SB.doc.numPages;sbStavba(Math.min(Math.max(1,str),SB.doc.numPages));
 }
 async function sbStavba(str){
  const sc=$("sbsc");if(!sc||!SB.doc)return;
- const p1=await SB.doc.getPage(1),v1=p1.getViewport({scale:1}),w=Math.round(Math.min(sc.clientWidth-16,900)*SB.zoom);
+ const p1=await SB.doc.getPage(str),v1=p1.getViewport({scale:1}),w=Math.round(Math.min(sc.clientWidth-16,900)*SB.zoom);   // rozměr podle cílové stránky (obálka bývá na výšku, slajdy na šířku)
  if(SB.io)SB.io.disconnect();sc.innerHTML="";SB.els=[];
  const f=document.createDocumentFragment();
  for(let i=1;i<=SB.doc.numPages;i++){const d=document.createElement("div");d.className="sbp";d.dataset.p=i;d.style.width=w+"px";d.style.height=Math.round(w*v1.height/v1.width)+"px";f.appendChild(d);SB.els.push(d)}
  sc.appendChild(f);
- SB.io=new IntersectionObserver(l=>l.forEach(z=>{const d=z.target;if(z.isIntersecting)sbKresli(d);else if(d.firstChild){d.firstChild.width=0;d.innerHTML=""}}),{root:sc,rootMargin:"150% 0px"});
+ sc.scrollTop=SB.els[str-1].offsetTop-8;SB.str=str;   // nejdřív skok, až pak sledování – jinak by se zbytečně stahovaly první stránky
+ SB.io=new IntersectionObserver(l=>l.forEach(z=>{const d=z.target;if(z.isIntersecting)sbKresli(d);else if(d.firstChild){d.firstChild.width=0;d.innerHTML=""}}),{root:sc,rootMargin:"100% 0px"});
  SB.els.forEach(d=>SB.io.observe(d));
- sc.scrollTop=SB.els[str-1].offsetTop-8;SB.str=str;
 }
 async function sbKresli(d){
  if(d.firstChild||d._k)return;d._k=1;
  try{const p=await SB.doc.getPage(+d.dataset.p),v0=p.getViewport({scale:1}),w=parseFloat(d.style.width),s=w/v0.width,h=Math.round(v0.height*s);
-  if(Math.abs(parseFloat(d.style.height)-h)>2)d.style.height=h+"px";
+  const h0=parseFloat(d.style.height);if(Math.abs(h0-h)>2){const sc=$("sbsc"),nad=sc&&d.offsetTop<sc.scrollTop;d.style.height=h+"px";if(nad)sc.scrollTop+=h-h0}   // stránka nad zobrazením změnila výšku → obraz neuskočí
   const dpr=Math.min(SB.zoom>2?1.5:2,window.devicePixelRatio||1),vp=p.getViewport({scale:s*dpr}),c=document.createElement("canvas");
   c.width=Math.floor(vp.width);c.height=Math.floor(vp.height);await p.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;
   if(d.isConnected&&!d.firstChild)d.appendChild(c);
  }catch(e){}finally{d._k=0}
 }
-function sbAktStr(){const sc=$("sbsc");if(!sc||!SB.els.length)return SB.str;const y=sc.scrollTop+sc.clientHeight/3;let lo=0,hi=SB.els.length-1;
+function sbAktStr(){const sc=$("sbsc");if(!sc||!SB.els.length)return SB.str;const y=sc.scrollTop+Math.min(120,sc.clientHeight/3);let lo=0,hi=SB.els.length-1;
  while(lo<hi){const m=(lo+hi+1)>>1;if(SB.els[m].offsetTop<=y)lo=m;else hi=m-1}return lo+1}
 function sbZavri(){const v=$("sbv");if(v){if(SB.io)SB.io.disconnect();SB.els=[];v.innerHTML="";v.hidden=true}document.documentElement.style.overflow=""}
 document.addEventListener("click",e=>{
