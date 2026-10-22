@@ -88,10 +88,20 @@ function zeSite(req, ms) {   // síť s časovým limitem (slabý signál v sál
     fetch(req).then(r => { clearTimeout(t); ok(r); }, er => { clearTimeout(t); ko(er); });
   });
 }
+async function zKese(m, req) {   // uložený sborník: pdf.js chce jen kusy (Range) → vrátit 206 s výřezem
+  const rng = /bytes=(\d+)-(\d*)/.exec(req.headers.get("range") || "");
+  if (!rng) return m;
+  const b = await m.blob(), od = +rng[1], po = Math.min(rng[2] ? +rng[2] : b.size - 1, b.size - 1);
+  return new Response(b.slice(od, po + 1), { status: 206, headers: { "Content-Type": "application/pdf", "Content-Length": String(po - od + 1), "Content-Range": `bytes ${od}-${po}/${b.size}`, "Accept-Ranges": "bytes" } });
+}
 self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET") return;
   const u = new URL(req.url);
+  if (/\.pdf$/i.test(u.pathname) || u.href.startsWith("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/")) {   // sborník uložený do telefonu („Uložit do telefonu“)
+    e.respondWith(caches.open("sbornik-v1").then(c => c.match(req.url, { ignoreSearch: true })).then(m => m ? zKese(m, req) : fetch(req)));
+    return;
+  }
   if (req.mode === "navigate" && u.origin === location.origin && u.pathname.startsWith(new URL(STRANKA).pathname)) {
     e.respondWith(zeSite(req, 5000).then(r => {
       if (r.ok) { const k = r.clone(); caches.open(CACHE).then(c => c.put(STRANKA, k)); }

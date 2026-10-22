@@ -227,6 +227,18 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .sim input[type=range]{flex:1;min-width:0;accent-color:var(--water)}
 .sim select{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:3px 4px}
 .sim b{color:var(--ink);font-variant-numeric:tabular-nums}
+.sbnow{align-self:flex-start;margin-top:0}
+#sbv{position:fixed;inset:0;z-index:40;background:#4a4d50;display:flex;flex-direction:column}
+#sbv .sbbar{display:flex;align-items:center;gap:6px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;background:var(--surface);color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.25)}
+#sbv .sbbar b{flex:1;min-width:0;font-family:var(--f-display);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sbv .sbbar button{border:0;background:var(--surface-2);color:var(--ink);border-radius:99px;min-width:36px;height:36px;font:inherit;font-size:17px;font-weight:700;cursor:pointer}
+#sbv .sbbar label{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--muted);white-space:nowrap}
+#sbv .sbbar input{width:52px;font:inherit;font-size:14px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:5px 2px;background:var(--surface);color:var(--ink)}
+#sbv .sbsc{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 8px calc(10px + env(safe-area-inset-bottom,0px))}
+#sbv .sbp{margin:0 auto 10px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+#sbv .sbp canvas{display:block;width:100%;height:100%}
+#sbv .sbmsg{color:#fff;text-align:center;padding:48px 20px;font-size:15px;line-height:1.5}
+#sbv .sbmsg a{color:#fff}
 .simbtn{align-self:flex-start;font:inherit;font-size:13px;font-weight:600;color:var(--water);background:var(--surface-2);border:1px dashed var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
 .sim .simbtn{font-size:12px;padding:2px 10px;margin-left:4px}
 .talk.live{background:var(--water-soft);border-left:6px solid var(--water);box-shadow:0 0 0 2px var(--water),0 12px 28px -14px rgba(31,122,140,.55)}
@@ -653,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="0.99 · 22. 10. 2026";
+const VERZE="1.00 · 22. 10. 2026";
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
 // Vyzkoušení času – kdokoli si ho zapne tlačítkem na Domů (jen simulace času, bez ukázkových dat); platí do zavření okna
@@ -1117,6 +1129,7 @@ function render(){
  setTimeout(()=>stgDraw(false),0);
  $("view").innerHTML={domu:vDomu,program:vProgram,partneri:vPartneri,poznamky:vPoznamky,dotazy:vDotazy,info:vInfo}[S.tab]();
  ikonaCislo();
+ if(S.tab==="info")sbStavUloz();
 }
 function go(t){let kam=null;if(t==="doprava"){t="info";kam="i-dop"}S.tab=t;render();window.scrollTo(0,0);if(kam)setTimeout(()=>skok(kam),30)}
 function skok(id){const e=$(id);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
@@ -1162,6 +1175,67 @@ function vDomu(){
  </section>`;
 }
 
+/* ===== Sborník – listování přímo v průvodci (pdf.js stahuje jen potřebné stránky, 61 MB se nestahuje celé) ===== */
+const PDFJS="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/",SBCACHE="sbornik-v1";
+const SB={doc:null,nac:null,zoom:1,els:[],io:null,str:1};
+function sbUrl(){return SBORNIK.url?new URL(SBORNIK.url,location.href).href:""}
+function sbBtn(x,cls){return sbUrl()&&x&&x.s?`<button class="${cls||"nbtn"}" data-sb="${x.s}">📖 Sborník · str. ${x.s}</button>`:""}
+function sbUlozBtn(){return "caches" in window?`<button class="nbtn" id="sbuloz" data-sbuloz="1" style="margin:0">⬇ Uložit do telefonu (${SBORNIK.mb} MB)</button>`:""}
+function sbStavUloz(){const b=$("sbuloz");if(!b||!("caches" in window))return;caches.open(SBCACHE).then(c=>c.match(sbUrl())).then(m=>{if(m&&b.isConnected&&!b.dataset.bezi){b.textContent="✓ Uloženo v telefonu · smazat";b.dataset.sbuloz="smaz"}}).catch(()=>{})}
+async function sbUloz(b){
+ if(b.dataset.sbuloz==="smaz"){if(!confirm("Smazat sborník z telefonu? Dál ho půjde listovat se signálem."))return;await caches.delete(SBCACHE);b.textContent=`⬇ Uložit do telefonu (${SBORNIK.mb} MB)`;b.dataset.sbuloz="1";return toast("Sborník smazán z telefonu")}
+ if(b.dataset.bezi)return;b.dataset.bezi="1";
+ try{const r=await fetch(sbUrl(),{cache:"no-store"});if(!r.ok)throw 0;const cel=+r.headers.get("content-length")||SBORNIK.mb*1048576,rd=r.body.getReader(),kus=[];let n=0;
+  for(;;){const {done,value}=await rd.read();if(done)break;kus.push(value);n+=value.length;b.textContent=`Ukládám… ${Math.min(99,Math.round(n/cel*100))} %`}
+  const c=await caches.open(SBCACHE);
+  await c.put(sbUrl(),new Response(new Blob(kus,{type:"application/pdf"}),{headers:{"Content-Type":"application/pdf","Content-Length":String(n),"Accept-Ranges":"bytes"}}));
+  await Promise.all(["pdf.min.js","pdf.worker.min.js"].map(f=>c.add(PDFJS+f).catch(()=>{})));
+  delete b.dataset.bezi;b.textContent="✓ Uloženo v telefonu · smazat";b.dataset.sbuloz="smaz";toast("Sborník je uložený – půjde listovat i bez signálu");
+ }catch(e){delete b.dataset.bezi;b.textContent=`⬇ Uložit do telefonu (${SBORNIK.mb} MB)`;toast("Uložení se nepovedlo – zkuste to na Wi-Fi")}
+}
+function sbPdfjs(){return SB.nac||(SB.nac=new Promise((ok,ko)=>{const s=document.createElement("script");s.src=PDFJS+"pdf.min.js";
+ s.onload=()=>{pdfjsLib.GlobalWorkerOptions.workerSrc=PDFJS+"pdf.worker.min.js";ok(pdfjsLib)};s.onerror=()=>{SB.nac=null;s.remove();ko()};document.head.appendChild(s)}))}
+async function sbOtevri(str){
+ let v=$("sbv");if(!v){v=document.createElement("div");v.id="sbv";v.setAttribute("role","dialog");v.setAttribute("aria-label","Sborník");document.body.appendChild(v)}
+ v.hidden=false;document.documentElement.style.overflow="hidden";
+ v.innerHTML=`<div class="sbbar"><b>📖 Sborník</b><label>str. <input id="sbstr" type="number" inputmode="numeric" min="1" value="${str}"> <span id="sbpoc"></span></label><button data-sbz="-1" aria-label="Zmenšit">−</button><button data-sbz="1" aria-label="Zvětšit">+</button><button data-sbzav="1" aria-label="Zavřít">×</button></div><div class="sbsc" id="sbsc"><div class="sbmsg">Načítám sborník…</div></div>`;
+ try{const lib=await sbPdfjs();if(!SB.doc)SB.doc=await lib.getDocument({url:sbUrl(),disableAutoFetch:true,disableStream:true,rangeChunkSize:262144}).promise}
+ catch(e){SB.doc=null;if($("sbsc"))$("sbsc").innerHTML=`<div class="sbmsg">Sborník se teď nepodařilo načíst – asi slabý signál.<br>Zkuste to za chvíli, nebo si ho uložte do telefonu na Wi-Fi (Info → Sborník).<br><br><a href="${esc(sbUrl())}#page=${str}" target="_blank" rel="noopener">Otevřít PDF v prohlížeči</a></div>`;return}
+ if(v.hidden)return;
+ $("sbpoc").textContent="/ "+SB.doc.numPages;sbStavba(Math.min(Math.max(1,str),SB.doc.numPages));
+}
+async function sbStavba(str){
+ const sc=$("sbsc");if(!sc||!SB.doc)return;
+ const p1=await SB.doc.getPage(1),v1=p1.getViewport({scale:1}),w=Math.round(Math.min(sc.clientWidth-16,900)*SB.zoom);
+ if(SB.io)SB.io.disconnect();sc.innerHTML="";SB.els=[];
+ const f=document.createDocumentFragment();
+ for(let i=1;i<=SB.doc.numPages;i++){const d=document.createElement("div");d.className="sbp";d.dataset.p=i;d.style.width=w+"px";d.style.height=Math.round(w*v1.height/v1.width)+"px";f.appendChild(d);SB.els.push(d)}
+ sc.appendChild(f);
+ SB.io=new IntersectionObserver(l=>l.forEach(z=>{const d=z.target;if(z.isIntersecting)sbKresli(d);else if(d.firstChild){d.firstChild.width=0;d.innerHTML=""}}),{root:sc,rootMargin:"150% 0px"});
+ SB.els.forEach(d=>SB.io.observe(d));
+ sc.scrollTop=SB.els[str-1].offsetTop-8;SB.str=str;
+}
+async function sbKresli(d){
+ if(d.firstChild||d._k)return;d._k=1;
+ try{const p=await SB.doc.getPage(+d.dataset.p),v0=p.getViewport({scale:1}),w=parseFloat(d.style.width),s=w/v0.width,h=Math.round(v0.height*s);
+  if(Math.abs(parseFloat(d.style.height)-h)>2)d.style.height=h+"px";
+  const dpr=Math.min(SB.zoom>2?1.5:2,window.devicePixelRatio||1),vp=p.getViewport({scale:s*dpr}),c=document.createElement("canvas");
+  c.width=Math.floor(vp.width);c.height=Math.floor(vp.height);await p.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;
+  if(d.isConnected&&!d.firstChild)d.appendChild(c);
+ }catch(e){}finally{d._k=0}
+}
+function sbAktStr(){const sc=$("sbsc");if(!sc||!SB.els.length)return SB.str;const y=sc.scrollTop+sc.clientHeight/3;let lo=0,hi=SB.els.length-1;
+ while(lo<hi){const m=(lo+hi+1)>>1;if(SB.els[m].offsetTop<=y)lo=m;else hi=m-1}return lo+1}
+function sbZavri(){const v=$("sbv");if(v){if(SB.io)SB.io.disconnect();SB.els=[];v.innerHTML="";v.hidden=true}document.documentElement.style.overflow=""}
+document.addEventListener("click",e=>{
+ const o=e.target.closest("[data-sb]");if(o){e.preventDefault();return sbOtevri(+o.dataset.sb||1)}
+ const u=e.target.closest("[data-sbuloz]");if(u)return sbUloz(u);
+ if(e.target.closest("[data-sbzav]"))return sbZavri();
+ const z=e.target.closest("[data-sbz]");if(z&&SB.doc){const st=sbAktStr();SB.zoom=Math.min(3,Math.max(1,SB.zoom+(+z.dataset.sbz)*.5));sbStavba(st)}
+});
+document.addEventListener("scroll",e=>{if(e.target.id!=="sbsc")return;const i=$("sbstr");if(i&&document.activeElement!==i)i.value=sbAktStr()},true);
+document.addEventListener("change",e=>{if(e.target.id==="sbstr"&&SB.doc){const n=Math.min(Math.max(1,+e.target.value||1),SB.doc.numPages);e.target.value=n;const sc=$("sbsc");sc.scrollTop=SB.els[n-1].offsetTop-8;e.target.blur()}});
+document.addEventListener("keydown",e=>{const v=$("sbv");if(v&&!v.hidden&&e.key==="Escape")sbZavri()});
 const SIMTL=`<button class="simbtn" data-simon="1">🕐 Vyzkoušet, jak to bude vypadat během konference</button>`;
 function vNow(){
  const {c,cur,next,bk,first,last}=nowState(), D=DAYS.find(d=>d.k===c.day);
@@ -1172,7 +1246,7 @@ function vNow(){
   h=`<button class="now ${cur.brk?"brk":""}" data-goday="${c.day}"><div class="lbl${cur.brk?"":" zive"}"><span class="dot"></span>${cur.brk?"Právě teď":"Právě probíhá"} · ${esc(cur.t)}–${esc(cur.e||"")}</div>
    <h2>${esc(cur.h)}</h2>${cur.w&&!cur.brk?`<div class="who">${esc(cur.w)}</div>`:""}${bk?`<div class="who">Blok: ${esc(bk.blok)}</div>`:""}${cur.det?`<ul class="det">${cur.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}
    <div class="bar"><i style="width:${pct}%"></i></div><div class="left">${cur.brk?"Konec":"Do konce"} za ${dur((cur.b??cur.a+1)-c.m)} · v ${hm(cur.b??cur.a+1)}</div>
-   ${next?`<div class="next">Následuje v ${esc(next.t)}: <b>${esc(next.h)}</b></div>`:""}</button>`+(cur.bid?`<button class="qbtn has" data-q="${cur.id}" style="align-self:flex-start;margin-top:0;font-size:13px;padding:7px 12px">? Napsat dotaz k této přednášce${(()=>{const n=(S.qa[cur.id]||[]).length;return n?" · "+n+" "+(n===1?"dotaz":n<5?"dotazy":"dotazů"):""})()}${badge(novych(cur.id))}</button>`:"")}
+   ${next?`<div class="next">Následuje v ${esc(next.t)}: <b>${esc(next.h)}</b></div>`:""}</button>`+(cur.bid?`<button class="qbtn has" data-q="${cur.id}" style="align-self:flex-start;margin-top:0;font-size:13px;padding:7px 12px">? Napsat dotaz k této přednášce${(()=>{const n=(S.qa[cur.id]||[]).length;return n?" · "+n+" "+(n===1?"dotaz":n<5?"dotazy":"dotazů"):""})()}${badge(novych(cur.id))}</button>`:"")+sbBtn(cur,"nbtn sbnow")}
  else if(next&&first&&c.m<first.a){h=`<button class="now" data-goday="${c.day}"><div class="lbl">${D.n} ${D.d}</div><h2>Program začne za ${dur(first.a-c.m)}</h2><div class="next">V ${esc(first.t)}: <b>${esc(first.h)}</b></div></button>`}
  else if(next){h=`<button class="now brk" data-goday="${c.day}"><div class="lbl">Volno</div><h2>Další bod programu za ${dur(next.a-c.m)}</h2><div class="next">V ${esc(next.t)}: <b>${esc(next.h)}</b></div></button>`}
  else{h=`<div class="now"><div class="lbl">${D.n} ${D.d}</div><h2>Program dne skončil</h2><div class="who">${c.day==="st"?"Děkujeme za účast a těšíme se příště.":"Zítra pokračujeme – podívejte se do programu."}</div></div>`}
@@ -1208,7 +1282,7 @@ function vProgram(){
     return pre+`<div class="bgrp"><div class="block"><h2>${esc(x.blok)}</h2><p>předsedá ${esc(x.pr)}</p>${tymJe()||store.get("prBloky",[]).includes(x.bid)?`<button class="chairbtn" data-chair="${x.bid}">Pohled předsedajícího${cnt?" · "+cnt+" nových dotazů":""}</button>`:""}</div>`}
    const f=txt(x.id).length, fm=maPozn(x.id), st=nowState(), live=st.cur&&st.cur.id===x.id&&st.c.day===S.day;
    let h=pre+`<div class="slot${live?" live":""}" id="t-${x.id}"><div class="t">${esc(x.t)}${x.e?`<i>–</i><small>${esc(x.e)}</small>`:""}</div>
-    <div class="talk ${x.brk?"brk":""} ${fm?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)} · zbývá ${dur(Math.max(1,(x.b??x.a+1)-st.c.m))}</div>`:""}<h3>${hl(x.h)}</h3>${x.w?`<div class="who">${hl(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${medPas(x.id)}${x.bid?`<div class="tact"><button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${(()=>{const p=(S.qa[x.id]||[]).reduce((a,q)=>a+votes(x.id,q.k)-1,0);return p?" · 👍 "+p:""})()}${badge(novych(x.id))}</button>${(()=>{const l=medTid(x.id),nh=l.filter(m=>m.typ==="hlas").length,nf=l.length-nh;return `<button class="nbtn" data-note="${x.id}">✎ Poznámka</button><button class="nbtn" data-hlas="${x.id}" aria-label="Namluvit poznámku">🎤 Nahrát</button><button class="nbtn" data-foto="${x.id}" aria-label="Vyfotit k přednášce">📷 Foto</button>`})()}${live||probehlo(x,st.c)?"":`<button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?S.alarms[x.id].m+" min předem":"Upozornit"}</button>`}</div>`:""}</div>
+    <div class="talk ${x.brk?"brk":""} ${fm?"mine":""} ${live?"live":""}"><div class="body">${live?`<div class="livechip"><span class="dot"></span>Teď · do ${hm(x.b??x.a+1)} · zbývá ${dur(Math.max(1,(x.b??x.a+1)-st.c.m))}</div>`:""}<h3>${hl(x.h)}</h3>${x.w?`<div class="who">${hl(x.w)}</div>`:""}${x.det?`<ul class="det">${x.det.map(d=>`<li>${esc(d)}</li>`).join("")}</ul>`:""}${medPas(x.id)}${x.bid?`<div class="tact"><button class="qbtn ${(S.qa[x.id]||[]).length?"has":""}" data-q="${x.id}">? Dotaz${(S.qa[x.id]||[]).length?" · "+(S.qa[x.id]||[]).length:""}${(()=>{const p=(S.qa[x.id]||[]).reduce((a,q)=>a+votes(x.id,q.k)-1,0);return p?" · 👍 "+p:""})()}${badge(novych(x.id))}</button>${(()=>{const l=medTid(x.id),nh=l.filter(m=>m.typ==="hlas").length,nf=l.length-nh;return `<button class="nbtn" data-note="${x.id}">✎ Poznámka</button><button class="nbtn" data-hlas="${x.id}" aria-label="Namluvit poznámku">🎤 Nahrát</button><button class="nbtn" data-foto="${x.id}" aria-label="Vyfotit k přednášce">📷 Foto</button>${sbBtn(x)}`})()}${live||probehlo(x,st.c)?"":`<button class="nbtn${S.alarms[x.id]?" on":""}" data-alarm="${x.id}">🔔 ${S.alarms[x.id]?S.alarms[x.id].m+" min předem":"Upozornit"}</button>`}</div>`:""}</div>
 </div></div>`;
    if(x.ad){const nm=odb[(x.id.length+x.t.length*7)%odb.length];h+=`<div class="slot"><div></div><button class="mini" data-p="${esc(nm)}" style="display:flex;gap:10px;align-items:center">${lm(nm)}<div><small>Odborný partner · přijďte na stánek</small><b>${esc(nm)}</b></div></button></div>`}
    return h});return out.join("")+(open?"</div>":"")})()
@@ -1290,7 +1364,7 @@ function vDotazy(){   // všechny dotazy na jednom místě: nové, nejžádaněj
 function vPoznamky(){
  const l=mojePoznamky();
  const tl=x=>{const f=txt(x.id).length,m=medTid(x.id),nh=m.filter(y=>y.typ==="hlas").length,nf=m.length-nh;
-  return `<button class="nbtn" data-note="${x.id}">✎ Poznámka</button><button class="nbtn" data-hlas="${x.id}">🎤 Namluvit</button><button class="nbtn" data-foto="${x.id}">📷 Foto</button><button class="nbtn" data-naq="${x.id}">↗ V programu</button>`};
+  return `<button class="nbtn" data-note="${x.id}">✎ Poznámka</button><button class="nbtn" data-hlas="${x.id}">🎤 Namluvit</button><button class="nbtn" data-foto="${x.id}">📷 Foto</button><button class="nbtn" data-naq="${x.id}">↗ V programu</button>${sbBtn(x)}`};
  return `<section class="sec">
   <div class="card pzhl"><div class="pzs">${mojeIkony().replace("<b>Poznámky</b>","")}</div>
    <p class="muted" style="margin:6px 0 10px;font-size:13px">🔒 Vidíte je jen vy – jsou uložené jen v tomto zařízení. Přidáte je u přednášky v Programu tlačítky ✎ Poznámka, 🎤 Nahrát a 📷 Foto.</p>
@@ -1359,8 +1433,10 @@ function vInfo(){
    <dl class="kv"><dt>Termín</dt><dd>${TERMIN}</dd><dt>Místo</dt><dd>Kongres hotel Jezerka, Seč</dd><dt>Pořadatelé</dt><dd>VHOS, a.s. ve spolupráci s CzWA, odborná skupina ČR MOV</dd><dt>Odborný garant</dt><dd>Ing. Filip Wanner, Ph.D., ENERGIE AG BOHEMIA (kontakt níže)</dd><dt>Vzdělávání</dt><dd>ČKAIT – 2 body</dd></dl></div>
   <div class="card"><div class="label" style="margin-bottom:8px">Účastnický poplatek</div>
    <dl class="kv"><dt>Základní</dt><dd>4 900 Kč bez DPH (5 929 Kč s DPH)</dd><dt>Členové CzWA</dt><dd>4 600 Kč bez DPH (5 566 Kč s DPH)</dd><dt>V ceně</dt><dd>organizace, sborník v PDF, občerstvení, oběd, večerní pohoštění</dd><dt>Platba</dt><dd>pokyny k platbě přijdou e-mailem v potvrzení e-přihlášky; daňový doklad zašleme na uvedený e-mail</dd><dt>Storno</dt><dd>poplatek se nevrací, zašleme sborník, lze vyslat náhradníka</dd></dl></div>
-  <div class="card"><div class="label" style="margin-bottom:8px">Sborník <span style="color:var(--warn)">· připravujeme</span></div>
-   <p style="margin:0;font-size:14px">Sborník v PDF bude ke stažení přímo tady v průvodci <b>už během konference</b>, takže ho budete mít po ruce při přednáškách. Jakmile bude připravený, dáme vám vědět v aktualitách.</p></div>
+  ${sbUrl()?`<div class="card" id="i-sb"><div class="label" style="margin-bottom:8px">Sborník</div>
+   <p style="margin:0 0 10px;font-size:14px">Sborník v PDF listujete přímo tady v průvodci – stahují se jen stránky, které si prohlížíte. U každé přednášky v Programu je tlačítko <b>📖 Sborník</b>, které ho otevře na její stránce.</p>
+   <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="qbtn has" data-sb="1" style="margin:0">📖 Otevřít sborník</button>${sbUlozBtn()}</div></div>`:`<div class="card"><div class="label" style="margin-bottom:8px">Sborník <span style="color:var(--warn)">· připravujeme</span></div>
+   <p style="margin:0;font-size:14px">Sborník v PDF bude ke stažení přímo tady v průvodci <b>už během konference</b>, takže ho budete mít po ruce při přednáškách. Jakmile bude připravený, dáme vám vědět v aktualitách.</p></div>`}
   <div class="blockh" id="i-kont"><h2>Kontakty</h2></div>
   ${KONTAKTY.map(k=>`<div class="card kont${k.hl?" garant":""}"><div class="label" style="margin-bottom:6px">${esc(k.role)}</div>
    <b style="font-size:16px">${esc(k.jm)}</b>${k.org?`<div class="muted" style="font-size:13px">${esc(k.org)}</div>`:""}${k.pozn?`<div style="font-size:13px;margin-top:4px">${esc(k.pozn)}</div>`:""}

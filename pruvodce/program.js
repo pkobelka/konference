@@ -1,5 +1,8 @@
 // Program konference – společný pro průvodce (pruvodce/index.html) i aplikaci pořadatele (index.html).
 // Klíče přednášek (ut5, st31…) i bloků (utb4…) se počítají tady, aby byly v obou aplikacích stejné.
+// Sborník v PDF: dokud je url prázdné, průvodce ho nikde neukazuje („připravujeme“). Po vydání: url (např. "../sbornik/sbornik-2027.pdf")
+// a u přednášek s:N = strana ve sborníku – doplní ./navrh/sbornik-strany.py sbornik.pdf --zapsat (pak zkontrolovat).
+const SBORNIK={url:"",mb:61};
 const DAYS=[{k:"ut",n:"Úterý",d:"27. 4."},{k:"st",n:"Středa",d:"28. 4."}];
 const PROG={
  ut:[
