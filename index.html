@@ -1184,7 +1184,7 @@ function htmlDotazy(){
   const l=dotazySeznam();
   if(DOTAZY_ERR)return `<div class="probbox"><div>⛔ Dotazy nejde načíst: <b>${esc(DOTAZY_ERR)}</b>. Chybí pravidlo pro <b>${DOT}</b> ve Firebase.</div></div>`;
   return `<p style="font-size:.9rem"><b>${l.length}</b> ${l.length===1?"dotaz":l.length>=2&&l.length<=4?"dotazy":"dotazů"} od účastníků (nejnovější nahoře).</p>`+
-    (l.length?`<table class="t">${l.slice(0,200).map(q=>`<tr><td class="sub" style="white-space:nowrap">${esc(q.c||"")}</td><td><b>${esc(q.t)}</b>${q.au?" 🎤":""}<div class="sub">${esc(q.a||"")} · ${esc(q.h||q.talk)}</div></td><td><button class="btn red small" data-dotdel="${esc(q.talk)}|${esc(q.k)}">Smazat</button></td></tr>`).join("")}</table>
+    (l.length?`<table class="t">${l.slice(0,200).map(q=>`<tr><td class="sub" style="white-space:nowrap">${q.ts?new Date(q.ts).getDate()+". "+(new Date(q.ts).getMonth()+1)+".<br>":""}${esc(q.c||"")}</td><td><b>${esc(q.t)}</b>${q.au?" 🎤":""}<div class="sub">${esc(q.a||"")} · ${esc(q.h||q.talk)}</div></td><td><button class="btn red small" data-dotdel="${esc(q.talk)}|${esc(q.k)}">Smazat</button></td></tr>`).join("")}</table>
     <button class="btn red small" id="s_dot_vse" style="margin-top:8px">Smazat všechny dotazy (po zkoušce)</button>`:"");
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-dotdel]");if(!b)return;const [t,k]=b.dataset.dotdel.split("|");
