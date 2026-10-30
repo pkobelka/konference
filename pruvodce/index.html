@@ -665,7 +665,8 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.05 · 22. 10. 2026";
+const VERZE="1.06 · 30. 10. 2026";
+const qKdy=q=>(q.ts?new Date(q.ts).getDate()+". "+(new Date(q.ts).getMonth()+1)+". ":"")+(q.c||"");   // datum a čas dotazu
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
 // Vyzkoušení času – kdokoli si ho zapne tlačítkem na Domů (jen simulace času, bez ukázkových dat); platí do zavření okna
@@ -1359,9 +1360,9 @@ function vDotazy(){   // všechny dotazy na jednom místě: nové, nejžádaněj
  const den=x=>DAYS.find(z=>PROG[z.k].includes(x));
  const vse=[];ALLT.forEach(x=>{if(x.id)(S.qa[x.id]||[]).forEach((d,i)=>vse.push({x,d,n:votes(x.id,d.k),nov:novyQ(x.id,d,i)&&d.dev!==DEV}))});
  const hod=o=>!q||norm(o.d.t+" "+o.d.a+" "+o.x.h).includes(q);
- const radek=(o,sNazvem)=>`<div class="dqr${o.nov?" nov":""}"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${qNo(o.x.id,o.d.k)}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(o.d.c||"")}${o.d.dev===DEV?" · váš dotaz":hlasoval(o.x.id,o.d.k)?" · <b>dali jste 👍</b>":""}</span></button>${o.nov?`<button class="dqok" data-dqok="${o.x.id}|${o.d.k}" aria-label="Označit jako přečtené" title="Přečteno">✓</button>`:""}${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" title="${palecTit(hlasoval(o.x.id,o.d.k),o.n-1)}" aria-label="${palecTit(hlasoval(o.x.id,o.d.k),o.n-1)}">👍 ${o.n-1}</button>`}</div>`;
+ const radek=(o,sNazvem)=>`<div class="dqr${o.nov?" nov":""}"><button class="dql" data-q="${o.x.id}">${sNazvem?`<span class="dqt">${esc((den(o.x)||{n:""}).n.slice(0,2))} ${esc((den(o.x)||{d:""}).d)} ${esc(o.x.t)} · ${esc(o.x.h)}</span>`:""}<span class="dqx">${o.nov?'<span class="chipn">Nový</span> ':""}${qNo(o.x.id,o.d.k)}${esc(o.d.t)}</span><span class="dqm">${esc(o.d.a)} · ${esc(qKdy(o.d))}${o.d.dev===DEV?" · váš dotaz":hlasoval(o.x.id,o.d.k)?" · <b>dali jste 👍</b>":""}</span></button>${o.nov?`<button class="dqok" data-dqok="${o.x.id}|${o.d.k}" aria-label="Označit jako přečtené" title="Přečteno">✓</button>`:""}${o.d.dev===DEV?`<span class="dqv mine" title="Palce od ostatních">👍 ${o.n-1}</span>`:`<button class="dqv" data-dqp="${o.x.id}|${o.d.k}" aria-pressed="${hlasoval(o.x.id,o.d.k)}" title="${palecTit(hlasoval(o.x.id,o.d.k),o.n-1)}" aria-label="${palecTit(hlasoval(o.x.id,o.d.k),o.n-1)}">👍 ${o.n-1}</button>`}</div>`;
  const skup=l=>{const g=[];l.forEach(o=>{let G=g.find(z=>z.x===o.x);if(!G)g.push(G={x:o.x,l:[]});G.l.push(o)});
-  return g.map(G=>`<div class="card dqg"><button class="dqh" data-naq="${G.x.id}"><span class="nvt">${esc((den(G.x)||{n:""}).n.slice(0,2))} ${esc(G.x.t)}</span><b>${esc(G.x.h)}</b><small>↗ v programu</small></button>
+  return g.map(G=>`<div class="card dqg"><button class="dqh" data-naq="${G.x.id}"><span class="nvt">${esc((den(G.x)||{n:""}).n.slice(0,2))} ${esc((den(G.x)||{d:""}).d)} ${esc(G.x.t)}</span><b>${esc(G.x.h)}</b><small>↗ v programu</small></button>
    ${G.l.sort((a,b)=>b.n-a.n).map(o=>radek(o,false)).join("")}<button class="cbtn" data-q="${G.x.id}" style="border:0;margin-top:8px">? Zeptat se</button></div>`).join("")};
  let telo;
  if(f==="nove"){const l=vse.filter(o=>o.nov&&hod(o));telo=l.length?skup(l)+`<button class="linkb" data-navse>Označit vše jako přečtené</button>`:`<div class="card empty"><b>Žádné nové dotazy</b><p class="muted" style="margin:6px 0 0;font-size:14px">Všechno jste už viděli. Mrkněte na nejžádanější.</p></div>`}
@@ -1482,7 +1483,7 @@ function sheetQ(id){
  const x=ALLT.find(y=>y.id===id), bk=ALLT.find(y=>y.blok&&y.bid===x.bid);
  const draw=()=>{const l=(S.qa[id]||[]).slice().sort((a,b)=>votes(id,b.k)-votes(id,a.k));videno(id);
   $("qlist").innerHTML=l.length?`<div class="label" style="margin-bottom:2px">Dotazy ostatních</div><p class="muted" style="margin:0 0 4px;font-size:13px">Zajímá vás některý dotaz? Dejte mu <b>👍</b> – předsedající čte nejdřív ty s nejvíc palci. Než napíšete svůj, podívejte se, jestli tu už není.</p>`+l.map(q=>{const on=hlasoval(id,q.k),n=votes(id,q.k),muj=q.dev&&q.dev===DEV;
-   return `<div class="q"><div><p>${qNo(id,q.k)}${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}${muj?" · váš dotaz":on?" · <b>dali jste 👍</b>":""}</small></div>${muj?`<span class="plus mine" title="Palce od ostatních">👍 <b>${n-1}</b></span>`:`<button class="plus" data-plus="${esc(q.k)}" aria-pressed="${on}" title="${palecTit(on,n-1)}" aria-label="${palecTit(on,n-1)}">👍 <b>${n-1}</b></button>`}</div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
+   return `<div class="q"><div><p>${qNo(id,q.k)}${esc(q.t)}</p><small>${esc(q.a)} · ${esc(qKdy(q))}${muj?" · váš dotaz":on?" · <b>dali jste 👍</b>":""}</small></div>${muj?`<span class="plus mine" title="Palce od ostatních">👍 <b>${n-1}</b></span>`:`<button class="plus" data-plus="${esc(q.k)}" aria-pressed="${on}" title="${palecTit(on,n-1)}" aria-label="${palecTit(on,n-1)}">👍 <b>${n-1}</b></button>`}</div>`}).join(""):'<p class="muted" style="margin:0">Zatím žádný dotaz. Buďte první.</p>'};
  SHEET_DRAW=draw;
  videno(id);setTimeout(render,0);
  openSheet(`<h2>Dotaz k přednášce</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.h)}</div>
@@ -1580,7 +1581,7 @@ function pjKresli(){
   <div class="pjm">${!o?`<div class="pjempty">Zatím žádné dotazy – přibývají živě z telefonů účastníků.</div>`
    :`${bez?`<div class="pjspk" aria-hidden="true">🔊</div>`:`<div class="pjq${rd?" rd":""}" id="pjq">${esc(o.q.t)}</div>`}
  `}</div>
-  <div class="pjf"><div class="pjwho">${o?esc(o.q.a)+" · "+esc(o.q.c)+(n>1?`<span class="pjvt">👍 ${n-1} ${n-1===1?"palec":n-1<5?"palce":"palců"}</span>`:""):""}</div>
+  <div class="pjf"><div class="pjwho">${o?esc(o.q.a)+" · "+esc(qKdy(o.q))+(n>1?`<span class="pjvt">👍 ${n-1} ${n-1===1?"palec":n-1<5?"palce":"palců"}</span>`:""):""}</div>
    <button id="pjprev" aria-label="Předchozí dotaz">‹ Předchozí</button>${o?`<button id="pjrd" class="${rd?"on":""}">${rd?"Přečteno ✓":"Označit přečtené"}</button>`:""}<button id="pjnext" aria-label="Další dotaz">Další ›</button>
    <button id="pjfs" aria-label="Celá obrazovka">⛶</button><button id="pjdk" aria-label="Tmavé / světlé pozadí">🌓</button><button id="pjx" aria-label="Zavřít projekci">✕</button></div>`;
  // písmo co největší, ale aby se dotaz vešel
@@ -1606,7 +1607,7 @@ function sheetChair(bid){
  const bk=ALLT.find(y=>y.blok&&y.bid===bid), talks=ALLT.filter(y=>y.id&&y.bid===bid);
  const draw=()=>{$("clist").innerHTML=talks.map(x=>{const l=(S.qa[x.id]||[]).slice().sort((a,b)=>(!!S.read[x.id+":"+a.k]-!!S.read[x.id+":"+b.k])||votes(x.id,b.k)-votes(x.id,a.k));
    return `<h3>${esc(x.t)} · ${esc(x.h)}</h3>`+(l.length?l.map(q=>{const k=x.id+":"+q.k,r=!!S.read[k],n=votes(x.id,q.k);
-    return `<div class="cq ${r?"read":""}"><div><p>${qNo(x.id,q.k)}${esc(q.t)}</p><small>${esc(q.a)} · ${esc(q.c)}</small>${n>1?`<span class="votes" title="Palce od ostatních">👍 ${n-1}</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">🔎 Velkým písmem</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
+    return `<div class="cq ${r?"read":""}"><div><p>${qNo(x.id,q.k)}${esc(q.t)}</p><small>${esc(q.a)} · ${esc(qKdy(q))}</small>${n>1?`<span class="votes" title="Palce od ostatních">👍 ${n-1}</span>`:""}</div><div style="display:flex;flex-direction:column;gap:6px"><button data-proj="${esc(k)}">🔎 Velkým písmem</button><button data-read="${k}">${r?"Přečteno ✓":"Přečíst"}</button></div></div>`}).join(""):'<p class="muted" style="margin:4px 0 0;font-size:13px">Bez dotazů</p>')}).join("")};
  openSheet(`<h2>Pohled předsedajícího</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(bk.blok)} · předsedá ${esc(bk.pr)}</div>
   <div class="bd chair"><button class="projall" data-projall="1">🔎 Velkým písmem – ukázat přednášejícímu</button><div id="clist"></div>
   <div class="note">Dotazy přibývají živě během přednášky – ze všech telefonů. „Přečteno“ si předsedající odškrtává u sebe.<br><b>Na mobilu</b> (předsedající s mikrofonem): „Velkým písmem“ ukáže dotaz přes celý displej – pohodlně ho přečtete do mikrofonu a pak telefon nebo tablet ukážete přednášejícímu, aby měl dotaz před očima. Na počítači: ← → další dotaz, R přečteno, F celá obrazovka, Esc zpět.<br>Přímý odkaz pro počítač v sále: <b>…/pruvodce/?pr=${esc(bid)}</b></div></div>`);
