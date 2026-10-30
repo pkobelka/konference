@@ -665,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.06 · 30. 10. 2026";
+const VERZE="1.07 · 30. 10. 2026";
 const qKdy=q=>(q.ts?new Date(q.ts).getDate()+". "+(new Date(q.ts).getMonth()+1)+". ":"")+(q.c||"");   // datum a čas dotazu
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
@@ -1489,15 +1489,13 @@ function sheetQ(id){
  openSheet(`<h2>Dotaz k přednášce</h2><div class="muted" style="font-size:13px;margin-top:2px">${esc(x.h)}</div>
   <div class="bd"><div id="qlist"></div>
   <form class="qform" id="qf"><textarea id="qt" rows="3" placeholder="Napište svůj dotaz na přednášejícího…" aria-label="Dotaz"></textarea>
-   ${window.SpeechRecognition||window.webkitSpeechRecognition?`<div class="mic"><button type="button" class="micb" id="qmic">🎤 Nadiktovat</button><span id="qrec" class="muted"></span></div>`:""}
    <label class="chk"><input type="checkbox" id="qpod" ${S.me.pod?"checked":""}> Podepsat dotaz <span class="muted">(nepovinné)</span></label>
    <div class="qpodf" id="qpodf" ${S.me.pod?"":"hidden"}><input id="qjm" placeholder="Jméno a příjmení" value="${esc(S.me.jm||"")}" autocomplete="name" aria-label="Jméno a příjmení"><input id="qfi" placeholder="Firma (nepovinné)" value="${esc(S.me.firma||"")}" autocomplete="organization" aria-label="Firma"></div>
    <div class="signas" id="qsig">${S.me.pod?"Podpis uvidí všichni u dotazu.":"Bez podpisu se dotaz odešle anonymně."}</div>
    <button class="send">Odeslat dotaz</button></form>
-  <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první. Dotaz můžete i nadiktovat – řeč se přepíše na text, před odesláním ho zkontrolujte.</div></div>`);
+  <div class="note">Dotazy vidí všichni účastníci. Předsedající bloku${bk?" ("+esc(bk.pr)+")":""} je přečte přednášejícímu v diskuzi, nejžádanější jako první.</div></div>`);
  draw();
  $("qpod").addEventListener("change",e=>{const on=e.target.checked;$("qpodf").hidden=!on;$("qsig").textContent=on?"Podpis uvidí všichni u dotazu.":"Bez podpisu se dotaz odešle anonymně.";if(on&&!$("qjm").value)$("qjm").focus()});
- if($("qmic"))$("qmic").addEventListener("click",()=>diktuj($("qmic"),$("qrec"),"qt"));
  $("qlist").addEventListener("click",e=>{
   const b=e.target.closest("[data-plus]");if(!b)return;hlasuj(id,b.dataset.plus,draw)});
  $("qf").addEventListener("submit",e=>{e.preventDefault();diktujStop();const t=$("qt").value.trim();if(!t)return;
@@ -1542,11 +1540,6 @@ function nahravej(hotovo,o){   // o: tlačítko, info, pole přepisu, max. délk
   REC.t=setInterval(()=>{const sec=Math.floor((Date.now()-REC.start)/1000);info.textContent=(REC.sr?"● nahrávám a přepisuji ":"● nahrávám ")+mss(sec)+" / "+mss(o.max);if(sec>=o.max)mr.stop()},250);
  }).catch(()=>toast("Bez povolení mikrofonu to nejde – povolte ho v prohlížeči"));
 }
-function diktuj(b,info,ta){   // dotaz nadiktovat: jen přepis řeči na text, nic se nenahrává ani neposílá jako zvuk
- if(REC.dikt)return diktujStop();
- const r=prepis(ta);if(!r)return toast("Diktování tu nejde – napište dotaz textem");
- REC.sr=r;REC.dikt={b,info,t:setTimeout(diktujStop,90000)};b.textContent="⏹ Hotovo";b.classList.add("on");info.textContent="● poslouchám – mluvte";
- $(ta).focus()}
 function diktujStop(){const d=REC.dikt;if(!d)return;REC.dikt=null;clearTimeout(d.t);const r=REC.sr;REC.sr=null;if(r)try{r.stop()}catch(e){}
  d.b.textContent="🎤 Nadiktovat";d.b.classList.remove("on");d.info.textContent=""}
 let HR=null;
