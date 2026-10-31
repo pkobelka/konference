@@ -328,7 +328,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .dqnow{border:2px solid #d32f2f}.dqnow>b{display:block;font-size:16px;margin:2px 0 4px}
 .offl{background:#3a3340;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;margin:0 0 10px;line-height:1.35}
 .nexp{display:flex;gap:6px;flex-wrap:wrap}
-.nvol{display:grid;gap:8px}.nvol button{display:grid;gap:3px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;color:var(--ink)}.nvol button b{font-size:15px;color:var(--accent)}.nvol button small{font-size:13px;color:var(--muted);line-height:1.35}
+.nvol{display:grid;gap:8px}.nvol input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;font-size:16px}.nvol button{display:grid;gap:3px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;color:var(--ink)}.nvol button b{font-size:15px;color:var(--accent)}.nvol button small{font-size:13px;color:var(--muted);line-height:1.35}
 .nsoukr{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:13px;font-weight:600;margin-bottom:10px}
 .pozul{border:2px solid var(--accent)}.pozul b{font-size:16px}
 .nexp button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px;color:var(--accent)}.nexp button.hl{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -665,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.08 · 30. 10. 2026";
+const VERZE="1.09 · 31. 10. 2026";
 const qKdy=q=>(q.ts?new Date(q.ts).getDate()+". "+(new Date(q.ts).getMonth()+1)+". ":"")+(q.c||"");   // datum a čas dotazu
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
@@ -1909,13 +1909,19 @@ function nexpBtns(){   // mobil/tablet: jedno tlačítko → výběr ze tří mo
 function sheetNexp(){   // mobil: jak si poznámky poslat nebo uložit
  const med=medSoubory().length;
  openSheet(`<h2>Poslat / uložit</h2><div class="muted" style="font-size:13px;margin-top:2px">U každé poznámky bude název přednášky, přednášející a čas</div>
-  <div class="bd nvol"><button data-nx="share"><b>✉ Poslat e-mailem nebo jinam</b><small>Vyberte Gmail, Outlook, WhatsApp…${med?" Text, fotky i nahrávky se přiloží samy.":" Text poznámek se vloží sám."} Nic nestahujete.</small></button>
+  <div class="bd nvol"><input id="nxmail" type="email" inputmode="email" autocomplete="email" placeholder="Váš e-mail – zkopíruje se pro pole Komu" value="${esc(store.get("mujMail",""))}" aria-label="Váš e-mail">
+  <button data-nx="share"><b>✉ Poslat e-mailem nebo jinam</b><small>Vyberte Mail, Gmail, Outlook… Otevře se e-mail s poznámkami v příloze${med?" i s fotkami a nahrávkami":""}. Do Komu jen vložte svůj e-mail. Nic nestahujete.</small></button>
   <button data-nx="pr"><b>📄 Uložit jako PDF</b><small>Přehledný dokument${med?" i s fotkami":""} – v dalším kroku zvolte „Uložit jako PDF“.</small></button>
   <button data-nx="txt"><b>⬇ Stáhnout do telefonu</b><small>${med?"Text, fotky a nahrávky v jednom souboru ZIP.":"Textový soubor s poznámkami."}</small></button></div>`,true)}
-function sdilejPoznamky(){
+function sdilejPoznamky(){   // otevře výběr aplikace (Mail, Gmail…) – poznámky jako soubor TXT v příloze + fotky a nahrávky
+ const mi=$("nxmail"),ml=mi?mi.value.trim():store.get("mujMail","");
+ if(mi)store.set("mujMail",ml);
+ if(ml&&navigator.clipboard)navigator.clipboard.writeText(ml).then(()=>toast("📋 "+ml+" zkopírován – vložte do pole Komu")).catch(()=>{});   // bez await: sdílení musí hned po kliknutí
  const d={title:"Moje poznámky – konference ČOV 2027",text:poznamkyText()};
- const fs=[];medSoubory().forEach(({m,jm})=>{try{fs.push(new File([m.blob],jm,{type:m.blob.type||(m.typ==="foto"?"image/jpeg":"audio/webm")}))}catch(e){}});
- if(fs.length&&navigator.canShare&&navigator.canShare({files:fs}))d.files=fs;
+ const fs=[];try{fs.push(new File(["\ufeff"+d.text],"moje-poznamky-konference-2027.txt",{type:"text/plain"}))}catch(e){}
+ medSoubory().forEach(({m,jm})=>{try{fs.push(new File([m.blob],jm,{type:m.blob.type||(m.typ==="foto"?"image/jpeg":"audio/webm")}))}catch(e){}});
+ const lze=l=>l.length&&navigator.canShare&&navigator.canShare({files:l});
+ if(lze(fs))d.files=fs;else if(lze(fs.slice(0,1)))d.files=fs.slice(0,1);
  navigator.share(d).catch(e=>{if(e&&e.name!=="AbortError")stahniPoznamky()})}
 const pocetVeci=()=>ALLT.reduce((a,x)=>x.id?a+txt(x.id).length+medTid(x.id).length:a,0);   // všechny poznámky, fotky a nahrávky
 function poznUlozit(vzdy){   // připomínka uložit: na Domů hned při nové poznámce, jinde až na konci konference
@@ -1965,7 +1971,7 @@ function stahniPoznamky(){
  zip([{jm:"moje-poznamky-konference-2027.txt",blob:txt},...med.map(o=>({jm:o.jm,blob:o.m.blob}))]).then(b=>{stahni(b,"moje-poznamky-konference-2027.zip");toast("⬇ Staženo: poznámky, fotky a nahrávky v jednom ZIPu")}).catch(()=>stahni(txt,"moje-poznamky-konference-2027.txt"))
 }
 function mailPoznamky(){
- const med=medSoubory().length;if(med&&umiSdilet())return sdilejPoznamky();   // mobil: vyberete poštu a fotky/nahrávky se přiloží
+ const med=medSoubory().length;if(umiSdilet())return sdilejPoznamky();   // mobil: vyberete poštu, poznámky (TXT), fotky a nahrávky se přiloží
  const t=(med?"(Fotky a nahrávky e-mail z prohlížeče neumí přiložit – jsou v ZIPu (tlačítko „Uložit do počítače“) a fotky i v PDF.)\n\n":"")+poznamkyText();ODKAZ_VEN=Date.now();location.href="mailto:?subject="+encodeURIComponent("Moje poznámky – konference ČOV 2027")+"&body="+encodeURIComponent(t.length>1800?t.slice(0,1800)+"\n…(zkráceno, celé poznámky si stáhněte jako text)":t);
 }
 
