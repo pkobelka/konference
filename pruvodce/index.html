@@ -328,7 +328,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 .dqnow{border:2px solid #d32f2f}.dqnow>b{display:block;font-size:16px;margin:2px 0 4px}
 .offl{background:#3a3340;color:#fff;border-radius:12px;padding:8px 12px;font-size:13px;margin:0 0 10px;line-height:1.35}
 .nexp{display:flex;gap:6px;flex-wrap:wrap}
-.nvol{display:grid;gap:8px}.nxm{display:flex;gap:8px}.nxm button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:0 12px;color:var(--accent);font:inherit;font-weight:700}.nvol input{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;font-size:16px}.nvol button{display:grid;gap:3px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;color:var(--ink)}.nvol button b{font-size:15px;color:var(--accent)}.nvol button small{font-size:13px;color:var(--muted);line-height:1.35}
+.nvol{display:grid;gap:8px}.nvol button{display:grid;gap:3px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;color:var(--ink)}.nvol button b{font-size:15px;color:var(--accent)}.nvol button small{font-size:13px;color:var(--muted);line-height:1.35}
 .nsoukr{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:13px;font-weight:600;margin-bottom:10px}
 .pozul{border:2px solid var(--accent)}.pozul b{font-size:16px}
 .nexp button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px;color:var(--accent)}.nexp button.hl{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -665,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.10 · 31. 10. 2026";
+const VERZE="1.11 · 31. 10. 2026";
 const qKdy=q=>(q.ts?new Date(q.ts).getDate()+". "+(new Date(q.ts).getMonth()+1)+". ":"")+(q.c||"");   // datum a čas dotazu
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
@@ -1909,21 +1909,16 @@ function nexpBtns(){   // mobil/tablet: jedno tlačítko → výběr ze tří mo
 function sheetNexp(){   // mobil: jak si poznámky poslat nebo uložit
  const med=medSoubory().length;
  openSheet(`<h2>Poslat / uložit</h2><div class="muted" style="font-size:13px;margin-top:2px">U každé poznámky bude název přednášky, přednášející a čas</div>
-  <div class="bd nvol"><div class="nxm"><input id="nxmail" type="email" inputmode="email" autocomplete="email" placeholder="Váš e-mail (pro pole Komu)" value="${esc(store.get("mujMail",""))}" aria-label="Váš e-mail"><button type="button" id="nxkop" aria-label="Zkopírovat e-mail">📋 Kopírovat</button></div>
-  <button data-nx="share"><b>✉ Poslat e-mailem nebo jinam</b><small>Vyberte Mail, Gmail, Outlook… Otevře se e-mail s poznámkami v příloze${med?" i s fotkami a nahrávkami":""}. Do Komu vložte svůj e-mail (nejdřív 📋 Kopírovat). Nic nestahujete.</small></button>
+  <div class="bd nvol">  <button data-nx="share"><b>✉ Poslat e-mailem nebo jinam</b><small>Vyberte Mail, Gmail, Outlook… Otevře se e-mail s poznámkami v příloze${med?" i s fotkami a nahrávkami":""}. Příjemce si vyberete sami. Nic nestahujete.</small></button>
   <button data-nx="pr"><b>📄 Uložit jako PDF</b><small>Přehledný dokument${med?" i s fotkami":""} – v dalším kroku zvolte „Uložit jako PDF“.</small></button>
   <button data-nx="txt"><b>⬇ Stáhnout do telefonu</b><small>${med?"Text, fotky a nahrávky v jednom souboru ZIP.":"Textový soubor s poznámkami."}</small></button></div>`,true)}
 function sdilejPoznamky(){   // otevře výběr aplikace (Mail, Gmail…) – poznámky jako soubor TXT v příloze + fotky a nahrávky
- // nic jiného před share(): iPhone bere kopírování do schránky jako spotřebované klepnutí a sdílení pak odmítne
  const d={title:"Moje poznámky – konference ČOV 2027",text:poznamkyText()};
  const fs=[];try{fs.push(new File(["\ufeff"+d.text],"moje-poznamky-konference-2027.txt",{type:"text/plain"}))}catch(e){}
  medSoubory().forEach(({m,jm})=>{try{fs.push(new File([m.blob],jm,{type:m.blob.type||(m.typ==="foto"?"image/jpeg":"audio/webm")}))}catch(e){}});
  const lze=l=>l.length&&navigator.canShare&&navigator.canShare({files:l});
  if(lze(fs))d.files=fs;else if(lze(fs.slice(0,1)))d.files=fs.slice(0,1);
  navigator.share(d).catch(e=>{if(e&&e.name!=="AbortError")toast("Sdílení se nepovedlo ("+(e.name||"chyba")+") – zkuste to znovu, nebo zvolte Stáhnout do telefonu")})}
-function kopirujMail(){const mi=$("nxmail"),ml=mi?mi.value.trim():"";store.set("mujMail",ml);
- if(!ml){if(mi)mi.focus();return toast("Napište svůj e-mail")}
- (navigator.clipboard?navigator.clipboard.writeText(ml):Promise.reject()).then(()=>toast("📋 Zkopírováno – v e-mailu vložte do pole Komu"),()=>{mi.select();toast("Označeno – zkopírujte podržením prstu")})}
 const pocetVeci=()=>ALLT.reduce((a,x)=>x.id?a+txt(x.id).length+medTid(x.id).length:a,0);   // všechny poznámky, fotky a nahrávky
 function poznUlozit(vzdy){   // připomínka uložit: na Domů hned při nové poznámce, jinde až na konci konference
  const n=pocetVeci();if(!n||store.get("poznUlozeno",0)>=n)return "";
@@ -2042,8 +2037,7 @@ if(window.IMGBASE&&"serviceWorker" in navigator){navigator.serviceWorker.registe
 function openSheet(h,stred){const s=$("sheet");s.classList.toggle("stred",!!stred);s.innerHTML=`<div class="grab"></div><button class="close" id="sclose" aria-label="Zavřít">×</button>`+h;s.hidden=false;$("bd").hidden=false;$("sclose").focus()}
 function closeSheet(){SHEET_DRAW=null;if(REC.mr)REC.mr.stop();if(HR){HR.pause();HR=null}$("sheet").hidden=true;$("bd").hidden=true}
 $("bd").addEventListener("click",closeSheet);
-$("sheet").addEventListener("input",e=>{if(e.target.id==="nxmail")store.set("mujMail",e.target.value.trim())});
-$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();if(e.target.id==="nxkop")return kopirujMail();
+$("sheet").addEventListener("click",e=>{if(e.target.id==="sclose")return closeSheet();
  {const nu=e.target.closest("[data-nowuk]");if(nu){const [d,id]=nu.dataset.nowuk.split("|");closeSheet();S.day=d;S.q="";S.mine=false;S.tab="program";render();return setTimeout(()=>ukazBod(id),60)}}
  {const o=e.target.closest("[data-ohl]");if(o){closeSheet();return sheetOhlas(+o.dataset.ohl)}}
  {const g2=e.target.closest("[data-go]");if(g2){closeSheet();return go(g2.dataset.go)}}
