@@ -665,7 +665,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 <script src="program.js"></script>
 <script>
 /* ===== Program podle pozvánky 2026 (30. ročník) – data v program.js ===== */
-const VERZE="1.11 · 31. 10. 2026";
+const VERZE="1.12 · 31. 10. 2026";
 const qKdy=q=>(q.ts?new Date(q.ts).getDate()+". "+(new Date(q.ts).getMonth()+1)+". ":"")+(q.c||"");   // datum a čas dotazu
 // Ukázky (simulace času, ukázkové aktuality a dotazy, „Ukázka“ v záhlaví, ukázka profilu partnera) jen s ?ukazka=1 – platí v tomto okně (?ukazka=0 vypne)
 const UKAZKA=(()=>{try{const u=new URLSearchParams(location.search).get("ukazka");if(u!=null)sessionStorage.setItem("pr_ukazka",u==="1"?"1":"");return sessionStorage.getItem("pr_ukazka")==="1"}catch(e){return false}})();
@@ -1961,8 +1961,18 @@ async function zip(soubory){   // jednoduchý ZIP bez komprese (fotky i zvuk už
  const cs=cent.reduce((a,b)=>a+(b.byteLength||b.length),0),e=new DataView(new ArrayBuffer(22));
  e.setUint32(0,0x06054b50,true);e.setUint16(8,soubory.length,true);e.setUint16(10,soubory.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
  return new Blob([...cast,...cent,e.buffer],{type:"application/zip"})}
+const SLOZKA="Konference VHOS-Seč 2027";
+async function ulozDoSlozky(txt,med){   // Chrome/Edge na počítači: vyberete místo, průvodce v něm založí složku a uloží soubory zvlášť
+ const root=await showDirectoryPicker({id:"pozn2027",mode:"readwrite",startIn:"documents"});
+ const dir=root.name===SLOZKA?root:await root.getDirectoryHandle(SLOZKA,{create:true});
+ for(const f of [{jm:"moje-poznamky-konference-2027.txt",blob:txt},...med.map(o=>({jm:o.jm,blob:o.m.blob}))]){
+  const w=await (await dir.getFileHandle(f.jm,{create:true})).createWritable();await w.write(f.blob);await w.close()}
+ toast("✓ Uloženo do složky „"+SLOZKA+"“"+(med.length?" – poznámky, fotky a nahrávky":""))}
 function stahniPoznamky(){
  const txt=new Blob(["\ufeff"+poznamkyText()],{type:"text/plain;charset=utf-8"}),med=medSoubory();
+ if(window.showDirectoryPicker&&!umiSdilet())return ulozDoSlozky(txt,med).catch(e=>{if(!e||e.name!=="AbortError")stahniStaru(txt,med)});
+ stahniStaru(txt,med)}
+function stahniStaru(txt,med){   // obyčejné stažení do Stažených souborů (TXT, s fotkami/nahrávkami ZIP)
  if(!med.length)return stahni(txt,"moje-poznamky-konference-2027.txt");
  zip([{jm:"moje-poznamky-konference-2027.txt",blob:txt},...med.map(o=>({jm:o.jm,blob:o.m.blob}))]).then(b=>{stahni(b,"moje-poznamky-konference-2027.zip");toast("⬇ Staženo: poznámky, fotky a nahrávky v jednom ZIPu")}).catch(()=>stahni(txt,"moje-poznamky-konference-2027.txt"))
 }
